@@ -21,6 +21,9 @@
  * @copyright  2016 Damyon Wiese
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context\system;
+use core\url;
+
 define('NO_OUTPUT_BUFFERING', true);
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
@@ -29,9 +32,9 @@ admin_externalpage_setup('toollpimportcsv');
 
 $pagetitle = get_string('pluginname', 'tool_lpimportcsv');
 
-$context = context_system::instance();
+$context = system::instance();
 
-$url = new moodle_url("/admin/tool/lpimportcsv/index.php");
+$url = new url("/admin/tool/lpimportcsv/index.php");
 $PAGE->set_context($context);
 $PAGE->set_url($url);
 $PAGE->set_title($pagetitle);
@@ -65,7 +68,7 @@ if ($form->is_cancelled()) {
         } else {
             $framework = $importer->import();
             $urlparams = ['competencyframeworkid' => $framework->get('id'), 'pagecontextid' => $context->id];
-            $frameworksurl = new moodle_url('/admin/tool/lp/competencies.php', $urlparams);
+            $frameworksurl = new url('/admin/tool/lp/competencies.php', $urlparams);
             echo $OUTPUT->notification(get_string('competencyframeworkcreated', 'tool_lp'), 'notifysuccess');
             echo $OUTPUT->continue_button($frameworksurl);
             die();

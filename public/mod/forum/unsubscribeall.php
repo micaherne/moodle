@@ -21,6 +21,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\context\user;
+use core\url;
+
 require_once("../../config.php");
 require_once("lib.php");
 
@@ -30,7 +34,7 @@ $PAGE->set_url('/mod/forum/unsubscribeall.php');
 
 // Do not autologin guest. Only proper users can have forum subscriptions.
 require_login(null, false);
-$PAGE->set_context(context_user::instance($USER->id));
+$PAGE->set_context(user::instance($USER->id));
 
 $return = $CFG->wwwroot.'/';
 
@@ -50,7 +54,7 @@ if (data_submitted() and $confirm and confirm_sesskey()) {
     $forums = \mod_forum\subscriptions::get_unsubscribable_forums();
 
     foreach($forums as $forum) {
-        \mod_forum\subscriptions::unsubscribe_user($USER->id, $forum, context_module::instance($forum->cm), true);
+        \mod_forum\subscriptions::unsubscribe_user($USER->id, $forum, module::instance($forum->cm), true);
     }
     $DB->delete_records('forum_discussion_subs', array('userid' => $USER->id));
     $DB->set_field('user', 'autosubscribe', 0, array('id'=>$USER->id));
@@ -73,7 +77,7 @@ if (data_submitted() and $confirm and confirm_sesskey()) {
         } else if ($count->discussions) {
             $msg = get_string('unsubscribeallconfirmdiscussions', 'forum', $count);
         }
-        echo $OUTPUT->confirm($msg, new moodle_url('unsubscribeall.php', array('confirm'=>1)), $return);
+        echo $OUTPUT->confirm($msg, new url('unsubscribeall.php', array('confirm'=>1)), $return);
         echo $OUTPUT->footer();
         die;
 

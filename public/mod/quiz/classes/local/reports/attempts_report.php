@@ -16,12 +16,12 @@
 
 namespace mod_quiz\local\reports;
 
-use coding_exception;
-use context_module;
+use core\exception\coding_exception;
+use core\context\module;
 use mod_quiz\quiz_settings;
-use moodle_url;
+use core\url;
 use stdClass;
-use table_sql;
+use core_table\sql_table;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -111,7 +111,7 @@ abstract class attempts_report extends report_base {
      * @return moodle_url the URL.
      */
     protected function get_base_url() {
-        return new moodle_url('/mod/quiz/report.php',
+        return new url('/mod/quiz/report.php',
                 ['id' => $this->context->instanceid, 'mode' => $this->mode]);
     }
 

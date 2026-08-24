@@ -22,19 +22,24 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 require_once(__DIR__ . '/../../config.php');
 
 // Course ID.
 $courseid = required_param('id', PARAM_INT);
 
-$PAGE->set_url(new moodle_url('/grade/import/index.php', ['id' => $courseid]));
+$PAGE->set_url(new url('/grade/import/index.php', ['id' => $courseid]));
 
 // Basic access checks.
 if (!$course = $DB->get_record('course', ['id' => $courseid])) {
     throw new moodle_exception('invalidcourseid', 'error');
 }
 require_login($course);
-$context = context_course::instance($courseid);
+$context = course::instance($courseid);
 require_capability('moodle/grade:import', $context);
 
 // Retrieve all grade import plugins the current user can access.
@@ -47,7 +52,7 @@ $importplugins = array_filter(core_component::get_plugin_list('gradeimport'),
 
 if (!empty($importplugins)) {
     $importplugin = array_key_first($importplugins);
-    $url = new moodle_url("/grade/import/{$importplugin}/index.php", ['id' => $courseid]);
+    $url = new url("/grade/import/{$importplugin}/index.php", ['id' => $courseid]);
     redirect($url);
 }
 

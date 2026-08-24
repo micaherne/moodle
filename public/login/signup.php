@@ -24,24 +24,32 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\output\renderable;
+use core\output\single_button;
+use core\url;
+use core_cache\cache;
+
 require('../config.php');
 require_once($CFG->dirroot . '/user/editlib.php');
 require_once($CFG->libdir . '/authlib.php');
 require_once('lib.php');
 
 if (!$authplugin = signup_is_enabled()) {
-    throw new \moodle_exception('notlocalisederrormessage', 'error', '', 'Sorry, you may not use this page.');
+    throw new moodle_exception('notlocalisederrormessage', 'error', '', 'Sorry, you may not use this page.');
 }
 
 $PAGE->set_url('/login/signup.php');
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 // If wantsurl is empty or /login/signup.php, override wanted URL.
 // We do not want to end up here again if user clicks "Login".
 if (empty($SESSION->wantsurl)) {
     $SESSION->wantsurl = $CFG->wwwroot . '/';
 } else {
-    $wantsurl = new moodle_url($SESSION->wantsurl);
+    $wantsurl = new url($SESSION->wantsurl);
     if ($PAGE->url->compare($wantsurl, URL_MATCH_BASE)) {
         $SESSION->wantsurl = $CFG->wwwroot . '/';
     }
@@ -51,9 +59,9 @@ if (isloggedin() and !isguestuser()) {
     // Prevent signing up when already logged in.
     echo $OUTPUT->header();
     echo $OUTPUT->box_start();
-    $logout = new single_button(new moodle_url('/login/logout.php',
+    $logout = new single_button(new url('/login/logout.php',
         array('sesskey' => sesskey(), 'loginpage' => 1)), get_string('logout'), 'post');
-    $continue = new single_button(new moodle_url('/'), get_string('cancel'), 'get');
+    $continue = new single_button(new url('/'), get_string('cancel'), 'get');
     echo $OUTPUT->confirm(get_string('cannotsignup', 'error', fullname($USER)), $logout, $continue);
     echo $OUTPUT->box_end();
     echo $OUTPUT->footer();
@@ -66,10 +74,10 @@ if (\core_auth\digital_consent::is_age_digital_consent_verification_enabled()) {
     $isminor = $cache->get('isminor');
     if ($isminor === false) {
         // The verification of age and location (minor) has not been done.
-        redirect(new moodle_url('/login/verify_age_location.php'));
+        redirect(new url('/login/verify_age_location.php'));
     } else if ($isminor === 'yes') {
         // The user that attempts to sign up is a digital minor.
-        redirect(new moodle_url('/login/digital_minor.php'));
+        redirect(new url('/login/digital_minor.php'));
     }
 }
 

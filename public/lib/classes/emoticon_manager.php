@@ -16,7 +16,7 @@
 
 namespace core;
 
-use pix_emoticon;
+use core\output\pix_emoticon;
 use stdClass;
 
 /**

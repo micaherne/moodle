@@ -14,6 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\system;
+use core\context\user;
+use core\exception\coding_exception;
+use core\output\user_picture;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
 use core_external\external_single_structure;
@@ -66,8 +70,8 @@ class core_webservice_external extends \core_external\external_api {
         $params = self::validate_parameters(self::get_site_info_parameters(),
                       array('serviceshortnames'=>$serviceshortnames));
 
-        $context = context_user::instance($USER->id);
-        $systemcontext = context_system::instance();
+        $context = user::instance($USER->id);
+        $systemcontext = system::instance();
 
         $userpicture = new user_picture($USER);
         $userpicture->size = 1; // Size f1.

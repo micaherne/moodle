@@ -16,12 +16,12 @@
 
 namespace mod_bigbluebuttonbn\external;
 
-use context_course;
+use core\context\course;
 use core_external\external_api;
 use core_external\restricted_context_exception;
 use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\test\testcase_helper_trait;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 /**
  * Tests for the get_join_url class.
@@ -99,7 +99,7 @@ final class get_join_url_test extends \core_external\tests\externallib_testcase 
         $this->setUser($user);
 
         $student = $DB->get_field('role', 'id', ['shortname' => 'student'], MUST_EXIST);
-        assign_capability('mod/bigbluebuttonbn:join', CAP_PROHIBIT, $student, context_course::instance($course->id), true);
+        assign_capability('mod/bigbluebuttonbn:join', CAP_PROHIBIT, $student, course::instance($course->id), true);
 
         $this->expectException(restricted_context_exception::class);
         $this->get_join_url($instance->get_cm_id());

@@ -24,8 +24,8 @@
 namespace core\external;
 defined('MOODLE_INTERNAL') || die();
 
-use renderer_base;
-use moodle_url;
+use core\output\renderer_base;
+use core\url;
 
 /**
  * Class for exporting a course summary from an stdClass.
@@ -72,7 +72,7 @@ class coursecat_summary_exporter extends \core\external\exporter {
     protected function get_other_values(renderer_base $output) {
         $return = [
             'nestedname' => $this->category->get_nested_name(),
-            'url' => (new moodle_url('/course/index.php', [
+            'url' => (new url('/course/index.php', [
                     'categoryid' => $this->category->id,
                 ]))->out(false),
         ];

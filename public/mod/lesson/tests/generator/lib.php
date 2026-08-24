@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/mod/lesson/locallib.php');
@@ -224,7 +227,7 @@ class mod_lesson_generator extends testing_module_generator {
                 'itemid' => 0,
             );
         }
-        $context = context_module::instance($lesson->cmid);
+        $context = module::instance($lesson->cmid);
         $page = lesson_page::create((object)$record, new lesson($lesson), $context, $CFG->maxbytes);
         return $DB->get_record('lesson_pages', array('id' => $page->id), '*', MUST_EXIST);
     }
@@ -276,7 +279,7 @@ class mod_lesson_generator extends testing_module_generator {
             $record['jumpto'][1] = LESSON_THISPAGE;
         }
 
-        $context = context_module::instance($lesson->cmid);
+        $context = module::instance($lesson->cmid);
         $page = lesson_page::create((object)$record, new lesson($lesson), $context, $CFG->maxbytes);
         return $DB->get_record('lesson_pages', array('id' => $page->id), '*', MUST_EXIST);
     }
@@ -328,7 +331,7 @@ class mod_lesson_generator extends testing_module_generator {
             $record['jumpto'][1] = LESSON_THISPAGE;
         }
 
-        $context = context_module::instance($lesson->cmid);
+        $context = module::instance($lesson->cmid);
         $page = lesson_page::create((object)$record, new lesson($lesson), $context, $CFG->maxbytes);
         return $DB->get_record('lesson_pages', array('id' => $page->id), '*', MUST_EXIST);
     }
@@ -369,7 +372,7 @@ class mod_lesson_generator extends testing_module_generator {
             $record['jumpto'][0] = LESSON_NEXTPAGE;
         }
 
-        $context = context_module::instance($lesson->cmid);
+        $context = module::instance($lesson->cmid);
         $page = lesson_page::create((object)$record, new lesson($lesson), $context, $CFG->maxbytes);
         return $DB->get_record('lesson_pages', array('id' => $page->id), '*', MUST_EXIST);
     }
@@ -447,7 +450,7 @@ class mod_lesson_generator extends testing_module_generator {
         if (!isset($record['score'][0])) {
             $record['score'][0] = 1;
         }
-        $context = context_module::instance($lesson->cmid);
+        $context = module::instance($lesson->cmid);
         $page = lesson_page::create((object)$record, new lesson($lesson), $context, $CFG->maxbytes);
         return $DB->get_record('lesson_pages', array('id' => $page->id), '*', MUST_EXIST);
     }
@@ -488,7 +491,7 @@ class mod_lesson_generator extends testing_module_generator {
             $record['jumpto'][0] = LESSON_NEXTPAGE;
         }
 
-        $context = context_module::instance($lesson->cmid);
+        $context = module::instance($lesson->cmid);
         $page = lesson_page::create((object)$record, new lesson($lesson), $context, $CFG->maxbytes);
         return $DB->get_record('lesson_pages', array('id' => $page->id), '*', MUST_EXIST);
     }
@@ -529,7 +532,7 @@ class mod_lesson_generator extends testing_module_generator {
             $record['jumpto'][0] = LESSON_NEXTPAGE;
         }
 
-        $context = context_module::instance($lesson->cmid);
+        $context = module::instance($lesson->cmid);
         $page = lesson_page::create((object)$record, new lesson($lesson), $context, $CFG->maxbytes);
         return $DB->get_record('lesson_pages', array('id' => $page->id), '*', MUST_EXIST);
     }
@@ -559,7 +562,7 @@ class mod_lesson_generator extends testing_module_generator {
                 'itemid' => 0,
             ];
         }
-        $context = context_module::instance($lesson->cmid);
+        $context = module::instance($lesson->cmid);
         $page = lesson_page::create((object)$record, new lesson($lesson), $context, $CFG->maxbytes);
         return $DB->get_record('lesson_pages', ['id' => $page->id], '*', MUST_EXIST);
     }
@@ -589,7 +592,7 @@ class mod_lesson_generator extends testing_module_generator {
                 'itemid' => 0,
             ];
         }
-        $context = context_module::instance($lesson->cmid);
+        $context = module::instance($lesson->cmid);
         $page = lesson_page::create((object)$record, new lesson($lesson), $context, $CFG->maxbytes);
         return $DB->get_record('lesson_pages', ['id' => $page->id], '*', MUST_EXIST);
     }
@@ -619,7 +622,7 @@ class mod_lesson_generator extends testing_module_generator {
                 'itemid' => 0,
             ];
         }
-        $context = context_module::instance($lesson->cmid);
+        $context = module::instance($lesson->cmid);
         $page = lesson_page::create((object)$record, new lesson($lesson), $context, $CFG->maxbytes);
         return $DB->get_record('lesson_pages', ['id' => $page->id], '*', MUST_EXIST);
     }

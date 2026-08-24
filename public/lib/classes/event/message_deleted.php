@@ -24,6 +24,9 @@
 
 namespace core\event;
 
+use core\context\system;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -57,7 +60,7 @@ class message_deleted extends base {
         $event = self::create(array(
             'objectid' => $muaid,
             'userid' => $userdeleting,
-            'context' => \context_system::instance(),
+            'context' => system::instance(),
             'relateduserid' => $userid,
             'other' => array(
                 'messageid' => $messageid,
@@ -125,11 +128,11 @@ class message_deleted extends base {
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
 
         if (!isset($this->other['messageid'])) {
-            throw new \coding_exception('The \'messageid\' value must be set in other.');
+            throw new coding_exception('The \'messageid\' value must be set in other.');
         }
     }
 

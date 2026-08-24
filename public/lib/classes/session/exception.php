@@ -24,11 +24,13 @@
 
 namespace core\session;
 
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
  * Session related exception class.
  * @package core
  */
-class exception extends \moodle_exception {
+class exception extends moodle_exception {
 }

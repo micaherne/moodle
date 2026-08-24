@@ -23,6 +23,9 @@
  */
 namespace report_stats\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -69,7 +72,7 @@ class user_report_viewed extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/report/stats/user.php', array('id' => $this->relateduserid, 'course' => $this->courseid));
+        return new url('/report/stats/user.php', array('id' => $this->relateduserid, 'course' => $this->courseid));
     }
 
     /**
@@ -81,7 +84,7 @@ class user_report_viewed extends \core\event\base {
     protected function validate_data() {
         parent::validate_data();
         if (empty($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
     }
 }

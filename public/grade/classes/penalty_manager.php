@@ -18,13 +18,13 @@ namespace core_grades;
 
 use core\context;
 use core\plugininfo\gradepenalty;
-use core_plugin_manager;
+use core\plugin_manager;
 use grade_grade;
 use grade_item;
-use moodle_url;
-use navigation_node;
-use pix_icon;
-use settings_navigation;
+use core\url;
+use core\navigation\navigation_node;
+use core\output\pix_icon;
+use core\navigation\settings_navigation;
 use stdClass;
 
 /**
@@ -153,7 +153,7 @@ class penalty_manager {
      */
     private static function calculate_penalties(penalty_container $container): penalty_container {
         // Iterate through all the penalty plugins to calculate the total penalty.
-        foreach (core_plugin_manager::instance()->get_plugins_of_type('gradepenalty') as $pluginname => $plugin) {
+        foreach (plugin_manager::instance()->get_plugins_of_type('gradepenalty') as $pluginname => $plugin) {
             if (gradepenalty::is_plugin_enabled($pluginname)) {
                 $classname = "\\gradepenalty_{$pluginname}\\penalty_calculator";
                 if (class_exists($classname)) {
@@ -317,7 +317,7 @@ class penalty_manager {
                                                     context $coursecontext): void {
         // Create new navigation node for grade penalty.
         $penaltynav = $navigation->add(get_string('gradepenalty', 'core_grades'),
-            new moodle_url('/grade/penalty/view.php', ['contextid' => $coursecontext->id]),
+            new url('/grade/penalty/view.php', ['contextid' => $coursecontext->id]),
             navigation_node::TYPE_CONTAINER, null, 'gradepenalty', new pix_icon('i/grades', ''));
 
         // Allow plugins to extend the navigation.
@@ -347,7 +347,7 @@ class penalty_manager {
 
         // Create new navigation node for grade penalty.
         $penaltynav = $navref->add(get_string('gradepenalty', 'core_grades'),
-            new moodle_url('/grade/penalty/view.php', ['contextid' => $context->id, 'cm' => $cm->id]),
+            new url('/grade/penalty/view.php', ['contextid' => $context->id, 'cm' => $cm->id]),
             navigation_node::TYPE_CONTAINER, null, 'gradepenalty', new pix_icon('i/grades', ''));
 
         // Allow plugins to extend the navigation.

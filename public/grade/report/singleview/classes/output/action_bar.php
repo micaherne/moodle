@@ -18,8 +18,9 @@ declare(strict_types=1);
 
 namespace gradereport_singleview\output;
 
-use moodle_url;
-use renderer_base;
+use core\context;
+use core\url;
+use core\output\renderer_base;
 use gradereport_singleview\report\singleview;
 
 /**
@@ -44,7 +45,7 @@ class action_bar extends \core_grades\output\action_bar {
      * @param singleview $report The single view report class.
      * @param string $itemtype The single view item type.
      */
-    public function __construct(\context $context, singleview $report, string $itemtype) {
+    public function __construct(context $context, singleview $report, string $itemtype) {
         parent::__construct($context);
         $this->report = $report;
         $this->itemtype = $itemtype;
@@ -72,7 +73,7 @@ class action_bar extends \core_grades\output\action_bar {
         // Get the data used to output the general navigation selector.
         $generalnavselector = new \core_grades\output\general_action_bar(
             $this->context,
-            new moodle_url('/grade/report/singleview/index.php', ['id' => $courseid]),
+            new url('/grade/report/singleview/index.php', ['id' => $courseid]),
             'report',
             'singleview'
         );
@@ -83,9 +84,9 @@ class action_bar extends \core_grades\output\action_bar {
             'displaylabel' => true,
             'userselectactive' => $this->itemtype === 'user',
             'gradeselectactive' => $this->itemtype === 'grade',
-            'gradezerolink' => (new moodle_url('/grade/report/singleview/index.php',
+            'gradezerolink' => (new url('/grade/report/singleview/index.php',
                 ['id' => $courseid, 'item' => 'grade_select']))->out(false),
-            'userzerolink' => (new moodle_url('/grade/report/singleview/index.php',
+            'userzerolink' => (new url('/grade/report/singleview/index.php',
                 ['id' => $courseid, 'item' => 'user_select']))->out(false)
         ];
 

@@ -16,6 +16,8 @@
 
 namespace quizaccess_seb\external;
 
+use core\exception\invalid_parameter_exception;
+use core\exception\require_login_exception;
 use quizaccess_seb\seb_quiz_settings;
 
 defined('MOODLE_INTERNAL') || die();
@@ -111,7 +113,7 @@ final class validate_quiz_access_test extends \advanced_testcase {
             $params['configkey'] = $configkey;
         }
 
-        $this->expectException(\invalid_parameter_exception::class);
+        $this->expectException(invalid_parameter_exception::class);
         $this->expectExceptionMessageMatches($messageregex);
         \core_external\external_api::validate_parameters(validate_quiz_keys::execute_parameters(), $params);
     }
@@ -124,7 +126,7 @@ final class validate_quiz_access_test extends \advanced_testcase {
         $this->user = $this->getDataGenerator()->create_user();
         $this->setUser($this->user);
 
-        $this->expectException(\require_login_exception::class);
+        $this->expectException(require_login_exception::class);
         $this->expectExceptionMessage('Course or activity not accessible. (Not enrolled)');
         validate_quiz_keys::execute($this->quiz->cmid, 'https://www.example.com/moodle', 'configkey');
     }
@@ -133,7 +135,7 @@ final class validate_quiz_access_test extends \advanced_testcase {
      * Test exception thrown when no key provided.
      */
     public function test_no_keys_provided(): void {
-        $this->expectException(\invalid_parameter_exception::class);
+        $this->expectException(invalid_parameter_exception::class);
         $this->expectExceptionMessage('At least one Safe Exam Browser key must be provided.');
         validate_quiz_keys::execute($this->quiz->cmid, 'https://www.example.com/moodle');
     }
@@ -144,7 +146,7 @@ final class validate_quiz_access_test extends \advanced_testcase {
     public function test_quiz_does_not_exist(): void {
         $this->setAdminUser();
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $this->course->id]);
-        $this->expectException(\invalid_parameter_exception::class);
+        $this->expectException(invalid_parameter_exception::class);
         $this->expectExceptionMessage('Quiz not found matching course module ID: ' . $forum->cmid);
         validate_quiz_keys::execute($forum->cmid, 'https://www.example.com/moodle', 'configkey');
     }

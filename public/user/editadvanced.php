@@ -22,6 +22,14 @@
  * @package core_user
  */
 
+use core\context\course;
+use core\context\system;
+use core\context\user as context_user;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+use core\user as core_user;
+
 require_once('../config.php');
 require_once($CFG->libdir.'/gdlib.php');
 require_once($CFG->libdir.'/adminlib.php');
@@ -48,7 +56,7 @@ if (!empty($USER->newadminuser)) {
 } else {
     if ($course->id == SITEID) {
         require_login();
-        $PAGE->set_context(context_system::instance());
+        $PAGE->set_context(system::instance());
     } else {
         require_login($course);
     }
@@ -57,11 +65,11 @@ if (!empty($USER->newadminuser)) {
 }
 
 if ($course->id == SITEID) {
-    $coursecontext = context_system::instance();   // SYSTEM context.
+    $coursecontext = system::instance();   // SYSTEM context.
 } else {
-    $coursecontext = context_course::instance($course->id);   // Course context.
+    $coursecontext = course::instance($course->id);   // Course context.
 }
-$systemcontext = context_system::instance();
+$systemcontext = system::instance();
 
 if ($id == -1) {
     // Creating new user.
@@ -96,11 +104,11 @@ if ($user->id != -1 and is_mnet_remote_user($user)) {
 }
 
 if ($user->id != $USER->id and is_siteadmin($user) and !is_siteadmin($USER)) {  // Only admins may edit other admins.
-    throw new \moodle_exception('useradmineditadmin');
+    throw new moodle_exception('useradmineditadmin');
 }
 
 if (isguestuser($user->id)) { // The real guest user can not be edited.
-    throw new \moodle_exception('guestnoeditprofileother');
+    throw new moodle_exception('guestnoeditprofileother');
 }
 
 if ($user->deleted) {
@@ -152,7 +160,7 @@ $filemanageroptions = array('maxbytes'       => $CFG->maxbytes,
 file_prepare_draft_area($draftitemid, $filemanagercontext->id, 'user', 'newicon', 0, $filemanageroptions);
 $user->imagefile = $draftitemid;
 // Create form.
-$userform = new user_editadvanced_form(new moodle_url($PAGE->url, array('returnto' => $returnto)), array(
+$userform = new user_editadvanced_form(new url($PAGE->url, array('returnto' => $returnto)), array(
     'editoroptions' => $editoroptions,
     'filemanageroptions' => $filemanageroptions,
     'user' => $user));
@@ -161,14 +169,14 @@ $userform = new user_editadvanced_form(new moodle_url($PAGE->url, array('returnt
 // Deciding where to send the user back in most cases.
 if ($returnto === 'profile') {
     if ($course->id != SITEID) {
-        $returnurl = new moodle_url('/user/view.php', array('id' => $user->id, 'course' => $course->id));
+        $returnurl = new url('/user/view.php', array('id' => $user->id, 'course' => $course->id));
     } else {
-        $returnurl = new moodle_url('/user/profile.php', array('id' => $user->id));
+        $returnurl = new url('/user/profile.php', array('id' => $user->id));
     }
 } else if ($user->id === -1) {
-    $returnurl = new moodle_url("/admin/user.php");
+    $returnurl = new url("/admin/user.php");
 } else {
-    $returnurl = new moodle_url('/user/preferences.php', array('userid' => $user->id));
+    $returnurl = new url('/user/preferences.php', array('userid' => $user->id));
 }
 
 if ($userform->is_cancelled()) {
@@ -218,7 +226,7 @@ if ($userform->is_cancelled()) {
         // Pass a true old $user here.
         if (!$authplugin->user_update($user, $usernew)) {
             // Auth update failed.
-            throw new \moodle_exception('cannotupdateuseronexauth', '', '', $user->auth);
+            throw new moodle_exception('cannotupdateuseronexauth', '', '', $user->auth);
         }
         \core\user::update_user($usernew, false, false);
 
@@ -226,7 +234,7 @@ if ($userform->is_cancelled()) {
         if (!empty($usernew->newpassword)) {
             if ($authplugin->can_change_password()) {
                 if (!$authplugin->user_update_password($usernew, $usernew->newpassword)) {
-                    throw new \moodle_exception('cannotupdatepasswordonextauth', '', '', $usernew->auth);
+                    throw new moodle_exception('cannotupdatepasswordonextauth', '', '', $usernew->auth);
                 }
                 unset_user_preference('create_password', $usernew); // Prevent cron from generating the password.
 

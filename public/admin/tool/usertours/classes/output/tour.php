@@ -16,6 +16,8 @@
 
 namespace tool_usertours\output;
 
+use core\output\renderable;
+use core\output\renderer_base;
 use tool_usertours\tour as toursource;
 
 /**
@@ -25,7 +27,7 @@ use tool_usertours\tour as toursource;
  * @copyright  2016 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class tour implements \renderable {
+class tour implements renderable {
     /**
      * @var The tour instance.
      */
@@ -46,7 +48,7 @@ class tour implements \renderable {
      * @param   \renderer_base      $output     The output renderable.
      * @return  object
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         $result = (object) [
             'name'  => $this->tour->get_tour_key(),
             'steps' => [],

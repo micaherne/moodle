@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\navigation\navigation_node;
+use core\output\single_button;
+use core\url;
+
 require('../config.php');
 require_once("$CFG->dirroot/enrol/locallib.php");
 require_once("$CFG->dirroot/enrol/renderer.php");
@@ -32,7 +37,7 @@ $action  = optional_param('action', '', PARAM_ALPHANUMEXT);
 $filter  = optional_param('ifilter', 0, PARAM_INT);
 
 $course = $DB->get_record('course', array('id'=>$id), '*', MUST_EXIST);
-$context = context_course::instance($course->id, MUST_EXIST);
+$context = course::instance($course->id, MUST_EXIST);
 
 require_login($course);
 require_capability('moodle/course:reviewotherusers', $context);
@@ -46,7 +51,7 @@ $PAGE->set_pagelayout('admin');
 $manager = new course_enrolment_manager($PAGE, $course, $filter);
 $table = new course_enrolment_other_users_table($manager, $PAGE);
 $PAGE->set_url('/enrol/otherusers.php', $manager->get_url_params()+$table->get_url_params());
-navigation_node::override_active_url(new moodle_url('/enrol/otherusers.php', array('id' => $id)));
+navigation_node::override_active_url(new url('/enrol/otherusers.php', array('id' => $id)));
 
 $userdetails = array (
     'picture' => false,

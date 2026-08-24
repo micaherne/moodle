@@ -16,6 +16,8 @@
 
 namespace core_search;
 
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -132,7 +134,7 @@ final class base_test extends \advanced_testcase {
      */
     public function test_get_contexts_to_reindex(): void {
         $area = new \core_mocksearch\search\mock_search_area();
-        $this->assertEquals([\context_system::instance()],
+        $this->assertEquals([system::instance()],
                 iterator_to_array($area->get_contexts_to_reindex(), false));
     }
 

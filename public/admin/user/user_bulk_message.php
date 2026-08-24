@@ -1,4 +1,9 @@
 <?php
+use core\context\system;
+use core\exception\moodle_exception;
+use core\output\single_button;
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->dirroot.'/message/lib.php');
@@ -8,17 +13,17 @@ $msg     = optional_param('msg', '', PARAM_RAW);
 $confirm = optional_param('confirm', 0, PARAM_BOOL);
 
 admin_externalpage_setup('userbulk');
-require_capability('moodle/site:manageallmessaging', context_system::instance());
+require_capability('moodle/site:manageallmessaging', system::instance());
 
 $returnurl = optional_param('returnurl', '', PARAM_LOCALURL);
-$return = new moodle_url($returnurl ?: '/admin/user/user_bulk.php');
+$return = new url($returnurl ?: '/admin/user/user_bulk.php');
 
 if (empty($SESSION->bulk_users)) {
     redirect($return);
 }
 
 if (empty($CFG->messaging)) {
-    throw new \moodle_exception('messagingdisable', 'error');
+    throw new moodle_exception('messagingdisable', 'error');
 }
 
 $PAGE->set_primary_active_tab('siteadminnode');
@@ -49,7 +54,7 @@ if ($msgform->is_cancelled()) {
     $options = new stdClass();
     $options->para     = false;
     $options->newlines = true;
-    $options->trusted = trusttext_trusted(\context_system::instance());
+    $options->trusted = trusttext_trusted(system::instance());
 
     $msg = format_text($formdata->messagebody['text'], $formdata->messagebody['format'], $options);
 
@@ -60,7 +65,7 @@ if ($msgform->is_cancelled()) {
     echo $OUTPUT->heading(get_string('confirmation', 'admin'));
     echo $OUTPUT->box($msg, 'boxwidthnarrow boxaligncenter generalbox', 'preview'); //TODO: clean once we start using proper text formats here
 
-    $formcontinue = new single_button(new moodle_url('user_bulk_message.php',
+    $formcontinue = new single_button(new url('user_bulk_message.php',
         ['confirm' => 1, 'msg' => $msg, 'returnurl' => $returnurl]),
         get_string('yes')); // TODO: clean once we start using proper text formats here.
     $formcancel = new single_button($return, get_string('no'), 'get');

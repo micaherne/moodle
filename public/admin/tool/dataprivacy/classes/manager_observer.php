@@ -23,6 +23,8 @@
  */
 
 namespace tool_dataprivacy;
+
+use core\user;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -61,7 +63,7 @@ class manager_observer implements \core_privacy\manager_observer {
             $message->courseid          = SITEID;
             $message->component         = 'tool_dataprivacy';
             $message->name              = 'notifyexceptions';
-            $message->userfrom          = \core_user::get_noreply_user();
+            $message->userfrom          = user::get_noreply_user();
             $message->subject           = $messagesubject;
             $message->fullmessageformat = FORMAT_HTML;
             $message->notification      = 1;

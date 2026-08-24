@@ -25,6 +25,8 @@
 
 namespace mod_forum\search;
 
+use core\context\course;
+use core\context\module;
 use core_courseformat\formatactions;
 
 defined('MOODLE_INTERNAL') || die();
@@ -160,13 +162,13 @@ final class search_test extends \advanced_testcase {
         self::getDataGenerator()->get_plugin_generator('mod_forum')->create_discussion($record);
 
         // Test indexing with each forum then combined course context.
-        $rs = $searcharea->get_document_recordset(0, \context_module::instance($forum1->cmid));
+        $rs = $searcharea->get_document_recordset(0, module::instance($forum1->cmid));
         $this->assertEquals(2, iterator_count($rs));
         $rs->close();
-        $rs = $searcharea->get_document_recordset(0, \context_module::instance($forum2->cmid));
+        $rs = $searcharea->get_document_recordset(0, module::instance($forum2->cmid));
         $this->assertEquals(1, iterator_count($rs));
         $rs->close();
-        $rs = $searcharea->get_document_recordset(0, \context_course::instance($course1->id));
+        $rs = $searcharea->get_document_recordset(0, course::instance($course1->id));
         $this->assertEquals(3, iterator_count($rs));
         $rs->close();
     }
@@ -401,7 +403,7 @@ final class search_test extends \advanced_testcase {
         // Attach 2 file to the discussion post.
         $post = $DB->get_record('forum_posts', array('discussion' => $discussion1->id));
         $filerecord = array(
-            'contextid' => \context_module::instance($forum1->cmid)->id,
+            'contextid' => module::instance($forum1->cmid)->id,
             'component' => 'mod_forum',
             'filearea'  => 'attachment',
             'itemid'    => $post->id,
@@ -516,9 +518,9 @@ final class search_test extends \advanced_testcase {
         // We expect them in order of newest discussion. Forum 4 is not included at all (which is
         // correct because it has no content).
         $expected = [
-            \context_module::instance($forum2->cmid),
-            \context_module::instance($forum3->cmid),
-            \context_module::instance($forum1->cmid)
+            module::instance($forum2->cmid),
+            module::instance($forum3->cmid),
+            module::instance($forum1->cmid)
         ];
         $this->assertEquals($expected, $contexts);
     }

@@ -24,6 +24,8 @@
 
 namespace core_analytics;
 
+use core_admin\setting\setting\configselect;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/../../lib/adminlib.php');
@@ -35,7 +37,7 @@ require_once(__DIR__ . '/../../lib/adminlib.php');
  * @copyright 2017 David Monllao {@link http://www.davidmonllao.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class admin_setting_predictor extends \admin_setting_configselect {
+class admin_setting_predictor extends configselect {
 
     /**
      * Save a setting

@@ -24,7 +24,9 @@
 
 namespace availability_completion;
 
-use cache;
+use core\context\course;
+use core\exception\coding_exception;
+use core_cache\cache;
 use core_availability\info;
 use core_availability\info_module;
 use core_availability\info_section;
@@ -75,7 +77,7 @@ class condition extends \core_availability\condition {
         if (isset($structure->cm) && is_number($structure->cm)) {
             $this->cmid = (int)$structure->cm;
         } else {
-            throw new \coding_exception('Missing or invalid ->cm for completion condition');
+            throw new coding_exception('Missing or invalid ->cm for completion condition');
         }
         // Get expected completion.
         if (isset($structure->e) && in_array($structure->e,
@@ -83,7 +85,7 @@ class condition extends \core_availability\condition {
                 COMPLETION_COMPLETE_PASS, COMPLETION_COMPLETE_FAIL])) {
             $this->expectedcompletion = $structure->e;
         } else {
-            throw new \coding_exception('Missing or invalid ->e for completion condition');
+            throw new coding_exception('Missing or invalid ->e for completion condition');
         }
     }
 
@@ -365,7 +367,7 @@ class condition extends \core_availability\condition {
             case COMPLETION_COMPLETE_FAIL:
                 return 'complete_fail';
             default:
-                throw new \coding_exception('Unexpected completion state: ' . $completionstate);
+                throw new coding_exception('Unexpected completion state: ' . $completionstate);
         }
     }
 
@@ -387,7 +389,7 @@ class condition extends \core_availability\condition {
         $modname = '';
         // On ajax duplicate get_fast_modinfo is called before $PAGE->set_context
         // so we cannot use $PAGE->user_is_editing().
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $editing = !empty($USER->editing) && has_capability('moodle/course:manageactivities', $coursecontext);
         if ($this->cmid == self::OPTION_PREVIOUS && $editing) {
             // Previous activity name could be inconsistent when editing due to partial page loadings.
@@ -446,7 +448,7 @@ class condition extends \core_availability\condition {
                 $type = 'COMPLETE_FAIL';
                 break;
             default:
-                throw new \coding_exception('Unexpected expected completion');
+                throw new coding_exception('Unexpected expected completion');
         }
         $cm = $this->cmid;
         if ($this->cmid == self::OPTION_PREVIOUS) {

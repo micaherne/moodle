@@ -25,6 +25,8 @@
 
 namespace core\output;
 
+use core\url;
+
 /**
  * URL rewriter interface
  *
@@ -40,7 +42,7 @@ interface url_rewriter {
      * @param \moodle_url $url a url to potentially rewrite
      * @return \moodle_url Returns a new, or the original, moodle_url;
      */
-    public static function url_rewrite(\moodle_url $url);
+    public static function url_rewrite(url $url);
 
     /**
      * Gives a url rewriting plugin a chance to rewrite the current page url

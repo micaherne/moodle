@@ -16,7 +16,7 @@
 
 namespace customfield_number;
 
-use context_module;
+use core\context\module;
 use customfield_number\local\numberproviders\nofactivities;
 use customfield_number\task\recalculate;
 
@@ -183,7 +183,7 @@ final class observer_test extends \advanced_testcase {
         // Update visibility of one module.
         set_coursemodule_visible($assign2->cmid, 1);
         [$course, $cm] = get_course_and_cm_from_cmid($assign2->cmid);
-        \core\event\course_module_updated::create_from_cm($cm, context_module::instance($assign2->cmid))->trigger();
+        \core\event\course_module_updated::create_from_cm($cm, module::instance($assign2->cmid))->trigger();
         $this->ensure_number_adhoc_task_is_scheduled(true);
         $this->run_all_adhoc_tasks();
 
@@ -235,7 +235,7 @@ final class observer_test extends \advanced_testcase {
         // Update visibility of one module.
         set_coursemodule_visible($assign2->cmid, 1);
         [$course, $cm] = get_course_and_cm_from_cmid($assign2->cmid);
-        \core\event\course_module_updated::create_from_cm($cm, context_module::instance($assign2->cmid))->trigger();
+        \core\event\course_module_updated::create_from_cm($cm, module::instance($assign2->cmid))->trigger();
         $this->ensure_number_adhoc_task_is_scheduled(false);
 
         // Delete one module.

@@ -24,6 +24,13 @@
 
 namespace core_analytics;
 
+use core\context;
+use core\context\system;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\output\renderer_base;
+use core_cache\cache;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -144,7 +151,7 @@ class model {
         if (is_scalar($model)) {
             $model = $DB->get_record('analytics_models', array('id' => $model), '*', MUST_EXIST);
             if (!$model) {
-                throw new \moodle_exception('errorunexistingmodel', 'analytics', '', $model);
+                throw new moodle_exception('errorunexistingmodel', 'analytics', '', $model);
             }
         }
         $this->model = $model;
@@ -215,7 +222,7 @@ class model {
         $fullclassnames = json_decode($this->model->indicators);
 
         if (!is_array($fullclassnames)) {
-            throw new \coding_exception('Model ' . $this->model->id . ' indicators can not be read');
+            throw new coding_exception('Model ' . $this->model->id . ' indicators can not be read');
         }
 
         $this->indicators = array();
@@ -283,7 +290,7 @@ class model {
         $indicators = $this->get_indicators();
 
         if (empty($target)) {
-            throw new \moodle_exception('errornotarget', 'analytics');
+            throw new moodle_exception('errornotarget', 'analytics');
         }
 
         $potentialtimesplittings = $this->get_potential_timesplittings();
@@ -296,7 +303,7 @@ class model {
                     $timesplitting = \core_analytics\manager::get_time_splitting($options['timesplitting']);
 
                     if (empty($potentialtimesplittings[$timesplitting->get_id()])) {
-                        throw new \moodle_exception('errorcannotusetimesplitting', 'analytics');
+                        throw new moodle_exception('errorcannotusetimesplitting', 'analytics');
                     }
                     $timesplittings = array($timesplitting->get_id() => $timesplitting);
                 } else {
@@ -308,7 +315,7 @@ class model {
             } else {
 
                 if (empty($this->model->timesplitting)) {
-                    throw new \moodle_exception('invalidtimesplitting', 'analytics', '', $this->model->id);
+                    throw new moodle_exception('invalidtimesplitting', 'analytics', '', $this->model->id);
                 }
 
                 // Returned as an array as all actions (evaluation, training and prediction) go through the same process.
@@ -316,13 +323,13 @@ class model {
             }
 
             if (empty($timesplittings)) {
-                throw new \moodle_exception('errornotimesplittings', 'analytics');
+                throw new moodle_exception('errornotimesplittings', 'analytics');
             }
         }
 
         $classname = $target->get_analyser_class();
         if (!class_exists($classname)) {
-            throw new \coding_exception($classname . ' class does not exists');
+            throw new coding_exception($classname . ' class does not exists');
         }
 
         // Returns a \core_analytics\local\analyser\base class.
@@ -393,10 +400,10 @@ class model {
 
         if ($timesplittingid) {
             if (!\core_analytics\manager::is_valid($timesplittingid, '\core_analytics\local\time_splitting\base')) {
-                throw new \moodle_exception('errorinvalidtimesplitting', 'analytics');
+                throw new moodle_exception('errorinvalidtimesplitting', 'analytics');
             }
             if (substr($timesplittingid, 0, 1) !== '\\') {
-                throw new \moodle_exception('errorinvalidtimesplitting', 'analytics');
+                throw new moodle_exception('errorinvalidtimesplitting', 'analytics');
             }
             $modelobj->timesplitting = $timesplittingid;
         }
@@ -404,7 +411,7 @@ class model {
         if ($processor &&
                 !manager::is_valid($processor, '\core_analytics\classifier') &&
                 !manager::is_valid($processor, '\core_analytics\regressor')) {
-            throw new \coding_exception('The provided predictions processor \\' . $processor . '\processor is not valid');
+            throw new coding_exception('The provided predictions processor \\' . $processor . '\processor is not valid');
         } else {
             $modelobj->predictionsprocessor = $processor;
         }
@@ -608,13 +615,13 @@ class model {
                 break;
 
             default:
-                throw new \moodle_exception('errorunknownaction', 'analytics');
+                throw new moodle_exception('errorunknownaction', 'analytics');
         }
 
         $this->init_analyser($options);
 
         if (empty($this->get_indicators())) {
-            throw new \moodle_exception('errornoindicators', 'analytics');
+            throw new moodle_exception('errornoindicators', 'analytics');
         }
 
         $this->heavy_duty_mode();
@@ -699,11 +706,11 @@ class model {
         }
 
         if (!$this->is_enabled() || empty($this->model->timesplitting)) {
-            throw new \moodle_exception('invalidtimesplitting', 'analytics', '', $this->model->id);
+            throw new moodle_exception('invalidtimesplitting', 'analytics', '', $this->model->id);
         }
 
         if (empty($this->get_indicators())) {
-            throw new \moodle_exception('errornoindicators', 'analytics');
+            throw new moodle_exception('errornoindicators', 'analytics');
         }
 
         $this->heavy_duty_mode();
@@ -767,11 +774,11 @@ class model {
         \core_analytics\manager::check_can_manage_models();
 
         if (!$this->is_enabled() || empty($this->model->timesplitting)) {
-            throw new \moodle_exception('invalidtimesplitting', 'analytics', '', $this->model->id);
+            throw new moodle_exception('invalidtimesplitting', 'analytics', '', $this->model->id);
         }
 
         if (empty($this->get_indicators())) {
-            throw new \moodle_exception('errornoindicators', 'analytics');
+            throw new moodle_exception('errornoindicators', 'analytics');
         }
 
         $this->heavy_duty_mode();
@@ -800,7 +807,7 @@ class model {
             // We need to throw an exception if we are trying to predict stuff that was already predicted.
             $params = array('modelid' => $this->model->id, 'action' => 'predicted', 'fileid' => $samplesfile->get_id());
             if ($predicted = $DB->get_record('analytics_used_files', $params)) {
-                throw new \moodle_exception('erroralreadypredict', 'analytics', '', $samplesfile->get_id());
+                throw new moodle_exception('erroralreadypredict', 'analytics', '', $samplesfile->get_id());
             }
 
             $indicatorcalculations = \core_analytics\dataset_manager::get_structured_data($samplesfile);
@@ -1153,11 +1160,11 @@ class model {
         if ($timesplittingid && $timesplittingid !== $this->model->timesplitting) {
 
             if (!\core_analytics\manager::is_valid($timesplittingid, '\core_analytics\local\time_splitting\base')) {
-                throw new \moodle_exception('errorinvalidtimesplitting', 'analytics');
+                throw new moodle_exception('errorinvalidtimesplitting', 'analytics');
             }
 
             if (substr($timesplittingid, 0, 1) !== '\\') {
-                throw new \moodle_exception('errorinvalidtimesplitting', 'analytics');
+                throw new moodle_exception('errorinvalidtimesplitting', 'analytics');
             }
 
             // Delete generated predictions before changing the model version.
@@ -1175,7 +1182,7 @@ class model {
             }
         } else if (empty($this->model->timesplitting)) {
             // A valid timesplitting method needs to be supplied before a model can be enabled.
-            throw new \moodle_exception('invalidtimesplitting', 'analytics', '', $this->model->id);
+            throw new moodle_exception('invalidtimesplitting', 'analytics', '', $this->model->id);
 
         }
 
@@ -1302,7 +1309,7 @@ class model {
      * @param \context $context
      * @return bool
      */
-    public function predictions_exist(\context $context) {
+    public function predictions_exist(context $context) {
         global $DB;
 
         // Filters out previous predictions keeping only the last time range one.
@@ -1320,7 +1327,7 @@ class model {
      * @param int $perpage The max number of results to fetch. Ignored if $page is false.
      * @return array($total, \core_analytics\prediction[])
      */
-    public function get_predictions(\context $context, $skiphidden = true, $page = false, $perpage = 100) {
+    public function get_predictions(context $context, $skiphidden = true, $page = false, $perpage = 100) {
         global $DB, $USER;
 
         \core_analytics\manager::check_can_list_insights($context);
@@ -1411,7 +1418,7 @@ class model {
      * @param  \context|null $context
      * @return \moodle_recordset
      */
-    public function get_prediction_actions(?\context $context): \moodle_recordset {
+    public function get_prediction_actions(?context $context): \moodle_recordset {
         global $DB;
 
         $sql = "SELECT apa.id, apa.predictionid, apa.userid, apa.actionname, apa.timecreated,
@@ -1440,7 +1447,7 @@ class model {
         list($unused, $samplesdata) = $this->get_samples(array($predictionobj->sampleid));
 
         if (empty($samplesdata[$predictionobj->sampleid])) {
-            throw new \moodle_exception('errorsamplenotavailable', 'analytics');
+            throw new moodle_exception('errorsamplenotavailable', 'analytics');
         }
 
         return $samplesdata[$predictionobj->sampleid];
@@ -1568,7 +1575,7 @@ class model {
      * @param \renderer_base $output The renderer to use for exporting
      * @return \stdClass
      */
-    public function export(\renderer_base $output) {
+    public function export(renderer_base $output) {
 
         \core_analytics\manager::check_can_manage_models();
 
@@ -1762,7 +1769,7 @@ class model {
                 } else if (is_object($indicator)) {
                     $indicator = '\\' . get_class($indicator);
                 }
-                throw new \moodle_exception('errorinvalidindicator', 'analytics', '', $indicator);
+                throw new moodle_exception('errorinvalidindicator', 'analytics', '', $indicator);
             }
             $indicatorclasses[] = $indicator->get_id();
         }
@@ -1863,7 +1870,7 @@ class model {
         $displayname = format_string($this->get_name());
 
         return new \core\output\inplace_editable('core_analytics', 'modelname', $this->model->id,
-            has_capability('moodle/analytics:managemodels', \context_system::instance()), $displayname, $this->model->name);
+            has_capability('moodle/analytics:managemodels', system::instance()), $displayname, $this->model->name);
     }
 
     /**
@@ -1940,7 +1947,7 @@ class model {
     public function get_samples(array $sampleids): array {
 
         if (empty($sampleids)) {
-            throw new \coding_exception('No sample ids provided');
+            throw new coding_exception('No sample ids provided');
         }
 
         $chunksize = count($sampleids);
@@ -1982,7 +1989,7 @@ class model {
                 // of param's exception.
                 throw new \dml_read_exception($e);
             } else {
-                throw new \coding_exception('We should never reach this point, there is a bug in ' .
+                throw new coding_exception('We should never reach this point, there is a bug in ' .
                     'core_analytics\\model::get_samples\'s code');
             }
         }
@@ -2007,7 +2014,7 @@ class model {
 
         // We don't expect this list to be massive as contexts need to be selected manually using the edit model form.
         $this->contexts = array_map(function($contextid) {
-            return \context::instance_by_id($contextid, IGNORE_MISSING);
+            return context::instance_by_id($contextid, IGNORE_MISSING);
         }, $contextids);
 
         return $this->contexts;
@@ -2017,7 +2024,7 @@ class model {
      * Purges the insights cache.
      */
     private function purge_insights_cache() {
-        $cache = \cache::make('core', 'contextwithinsights');
+        $cache = cache::make('core', 'contextwithinsights');
         $cache->purge();
     }
 

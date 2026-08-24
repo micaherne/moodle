@@ -22,10 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+
 require_once('../config.php');
 
 require_login();
-$context = context_system::instance();
+$context = system::instance();
 require_capability('moodle/site:config', $context);
 
 $provider = required_param('provider', PARAM_PLUGIN);
@@ -36,12 +39,12 @@ $customdata = ['providerid' => $id];
 
 // Handle return URL.
 if (empty($returnurl)) {
-    $returnurl = new moodle_url(
+    $returnurl = new url(
         url: '/ai/configure.php',
         params: ['id' => $id]
     );
 } else {
-    $returnurl = new moodle_url($returnurl);
+    $returnurl = new url($returnurl);
 }
 $customdata['returnurl'] = $returnurl;
 

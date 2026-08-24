@@ -17,10 +17,10 @@
 namespace core_badges;
 
 use core_badges\tests\badges_testcase;
-use moodle_exception;
+use core\exception\moodle_exception;
 use core_badges\award_manager;
-use context_course;
-use context_system;
+use core\context\course;
+use core\context\system;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -52,10 +52,10 @@ final class award_manager_test extends badges_testcase {
                 $env->course = $this->getDataGenerator()->create_course();
                 $courseid = $env->course->id;
             }
-            $env->context = context_course::instance($courseid);
+            $env->context = course::instance($courseid);
         } else {
             $env->course = null;
-            $env->context = context_system::instance();
+            $env->context = system::instance();
         }
 
         // Create badge.

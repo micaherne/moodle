@@ -23,7 +23,7 @@ use mod_quiz\output\renderer;
 use mod_quiz\question\display_options;
 use mod_quiz_mod_form;
 use moodle_page;
-use moodle_url;
+use core\url;
 use MoodleQuickForm;
 use stdClass;
 
@@ -385,7 +385,7 @@ class access_manager {
      *      otherwise null.
      * @return preflight_check_form the form.
      */
-    public function get_preflight_check_form(moodle_url $url, ?int $attemptid): preflight_check_form {
+    public function get_preflight_check_form(url $url, ?int $attemptid): preflight_check_form {
         // This form normally wants POST submissions. However, it also needs to
         // accept GET submissions. Since formslib is strict, we have to detect
         // which case we are in, and set the form property appropriately.
@@ -528,7 +528,7 @@ class access_manager {
     public function back_to_view_page(renderer $output, string $message = ''): void {
          // Actually return type 'never' on the previous line, once 8.1 is our minimum PHP version.
         if ($this->attempt_must_be_in_popup()) {
-            echo $output->close_attempt_popup(new moodle_url($this->quizobj->view_url()), $message);
+            echo $output->close_attempt_popup(new url($this->quizobj->view_url()), $message);
             die();
         } else {
             redirect($this->quizobj->view_url(), $message);

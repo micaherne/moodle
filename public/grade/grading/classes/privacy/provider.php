@@ -26,6 +26,7 @@ namespace core_grading\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
 use \core_privacy\local\metadata\collection;
 use \core_privacy\local\request\approved_contextlist;
 use \core_privacy\local\request\contextlist;
@@ -170,7 +171,7 @@ class provider implements
      * @param  int      $itemid     Item ID to export on.
      * @param  array    $subcontext Directory location to export to.
      */
-    public static function export_item_data(\context $context, int $itemid, array $subcontext) {
+    public static function export_item_data(context $context, int $itemid, array $subcontext) {
         global $DB;
 
         $sql = "SELECT gi.id AS instanceid, gd.id AS definitionid, gd.method
@@ -200,7 +201,7 @@ class provider implements
      * @param  \context $context The context to delete on.
      * @param  int|null $itemid  An optional item ID to refine the deletion.
      */
-    public static function delete_instance_data(\context $context, ?int $itemid = null) {
+    public static function delete_instance_data(context $context, ?int $itemid = null) {
         if (is_null($itemid)) {
             self::delete_data_for_instances($context);
         } else {
@@ -214,7 +215,7 @@ class provider implements
      * @param  \context $context The context to delete on.
      * @param  array $itemids  An optional list of item IDs to refine the deletion.
      */
-    public static function delete_data_for_instances(\context $context, array $itemids = []) {
+    public static function delete_data_for_instances(context $context, array $itemids = []) {
         global $DB;
         $itemsql = '';
         $params = ['contextid' => $context->id];
@@ -252,7 +253,7 @@ class provider implements
      * @param  array            $subcontext Subcontext owner of the data.
      * @param  int              $userid The user whose information is to be exported.
      */
-    protected static function export_definitions(\context $context, array $subcontext, int $userid = 0) {
+    protected static function export_definitions(context $context, array $subcontext, int $userid = 0) {
         global $DB;
 
         $join = "JOIN {grading_areas} a ON a.id = d.areaid
@@ -328,7 +329,7 @@ class provider implements
      * @param  int              $definitionid The definition ID whose grading instance information is to be exported.
      * @param  int              $userid The user whose information is to be exported.
      */
-    protected static function export_grading_instances(\context $context, array $subcontext, int $definitionid, int $userid = 0) {
+    protected static function export_grading_instances(context $context, array $subcontext, int $definitionid, int $userid = 0) {
         global $DB;
 
         $params = ['definitionid' => $definitionid];
@@ -364,7 +365,7 @@ class provider implements
      *
      * @param \context $context the context to delete in.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         // The only information left to be deleted here is the grading definitions. Currently we are not deleting these.
     }
 

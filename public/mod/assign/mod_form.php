@@ -22,6 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die('Direct access to this script is forbidden.');
 
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
@@ -531,12 +534,12 @@ class mod_assign_mod_form extends moodleform_mod {
         $ctx = null;
         if ($this->current && $this->current->coursemodule) {
             $cm = get_coursemodule_from_instance('assign', $this->current->id, 0, false, MUST_EXIST);
-            $ctx = context_module::instance($cm->id);
+            $ctx = module::instance($cm->id);
         }
         $assignment = new assign($ctx, null, null);
         if ($this->current && $this->current->course) {
             if (!$ctx) {
-                $ctx = context_course::instance($this->current->course);
+                $ctx = course::instance($this->current->course);
             }
             $course = $DB->get_record('course', ['id' => $this->current->course], '*', MUST_EXIST);
             $assignment->set_course($course);

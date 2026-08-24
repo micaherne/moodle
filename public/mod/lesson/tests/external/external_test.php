@@ -26,8 +26,12 @@
 
 namespace mod_lesson\external;
 
+use core\context\module;
+use core\url;
+use core_course\modinfo;
 use core_external\external_api;
 use core_external\external_settings;
+use core_filters\filter_manager;
 use lesson;
 use mod_lesson_external;
 
@@ -116,7 +120,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $lessongenerator = $this->getDataGenerator()->get_plugin_generator('mod_lesson');
         $this->page1 = $lessongenerator->create_content($this->lesson);
         $this->page2 = $lessongenerator->create_question_truefalse($this->lesson);
-        $this->context = \context_module::instance($this->lesson->cmid);
+        $this->context = module::instance($this->lesson->cmid);
         $this->cm = get_coursemodule_from_instance('lesson', $this->lesson->id);
 
         // Create users.
@@ -160,7 +164,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         self::setUser($this->student);
 
         // Enable multilang filter to on content and heading.
-        \filter_manager::reset_caches();
+        filter_manager::reset_caches();
         filter_set_global_state('multilang', TEXTFILTER_ON);
         filter_set_applies_to_strings('multilang', true);
         // Set WS filtering.
@@ -444,7 +448,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_lesson\event\course_module_viewed', $event);
         $this->assertEquals($this->context, $event->get_context());
-        $moodlelesson = new \moodle_url('/mod/lesson/view.php', array('id' => $this->cm->id));
+        $moodlelesson = new url('/mod/lesson/view.php', array('id' => $this->cm->id));
         $this->assertEquals($moodlelesson, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -459,7 +463,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         assign_capability('mod/lesson:view', CAP_PROHIBIT, $this->studentrole->id, $this->context->id);
         // Empty all the caches that may be affected  by this change.
         accesslib_clear_all_caches_for_unit_testing();
-        \course_modinfo::clear_instance_cache();
+        modinfo::clear_instance_cache();
 
         $this->setUser($this->student);
         $this->expectException('moodle_exception');

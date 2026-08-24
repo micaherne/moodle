@@ -16,10 +16,10 @@
 
 namespace core_sms\table;
 
-use context_system;
+use core\context\system;
 use core_table\dynamic as dynamic_table;
-use flexible_table;
-use moodle_url;
+use core_table\flexible_table;
+use core\url;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
@@ -54,8 +54,8 @@ class sms_gateway_table extends flexible_table implements dynamic_table {
     }
 
     #[\Override]
-    public function get_context(): context_system {
-        return context_system::instance();
+    public function get_context(): system {
+        return system::instance();
     }
 
     /**
@@ -111,7 +111,7 @@ class sms_gateway_table extends flexible_table implements dynamic_table {
 
     #[\Override]
     public function guess_base_url(): void {
-        $this->define_baseurl(new moodle_url('/sms/sms_gateways.php'));
+        $this->define_baseurl(new url('/sms/sms_gateways.php'));
     }
 
     /**
@@ -258,8 +258,8 @@ class sms_gateway_table extends flexible_table implements dynamic_table {
     public function col_actions(stdClass $row): string {
         global $OUTPUT;
 
-        $editurl = new moodle_url('/sms/configure.php', ['id' => $row->id]);
-        $deleteurl = new moodle_url('/sms/sms_gateways.php', ['id' => $row->id, 'action' => 'delete']);
+        $editurl = new url('/sms/configure.php', ['id' => $row->id]);
+        $deleteurl = new url('/sms/sms_gateways.php', ['id' => $row->id, 'action' => 'delete']);
 
         $templatecontext = [
             'editurl' => $editurl->out(false),

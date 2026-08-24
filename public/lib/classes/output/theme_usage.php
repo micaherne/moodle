@@ -16,6 +16,8 @@
 
 namespace core\output;
 
+use core_cache\cache;
+
 /**
  * This class houses methods for checking theme usage in a given context.
  *
@@ -56,7 +58,7 @@ class theme_usage {
      */
     public static function is_theme_used_in_any_context(string $themename): int {
         global $DB;
-        $cache = \cache::make('core', 'theme_usedincontext');
+        $cache = cache::make('core', 'theme_usedincontext');
         $isused = $cache->get($themename);
 
         if ($isused === false) {

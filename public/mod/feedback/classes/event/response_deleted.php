@@ -23,6 +23,9 @@
  */
 
 namespace mod_feedback\event;
+
+use core\context\module;
+use core\exception\coding_exception;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -67,7 +70,7 @@ class response_deleted extends \core\event\base {
             'relateduserid' => $completed->userid,
             'objectid' => $completed->id,
             'courseid' => $cm->course,
-            'context' => \context_module::instance($cm->id),
+            'context' => module::instance($cm->id),
             'anonymous' => ($completed->anonymous_response == FEEDBACK_ANONYMOUS_YES),
             'other' => array(
                 'cmid' => $cm->id,
@@ -130,16 +133,16 @@ class response_deleted extends \core\event\base {
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
         if (!isset($this->other['anonymous'])) {
-            throw new \coding_exception('The \'anonymous\' value must be set in other.');
+            throw new coding_exception('The \'anonymous\' value must be set in other.');
         }
         if (!isset($this->other['cmid'])) {
-            throw new \coding_exception('The \'cmid\' value must be set in other.');
+            throw new coding_exception('The \'cmid\' value must be set in other.');
         }
         if (!isset($this->other['instanceid'])) {
-            throw new \coding_exception('The \'instanceid\' value must be set in other.');
+            throw new coding_exception('The \'instanceid\' value must be set in other.');
         }
     }
 

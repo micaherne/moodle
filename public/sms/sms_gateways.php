@@ -22,13 +22,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
 use core\output\notification;
+use core\url;
 
 require_once('../config.php');
 require_once($CFG->dirroot . '/lib/adminlib.php');
 
 require_login();
-$context = context_system::instance();
+$context = system::instance();
 require_capability('moodle/site:config', $context);
 
 $id = optional_param('id', null, PARAM_INT);
@@ -37,7 +39,7 @@ $confirm = optional_param('confirm', 0, PARAM_BOOL);
 
 // Set up the page.
 $title = get_string('sms_gateways', 'sms');
-$returnurl = new moodle_url('/sms/sms_gateways.php');
+$returnurl = new url('/sms/sms_gateways.php');
 admin_externalpage_setup('smsgateway');
 $PAGE->set_primary_active_tab('siteadminnode');
 $PAGE->navbar->add($title, $returnurl);
@@ -76,7 +78,7 @@ if ($action === 'delete') {
     $PAGE->set_heading($strheading);
 
     echo $OUTPUT->header();
-    $yesurl = new moodle_url($returnurl, ['id' => $id, 'action' => 'delete', 'confirm' => 1]);
+    $yesurl = new url($returnurl, ['id' => $id, 'action' => 'delete', 'confirm' => 1]);
     $deletedisplay = [
         'confirmtitle' => get_string('deletecheck', '', $a->gateway),
         'continuestr' => get_string('delete'),
@@ -90,7 +92,7 @@ if ($action === 'delete') {
 $table = new \core_sms\table\sms_gateway_table();
 $templatecontext = new stdClass();
 $templatecontext->tablehtml = $table->get_content();
-$templatecontext->createurl = new moodle_url('/sms/configure.php');
+$templatecontext->createurl = new url('/sms/configure.php');
 
 echo $OUTPUT->header();
 echo $OUTPUT->render_from_template('core_sms/sms_gateways', $templatecontext);

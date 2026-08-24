@@ -16,13 +16,18 @@
 
 namespace core_contentbank\output;
 
+use core\context;
 use core\context\{course, coursecat};
+use core\context\system;
 use core\context_helper;
+use core\output\single_select;
+use core\url;
+use core\user;
 use core_contentbank\content;
 use core_contentbank\contentbank;
-use renderable;
-use templatable;
-use renderer_base;
+use core\output\renderable;
+use core\output\templatable;
+use core\output\renderer_base;
 use stdClass;
 
 /**
@@ -67,7 +72,7 @@ class bankcontent implements renderable, templatable {
      * @param \context|null $context Optional context to check (default null)
      * @param contentbank $cb Contenbank object.
      */
-    public function __construct(array $contents, array $toolbar, ?\context $context, contentbank $cb) {
+    public function __construct(array $contents, array $toolbar, ?context $context, contentbank $cb) {
         $this->contents = $contents;
         $this->toolbar = $toolbar;
         $this->context = $context;
@@ -99,7 +104,7 @@ class bankcontent implements renderable, templatable {
             } else {
                 $name = $content->get_name();
             }
-            $author = \core_user::get_user($content->get_content()->usercreated);
+            $author = user::get_user($content->get_content()->usercreated);
             $contentdata[] = array(
                 'name' => $name,
                 'title' => strtolower($name),
@@ -129,7 +134,7 @@ class bankcontent implements renderable, templatable {
         }
 
         $allowedcontexts = [];
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         if (has_capability('moodle/contentbank:access', $systemcontext)) {
             $allowedcontexts[$systemcontext->id] = get_string('coresystem');
         }
@@ -158,8 +163,8 @@ class bankcontent implements renderable, templatable {
         }
         if (!empty($allowedcontexts)) {
             $strchoosecontext = get_string('choosecontext', 'core_contentbank');
-            $singleselect = new \single_select(
-                new \moodle_url('/contentbank/index.php'),
+            $singleselect = new single_select(
+                new url('/contentbank/index.php'),
                 'contextid',
                 $allowedcontexts,
                 $this->context->id,

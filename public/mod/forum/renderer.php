@@ -31,6 +31,12 @@
  * @copyright 2009 Sam Hemelryk
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
+use core\context\module;
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\url;
+use core_table\output\html_table;
+
 class mod_forum_renderer extends plugin_renderer_base {
 
     /**
@@ -49,7 +55,7 @@ class mod_forum_renderer extends plugin_renderer_base {
             ]);
             $html .= html_writer::start_tag('ul');
             if ($prev) {
-                $url = new moodle_url('/mod/forum/discuss.php', array('d' => $prev->id));
+                $url = new url('/mod/forum/discuss.php', array('d' => $prev->id));
                 $html .= html_writer::start_tag('li', array('class' => 'prev-discussion'));
                 $html .= html_writer::link($url, $this->output->larrow() . ' ' . format_string($prev->name),
                     array('aria-label' => get_string('prevdiscussiona', 'mod_forum', format_string($prev->name)),
@@ -57,7 +63,7 @@ class mod_forum_renderer extends plugin_renderer_base {
                 $html .= html_writer::end_tag('li');
             }
             if ($next) {
-                $url = new moodle_url('/mod/forum/discuss.php', array('d' => $next->id));
+                $url = new url('/mod/forum/discuss.php', array('d' => $next->id));
                 $html .= html_writer::start_tag('li', array('class' => 'next-discussion'));
                 $html .= html_writer::link($url, format_string($next->name) . ' ' . $this->output->rarrow(),
                     array('aria-label' => get_string('nextdiscussiona', 'mod_forum', format_string($next->name)),
@@ -158,7 +164,7 @@ class mod_forum_renderer extends plugin_renderer_base {
         } else {
             $cm = $modinfo->instances['forum'][$forum->id];
             // TODO Does not support custom user profile fields (MDL-70456).
-            $canviewemail = in_array('email', \core_user\fields::get_identity_fields(context_module::instance($cm->id), false));
+            $canviewemail = in_array('email', \core_user\fields::get_identity_fields(module::instance($cm->id), false));
             $strparams = new stdclass();
             $strparams->name = format_string($forum->name);
             $strparams->count = count($users);

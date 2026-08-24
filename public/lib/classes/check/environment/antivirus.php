@@ -20,6 +20,9 @@ defined('MOODLE_INTERNAL') || die();
 
 use core\check\check;
 use core\check\result;
+use core\output\action_link;
+use core\output\html_writer;
+use core\url;
 
 /**
  * Checks status of antivirus scanners by looking back at any recent scans.
@@ -46,9 +49,9 @@ class antivirus extends check {
      *
      * @return \action_link|null
      */
-    public function get_action_link(): ?\action_link {
-        return new \action_link(
-            new \moodle_url('/admin/settings.php', ['section' => 'manageantiviruses']),
+    public function get_action_link(): ?action_link {
+        return new action_link(
+            new url('/admin/settings.php', ['section' => 'manageantiviruses']),
             get_string('antivirussettings', 'antivirus'));
     }
 
@@ -58,7 +61,7 @@ class antivirus extends check {
      */
     public function get_result(): result {
         global $CFG, $DB;
-        $details = \html_writer::tag('p', get_string('check_antivirus_details', 'report_security'));
+        $details = html_writer::tag('p', get_string('check_antivirus_details', 'report_security'));
 
         // If no scanners are enabled, then return an NA status since the results do not matter.
         if (empty($CFG->antiviruses)) {

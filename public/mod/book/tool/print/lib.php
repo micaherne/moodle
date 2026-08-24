@@ -28,6 +28,14 @@
  * @param settings_navigation $settings The settings navigation object
  * @param navigation_node $node The node to add module settings to
  */
+use core\navigation\navigation_node;
+use core\navigation\settings_navigation;
+use core\output\action_link;
+use core\output\actions\popup_action;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\url;
+
 function booktool_print_extend_settings_navigation(settings_navigation $settings, navigation_node $node) {
     global $OUTPUT;
 
@@ -37,8 +45,8 @@ function booktool_print_extend_settings_navigation(settings_navigation $settings
     }
 
     if (has_capability('booktool/print:print', $settings->get_page()->cm->context)) {
-        $url1 = new moodle_url('/mod/book/tool/print/index.php', ['id' => $params['id']]);
-        $url2 = new moodle_url('/mod/book/tool/print/index.php', ['id' => $params['id'], 'chapterid' => $params['chapterid']]);
+        $url1 = new url('/mod/book/tool/print/index.php', ['id' => $params['id']]);
+        $url2 = new url('/mod/book/tool/print/index.php', ['id' => $params['id'], 'chapterid' => $params['chapterid']]);
         $action = new action_link($url1, get_string('printbook', 'booktool_print'), new popup_action('click', $url1));
         $newwindowtext = html_writer::span(' (' . get_string('opensinnewwindow') . ')', 'visually-hidden');
         $externalicon = $OUTPUT->pix_icon('i/externallink', '', attributes: [

@@ -16,11 +16,14 @@
 
 namespace core_contentbank;
 
+use core\context;
+use core\context\system;
 use core\event\contentbank_content_created;
 use core\event\contentbank_content_deleted;
 use core\event\contentbank_content_viewed;
+use core\exception\moodle_exception;
 use stored_file;
-use moodle_url;
+use core\url;
 
 /**
  * Content type manager class
@@ -57,9 +60,9 @@ abstract class contenttype {
      *
      * @param \context $context Optional context to check (default null)
      */
-    public function __construct(?\context $context = null) {
+    public function __construct(?context $context = null) {
         if (empty($context)) {
-            $context = \context_system::instance();
+            $context = system::instance();
         }
         $this->context = $context;
     }
@@ -117,9 +120,9 @@ abstract class contenttype {
         $content = $this->create_content($record);
         try {
             $content->import_file($file);
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->delete_content($content);
-            throw new \moodle_exception($e->errorcode);
+            throw new moodle_exception($e->errorcode);
         }
 
         return $content;
@@ -163,7 +166,7 @@ abstract class contenttype {
             $event = contentbank_content_deleted::create([
                 'objectid' => $content->get_id(),
                 'relateduserid' => $record->usercreated,
-                'context' => \context::instance_by_id($record->contextid),
+                'context' => context::instance_by_id($record->contextid),
                 'other' => [
                     'contenttype' => $content->get_content_type(),
                     'name' => $content->get_name()
@@ -195,7 +198,7 @@ abstract class contenttype {
      * @param  \context $context  The new context.
      * @return boolean true if the content has been renamed; false otherwise.
      */
-    public function move_content(content $content, \context $context): bool {
+    public function move_content(content $content, context $context): bool {
         return $content->set_contextid($context->id);
     }
 
@@ -228,7 +231,7 @@ abstract class contenttype {
      * @return string           URL where to visualize the given content.
      */
     public function get_view_url(content $content): string {
-        return new moodle_url('/contentbank/view.php', ['id' => $content->get_id()]);
+        return new url('/contentbank/view.php', ['id' => $content->get_id()]);
     }
 
     /**
@@ -255,7 +258,7 @@ abstract class contenttype {
         $downloadurl = '';
         $file = $content->get_file();
         if (!empty($file)) {
-            $url = \moodle_url::make_pluginfile_url(
+            $url = url::make_pluginfile_url(
                 $file->get_contextid(),
                 $file->get_component(),
                 $file->get_filearea(),

@@ -16,6 +16,12 @@
 
 namespace tool_dataprivacy\external;
 
+use core\context\module;
+use core\context\system;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\exception\require_login_exception;
+use core\exception\required_capability_exception;
 use core_external\external_api;
 use tool_dataprivacy\api;
 use tool_dataprivacy\data_request;
@@ -47,7 +53,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         // Log out the user and set force login to true.
         $this->setUser();
 
-        $this->expectException(\require_login_exception::class);
+        $this->expectException(require_login_exception::class);
         external::approve_data_request($datarequest->get('id'));
     }
 
@@ -67,7 +73,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
 
         // Login as the requester.
         $this->setUser($requester);
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         external::approve_data_request($datarequest->get('id'));
     }
 
@@ -88,7 +94,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
 
         // Admin as DPO. (The default when no one's assigned as a DPO in the site).
         $this->setAdminUser();
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         external::approve_data_request($datarequest->get('id'));
     }
 
@@ -171,10 +177,10 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $comment = 'sample comment';
 
         // Assign requester as otheruser'sparent.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $parentrole = $generator->create_role();
         assign_capability('tool/dataprivacy:makedatarequestsforchildren', CAP_ALLOW, $parentrole, $systemcontext);
-        role_assign($parentrole, $requester->id, \context_user::instance($otheruser->id));
+        role_assign($parentrole, $requester->id, user::instance($otheruser->id));
 
         // Test data request creation.
         $this->setUser($requester);
@@ -198,19 +204,19 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $comment = 'sample comment';
 
         // Assign requester as otheruser'sparent.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $parentrole = $generator->create_role();
         assign_capability('tool/dataprivacy:makedatarequestsforchildren', CAP_ALLOW, $parentrole, $systemcontext);
-        role_assign($parentrole, $requester->id, \context_user::instance($otheruser->id));
+        role_assign($parentrole, $requester->id, user::instance($otheruser->id));
 
         $this->setUser($requester);
         $datarequest = api::create_data_request($otheruser->id, api::DATAREQUEST_TYPE_EXPORT, $comment);
 
         // Unassign the role.
-        role_unassign($parentrole, $requester->id, \context_user::instance($otheruser->id)->id);
+        role_unassign($parentrole, $requester->id, user::instance($otheruser->id)->id);
 
         // This user can no longer make the request.
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
 
         $result = external::cancel_data_request($datarequest->get('id'));
     }
@@ -227,10 +233,10 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $comment = 'sample comment';
 
         // Assign requester as otheruser'sparent.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $parentrole = $generator->create_role();
         assign_capability('tool/dataprivacy:makedatarequestsforchildren', CAP_ALLOW, $parentrole, $systemcontext);
-        role_assign($parentrole, $requester->id, \context_user::instance($otheruser->id));
+        role_assign($parentrole, $requester->id, user::instance($otheruser->id));
 
         // Test data request creation.
         $this->setUser($otheruser);
@@ -312,7 +318,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
 
         // Log out.
         $this->setUser();
-        $this->expectException(\require_login_exception::class);
+        $this->expectException(require_login_exception::class);
         external::deny_data_request($datarequest->get('id'));
     }
 
@@ -331,7 +337,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
 
         // Login as the requester.
         $this->setUser($requester);
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         external::deny_data_request($datarequest->get('id'));
     }
 
@@ -351,7 +357,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
 
         // Admin as DPO. (The default when no one's assigned as a DPO in the site).
         $this->setAdminUser();
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         external::deny_data_request($datarequest->get('id'));
     }
 
@@ -408,7 +414,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $datarequest = api::create_data_request($requester->id, api::DATAREQUEST_TYPE_EXPORT, $comment);
 
         $this->setUser();
-        $this->expectException(\require_login_exception::class);
+        $this->expectException(require_login_exception::class);
         external::get_data_request($datarequest->get('id'));
     }
 
@@ -428,7 +434,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
 
         // Login as the otheruser.
         $this->setUser($otheruser);
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         external::get_data_request($datarequest->get('id'));
     }
 
@@ -479,7 +485,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $this->setUser($user);
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         external::set_context_defaults(CONTEXT_COURSECAT, context_instance::INHERIT, context_instance::INHERIT, '', false);
     }
 
@@ -504,7 +510,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $course = $generator->create_course(['category' => $coursecat->id]);
         $assign = $generator->create_module('assign', ['course' => $course->id]);
         list($course, $assigncm) = get_course_and_cm_from_instance($assign->id, 'assign');
-        $assigncontext = \context_module::instance($assigncm->id);
+        $assigncontext = module::instance($assigncm->id);
 
         // Generate purpose and category.
         $category1 = api::create_category((object)['name' => 'Test category 1']);
@@ -558,7 +564,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
 
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         external::get_category_options(true, true);
     }
 
@@ -632,7 +638,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $this->setUser($user);
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         external::get_category_options(true, true);
     }
 
@@ -827,7 +833,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $uut = $this->getDataGenerator()->create_user();
         $this->setUser($uut);
 
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         $result = external::bulk_approve_data_requests([$requestid1, $requestid2]);
     }
 
@@ -855,7 +861,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         // Deny the requests.
         $this->setUser($requester1);
 
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         $result = external::bulk_approve_data_requests([$requestid1]);
     }
 
@@ -929,7 +935,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $uut = $this->getDataGenerator()->create_user();
         $this->setUser($uut);
 
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         $result = external::bulk_deny_data_requests([$requestid1, $requestid2]);
     }
 
@@ -957,7 +963,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         // Deny the requests.
         $this->setUser($requester1);
 
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         $result = external::bulk_deny_data_requests([$requestid1]);
     }
 
@@ -973,7 +979,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
      */
     public function test_get_users_using_using_non_identity(): void {
         $this->resetAfterTest();
-        $context = \context_system::instance();
+        $context = system::instance();
         $requester = $this->getDataGenerator()->create_user();
         $role = $this->getDataGenerator()->create_role();
         role_assign($role, $requester->id, $context);
@@ -1013,7 +1019,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $CFG->showuseridentity = 'institution';
 
         // Create requester user and assign correct capability.
-        $context = \context_system::instance();
+        $context = system::instance();
         $requester = $this->getDataGenerator()->create_user();
         $role = $this->getDataGenerator()->create_role();
         role_assign($role, $requester->id, $context);
@@ -1041,7 +1047,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
     public function test_get_users_using_field_not_in_identity(): void {
         $this->resetAfterTest();
 
-        $context = \context_system::instance();
+        $context = system::instance();
         $requester = $this->getDataGenerator()->create_user();
         $role = $this->getDataGenerator()->create_role();
         role_assign($role, $requester->id, $context);
@@ -1071,7 +1077,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         global $CFG;
         $this->resetAfterTest();
         $CFG->showuseridentity = 'institution';
-        $context = \context_system::instance();
+        $context = system::instance();
         $requester = $this->getDataGenerator()->create_user();
         $role = $this->getDataGenerator()->create_role();
         role_assign($role, $requester->id, $context);
@@ -1133,12 +1139,12 @@ final class external_test extends \core_external\tests\externallib_testcase {
     public function test_create_data_request(): void {
         $this->resetAfterTest();
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $user = $this->getDataGenerator()->create_user();
         $requester = $this->getDataGenerator()->create_user();
         $role = $this->getDataGenerator()->create_role();
         assign_capability('tool/dataprivacy:makedatarequestsforchildren', CAP_ALLOW, $role, $systemcontext);
-        role_assign($role, $requester->id, \context_user::instance($user->id));
+        role_assign($role, $requester->id, user::instance($user->id));
 
         // Enable contact DPO.
         set_config('contactdataprotectionofficer', 1, 'tool_dataprivacy');
@@ -1191,7 +1197,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage(get_string('contactdpoviaprivacypolicy', 'tool_dataprivacy'));
         create_data_request::execute(api::DATAREQUEST_TYPE_DELETE, 'Example comment');
     }
@@ -1209,7 +1215,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $anotheruser = $this->getDataGenerator()->create_user();
         $this->setUser($user);
 
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         create_data_request::execute(api::DATAREQUEST_TYPE_DELETE, 'Example comment', $anotheruser->id);
     }
 
@@ -1225,7 +1231,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage(get_string('errorinvalidrequesttype', 'tool_dataprivacy'));
         create_data_request::execute(125, 'Example comment');
     }
@@ -1309,7 +1315,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $this->assertCount(1, $result['requests']);
         $this->assertEquals($request3->get('id'), $result['requests'][0]['id']);
         // Check download link because the download is now ready.
-        $usercontext = \context_user::instance($anotheruser->id, IGNORE_MISSING);
+        $usercontext = user::instance($anotheruser->id, IGNORE_MISSING);
         $downloadlink = api::get_download_link($usercontext, $result['requests'][0]['id'])->url;
         $this->assertEquals($downloadlink->out(false), $result['requests'][0]['downloadlink']);
 
@@ -1322,7 +1328,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
 
         // Get data requests for another user without required permissions.
         $userrole = $DB->get_field('role', 'id', ['shortname' => 'user'], MUST_EXIST);
-        assign_capability('tool/dataprivacy:downloadownrequest', CAP_PROHIBIT, $userrole, \context_user::instance($anotheruser->id));
+        assign_capability('tool/dataprivacy:downloadownrequest', CAP_PROHIBIT, $userrole, user::instance($anotheruser->id));
 
         $this->setUser($anotheruser);
         // Get my data request ready for download but without permissons for download it.
@@ -1331,7 +1337,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $this->assertArrayNotHasKey('downloadlink', $result['requests'][0]);   // Download link is not present.
 
         // And now try to see a different user requests.
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $dponamestring = implode (', ', api::get_dpo_role_names());
         $this->expectExceptionMessage(get_string('privacyofficeronly', 'tool_dataprivacy', $dponamestring));
         $result = get_data_requests::execute($user->id);

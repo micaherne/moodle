@@ -16,8 +16,10 @@
 
 namespace qbank_previewquestion;
 
-use context_course;
-use moodle_url;
+use core\context\course;
+use core\context\module;
+use core\context\user;
+use core\url;
 use core\plugininfo\qbank;
 use question_bank;
 use question_engine;
@@ -74,7 +76,7 @@ final class qbank_preview_helper_test extends \advanced_testcase {
         // Create a course.
         $course = $generator->create_course();
         $qbank = $generator->create_module('qbank', ['course' => $course->id]);
-        $qbankcontext = \context_module::instance($qbank->cmid);
+        $qbankcontext = module::instance($qbank->cmid);
         $this->context = $qbankcontext;
         // Create a question in the default category.
         $contexts = new \core_question\local\bank\question_edit_contexts($qbankcontext);
@@ -82,11 +84,11 @@ final class qbank_preview_helper_test extends \advanced_testcase {
         $this->questiondata = $questiongenerator->create_question('numerical', null,
                 ['name' => 'Example question', 'category' => $cat->id]);
         $this->quba = question_engine::make_questions_usage_by_activity('core_question_preview',
-            \context_user::instance($USER->id));
+            user::instance($USER->id));
         $this->options = new question_preview_options($this->questiondata);
         $this->options->load_user_defaults();
         $this->options->set_from_request();
-        $this->returnurl = new moodle_url('/question/edit.php');
+        $this->returnurl = new url('/question/edit.php');
     }
 
     /**
@@ -105,7 +107,7 @@ final class qbank_preview_helper_test extends \advanced_testcase {
            'restartversion' => question_preview_options::ALWAYS_LATEST,
         ];
         $params = array_merge($params, $this->options->get_url_params());
-        $expectedurl = new moodle_url('/question/bank/previewquestion/preview.php', $params);
+        $expectedurl = new url('/question/bank/previewquestion/preview.php', $params);
         $this->assertEquals($expectedurl, $actionurl);
     }
 
@@ -124,7 +126,7 @@ final class qbank_preview_helper_test extends \advanced_testcase {
             'cmid' => $this->context->instanceid,
         ];
         $params = array_merge($params, $this->options->get_url_params());
-        $expectedurl = new moodle_url('/question/bank/previewquestion/preview.php', $params);
+        $expectedurl = new url('/question/bank/previewquestion/preview.php', $params);
         $this->assertEquals($expectedurl, $actionurl);
     }
 
@@ -142,7 +144,7 @@ final class qbank_preview_helper_test extends \advanced_testcase {
             'returnurl' => $this->returnurl,
             'cmid' => $this->context->instanceid,
         ];
-        $expectedurl = new moodle_url('/question/bank/previewquestion/preview.php', $params);
+        $expectedurl = new url('/question/bank/previewquestion/preview.php', $params);
         $this->assertEquals($expectedurl, $formurl);
     }
 
@@ -169,7 +171,7 @@ final class qbank_preview_helper_test extends \advanced_testcase {
         $params['generalfeedback'] = (bool) $this->options->generalfeedback;
         $params['rightanswer']     = (bool) $this->options->rightanswer;
         $params['history']         = (bool) $this->options->history;
-        $expectedurl = new moodle_url('/question/bank/previewquestion/preview.php', $params);
+        $expectedurl = new url('/question/bank/previewquestion/preview.php', $params);
         $this->assertEquals($expectedurl, $previewurl);
     }
 
@@ -196,7 +198,7 @@ final class qbank_preview_helper_test extends \advanced_testcase {
         $params['generalfeedback'] = (bool) $this->options->generalfeedback;
         $params['rightanswer']     = (bool) $this->options->rightanswer;
         $params['history']         = (bool) $this->options->history;
-        $expectedurl = new moodle_url('/question/bank/previewquestion/preview.php', $params);
+        $expectedurl = new url('/question/bank/previewquestion/preview.php', $params);
         $this->assertEquals($expectedurl, $previewurl);
     }
 

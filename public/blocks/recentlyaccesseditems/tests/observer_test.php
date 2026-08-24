@@ -16,6 +16,8 @@
 
 namespace block_recentlyaccesseditems;
 
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -105,13 +107,13 @@ final class observer_test extends \advanced_testcase {
 
         // Teacher access forum activity.
         $this->setUser($this->teacher);
-        $event = \mod_forum\event\course_module_viewed::create(array('context' => \context_module::instance($this->forum->cmid),
+        $event = \mod_forum\event\course_module_viewed::create(array('context' => module::instance($this->forum->cmid),
                 'objectid' => $this->forum->id));
         $event->trigger();
 
         // Student access assignment activity.
         $this->setUser($this->student);
-        $event1 = \mod_assign\event\course_module_viewed::create(['context' => \context_module::instance($this->assign->cmid),
+        $event1 = \mod_assign\event\course_module_viewed::create(['context' => module::instance($this->assign->cmid),
                 'objectid' => $this->assign->id]);
         $event1->trigger();
 
@@ -125,7 +127,7 @@ final class observer_test extends \advanced_testcase {
 
         $this->waitForSecond();
         // Student access assignment activity again after 1 second (no new record created, timeaccess updated).
-        $event2 = \mod_assign\event\course_module_viewed::create(['context' => \context_module::instance($this->assign->cmid),
+        $event2 = \mod_assign\event\course_module_viewed::create(['context' => module::instance($this->assign->cmid),
                 'objectid' => $this->assign->id]);
         $event2->trigger();
 
@@ -150,23 +152,23 @@ final class observer_test extends \advanced_testcase {
 
         // Teacher access forum activity.
         $this->setUser($this->teacher);
-        $event = \mod_forum\event\course_module_viewed::create(array('context' => \context_module::instance($this->forum->cmid),
+        $event = \mod_forum\event\course_module_viewed::create(array('context' => module::instance($this->forum->cmid),
                 'objectid' => $this->forum->id));
         $event->trigger();
 
         // Teacher access assignment activity.
-        $event = \mod_assign\event\course_module_viewed::create(['context' => \context_module::instance($this->assign->cmid),
+        $event = \mod_assign\event\course_module_viewed::create(['context' => module::instance($this->assign->cmid),
                 'objectid' => $this->assign->id]);
         $event->trigger();
 
         // Student access assignment activity.
         $this->setUser($this->student);
-        $event = \mod_assign\event\course_module_viewed::create(['context' => \context_module::instance($this->assign->cmid),
+        $event = \mod_assign\event\course_module_viewed::create(['context' => module::instance($this->assign->cmid),
                 'objectid' => $this->assign->id]);
         $event->trigger();
 
         // Student access forum activity.
-        $event = \mod_forum\event\course_module_viewed::create(array('context' => \context_module::instance($this->forum->cmid),
+        $event = \mod_forum\event\course_module_viewed::create(array('context' => module::instance($this->forum->cmid),
                 'objectid' => $this->forum->id));
         $event->trigger();
 

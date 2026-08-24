@@ -16,6 +16,7 @@
 
 namespace core_grades;
 
+use core\context\module;
 use grade_item;
 
 /**
@@ -92,7 +93,7 @@ final class importlib_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $assign = $this->getDataGenerator()->create_module('assign', array('course' => $course->id));
         $itemname = $assign->name;
-        $modulecontext = \context_module::instance($assign->cmid);
+        $modulecontext = module::instance($assign->cmid);
         // The generator returns a dummy object, lets get the real assign object.
         $assign = new \assign($modulecontext, false, false);
         $cm = $assign->get_course_module();

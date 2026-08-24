@@ -23,6 +23,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context_helper;
+use core\output\html_writer;
+use core\output\paging_bar;
+use core\output\pix_icon;
+use core\url;
+use core_table\output\html_table;
+use core_table\output\html_table_cell;
+use core_table\output\html_table_row;
+
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
@@ -91,7 +101,7 @@ if ($courseid) {
     }
 
     // Set the course name to display.
-    $coursename = format_string($course->fullname, true, array('context' => context_course::instance($course->id)));
+    $coursename = format_string($course->fullname, true, array('context' => course::instance($course->id)));
 
     echo $OUTPUT->header();
     echo $OUTPUT->heading(get_string('backupofcourselogs', 'report_backups', $coursename));
@@ -99,7 +109,7 @@ if ($courseid) {
         // We put this logic down here as we may be viewing a backup that was performed which there were no logs
         // recorded for. We still want to display the pagination so the user can still navigate to other backups,
         // and we also display a message so they are aware that the backup happened but there were no logs.
-        $baseurl = new moodle_url('/report/backups/index.php', array('courseid' => $courseid));
+        $baseurl = new url('/report/backups/index.php', array('courseid' => $courseid));
         $numberofbackups = $DB->count_records('backup_controllers', $params);
         $pagingbar = new paging_bar($numberofbackups, $page, 1, $baseurl);
 
@@ -164,8 +174,8 @@ foreach ($rs as $backuprow) {
     $status->attributes = array('class' => $statusclass);
 
     // Create the row and add it to the table
-    $backuprowname = format_string($backuprow->fullname, true, array('context' => context_course::instance($backuprow->courseid)));
-    $backuplogsurl = new moodle_url('/report/backups/index.php', array('courseid' => $backuprow->courseid));
+    $backuprowname = format_string($backuprow->fullname, true, array('context' => course::instance($backuprow->courseid)));
+    $backuplogsurl = new url('/report/backups/index.php', array('courseid' => $backuprow->courseid));
     $backuplogsicon = new pix_icon('t/viewdetails', get_string('viewlogs', 'report_backups'));
     $cells = array(
         $backuprowname . ' ' . $OUTPUT->action_icon($backuplogsurl, $backuplogsicon),

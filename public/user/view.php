@@ -22,6 +22,13 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+
 require_once("../config.php");
 require_once($CFG->dirroot.'/user/profile/lib.php');
 require_once($CFG->dirroot.'/user/lib.php');
@@ -48,14 +55,14 @@ $user = $DB->get_record('user', array('id' => $id), '*', MUST_EXIST);
 $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
 $currentuser = ($user->id == $USER->id);
 
-$systemcontext = context_system::instance();
-$coursecontext = context_course::instance($course->id);
-$usercontext   = context_user::instance($user->id, IGNORE_MISSING);
+$systemcontext = system::instance();
+$coursecontext = course::instance($course->id);
+$usercontext   = user::instance($user->id, IGNORE_MISSING);
 
 // Check we are not trying to view guest's profile.
 if (isguestuser($user)) {
     // Can not view profile of guest - thre is nothing to see there.
-    throw new \moodle_exception('invaliduserid');
+    throw new moodle_exception('invaliduserid');
 }
 
 $PAGE->set_context($coursecontext);
@@ -135,7 +142,7 @@ if ($currentuser) {
 
     // Check to see if the user can see this user's profile.
     if (!\core\user::can_view_profile($user, $course, $usercontext) && !$isparent) {
-        throw new \moodle_exception('cannotviewprofile');
+        throw new moodle_exception('cannotviewprofile');
     }
 
     if (!is_enrolled($coursecontext, $user->id)) {

@@ -27,6 +27,7 @@
 
 use Behat\Testwork\Environment\Environment;
 use Behat\Mink\Exception\DriverException;
+use core\output\theme_config;
 
 /**
  * Helper to get behat contexts.

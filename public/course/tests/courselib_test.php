@@ -20,15 +20,15 @@ use advanced_testcase;
 use backup_controller;
 use backup;
 use blog_entry;
-use cache;
+use core_cache\cache;
 use calendar_event;
-use coding_exception;
+use core\exception\coding_exception;
 use completion_criteria_date;
 use completion_completion;
-use context_course;
-use context_module;
-use context_system;
-use context_coursecat;
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\context\coursecat;
 use core_completion_external;
 use core_courseformat\formatactions;
 use core_course\exception\reset_timeout;
@@ -41,8 +41,8 @@ use enrol_imsenterprise\imsenterprise_test;
 use core_external\external_api;
 use grade_item;
 use grading_manager;
-use moodle_exception;
-use moodle_url;
+use core\exception\moodle_exception;
+use core\url;
 use rating_manager;
 use restore_controller;
 use stdClass;
@@ -191,7 +191,7 @@ final class courselib_test extends advanced_testcase {
 
         // Advanced grading.
         $cm = get_coursemodule_from_instance('assign', $dbmodinstance->id);
-        $contextmodule = context_module::instance($cm->id);
+        $contextmodule = module::instance($cm->id);
         $advancedgradingmethod = $DB->get_record('grading_areas',
             array('contextid' => $contextmodule->id,
                 'activemethod' => $moduleinfo->advancedgradingmethod_submissions));
@@ -652,7 +652,7 @@ final class courselib_test extends advanced_testcase {
         $original = (array) $course;
 
         $created = create_course($course);
-        $context = context_course::instance($created->id);
+        $context = course::instance($created->id);
 
         // Compare original and created.
         $this->assertEquals($original, array_intersect_key((array) $created, $original));
@@ -1207,7 +1207,7 @@ final class courselib_test extends advanced_testcase {
         $this->assertFalse(course_can_delete_section($coursesingleactivity, 1));
 
         // Now let's revoke a capability from teacher to manage activity in section 1.
-        $modulecontext = context_module::instance($assign1->cmid);
+        $modulecontext = module::instance($assign1->cmid);
         assign_capability('moodle/course:manageactivities', CAP_PROHIBIT, $roleids['editingteacher'],
             $modulecontext);
         $this->assertFalse(course_can_delete_section($courseweeks, 1));
@@ -1618,7 +1618,7 @@ final class courselib_test extends advanced_testcase {
         $testcourse = $this->getDataGenerator()->create_course($course);
 
         // Create contexts.
-        $coursecontext = context_course::instance($testcourse->id);
+        $coursecontext = course::instance($testcourse->id);
         $parentcontext = $coursecontext->get_parent_context(); // Not actually used.
         $pagetype = 'page-course-x'; // Not used either.
         $pagetypelist = course_page_type_list($pagetype, $parentcontext, $coursecontext);
@@ -1632,7 +1632,7 @@ final class courselib_test extends advanced_testcase {
         $this->assertEquals($testpagetypelist1, $pagetypelist);
 
         // Get the context for the front page course.
-        $sitecoursecontext = context_course::instance(SITEID);
+        $sitecoursecontext = course::instance(SITEID);
         $pagetypelist = course_page_type_list($pagetype, $parentcontext, $sitecoursecontext);
 
         // Page type list for the front page course.
@@ -1885,7 +1885,7 @@ final class courselib_test extends advanced_testcase {
         $this->assertInstanceOf('\core\event\course_created', $event);
         $this->assertEquals('course', $event->objecttable);
         $this->assertEquals($course->id, $event->objectid);
-        $this->assertEquals(context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals($course, $event->get_record_snapshot('course', $course->id));
 
         // Now we want to trigger creating a course via the imsenterprise.
@@ -1956,8 +1956,8 @@ final class courselib_test extends advanced_testcase {
         $this->assertInstanceOf('\core\event\course_updated', $event);
         $this->assertEquals('course', $event->objecttable);
         $this->assertEquals($updatedcourse->id, $event->objectid);
-        $this->assertEquals(context_course::instance($course->id), $event->get_context());
-        $url = new moodle_url('/course/edit.php', array('id' => $event->objectid));
+        $this->assertEquals(course::instance($course->id), $event->get_context());
+        $url = new url('/course/edit.php', array('id' => $event->objectid));
         $this->assertEquals($url, $event->get_url());
         $this->assertEquals($updatedcourse, $event->get_record_snapshot('course', $event->objectid));
 
@@ -1974,7 +1974,7 @@ final class courselib_test extends advanced_testcase {
         $this->assertInstanceOf('\core\event\course_updated', $event);
         $this->assertEquals('course', $event->objecttable);
         $this->assertEquals($movedcourse->id, $event->objectid);
-        $this->assertEquals(context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals($movedcourse, $event->get_record_snapshot('course', $movedcourse->id));
 
         // Move course to hidden category and catch course_updated event.
@@ -1990,7 +1990,7 @@ final class courselib_test extends advanced_testcase {
         $this->assertInstanceOf('\core\event\course_updated', $event);
         $this->assertEquals('course', $event->objecttable);
         $this->assertEquals($movedcoursehidden->id, $event->objectid);
-        $this->assertEquals(context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals($movedcoursehidden, $event->get_record_snapshot('course', $movedcoursehidden->id));
         $this->assertEventContextNotUsed($event);
     }
@@ -2038,7 +2038,7 @@ final class courselib_test extends advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
 
         // Save the course context before we delete the course.
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         // Catch the update event.
         $sink = $this->redirectEvents();
@@ -2293,7 +2293,7 @@ final class courselib_test extends advanced_testcase {
         $exceptionthrown = false;
         try {
             require_login($course1);
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $exceptionthrown = true;
         }
         $this->assertTrue($exceptionthrown, 'Expected moodle_exception to be thrown for course marked for deletion');
@@ -2315,7 +2315,7 @@ final class courselib_test extends advanced_testcase {
         $course = $DB->get_record('course', array('id' => $course->id), '*', MUST_EXIST);
 
         // Save the course context before we delete the course.
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         // Catch the delete event.
         $sink = $this->redirectEvents();
@@ -2347,7 +2347,7 @@ final class courselib_test extends advanced_testcase {
 
         // Save the original record/context before it is deleted.
         $categoryrecord = $category->get_db_record();
-        $categorycontext = context_coursecat::instance($category->id);
+        $categorycontext = coursecat::instance($category->id);
 
         // Catch the update event.
         $sink = $this->redirectEvents();
@@ -2377,7 +2377,7 @@ final class courselib_test extends advanced_testcase {
 
         // Save the original record/context before it is moved and then deleted.
         $category2record = $category2->get_db_record();
-        $category2context = context_coursecat::instance($category2->id);
+        $category2context = coursecat::instance($category2->id);
 
         // Catch the update event.
         $sink = $this->redirectEvents();
@@ -2439,9 +2439,9 @@ final class courselib_test extends advanced_testcase {
         $this->assertInstanceOf('\core\event\course_backup_created', $event);
         $this->assertEquals('course', $event->objecttable);
         $this->assertEquals($bc->get_courseid(), $event->objectid);
-        $this->assertEquals(context_course::instance($bc->get_courseid())->id, $event->contextid);
+        $this->assertEquals(course::instance($bc->get_courseid())->id, $event->contextid);
 
-        $url = new moodle_url('/course/view.php', array('id' => $event->objectid));
+        $url = new url('/course/view.php', array('id' => $event->objectid));
         $this->assertEquals($url, $event->get_url());
         $this->assertEventContextNotUsed($event);
 
@@ -2499,7 +2499,7 @@ final class courselib_test extends advanced_testcase {
         $this->assertInstanceOf('\core\event\course_restored', $event);
         $this->assertEquals('course', $event->objecttable);
         $this->assertEquals($rc->get_courseid(), $event->objectid);
-        $this->assertEquals(context_course::instance($rc->get_courseid())->id, $event->contextid);
+        $this->assertEquals(course::instance($rc->get_courseid())->id, $event->contextid);
         $this->assertEventContextNotUsed($event);
 
         // Destroy the resource controller since we are done using it.
@@ -2518,7 +2518,7 @@ final class courselib_test extends advanced_testcase {
         $course = $this->getDataGenerator()->create_course(array('numsections' => 10), array('createsections' => true));
         $sections = $DB->get_records('course_sections', array('course' => $course->id));
 
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $section = array_pop($sections);
         $section->name = 'Test section';
@@ -2530,7 +2530,7 @@ final class courselib_test extends advanced_testcase {
                 array(
                     'objectid' => $section->id,
                     'courseid' => $course->id,
-                    'context' => context_course::instance($course->id),
+                    'context' => course::instance($course->id),
                     'other' => array(
                         'sectionnum' => $section->section
                     )
@@ -2553,7 +2553,7 @@ final class courselib_test extends advanced_testcase {
         $this->assertEquals($section->section, $event->other['sectionnum']);
         $expecteddesc = "The user with id '{$event->userid}' updated section number '{$event->other['sectionnum']}' for the course with id '{$event->courseid}'";
         $this->assertEquals($expecteddesc, $event->get_description());
-        $url = new moodle_url('/course/editsection.php', array('id' => $event->objectid));
+        $url = new url('/course/editsection.php', array('id' => $event->objectid));
         $this->assertEquals($url, $event->get_url());
         $this->assertEquals($section, $event->get_record_snapshot('course_sections', $event->objectid));
         $id = $section->id;
@@ -2572,7 +2572,7 @@ final class courselib_test extends advanced_testcase {
         // Create the course with sections.
         $course = $this->getDataGenerator()->create_course(array('numsections' => 10), array('createsections' => true));
         $sections = $DB->get_records('course_sections', array('course' => $course->id), 'section');
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $section = array_pop($sections);
         course_delete_section($course, $section);
         $events = $sink->get_events();
@@ -2738,7 +2738,7 @@ final class courselib_test extends advanced_testcase {
                 $this->assertEquals($module->cmid, $event->objectid);
                 $this->assertEquals($USER->id, $event->userid);
                 $this->assertEquals('course_modules', $event->objecttable);
-                $url = new moodle_url('/mod/assign/view.php', array('id' => $module->cmid));
+                $url = new url('/mod/assign/view.php', array('id' => $module->cmid));
                 $this->assertEquals($url, $event->get_url());
                 $this->assertEventContextNotUsed($event);
             }
@@ -2763,7 +2763,7 @@ final class courselib_test extends advanced_testcase {
                 $this->assertEquals($newcm->id, $event->objectid);
                 $this->assertEquals($USER->id, $event->userid);
                 $this->assertEquals($course->id, $event->courseid);
-                $url = new moodle_url('/mod/assign/view.php', array('id' => $newcm->id));
+                $url = new url('/mod/assign/view.php', array('id' => $newcm->id));
                 $this->assertEquals($url, $event->get_url());
             }
         }
@@ -2781,7 +2781,7 @@ final class courselib_test extends advanced_testcase {
 
         // Generate data.
         $modinfo = $this->create_specific_module_test('assign');
-        $context = context_module::instance($modinfo->coursemodule);
+        $context = module::instance($modinfo->coursemodule);
 
         // Test not setting instanceid.
         try {
@@ -2862,7 +2862,7 @@ final class courselib_test extends advanced_testcase {
                 $this->assertEquals($cm->id, $event->objectid);
                 $this->assertEquals($USER->id, $event->userid);
                 $this->assertEquals('course_modules', $event->objecttable);
-                $url = new moodle_url('/mod/forum/view.php', array('id' => $cm->id));
+                $url = new url('/mod/forum/view.php', array('id' => $cm->id));
                 $this->assertEquals($url, $event->get_url());
                 $this->assertEventContextNotUsed($event);
             }
@@ -2886,7 +2886,7 @@ final class courselib_test extends advanced_testcase {
         $assign = $this->getDataGenerator()->create_module('assign', array('course' => $course->id));
 
         // Get the module context.
-        $modcontext = context_module::instance($assign->cmid);
+        $modcontext = module::instance($assign->cmid);
 
         // Get course module.
         $cm = get_coursemodule_from_id(null, $assign->cmid, $course->id, false, MUST_EXIST);
@@ -2919,7 +2919,7 @@ final class courselib_test extends advanced_testcase {
 
         // Generate data.
         $modinfo = $this->create_specific_module_test('assign');
-        $context = context_module::instance($modinfo->coursemodule);
+        $context = module::instance($modinfo->coursemodule);
 
         // Test not setting instanceid.
         try {
@@ -2984,7 +2984,7 @@ final class courselib_test extends advanced_testcase {
 
         // Generate data.
         $modinfo = $this->create_specific_module_test('assign');
-        $context = context_module::instance($modinfo->coursemodule);
+        $context = module::instance($modinfo->coursemodule);
 
         // Test not setting instanceid.
         try {
@@ -3184,9 +3184,9 @@ final class courselib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = self::getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
-        $event = \core\event\course_resources_list_viewed::create(array('context' => context_course::instance($course->id)));
+        $event = \core\event\course_resources_list_viewed::create(array('context' => course::instance($course->id)));
         $sink = $this->redirectEvents();
         $event->trigger();
         $events = $sink->get_events();
@@ -3242,7 +3242,7 @@ final class courselib_test extends advanced_testcase {
         $course = self::getDataGenerator()->create_course();
         $res = self::getDataGenerator()->create_module('assign', ['course' => $course]);
         $cm = get_coursemodule_from_id('assign', $res->cmid, 0, false, MUST_EXIST);
-        $cmcontext = \context_module::instance($cm->id);
+        $cmcontext = module::instance($cm->id);
 
         // Enrol student user.
         $user = self::getDataGenerator()->create_user();
@@ -3254,7 +3254,7 @@ final class courselib_test extends advanced_testcase {
 
         // Duplicate module.
         $newcm = duplicate_module($course, $cm);
-        $newcmcontext = \context_module::instance($newcm->id);
+        $newcmcontext = module::instance($newcm->id);
 
         // Assert that user still has capability.
         $this->assertTrue(has_capability('gradereport/grader:view', $newcmcontext, $user));
@@ -3279,7 +3279,7 @@ final class courselib_test extends advanced_testcase {
         $course = self::getDataGenerator()->create_course();
         $res = self::getDataGenerator()->create_module('assign', ['course' => $course]);
         $cm = get_coursemodule_from_id('assign', $res->cmid, 0, false, MUST_EXIST);
-        $cmcontext = \context_module::instance($cm->id);
+        $cmcontext = module::instance($cm->id);
 
         // Enrol student user.
         $user = self::getDataGenerator()->create_user();
@@ -3292,7 +3292,7 @@ final class courselib_test extends advanced_testcase {
 
         // Duplicate module.
         $newcm = duplicate_module($course, $cm);
-        $newcmcontext = \context_module::instance($newcm->id);
+        $newcmcontext = module::instance($newcm->id);
 
         // Assert that user still has role assigned.
         $this->assertTrue(user_has_role_assignment($user->id, $newroleid, $newcmcontext->id));
@@ -3347,7 +3347,7 @@ final class courselib_test extends advanced_testcase {
         $formdata->modulename = 'label';
         $formdata->coursemodule = $label->cmid;
         $draftid = 0;
-        file_prepare_draft_area($draftid, context_module::instance($label->cmid)->id,
+        file_prepare_draft_area($draftid, module::instance($label->cmid)->id,
                 'mod_label', 'intro', 0);
         $formdata->introeditor = array(
             'itemid' => $draftid,
@@ -3435,7 +3435,7 @@ final class courselib_test extends advanced_testcase {
         core_tag_index_builder::reset_caches();
 
         // Searching in the course context returns visible modules in this course.
-        $context = context_course::instance($course1->id);
+        $context = course::instance($course1->id);
         $res = course_get_tagged_course_modules(core_tag_tag::get_by_name(0, 'Cat'),
                 /*$exclusivemode = */false, /*$fromctx = */0, /*$ctx = */$context->id, /*$rec = */1, /*$page = */0);
         $this->assertMatchesRegularExpression('/'.$cm11->name.'/', $res->content);
@@ -3445,7 +3445,7 @@ final class courselib_test extends advanced_testcase {
         $this->assertDoesNotMatchRegularExpression('/'.$cm31->name.'/', $res->content);
 
         // Searching FROM the course context returns visible modules in all courses.
-        $context = context_course::instance($course2->id);
+        $context = course::instance($course2->id);
         $res = course_get_tagged_course_modules(core_tag_tag::get_by_name(0, 'Cat'),
                 /*$exclusivemode = */false, /*$fromctx = */$context->id, /*$ctx = */0, /*$rec = */1, /*$page = */0);
         $this->assertMatchesRegularExpression('/'.$cm11->name.'/', $res->content);
@@ -3460,7 +3460,7 @@ final class courselib_test extends advanced_testcase {
         $this->getDataGenerator()->enrol_user($user->id, $course1->id, $roleids['editingteacher']);
         get_fast_modinfo(0,0,true);
 
-        $context = context_course::instance($course1->id);
+        $context = course::instance($course1->id);
         $res = course_get_tagged_course_modules(core_tag_tag::get_by_name(0, 'Cat'),
                 /*$exclusivemode = */false, /*$fromctx = */$context->id, /*$ctx = */0, /*$rec = */1, /*$page = */0);
         $this->assertMatchesRegularExpression('/'.$cm12->name.'/', $res->content);
@@ -3473,7 +3473,7 @@ final class courselib_test extends advanced_testcase {
         $cm16 = $this->getDataGenerator()->create_module('page', array('course' => $course1->id,
             'tags' => 'Cat, Mouse, Dog'));
 
-        $context = context_course::instance($course1->id);
+        $context = course::instance($course1->id);
         $res = course_get_tagged_course_modules(core_tag_tag::get_by_name(0, 'Cat'),
                 /*$exclusivemode = */false, /*$fromctx = */0, /*$ctx = */$context->id, /*$rec = */1, /*$page = */0);
         $this->assertMatchesRegularExpression('/'.$cm11->name.'/', $res->content);
@@ -3507,7 +3507,7 @@ final class courselib_test extends advanced_testcase {
     public function test_course_get_user_navigation_options_for_frontpage(): void {
         global $CFG, $SITE, $DB;
         $this->resetAfterTest();
-        $context = context_system::instance();
+        $context = system::instance();
         $course = clone $SITE;
         $this->setAdminUser();
 
@@ -3551,7 +3551,7 @@ final class courselib_test extends advanced_testcase {
         global $CFG;
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $this->setAdminUser();
 
         $navoptions = course_get_user_navigation_options($context);
@@ -3568,7 +3568,7 @@ final class courselib_test extends advanced_testcase {
         global $DB, $CFG;
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         $user = $this->getDataGenerator()->create_user();
         $roleid = $DB->get_field('role', 'id', array('shortname' => 'student'));
@@ -3609,7 +3609,7 @@ final class courselib_test extends advanced_testcase {
         global $CFG, $SITE;
         $this->resetAfterTest();
         $course = clone $SITE;
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $this->setAdminUser();
 
         $adminoptions = course_get_user_administration_options($course, $context);
@@ -3642,7 +3642,7 @@ final class courselib_test extends advanced_testcase {
         global $CFG;
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $this->setAdminUser();
 
         $adminoptions = course_get_user_administration_options($course, $context);
@@ -3668,7 +3668,7 @@ final class courselib_test extends advanced_testcase {
         global $DB, $CFG;
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         $user = $this->getDataGenerator()->create_user();
         $roleid = $DB->get_field('role', 'id', array('shortname' => 'student'));
@@ -3916,7 +3916,7 @@ final class courselib_test extends advanced_testcase {
 
         // Test case with reset_roles_overrides enabled.
         // Override course so it does NOT allow students 'mod/forum:viewdiscussion'.
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         assign_capability('mod/forum:viewdiscussion', CAP_PREVENT, $roleid, $coursecontext->id);
 
         // Check expected capabilities so far.
@@ -4038,7 +4038,7 @@ final class courselib_test extends advanced_testcase {
             'scale' => 100
         ));
         $glossarygenerator = $this->getDataGenerator()->get_plugin_generator('mod_glossary');
-        $context = context_module::instance($glossary->cmid);
+        $context = module::instance($glossary->cmid);
         $modinfo = get_fast_modinfo($course);
         $cm = $modinfo->get_cm($glossary->cmid);
         $user = $this->getDataGenerator()->create_user();
@@ -4454,7 +4454,7 @@ final class courselib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $user = $this->getDataGenerator()->create_user();
         $this->getDataGenerator()->enrol_user($user->id, $course->id);
@@ -4477,7 +4477,7 @@ final class courselib_test extends advanced_testcase {
 
         $this->setUser($user);
 
-        $this->assertFalse(course_can_view_participants(context_system::instance()));
+        $this->assertFalse(course_can_view_participants(system::instance()));
     }
 
     /**
@@ -4488,7 +4488,7 @@ final class courselib_test extends advanced_testcase {
 
         $this->setAdminUser();
 
-        $this->assertTrue(course_can_view_participants(context_system::instance()));
+        $this->assertTrue(course_can_view_participants(system::instance()));
     }
 
     /**
@@ -4500,7 +4500,7 @@ final class courselib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $user = $this->getDataGenerator()->create_user();
         $roleid = $DB->get_field('role', 'id', array('shortname' => 'editingteacher'));
@@ -4520,7 +4520,7 @@ final class courselib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $user = $this->getDataGenerator()->create_user();
         $roleid = $DB->get_field('role', 'id', array('shortname' => 'editingteacher'));
@@ -4544,7 +4544,7 @@ final class courselib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $user = $this->getDataGenerator()->create_user();
         $roleid = $DB->get_field('role', 'id', array('shortname' => 'editingteacher'));
@@ -4568,7 +4568,7 @@ final class courselib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $user = $this->getDataGenerator()->create_user();
         $roleid = $DB->get_field('role', 'id', array('shortname' => 'editingteacher'));
@@ -4590,7 +4590,7 @@ final class courselib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $user = $this->getDataGenerator()->create_user();
         $this->getDataGenerator()->enrol_user($user->id, $course->id);
@@ -4614,7 +4614,7 @@ final class courselib_test extends advanced_testcase {
         $this->setUser($user);
 
         $this->expectException('required_capability_exception');
-        course_require_view_participants(context_system::instance());
+        course_require_view_participants(system::instance());
     }
 
     /**
@@ -4624,7 +4624,7 @@ final class courselib_test extends advanced_testcase {
         global $DB;
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $user = $this->getDataGenerator()->create_user();
         $teacherrole = $DB->get_record('role', array('shortname' => 'teacher'));
         $this->getDataGenerator()->enrol_user($user->id, $course->id, $teacherrole->id);
@@ -5803,7 +5803,7 @@ final class courselib_test extends advanced_testcase {
 
         $time = time();
         foreach ($courses as $course) {
-            $context = context_course::instance($course->id);
+            $context = course::instance($course->id);
             course_view($context);
             $DB->set_field('user_lastaccess', 'timeaccess', $time, [
                 'userid' => $student->id,
@@ -5843,7 +5843,7 @@ final class courselib_test extends advanced_testcase {
             (object)array('shortname' => 'guestcourse',
                 'enrol_guest_status_0' => ENROL_INSTANCE_ENABLED,
                 'enrol_guest_password_0' => ''));
-        $context = context_course::instance($guestcourse->id);
+        $context = course::instance($guestcourse->id);
         course_view($context);
 
         // Every course accessed, even the not enrolled one.
@@ -5921,13 +5921,13 @@ final class courselib_test extends advanced_testcase {
 
         // Course 1 with guest access and no direct enrolment.
         $course1 = $this->getDataGenerator()->create_course();
-        $context1 = context_course::instance($course1->id);
+        $context1 = course::instance($course1->id);
         $record = $DB->get_record('enrol', ['courseid' => $course1->id, 'enrol' => 'guest']);
         enrol_get_plugin('guest')->update_status($record, ENROL_INSTANCE_ENABLED);
 
         // Course 2 where student is enrolled with two enrolment methods.
         $course2 = $this->getDataGenerator()->create_course();
-        $context2 = context_course::instance($course2->id);
+        $context2 = course::instance($course2->id);
         $record = $DB->get_record('enrol', ['courseid' => $course2->id, 'enrol' => 'self']);
         enrol_get_plugin('guest')->update_status($record, ENROL_INSTANCE_ENABLED);
         $this->getDataGenerator()->enrol_user($student->id, $course2->id, 'student', 'manual', 0, 0, ENROL_USER_ACTIVE);
@@ -5935,7 +5935,7 @@ final class courselib_test extends advanced_testcase {
 
         // Course 3.
         $course3 = $this->getDataGenerator()->create_course();
-        $context3 = context_course::instance($course3->id);
+        $context3 = course::instance($course3->id);
 
         // Student visits first two courses, course_get_recent_courses returns two courses.
         $this->setUser($student);
@@ -7319,7 +7319,7 @@ final class courselib_test extends advanced_testcase {
         $manager = $this->getDataGenerator()->create_and_enrol($course, 'manager');
 
         $teacherrole = $DB->get_record('role', array('shortname' => 'editingteacher'));
-        assign_capability('mod/assign:addinstance', CAP_PROHIBIT, $teacherrole->id, \context_course::instance($course->id));
+        assign_capability('mod/assign:addinstance', CAP_PROHIBIT, $teacherrole->id, course::instance($course->id));
 
         // Global user (teacher) has no permissions in this course.
         $this->setUser($teacher);
@@ -7487,11 +7487,11 @@ final class courselib_test extends advanced_testcase {
         );
 
         // Check the url is as expected.
-        $expectedreturnurl = new moodle_url('/course/view.php', ['id' => $course->id]);
+        $expectedreturnurl = new url('/course/view.php', ['id' => $course->id]);
         $this->assertEquals($expectedreturnurl, $returnurl);
 
         // Check the context is as expected.
-        $expectedcontext = context_course::instance($course->id);
+        $expectedcontext = course::instance($course->id);
         $this->assertEquals($expectedcontext, $context);
 
         // Check the instance id is as expected.
@@ -7512,7 +7512,7 @@ final class courselib_test extends advanced_testcase {
 
         // Course without sections.
         $course = $this->getDataGenerator()->create_course(['numsections' => 5], ['createsections' => true]);
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $format = course_get_format($course->id);
         $sections = $format->get_sections();
         $section = reset($sections);
@@ -7527,7 +7527,7 @@ final class courselib_test extends advanced_testcase {
 
         // Check the event details are correct.
         $this->assertInstanceOf('\core\event\section_viewed', $event);
-        $this->assertEquals(context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals('course_sections', $event->objecttable);
         $this->assertEquals($section->id, $event->objectid);
     }
@@ -7543,7 +7543,7 @@ final class courselib_test extends advanced_testcase {
 
         // Course without sections.
         $course = $this->getDataGenerator()->create_course(['numsections' => 5], ['createsections' => true]);
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $format = course_get_format($course->id);
         $sections = $format->get_sections();
         $section = reset($sections);
@@ -7558,7 +7558,7 @@ final class courselib_test extends advanced_testcase {
 
         // Check the event details are correct.
         $this->assertInstanceOf('\core\event\restricted_section_viewed', $event);
-        $this->assertEquals(context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals('course_sections', $event->objecttable);
         $this->assertEquals($section->id, $event->objectid);
     }

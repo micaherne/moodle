@@ -26,6 +26,10 @@ namespace tool_uploaduser;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\output\html_writer;
+use core\url;
+use core\user;
+use core_table\output\html_table;
 use tool_uploaduser\local\field_value_validators;
 
 require_once($CFG->libdir.'/csvlib.class.php');
@@ -38,7 +42,7 @@ require_once($CFG->dirroot.'/'.$CFG->admin.'/tool/uploaduser/locallib.php');
  * @copyright   2020 Marina Glancy
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class preview extends \html_table {
+class preview extends html_table {
 
     /** @var \csv_import_reader  */
     protected $cir;
@@ -105,14 +109,14 @@ class preview extends \html_table {
             $rowcols['status'] = array();
 
             if (isset($rowcols['username'])) {
-                $stdusername = \core_user::clean_field($rowcols['username'], 'username');
+                $stdusername = user::clean_field($rowcols['username'], 'username');
                 if ($rowcols['username'] !== $stdusername) {
                     $rowcols['status'][] = get_string('invalidusernameupload');
                 }
                 if ($userid = $DB->get_field('user', 'id',
                         ['username' => $stdusername, 'mnethostid' => $CFG->mnet_localhost_id])) {
-                    $rowcols['username'] = \html_writer::link(
-                        new \moodle_url('/user/profile.php', ['id' => $userid]), $rowcols['username']);
+                    $rowcols['username'] = html_writer::link(
+                        new url('/user/profile.php', ['id' => $userid]), $rowcols['username']);
                 }
             } else {
                 $rowcols['status'][] = get_string('missingusername');

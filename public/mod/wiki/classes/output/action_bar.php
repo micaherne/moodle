@@ -16,9 +16,12 @@
 
 namespace mod_wiki\output;
 
-use moodle_url;
-use templatable;
-use renderable;
+use core\output\html_writer;
+use core\output\renderer_base;
+use core\output\url_select;
+use core\url;
+use core\output\templatable;
+use core\output\renderable;
 
 /**
  * Renderable class for the action bar elements in the wiki activity pages.
@@ -45,7 +48,7 @@ class action_bar implements templatable, renderable {
      * @param moodle_url $pageurl The URL of the current page.
      * @param bool $displayprint Whether to display print wiki button.
      */
-    public function __construct(int $pageid, moodle_url $pageurl, bool $displayprint = false) {
+    public function __construct(int $pageid, url $pageurl, bool $displayprint = false) {
         $this->pageid = $pageid;
         $this->currenturl = $pageurl;
         $this->displayprint = $displayprint;
@@ -57,7 +60,7 @@ class action_bar implements templatable, renderable {
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
 
         $urlselect = $this->get_action_selector();
 
@@ -66,9 +69,9 @@ class action_bar implements templatable, renderable {
         ];
 
         if ($this->displayprint) {
-            $printlink = new moodle_url('/mod/wiki/prettyview.php', ['pageid' => $this->pageid]);
+            $printlink = new url('/mod/wiki/prettyview.php', ['pageid' => $this->pageid]);
 
-            $data['printbutton'] = \html_writer::link($printlink, get_string('print', 'mod_wiki'),
+            $data['printbutton'] = html_writer::link($printlink, get_string('print', 'mod_wiki'),
                 ['class' => 'btn btn-secondary', 'target' => "_blank"]);
         }
 
@@ -80,46 +83,46 @@ class action_bar implements templatable, renderable {
      *
      * @return \url_select The URL select object.
      */
-    private function get_action_selector(): \url_select {
+    private function get_action_selector(): url_select {
         global $PAGE;
 
         $menu = [];
 
         if (has_capability('mod/wiki:viewpage', $PAGE->context)) {
-            $viewlink = new moodle_url('/mod/wiki/view.php', ['pageid' => $this->pageid]);
+            $viewlink = new url('/mod/wiki/view.php', ['pageid' => $this->pageid]);
             $menu[$viewlink->out(false)] = get_string('view', 'mod_wiki');
         }
 
         if (has_capability('mod/wiki:editpage', $PAGE->context)) {
-            $editlink = new moodle_url('/mod/wiki/edit.php', ['pageid' => $this->pageid]);
+            $editlink = new url('/mod/wiki/edit.php', ['pageid' => $this->pageid]);
             $menu[$editlink->out(false)] = get_string('edit', 'mod_wiki');
         }
 
         if (has_capability('mod/wiki:viewcomment', $PAGE->context)) {
-            $commentslink = new moodle_url('/mod/wiki/comments.php', ['pageid' => $this->pageid]);
+            $commentslink = new url('/mod/wiki/comments.php', ['pageid' => $this->pageid]);
             $menu[$commentslink->out(false)] = get_string('comments', 'mod_wiki');
         }
 
         if (has_capability('mod/wiki:viewpage', $PAGE->context)) {
-            $historylink = new moodle_url('/mod/wiki/history.php', ['pageid' => $this->pageid]);
+            $historylink = new url('/mod/wiki/history.php', ['pageid' => $this->pageid]);
             $menu[$historylink->out(false)] = get_string('history', 'mod_wiki');
         }
 
         if (has_capability('mod/wiki:viewpage', $PAGE->context)) {
-            $maplink = new moodle_url('/mod/wiki/map.php', ['pageid' => $this->pageid]);
+            $maplink = new url('/mod/wiki/map.php', ['pageid' => $this->pageid]);
             $menu[$maplink->out(false)] = get_string('map', 'mod_wiki');
         }
 
         if (has_capability('mod/wiki:viewpage', $PAGE->context)) {
-            $fileslink = new moodle_url('/mod/wiki/files.php', ['pageid' => $this->pageid]);
+            $fileslink = new url('/mod/wiki/files.php', ['pageid' => $this->pageid]);
             $menu[$fileslink->out(false)] = get_string('files', 'mod_wiki');
         }
 
         if (has_capability('mod/wiki:managewiki', $PAGE->context)) {
-            $adminlink = new moodle_url('/mod/wiki/admin.php', ['pageid' => $this->pageid]);
+            $adminlink = new url('/mod/wiki/admin.php', ['pageid' => $this->pageid]);
             $menu[$adminlink->out(false)] = get_string('admin', 'mod_wiki');
         }
 
-        return new \url_select($menu, $this->currenturl->out(false), null, 'wikiactionselect');
+        return new url_select($menu, $this->currenturl->out(false), null, 'wikiactionselect');
     }
 }

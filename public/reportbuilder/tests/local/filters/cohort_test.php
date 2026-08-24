@@ -19,7 +19,7 @@ declare(strict_types=1);
 namespace core_reportbuilder\local\filters;
 
 use advanced_testcase;
-use lang_string;
+use core\lang_string;
 use core_reportbuilder\local\report\filter;
 
 /**

@@ -23,6 +23,8 @@
  */
 namespace report_outline;
 
+use core\context\course;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -66,7 +68,7 @@ final class lib_test extends \advanced_testcase {
         $this->user = $this->getDataGenerator()->create_user();
         $this->course = $this->getDataGenerator()->create_course();
         $this->tree = new \core_user\output\myprofile\tree();
-        $this->coursecontext = \context_course::instance($this->course->id);
+        $this->coursecontext = course::instance($this->course->id);
         $this->roleid = create_role('Dummy role', 'dummyrole', 'dummy role description');
         $this->resetAfterTest();
     }

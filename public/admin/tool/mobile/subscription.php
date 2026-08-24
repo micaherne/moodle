@@ -23,6 +23,9 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
@@ -30,14 +33,14 @@ admin_externalpage_setup('mobileappsubscription', '', null, '');
 
 // Check Mobile web services enabled. This page should not be linked in that case, but avoid just in case.
 if (!$CFG->enablemobilewebservice) {
-    throw new \moodle_exception('enablewsdescription', 'webservice');
+    throw new moodle_exception('enablewsdescription', 'webservice');
 }
 
 $subscriptiondata = \tool_mobile\api::get_subscription_information(false, true, 5);
 
 $returnto = optional_param('returnto', '', PARAM_LOCALURL);
 if (!empty($returnto)) {
-    $returnurl = (new \moodle_url($returnto))->out(true);
+    $returnurl = (new url($returnto))->out(true);
     redirect($returnurl);
 }
 

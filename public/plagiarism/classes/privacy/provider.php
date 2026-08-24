@@ -26,6 +26,7 @@ namespace core_plagiarism\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
 use \core_privacy\local\metadata\collection;
 
 /**
@@ -64,7 +65,7 @@ class provider implements
      * @param   array       $subcontext The subcontext within the context to export this information to.
      * @param   array       $linkarray The weird and wonderful link array used to display information for a specific item
      */
-    public static function export_plagiarism_user_data(int $userid, \context $context, array $subcontext, array $linkarray) {
+    public static function export_plagiarism_user_data(int $userid, context $context, array $subcontext, array $linkarray) {
         static::call_plugin_method('export_plagiarism_user_data', [$userid, $context, $subcontext, $linkarray]);
     }
 
@@ -73,7 +74,7 @@ class provider implements
      *
      * @param  \context $context The context to delete user data for.
      */
-    public static function delete_plagiarism_for_context(\context $context) {
+    public static function delete_plagiarism_for_context(context $context) {
         static::call_plugin_method('delete_plagiarism_for_context', [$context]);
     }
 
@@ -83,7 +84,7 @@ class provider implements
      * @param  int      $userid    The user to delete
      * @param  \context $context   The context to refine the deletion.
      */
-    public static function delete_plagiarism_for_user(int $userid, \context $context) {
+    public static function delete_plagiarism_for_user(int $userid, context $context) {
         static::call_plugin_method('delete_plagiarism_for_user', [$userid, $context]);
     }
 
@@ -93,7 +94,7 @@ class provider implements
      * @param  array    $userids   The users to delete
      * @param  \context $context   The context to refine the deletion.
      */
-    public static function delete_plagiarism_for_users(array $userids, \context $context) {
+    public static function delete_plagiarism_for_users(array $userids, context $context) {
         static::call_plugin_method('delete_plagiarism_for_users', [$userids, $context]);
     }
 

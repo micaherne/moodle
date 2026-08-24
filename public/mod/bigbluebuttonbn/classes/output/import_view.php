@@ -16,13 +16,15 @@
 
 namespace mod_bigbluebuttonbn\output;
 
+use core\output\single_button;
+use core\output\single_select;
 use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\local\config;
 use mod_bigbluebuttonbn\local\helpers\roles;
-use renderable;
-use renderer_base;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use templatable;
+use core\output\templatable;
 
 /**
  * Renderable for the import page.
@@ -116,7 +118,7 @@ class import_view implements renderable, templatable {
             $actionurl = $this->destinationinstance->get_import_url();
             $actionurl->param('sourcecourseid', $this->sourcecourseid);
 
-            $select = new \single_select(
+            $select = new single_select(
                 $actionurl,
                 'sourcebn',
                 $selectrecords,
@@ -127,7 +129,7 @@ class import_view implements renderable, templatable {
         $context->sourcecourseid = $this->sourcecourseid ?? 0;
 
         // Course selector.
-        $context->course_select = (new \single_select(
+        $context->course_select = (new single_select(
             $this->destinationinstance->get_import_url(),
             'sourcecourseid',
             $courses,
@@ -139,7 +141,7 @@ class import_view implements renderable, templatable {
         }
 
         // Back button.
-        $context->back_button = (new \single_button(
+        $context->back_button = (new single_button(
             $this->destinationinstance->get_view_url(),
             get_string('view_recording_button_return', 'mod_bigbluebuttonbn')
         ))->export_for_template($output);

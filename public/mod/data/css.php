@@ -21,6 +21,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @package mod_data
  */
+use core\url;
 use mod_data\manager;
 use mod_data\preset;
 
@@ -33,7 +34,7 @@ $d = optional_param('d', 0, PARAM_INT); // Database id.
 $presetfullname = optional_param('preset', '', PARAM_PATH); // The directory the preset is in.
 
 $lifetime  = 600; // Seconds to cache this stylesheet.
-$url = new moodle_url('/mod/data/css.php');
+$url = new url('/mod/data/css.php');
 
 $manager = null;
 if ($id) {

@@ -16,6 +16,8 @@
 
 namespace core;
 
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__.'/fixtures/lib.php');
@@ -312,7 +314,7 @@ final class grade_grade_test extends \grade_base_testcase {
         $user = $this->getDataGenerator()->create_user();
         $assignrecord = $this->getDataGenerator()->create_module('assign', array('course' => $course, 'grade' => 100));
         $cm = get_coursemodule_from_instance('assign', $assignrecord->id);
-        $assigncontext = \context_module::instance($cm->id);
+        $assigncontext = module::instance($cm->id);
         $assign = new \assign($assigncontext, $cm, $course);
 
         // Fetch the assignment item.
@@ -513,7 +515,7 @@ final class grade_grade_test extends \grade_base_testcase {
         $u1 = $dg->create_user();
         $c1 = $dg->create_course();
         $a1 = $dg->create_module('assign', ['course' => $c1->id]);
-        $a1context = \context_module::instance($a1->cmid);
+        $a1context = module::instance($a1->cmid);
 
         $gi = new \grade_item($dg->create_grade_item(
             [

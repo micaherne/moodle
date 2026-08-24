@@ -22,11 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\configmulticheckbox;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
 
-    $settings->add(new admin_setting_configmulticheckbox('filter_emoticon/formats',
+    $settings->add(new configmulticheckbox('filter_emoticon/formats',
             get_string('settingformats', 'filter_emoticon'),
             get_string('settingformats_desc', 'filter_emoticon'),
             array(FORMAT_HTML => 1, FORMAT_MARKDOWN => 1, FORMAT_MOODLE => 1), format_text_menu()));

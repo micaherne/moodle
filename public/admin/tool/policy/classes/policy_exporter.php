@@ -27,7 +27,7 @@ namespace tool_policy;
 defined('MOODLE_INTERNAL') || die();
 
 use core\external\exporter;
-use renderer_base;
+use core\output\renderer_base;
 
 /**
  * Exporter of a policy document model.

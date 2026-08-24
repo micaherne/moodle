@@ -27,11 +27,11 @@ namespace mod_h5pactivity\output;
 defined('MOODLE_INTERNAL') || die();
 
 use mod_h5pactivity\local\attempt as activity_attempt;
-use renderable;
-use templatable;
-use renderer_base;
-use moodle_url;
-use user_picture;
+use core\output\renderable;
+use core\output\templatable;
+use core\output\renderer_base;
+use core\url;
+use core\output\user_picture;
 use stdClass;
 
 /**
@@ -91,7 +91,7 @@ class attempt implements renderable, templatable {
             'successicon' => $this->success_icon($output, $attempt->get_success()),
             'successtext' => $this->success_icon($output, $attempt->get_success(), true),
             'scaled' => $attempt->get_scaled(),
-            'reporturl' => new moodle_url('/mod/h5pactivity/report.php', [
+            'reporturl' => new url('/mod/h5pactivity/report.php', [
                 'a' => $attempt->get_h5pactivityid(), 'attemptid' => $attempt->get_id()
             ]),
         ];

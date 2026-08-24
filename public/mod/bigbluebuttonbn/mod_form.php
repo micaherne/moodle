@@ -24,6 +24,13 @@
  * @author    Fred Dixon  (ffdixon [at] blindsidenetworks [dt] com)
  */
 
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\single_button;
+use core\output\single_select;
+use core\url;
 use mod_bigbluebuttonbn\extension;
 use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\local\helpers\roles;
@@ -69,7 +76,7 @@ class mod_bigbluebuttonbn_mod_form extends moodleform_mod {
 
         // Get only those that are allowed.
         $course = $this->_course;
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $bigbluebuttonbn = empty($this->get_current()->id) ? null : $this->get_current();
 
         $this->formextensions = extension::mod_form_addons_instances($mform, $bigbluebuttonbn, $this->get_suffix());
@@ -122,7 +129,7 @@ class mod_bigbluebuttonbn_mod_form extends moodleform_mod {
      */
     protected function get_instance_type_profiles() {
         // Add profile data here instead of passing it by parameters.
-        $context = context_course::instance($this->_course->id);
+        $context = course::instance($this->_course->id);
         $instancetyperofiles = bigbluebutton_proxy::get_instance_type_profiles_create_allowed(
             has_capability('mod/bigbluebuttonbn:addinstancewithmeeting', $context),
             has_capability('mod/bigbluebuttonbn:addinstancewithrecording', $context)
@@ -131,7 +138,7 @@ class mod_bigbluebuttonbn_mod_form extends moodleform_mod {
         if (empty($instancetyperofiles)) {
             global $CFG;
             // Also check module context for those that are allowed.
-            $contextm = context_module::instance($this->_cm->id);
+            $contextm = module::instance($this->_cm->id);
             $instancetyperofiles = bigbluebutton_proxy::get_instance_type_profiles_create_allowed(
                 has_capability('mod/bigbluebuttonbn:addinstancewithmeeting', $contextm),
                 has_capability('mod/bigbluebuttonbn:addinstancewithrecording', $contextm)
@@ -639,15 +646,15 @@ class mod_bigbluebuttonbn_mod_form extends moodleform_mod {
         $mform->setExpanded('permissions');
         $mform->addElement('hidden', 'participants', json_encode($participantlist));
         $mform->setType('participants', PARAM_TEXT);
-        $selectiontype = new single_select(new moodle_url(qualified_me()),
+        $selectiontype = new single_select(new url(qualified_me()),
             'bigbluebuttonbn_participant_selection_type',
             $participantselection['type_options'],
             $participantselection['type_selected']);
-        $selectionparticipants = new single_select(new moodle_url(qualified_me()),
+        $selectionparticipants = new single_select(new url(qualified_me()),
             'bigbluebuttonbn_participant_selection',
             $participantselection['options'],
             $participantselection['selected']);
-        $action = new single_button(new moodle_url(qualified_me()),
+        $action = new single_button(new url(qualified_me()),
             get_string('mod_form_field_participant_list_action_add', 'bigbluebuttonbn'),
             'post',
             single_button::BUTTON_SECONDARY,

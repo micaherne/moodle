@@ -24,6 +24,9 @@
 
 namespace core\analytics\analyser;
 
+use core\context\course;
+use core\output\user_picture;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/lib/enrollib.php');
@@ -60,7 +63,7 @@ class student_enrolments extends \core_analytics\local\analyser\by_course {
      * @return \context
      */
     public function sample_access_context($sampleid) {
-        return \context_course::instance($this->get_sample_courseid($sampleid));
+        return course::instance($this->get_sample_courseid($sampleid));
     }
 
     /**
@@ -204,7 +207,7 @@ class student_enrolments extends \core_analytics\local\analyser\by_course {
             // course, $courseid and $coursemodinfo will only query the DB once and cache the course data in memory.
             $courseid = $this->get_sample_courseid($sampleid);
             $coursemodinfo = get_fast_modinfo($courseid);
-            $coursecontext = \context_course::instance($courseid);
+            $coursecontext = course::instance($courseid);
 
             $samplesdata[$sampleid]['course'] = $coursemodinfo->get_course();
             $samplesdata[$sampleid]['context'] = $coursecontext;
@@ -245,7 +248,7 @@ class student_enrolments extends \core_analytics\local\analyser\by_course {
      */
     public function sample_description($sampleid, $contextid, $sampledata) {
         $description = fullname($sampledata['user'], true, array('context' => $contextid));
-        return array($description, new \user_picture($sampledata['user']));
+        return array($description, new user_picture($sampledata['user']));
     }
 
 }

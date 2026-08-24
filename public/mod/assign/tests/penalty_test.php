@@ -16,6 +16,7 @@
 
 namespace mod_assign;
 
+use core\context\module;
 use core_component;
 use core_grades\penalty_manager;
 use grade_item;
@@ -164,7 +165,7 @@ final class penalty_test extends \advanced_testcase {
             'grade' => 200,
         ]);
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $assign = new mod_assign_testable_assign($context, $cm, $course);
 
         // If there is user override.
@@ -240,7 +241,7 @@ final class penalty_test extends \advanced_testcase {
             'grade' => 200,
         ]);
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $assign = new mod_assign_testable_assign($context, $cm, $course);
 
         // Add submission and grade.
@@ -304,7 +305,7 @@ final class penalty_test extends \advanced_testcase {
         ]);
 
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $assign = new mod_assign_testable_assign($context, $cm, $course);
 
         // Apply grade-item factors.
@@ -421,7 +422,7 @@ final class penalty_test extends \advanced_testcase {
             'grade' => 100,
         ]);
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $assign = new mod_assign_testable_assign($context, $cm, $course);
 
         // Set grade-item factors: finalgrade = rawgrade * 1.5 + 10.

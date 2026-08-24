@@ -34,6 +34,8 @@
 
 namespace mod_lti\local\ltiopenid;
 
+use core\exception\moodle_exception;
+
 /**
  * Tests for the jwks_helper class.
  *
@@ -192,7 +194,7 @@ final class jwks_helper_test extends \basic_testcase {
                     'YWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.dbUlZopFo7164JVLD0G4GoZOhoMYWhIXkgtlblBXT6fC3K4lJ38l3LzlEBhfRRKvJlXpe'.
                     'NNGmBg8V29jd5J33Q',
                 'expected' => [
-                    'exception' => \moodle_exception::class
+                    'exception' => moodle_exception::class
                 ]
             ],
             // Exception expected when JWK kid field missing.
@@ -224,7 +226,7 @@ final class jwks_helper_test extends \basic_testcase {
                     'qVtxaDr6wUFKrKItgBMzWIdNZ6y7O9E0DhEPTbE9rfBo6KTFsHAZnMg4k68CDp2woYIaXbmYTWcvbzIuHO7_37GT79XdIwkm95QJ7hYC9Riwr'.
                     'V7mesbY4PAahERJawntho0my942XheVLmGwLMBkQ',
                 'expected' => [
-                    'exception' => \moodle_exception::class
+                    'exception' => moodle_exception::class
                 ]
             ],
             // Exception expected when JWT passes unsupported symmetrical alg.
@@ -252,7 +254,7 @@ final class jwks_helper_test extends \basic_testcase {
                     'bG9nYW4iOiJMb3ZlcyBpdCwgbG92ZXMgaXQsIGxvdmVzIE1vb2RsZSIsImlhdCI6MTUxNjIzOTAyMn0.zBM5Jw0BOig5-C1R7TD-TzH1QVmyD'.
                     'yMjbK0KGG76xIE',
                 'expected' => [
-                    'exception' => \moodle_exception::class
+                    'exception' => moodle_exception::class
                 ]
             ],
         ];

@@ -16,6 +16,8 @@
 
 namespace core_admin\setting\setting;
 
+use core\lang_string;
+
 /**
  * Selection of plugins that can work as site policy handlers
  *
@@ -47,14 +49,14 @@ class sitepolicy_handler_select extends \core_admin\setting\setting\configselect
             return true;
         }
 
-        $this->choices = ['' => new \lang_string('sitepolicyhandlercore', 'core_admin')];
+        $this->choices = ['' => new lang_string('sitepolicyhandlercore', 'core_admin')];
         $manager = new \core_privacy\local\sitepolicy\manager();
         $plugins = $manager->get_all_handlers();
         foreach ($plugins as $pname => $unused) {
-            $this->choices[$pname] = new \lang_string(
+            $this->choices[$pname] = new lang_string(
                 'sitepolicyhandlerplugin',
                 'core_admin',
-                ['name' => new \lang_string('pluginname', $pname), 'component' => $pname]
+                ['name' => new lang_string('pluginname', $pname), 'component' => $pname]
             );
         }
 

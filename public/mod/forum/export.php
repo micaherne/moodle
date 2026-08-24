@@ -21,6 +21,11 @@
  * @copyright  2019 Simey Lameze <simey@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\exception\moodle_exception;
+use core\url;
+use core\user;
+use core_course\cm_info;
+
 define('NO_OUTPUT_BUFFERING', true);
 
 require_once(__DIR__ . '/../../config.php');
@@ -71,7 +76,7 @@ $cm = cm_info::create($coursemodule);
 
 require_course_login($course, true, $cm);
 
-$url = new moodle_url('/mod/forum/export.php');
+$url = new url('/mod/forum/export.php');
 $pagetitle = get_string('export', 'mod_forum');
 $context = $forum->get_context();
 
@@ -80,7 +85,7 @@ $form = new mod_forum\form\export_form($url->out(false), [
 ]);
 
 if ($form->is_cancelled()) {
-    redirect(new moodle_url('/mod/forum/view.php', ['id' => $cm->id]));
+    redirect(new url('/mod/forum/view.php', ['id' => $cm->id]));
 } else if ($data = $form->get_data()) {
     $dataformat = $data->format;
 
@@ -144,12 +149,12 @@ if ($form->is_cancelled()) {
                 $data->$field = $exportdata->$field ?? null;
 
                 if ($field == 'userfullname') {
-                    $user = \core_user::get_user($data->userid);
+                    $user = user::get_user($data->userid);
                     $data->userfullname = fullname($user, $canviewfullname);
                 }
 
                 if ($field == 'privatereplytofullname' && !empty($data->privatereplyto)) {
-                    $user = \core_user::get_user($data->privatereplyto);
+                    $user = user::get_user($data->privatereplyto);
                     $data->privatereplytofullname = fullname($user, $canviewfullname);
                 }
 

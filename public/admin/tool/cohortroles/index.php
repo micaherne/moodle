@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/tablelib.php');
@@ -29,9 +32,9 @@ require_once($CFG->libdir.'/tablelib.php');
 $removeid = optional_param('removecohortroleassignment', 0, PARAM_INT);
 
 admin_externalpage_setup('toolcohortroles');
-$context = context_system::instance();
+$context = system::instance();
 
-$pageurl = new moodle_url('/admin/tool/cohortroles/index.php');
+$pageurl = new url('/admin/tool/cohortroles/index.php');
 
 $output = $PAGE->get_renderer('tool_cohortroles');
 
@@ -52,7 +55,7 @@ if ($removeid) {
         $notification = get_string('cohortroleassignmentnotremoved', 'tool_cohortroles');
         echo $output->notify_problem($notification);
     }
-    echo $output->continue_button(new moodle_url($pageurl));
+    echo $output->continue_button(new url($pageurl));
 } else if ($data = $form->get_data()) {
     require_sesskey();
     // We must create them all or none.
@@ -80,7 +83,7 @@ if ($removeid) {
         echo $output->notify_success($notification);
     }
 
-    echo $output->continue_button(new moodle_url($pageurl));
+    echo $output->continue_button(new url($pageurl));
 } else {
     $form->display();
 

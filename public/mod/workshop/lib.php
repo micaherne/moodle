@@ -26,6 +26,17 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\module;
+use core\exception\coding_exception;
+use core\navigation\navigation_node;
+use core\navigation\settings_navigation;
+use core\output\html_writer;
+use core\url;
+use core\user;
+use core_course\cached_cm_info;
+use core_course\cm_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/calendar/lib.php');
@@ -116,7 +127,7 @@ function workshop_add_instance(stdclass $workshop) {
     // we need to use context now, so we need to make sure all needed info is already in db
     $cmid = $workshop->coursemodule;
     $DB->set_field('course_modules', 'instance', $workshop->id, array('id' => $cmid));
-    $context = context_module::instance($cmid);
+    $context = module::instance($cmid);
 
     // process the custom wysiwyg editors
     if ($draftitemid = $workshop->instructauthorseditor['itemid']) {
@@ -196,7 +207,7 @@ function workshop_update_instance(stdclass $workshop) {
     // todo - if the grading strategy is being changed, we may want to replace all aggregated peer grades with nulls
 
     $DB->update_record('workshop', $workshop);
-    $context = context_module::instance($workshop->coursemodule);
+    $context = module::instance($workshop->coursemodule);
 
     // process the custom wysiwyg editors
     if ($draftitemid = $workshop->instructauthorseditor['itemid']) {
@@ -411,7 +422,7 @@ function workshop_user_outline($course, $user, $mod, $workshop) {
     if (!empty($grades->items[0]->grades)) {
         $submissiongrade = reset($grades->items[0]->grades);
         $time = max($time, $submissiongrade->dategraded);
-        if (!$submissiongrade->hidden || has_capability('moodle/grade:viewhidden', context_course::instance($course->id))) {
+        if (!$submissiongrade->hidden || has_capability('moodle/grade:viewhidden', course::instance($course->id))) {
             $info .= get_string('submissiongrade', 'workshop') . ': ' . $submissiongrade->str_long_grade
                 . html_writer::empty_tag('br');
         } else {
@@ -422,7 +433,7 @@ function workshop_user_outline($course, $user, $mod, $workshop) {
     if (!empty($grades->items[1]->grades)) {
         $assessmentgrade = reset($grades->items[1]->grades);
         $time = max($time, $assessmentgrade->dategraded);
-        if (!$assessmentgrade->hidden || has_capability('moodle/grade:viewhidden', context_course::instance($course->id))) {
+        if (!$assessmentgrade->hidden || has_capability('moodle/grade:viewhidden', course::instance($course->id))) {
             $info .= get_string('gradinggrade', 'workshop') . ': ' . $assessmentgrade->str_long_grade;
         } else {
             $info .= get_string('gradinggrade', 'workshop') . ': ' . get_string('hidden', 'grades');
@@ -459,7 +470,7 @@ function workshop_user_complete($course, $user, $mod, $workshop) {
 
     if (!empty($grades->items[0]->grades)) {
         $submissiongrade = reset($grades->items[0]->grades);
-        if (!$submissiongrade->hidden || has_capability('moodle/grade:viewhidden', context_course::instance($course->id))) {
+        if (!$submissiongrade->hidden || has_capability('moodle/grade:viewhidden', course::instance($course->id))) {
             $info = get_string('submissiongrade', 'workshop') . ': ' . $submissiongrade->str_long_grade;
         } else {
             $info = get_string('submissiongrade', 'workshop') . ': ' . get_string('hidden', 'grades');
@@ -468,7 +479,7 @@ function workshop_user_complete($course, $user, $mod, $workshop) {
     }
     if (!empty($grades->items[1]->grades)) {
         $assessmentgrade = reset($grades->items[1]->grades);
-        if (!$assessmentgrade->hidden || has_capability('moodle/grade:viewhidden', context_course::instance($course->id))) {
+        if (!$assessmentgrade->hidden || has_capability('moodle/grade:viewhidden', course::instance($course->id))) {
             $info = get_string('gradinggrade', 'workshop') . ': ' . $assessmentgrade->str_long_grade;
         } else {
             $info = get_string('gradinggrade', 'workshop') . ': ' . get_string('hidden', 'grades');
@@ -573,7 +584,7 @@ function workshop_print_recent_activity($course, $viewfullnames, $timestart) {
             $users[$activity->reviewerid] = username_load_fields_from_object($u, $activity, 'reviewer');
         }
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $groupmode = groups_get_activity_groupmode($cm, $course);
 
         if ($activity->submissionmodified > $timestart and empty($submissions[$activity->submissionid])) {
@@ -689,7 +700,7 @@ function workshop_print_recent_activity($course, $viewfullnames, $timestart) {
         $shown = true;
         echo $OUTPUT->heading(get_string('recentsubmissions', 'workshop') . ':', 6);
         foreach ($submissions as $id => $submission) {
-            $link = new moodle_url('/mod/workshop/submission.php', array('id'=>$id, 'cmid'=>$submission->cmid));
+            $link = new url('/mod/workshop/submission.php', array('id'=>$id, 'cmid'=>$submission->cmid));
             if ($submission->authornamevisible) {
                 $author = $users[$submission->authorid];
             } else {
@@ -704,7 +715,7 @@ function workshop_print_recent_activity($course, $viewfullnames, $timestart) {
         echo $OUTPUT->heading(get_string('recentassessments', 'workshop') . ':', 6);
         core_collator::asort_objects_by_property($assessments, 'timemodified');
         foreach ($assessments as $id => $assessment) {
-            $link = new moodle_url('/mod/workshop/assessment.php', array('asid' => $id));
+            $link = new url('/mod/workshop/assessment.php', array('asid' => $id));
             if ($assessment->reviewernamevisible) {
                 $reviewer = $users[$assessment->reviewerid];
             } else {
@@ -794,7 +805,7 @@ function workshop_get_recent_mod_activity(&$activities, &$index, $timestart, $co
     $rs = $DB->get_recordset_sql($sql, $params);
 
     $groupmode       = groups_get_activity_groupmode($cm, $course);
-    $context         = context_module::instance($cm->id);
+    $context         = module::instance($cm->id);
     $grader          = has_capability('moodle/grade:viewall', $context);
     $accessallgroups = has_capability('moodle/site:accessallgroups', $context);
     $viewauthors     = has_capability('mod/workshop:viewauthornames', $context);
@@ -987,7 +998,7 @@ function workshop_print_recent_mod_activity($activity, $courseid, $detail, $modn
 
         if ($detail) {
             echo html_writer::start_tag('h4', array('class'=>'workshop'));
-            $url = new moodle_url('/mod/workshop/view.php', array('id'=>$activity->cmid));
+            $url = new url('/mod/workshop/view.php', array('id'=>$activity->cmid));
             $name = s($activity->name);
             echo $OUTPUT->image_icon('monologo', $name, $activity->type);
             echo ' ' . $modnames[$activity->type];
@@ -996,14 +1007,14 @@ function workshop_print_recent_mod_activity($activity, $courseid, $detail, $modn
         }
 
         echo html_writer::start_tag('div', array('class'=>'title'));
-        $url = new moodle_url('/mod/workshop/submission.php', array('cmid'=>$activity->cmid, 'id'=>$activity->content->id));
+        $url = new url('/mod/workshop/submission.php', array('cmid'=>$activity->cmid, 'id'=>$activity->content->id));
         $name = s($activity->content->title);
         echo html_writer::tag('strong', html_writer::link($url, $name));
         echo html_writer::end_tag('div');
 
         if (!empty($activity->user)) {
             echo html_writer::start_tag('div', array('class'=>'user'));
-            $url = new moodle_url('/user/view.php', array('id'=>$activity->user->id, 'course'=>$courseid));
+            $url = new url('/user/view.php', array('id'=>$activity->user->id, 'course'=>$courseid));
             $name = fullname($activity->user);
             $link = html_writer::link($url, $name);
             echo get_string('submissionby', 'workshop', $link);
@@ -1024,7 +1035,7 @@ function workshop_print_recent_mod_activity($activity, $courseid, $detail, $modn
 
         if ($detail) {
             echo html_writer::start_tag('h4', array('class'=>'workshop'));
-            $url = new moodle_url('/mod/workshop/view.php', array('id'=>$activity->cmid));
+            $url = new url('/mod/workshop/view.php', array('id'=>$activity->cmid));
             $name = s($activity->name);
             echo $OUTPUT->image_icon('monologo', $name, $activity->type);
             echo ' ' . $modnames[$activity->type];
@@ -1033,14 +1044,14 @@ function workshop_print_recent_mod_activity($activity, $courseid, $detail, $modn
         }
 
         echo html_writer::start_tag('div', array('class'=>'title'));
-        $url = new moodle_url('/mod/workshop/assessment.php', array('asid'=>$activity->content->id));
+        $url = new url('/mod/workshop/assessment.php', array('asid'=>$activity->content->id));
         $name = s($activity->content->submissiontitle);
         echo html_writer::tag('em', html_writer::link($url, $name));
         echo html_writer::end_tag('div');
 
         if (!empty($activity->user)) {
             echo html_writer::start_tag('div', array('class'=>'user'));
-            $url = new moodle_url('/user/view.php', array('id'=>$activity->user->id, 'course'=>$courseid));
+            $url = new url('/user/view.php', array('id'=>$activity->user->id, 'course'=>$courseid));
             $name = fullname($activity->user);
             $link = html_writer::link($url, $name);
             echo get_string('assessmentbyfullname', 'workshop', $link);
@@ -1603,8 +1614,8 @@ function workshop_get_file_info($browser, $areas, $course, $cm, $context, $filea
 function workshop_extend_navigation(navigation_node $navref, stdclass $course, stdclass $module, cm_info $cm) {
     global $CFG;
 
-    if (has_capability('mod/workshop:submit', context_module::instance($cm->id))) {
-        $url = new moodle_url('/mod/workshop/submission.php', array('cmid' => $cm->id));
+    if (has_capability('mod/workshop:submit', module::instance($cm->id))) {
+        $url = new url('/mod/workshop/submission.php', array('cmid' => $cm->id));
         $mysubmission = $navref->add(get_string('mysubmission', 'workshop'), $url);
         $mysubmission->mainnavonly = true;
     }
@@ -1621,12 +1632,12 @@ function workshop_extend_navigation(navigation_node $navref, stdclass $course, s
  */
 function workshop_extend_settings_navigation(settings_navigation $settingsnav, ?navigation_node $workshopnode=null) {
     if (has_capability('mod/workshop:editdimensions', $settingsnav->get_page()->cm->context)) {
-        $url = new moodle_url('/mod/workshop/editform.php', array('cmid' => $settingsnav->get_page()->cm->id));
+        $url = new url('/mod/workshop/editform.php', array('cmid' => $settingsnav->get_page()->cm->id));
         $workshopnode->add(get_string('assessmentform', 'workshop'), $url,
         settings_navigation::TYPE_SETTING, null, 'workshopassessement');
     }
     if (has_capability('mod/workshop:allocate', $settingsnav->get_page()->cm->context)) {
-        $url = new moodle_url('/mod/workshop/allocation.php', array('cmid' => $settingsnav->get_page()->cm->id));
+        $url = new url('/mod/workshop/allocation.php', array('cmid' => $settingsnav->get_page()->cm->id));
         $workshopnode->add(get_string('submissionsallocation', 'workshop'), $url, settings_navigation::TYPE_SETTING);
     }
 }
@@ -1785,7 +1796,7 @@ function mod_workshop_core_calendar_provide_event_action(calendar_event $event,
 
     return $factory->create_instance(
         get_string('viewworkshopsummary', 'workshop'),
-        new \moodle_url('/mod/workshop/view.php', array('id' => $cm->id)),
+        new url('/mod/workshop/view.php', array('id' => $cm->id)),
         1,
         true
     );
@@ -1919,7 +1930,7 @@ function mod_workshop_core_calendar_event_timestart_updated(\calendar_event $eve
     }
 
     $coursemodule = get_fast_modinfo($courseid)->instances[$modulename][$instanceid];
-    $context = context_module::instance($coursemodule->id);
+    $context = module::instance($coursemodule->id);
 
     // The user does not have the capability to modify this activity.
     if (!has_capability('moodle/course:manageactivities', $context)) {
@@ -2261,7 +2272,7 @@ function mod_workshop_user_preferences(): array {
         'type' => PARAM_BOOL,
         'null' => NULL_NOT_ALLOWED,
         'default' => false,
-        'permissioncallback' => [core_user::class, 'is_current_user'],
+        'permissioncallback' => [user::class, 'is_current_user'],
     ];
 
     return [

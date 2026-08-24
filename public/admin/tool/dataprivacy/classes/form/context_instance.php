@@ -25,6 +25,7 @@
 namespace tool_dataprivacy\form;
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
 use tool_dataprivacy\api;
 use tool_dataprivacy\data_registry;
 use tool_dataprivacy\purpose;
@@ -137,7 +138,7 @@ class context_instance extends \core\form\persistent {
      * @param \context $context
      * @return array
      */
-    public static function get_context_instance_customdata(\context $context) {
+    public static function get_context_instance_customdata(context $context) {
 
         $persistent = \tool_dataprivacy\context_instance::get_record_by_contextid($context->id, false);
         if (!$persistent) {
@@ -197,7 +198,7 @@ class context_instance extends \core\form\persistent {
      * @param \context $context The context, just for displaying (filters) purposes.
      * @return string
      */
-    protected static function get_retention_display_text(purpose $effectivepurpose, $retentioncontextlevel, \context $context) {
+    protected static function get_retention_display_text(purpose $effectivepurpose, $retentioncontextlevel, context $context) {
         global $PAGE;
 
         $renderer = $PAGE->get_renderer('tool_dataprivacy');

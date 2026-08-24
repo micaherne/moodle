@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+
 require_once('../config.php');
 require_once('lib.php');
 require_once($CFG->libdir . '/completionlib.php');
@@ -39,7 +42,7 @@ if ($course->id == SITEID) {
     // As site home is not a real course, we do not support the overview page.
     throw new moodle_exception('The site home course overview page is not supported.');
 }
-$context = context_course::instance($course->id, MUST_EXIST);
+$context = course::instance($course->id, MUST_EXIST);
 
 require_login($course);
 require_capability('moodle/course:viewoverview', $context);

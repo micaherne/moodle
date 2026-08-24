@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace enrol_lti\local\ltiadvantage\repository;
+use core\exception\coding_exception;
+use core\url;
 use enrol_lti\local\ltiadvantage\entity\resource_link;
 use enrol_lti\local\ltiadvantage\entity\application_registration;
 
@@ -37,11 +39,11 @@ final class resource_link_repository_test extends \advanced_testcase {
         $registration = application_registration::create(
             'Test',
             'a2c94a2c94',
-            new \moodle_url('http://lms.example.org'),
+            new url('http://lms.example.org'),
             'clientid_123',
-            new \moodle_url('https://example.org/authrequesturl'),
-            new \moodle_url('https://example.org/jwksurl'),
-            new \moodle_url('https://example.org/accesstokenurl')
+            new url('https://example.org/authrequesturl'),
+            new url('https://example.org/jwksurl'),
+            new url('https://example.org/accesstokenurl')
         );
         $registrationrepo = new application_registration_repository();
         $createdregistration = $registrationrepo->save($registration);
@@ -59,8 +61,8 @@ final class resource_link_repository_test extends \advanced_testcase {
 
         $resourcelink = $saveddeployment->add_resource_link($id, $savedcontext->get_id());
         $resourcelink->add_grade_service(
-            new \moodle_url('https://lms.example.com/context/24/lineitems'),
-            new \moodle_url('https://lms.example.com/context/24/lineitem/3'),
+            new url('https://lms.example.com/context/24/lineitems'),
+            new url('https://lms.example.com/context/24/lineitem/3'),
             [
                 'https://purl.imsglobal.org/spec/lti-ags/scope/lineitem',
                 'https://purl.imsglobal.org/spec/lti-ags/scope/lineitem.readonly',
@@ -69,7 +71,7 @@ final class resource_link_repository_test extends \advanced_testcase {
             ]
         );
         $resourcelink->add_names_and_roles_service(
-            new \moodle_url('https://lms.example.com/context/24/memberships'),
+            new url('https://lms.example.com/context/24/memberships'),
             [1.0, 2.0]
         );
 
@@ -399,7 +401,7 @@ final class resource_link_repository_test extends \advanced_testcase {
         $repository = new resource_link_repository();
         $newreslink = $repository->save($resourcelink);
         $newreslink->add_grade_service(
-            new \moodle_url('https://lms.example.org/context/lineitems')
+            new url('https://lms.example.org/context/lineitems')
         );
 
         $updatedreslink = $repository->save($newreslink);
@@ -419,9 +421,9 @@ final class resource_link_repository_test extends \advanced_testcase {
         $repository->delete($newreslink->get_id());
 
         $newreslink->add_grade_service(
-            new \moodle_url('https://lms.example.org/context/lineitems')
+            new url('https://lms.example.org/context/lineitems')
         );
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $repository->save($newreslink);
     }
 }

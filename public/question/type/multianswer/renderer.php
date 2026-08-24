@@ -25,6 +25,9 @@
  */
 
 
+use core\exception\coding_exception;
+use core\output\html_writer;
+
 require_once($CFG->dirroot . '/question/type/shortanswer/renderer.php');
 
 

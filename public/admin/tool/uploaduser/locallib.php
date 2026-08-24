@@ -23,6 +23,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\coursecat;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 define('UU_USER_ADDNEW', 0);
@@ -187,18 +193,18 @@ class uu_progress_tracker {
  * @param moodle_url $returnurl return url in case of any error
  * @return array list of fields
  */
-function uu_validate_user_upload_columns(csv_import_reader $cir, $stdfields, $profilefields, moodle_url $returnurl) {
+function uu_validate_user_upload_columns(csv_import_reader $cir, $stdfields, $profilefields, url $returnurl) {
     $columns = $cir->get_columns();
 
     if (empty($columns)) {
         $cir->close();
         $cir->cleanup();
-        throw new \moodle_exception('cannotreadtmpfile', 'error', $returnurl);
+        throw new moodle_exception('cannotreadtmpfile', 'error', $returnurl);
     }
     if (count($columns) < 2) {
         $cir->close();
         $cir->cleanup();
-        throw new \moodle_exception('csvfewcolumns', 'error', $returnurl);
+        throw new moodle_exception('csvfewcolumns', 'error', $returnurl);
     }
 
     // test columns
@@ -241,12 +247,12 @@ function uu_validate_user_upload_columns(csv_import_reader $cir, $stdfields, $pr
         } else {
             $cir->close();
             $cir->cleanup();
-            throw new \moodle_exception('invalidfieldname', 'error', $returnurl, $field);
+            throw new moodle_exception('invalidfieldname', 'error', $returnurl, $field);
         }
         if (in_array($newfield, $processed)) {
             $cir->close();
             $cir->cleanup();
-            throw new \moodle_exception('duplicatefieldname', 'error', $returnurl, $newfield);
+            throw new moodle_exception('duplicatefieldname', 'error', $returnurl, $newfield);
         }
         $processed[$key] = $newfield;
     }
@@ -381,7 +387,7 @@ function uu_supported_auths() {
  */
 function uu_allowed_roles() {
     // let's cheat a bit, frontpage is guaranteed to exist and has the same list of roles ;-)
-    $roles = get_assignable_roles(context_course::instance(SITEID), ROLENAME_ORIGINALANDSHORT);
+    $roles = get_assignable_roles(course::instance(SITEID), ROLENAME_ORIGINALANDSHORT);
     return array_reverse($roles, true);
 }
 
@@ -397,11 +403,11 @@ function uu_allowed_roles_cache(?int $categoryid = null, ?int $courseid = null):
     if (!is_null($categoryid) && !is_null($courseid)) {
         return [];
     } else if (is_null($categoryid) && !is_null($courseid)) {
-        $allowedroles = get_assignable_roles(context_course::instance($courseid), ROLENAME_SHORT);
+        $allowedroles = get_assignable_roles(course::instance($courseid), ROLENAME_SHORT);
     } else if (is_null($courseid) && !is_null($categoryid)) {
-        $allowedroles = get_assignable_roles(context_coursecat::instance($categoryid), ROLENAME_SHORT);
+        $allowedroles = get_assignable_roles(coursecat::instance($categoryid), ROLENAME_SHORT);
     } else {
-        $allowedroles = get_assignable_roles(context_course::instance(SITEID), ROLENAME_SHORT);
+        $allowedroles = get_assignable_roles(course::instance(SITEID), ROLENAME_SHORT);
     }
 
     $rolecache = [];
@@ -425,7 +431,7 @@ function uu_allowed_roles_cache(?int $categoryid = null, ?int $courseid = null):
  * @return array
  */
 function uu_allowed_sysroles_cache() {
-    $allowedroles = get_assignable_roles(context_system::instance(), ROLENAME_SHORT);
+    $allowedroles = get_assignable_roles(system::instance(), ROLENAME_SHORT);
     $rolecache = [];
     foreach ($allowedroles as $rid => $rname) {
         $rolecache[$rid] = new stdClass();

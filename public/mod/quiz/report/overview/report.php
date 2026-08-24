@@ -22,6 +22,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\output\html_writer;
+use core\output\progress_bar;
+use core\url;
 use mod_quiz\local\reports\attempts_report;
 use mod_quiz\question\bank\qbank_helper;
 use mod_quiz\quiz_attempt;
@@ -62,7 +66,7 @@ class quiz_overview_report extends attempts_report {
         $questions = quiz_report_get_significant_questions($quiz);
         // Prepare for downloading, if applicable.
         $courseshortname = format_string($course->shortname, true,
-                ['context' => context_course::instance($course->id)]);
+                ['context' => course::instance($course->id)]);
         $table = new quiz_overview_table($quiz, $this->context, $this->qmsubselect,
                 $options, $groupstudentsjoins, $studentsjoins, $questions, $options->get_url());
         $filename = quiz_report_download_filename(get_string('overviewfilename', 'quiz_overview'),
@@ -224,7 +228,7 @@ class quiz_overview_report extends attempts_report {
             return;
         }
 
-        $commitregradeurl = new moodle_url($options->get_url(), ['sesskey' => sesskey(), 'regradealldrydo' => 1]);
+        $commitregradeurl = new url($options->get_url(), ['sesskey' => sesskey(), 'regradealldrydo' => 1]);
 
         // We can't use $OUTPUT->notification because is aggressively cleans the message, which strips the button.
         echo html_writer::div(get_string('regrade_regradeneedednotificationmessage', 'quiz_overview',
@@ -252,7 +256,7 @@ class quiz_overview_report extends attempts_report {
      * @param moodle_url $redirecturl
      */
     protected function process_regrade_actions($quiz, $cm, $currentgroup,
-            \core\dml\sql_join $groupstudentsjoins, moodle_url $redirecturl) {
+            \core\dml\sql_join $groupstudentsjoins, url $redirecturl) {
 
         if ($currentgroup && !$this->hasgroupstudents) {
             return;

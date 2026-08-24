@@ -26,6 +26,8 @@ namespace enrol_flatfile\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\course;
+use core\output\progress_trace\null_progress_trace;
 use core_privacy\local\metadata\collection;
 use core_privacy\tests\provider_testcase;
 use core_privacy\local\request\approved_contextlist;
@@ -278,9 +280,9 @@ final class provider_test extends provider_testcase {
         $course1 = $this->getDataGenerator()->create_course(['idnumber' => 'c1']);
         $course2 = $this->getDataGenerator()->create_course(['idnumber' => 'c2']);
         $course3 = $this->getDataGenerator()->create_course(['idnumber' => 'c3']);
-        $this->coursecontext1 = \context_course::instance($course1->id);
-        $this->coursecontext2 = \context_course::instance($course2->id);
-        $this->coursecontext3 = \context_course::instance($course3->id);
+        $this->coursecontext1 = course::instance($course1->id);
+        $this->coursecontext2 = course::instance($course2->id);
+        $this->coursecontext3 = course::instance($course3->id);
 
         $now = time();
         $future = $now + 60 * 60 * 5;
@@ -294,7 +296,7 @@ final class provider_test extends provider_testcase {
                  add,student,u1,c3,$future,$farfuture";
         file_put_contents($file, $data);
 
-        $trace = new \null_progress_trace();
+        $trace = new null_progress_trace();
         $this->enable_plugin();
         $flatfileplugin = enrol_get_plugin('flatfile');
         $flatfileplugin->set_config('location', $file);

@@ -23,6 +23,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\output\progress_bar;
+use core\output\renderable;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -449,7 +455,7 @@ class tool_customlang_menu implements renderable {
      * @param moodle_url $url action handler
      * @param string $method form method
      */
-    public function add_item($key, $title, moodle_url $url, $method) {
+    public function add_item($key, $title, url $url, $method) {
         if (isset($this->items[$key])) {
             throw new coding_exception('Menu item already exists');
         }
@@ -490,7 +496,7 @@ class tool_customlang_translator implements renderable {
     /** @var stdclass */
     protected $filter;
 
-    public function __construct(moodle_url $handler, $lang, $filter, $currentpage = 0) {
+    public function __construct(url $handler, $lang, $filter, $currentpage = 0) {
         global $DB;
 
         $this->handler      = $handler;

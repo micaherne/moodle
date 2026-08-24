@@ -31,6 +31,8 @@
  *
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\exception\moodle_exception;
+
 require_once('../../config.php');
 require_once($CFG->dirroot . '/mod/wiki/locallib.php');
 require_once($CFG->dirroot . '/mod/wiki/pagelib.php');
@@ -40,22 +42,22 @@ $action = optional_param('action', '', PARAM_ALPHANUMEXT);
 $commentid = optional_param('commentid', 0, PARAM_INT);
 
 if (!$page = wiki_get_page($pageid)) {
-    throw new \moodle_exception('incorrectpageid', 'wiki');
+    throw new moodle_exception('incorrectpageid', 'wiki');
 }
 if (!$subwiki = wiki_get_subwiki($page->subwikiid)) {
-    throw new \moodle_exception('incorrectsubwikiid', 'wiki');
+    throw new moodle_exception('incorrectsubwikiid', 'wiki');
 }
 if (!$cm = get_coursemodule_from_instance("wiki", $subwiki->wikiid)) {
-    throw new \moodle_exception('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 if (!$wiki = wiki_get_wiki($subwiki->wikiid)) {
-    throw new \moodle_exception('incorrectwikiid', 'wiki');
+    throw new moodle_exception('incorrectwikiid', 'wiki');
 }
 require_login($course, true, $cm);
 
 if (!wiki_user_can_view($subwiki, $wiki)) {
-    throw new \moodle_exception('cannotviewpage', 'wiki');
+    throw new moodle_exception('cannotviewpage', 'wiki');
 }
 
 $PAGE->set_show_navigation_footer(false);
@@ -64,10 +66,10 @@ $editcomments = new page_wiki_editcomment($wiki, $subwiki, $cm, 'modulepage');
 $comment = new stdClass();
 if ($action == 'edit') {
     if (!$comment = $DB->get_record('comments', array('id' => $commentid))) {
-        throw new \moodle_exception('invalidcomment');
+        throw new moodle_exception('invalidcomment');
     }
     if ($USER->id != $comment->userid) {
-        throw new \moodle_exception('cannotviewpage', 'wiki');
+        throw new moodle_exception('cannotviewpage', 'wiki');
     }
 }
 

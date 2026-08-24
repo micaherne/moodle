@@ -17,7 +17,7 @@
 namespace core_courseformat\hook;
 
 use core\hook\described_hook;
-use cm_info;
+use core_course\cm_info;
 
 /**
  * Hook for course-module name edited.

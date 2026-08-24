@@ -19,8 +19,8 @@ declare(strict_types=1);
 namespace core\content\export\exportable_items;
 
 use advanced_testcase;
-use context;
-use context_system;
+use core\context;
+use core\context\system;
 use core\content\export\zipwriter;
 use stdClass;
 use stored_file;
@@ -41,7 +41,7 @@ final class exportable_stored_file_test extends advanced_testcase {
      */
     public function test_create_from_area_params_no_files(): void {
         $exportables = exportable_stored_file::create_from_area_params(
-            context_system::instance(),
+            system::instance(),
             'fake',
             'filearea',
             null
@@ -59,13 +59,13 @@ final class exportable_stored_file_test extends advanced_testcase {
 
         // Setup for test.
         $user = $this->getDataGenerator()->create_user();
-        $context = context_system::instance();
+        $context = system::instance();
         $component = 'fake';
         $filearea = 'myfirstfilearea';
 
-        $files1 = $this->create_files(context_system::instance(), $component, $filearea, 1);
-        $files2 = $this->create_files(context_system::instance(), $component, $filearea, 2);
-        $files3 = $this->create_files(context_system::instance(), $component, $filearea, 3);
+        $files1 = $this->create_files(system::instance(), $component, $filearea, 1);
+        $files2 = $this->create_files(system::instance(), $component, $filearea, 2);
+        $files3 = $this->create_files(system::instance(), $component, $filearea, 3);
         $files = array_values(array_merge($files1, $files2, $files3));
 
         $exportables = exportable_stored_file::create_from_area_params($context, $component, $filearea, null);
@@ -93,13 +93,13 @@ final class exportable_stored_file_test extends advanced_testcase {
 
         // Setup for test.
         $user = $this->getDataGenerator()->create_user();
-        $context = context_system::instance();
+        $context = system::instance();
         $component = 'fake';
         $filearea = 'myfirstfilearea';
 
-        $files1 = $this->create_files(context_system::instance(), $component, $filearea, 1);
-        $files2 = $this->create_files(context_system::instance(), $component, $filearea, 2);
-        $files3 = $this->create_files(context_system::instance(), $component, $filearea, 3);
+        $files1 = $this->create_files(system::instance(), $component, $filearea, 1);
+        $files2 = $this->create_files(system::instance(), $component, $filearea, 2);
+        $files3 = $this->create_files(system::instance(), $component, $filearea, 3);
 
         $exportables = exportable_stored_file::create_from_area_params($context, $component, $filearea, 2);
 
@@ -123,14 +123,14 @@ final class exportable_stored_file_test extends advanced_testcase {
 
         // Setup for test.
         $user = $this->getDataGenerator()->create_user();
-        $context = context_system::instance();
+        $context = system::instance();
         $component = 'fake';
         $filearea = 'myfirstfilearea';
         $subdir = 'a/path/to/my/subdir';
 
-        $files1 = $this->create_files(context_system::instance(), $component, $filearea, 1);
-        $files2 = $this->create_files(context_system::instance(), $component, $filearea, 2);
-        $files3 = $this->create_files(context_system::instance(), $component, $filearea, 3);
+        $files1 = $this->create_files(system::instance(), $component, $filearea, 1);
+        $files2 = $this->create_files(system::instance(), $component, $filearea, 2);
+        $files3 = $this->create_files(system::instance(), $component, $filearea, 3);
 
         $exportables = exportable_stored_file::create_from_area_params($context, $component, $filearea, 2, 2, $subdir);
 

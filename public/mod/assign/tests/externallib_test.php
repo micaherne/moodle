@@ -16,6 +16,17 @@
 
 namespace mod_assign;
 
+use core\context\course;
+use core\context\module;
+use core\context\user as context_user;
+use core\exception\coding_exception;
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
+use core\exception\require_login_exception;
+use core\exception\required_capability_exception;
+use core\url;
+use core\user as core_user;
+use core_course\modinfo;
 use core_external\external_api;
 use core_external\external_settings;
 use core_user_external;
@@ -67,9 +78,9 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $enrolid = $DB->insert_record('enrol', $manualenroldata);
 
         // Create a teacher and give them capabilities.
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $roleid = $this->assignUserCapability('moodle/course:viewparticipants', $context->id, 3);
-        $context = \context_module::instance($assign->cmid);
+        $context = module::instance($assign->cmid);
         $this->assignUserCapability('mod/assign:viewgrades', $context->id, $roleid);
 
         // Create the teacher's enrolment record.
@@ -197,7 +208,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         ));
 
         // Add a file as assignment attachment.
-        $context = \context_module::instance($assign1->cmid);
+        $context = module::instance($assign1->cmid);
         $filerecord = array('component' => 'mod_assign', 'filearea' => 'intro', 'contextid' => $context->id, 'itemid' => 0,
                 'filename' => 'intro.txt', 'filepath' => '/');
         $fs = get_file_storage();
@@ -211,9 +222,9 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         ));
 
         // Create the user and give them capabilities.
-        $context = \context_course::instance($course1->id);
+        $context = course::instance($course1->id);
         $roleid = $this->assignUserCapability('moodle/course:view', $context->id);
-        $context = \context_module::instance($assign1->cmid);
+        $context = module::instance($assign1->cmid);
         $this->assignUserCapability('mod/assign:view', $context->id, $roleid);
 
         // Create the user enrolment record.
@@ -410,7 +421,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
             'introformat' => FORMAT_HTML,
             'submissionattachments' => 0,
         ));
-        $context = \context_module::instance($assign->cmid);
+        $context = module::instance($assign->cmid);
 
         // Enrol user as student.
         $this->getDataGenerator()->enrol_user($user->id, $course1->id, 'student');
@@ -552,7 +563,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
 
         // Test locking the context.
         set_config('contextlocking', 1);
-        $context = \context_course::instance($course1->id);
+        $context = course::instance($course1->id);
         $context->set_locked(true);
 
         $this->setUser($teacher);
@@ -578,11 +589,11 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $student = $result['student'];
         $teacher = $result['teacher'];
         $course = $result['course'];
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $teacherrole = $DB->get_record('role', array('shortname' => 'teacher'));
         $group = $this->getDataGenerator()->create_group(array('courseid' => $course->id));
         $cm = get_coursemodule_from_instance('assign', $assignmodule->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $assign = new mod_assign_testable_assign($context, $cm, $course);
 
         groups_add_member($group, $student);
@@ -715,9 +726,9 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $enrolid = $DB->insert_record('enrol', $manualenroldata);
 
         // Create a teacher and give them capabilities.
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $roleid = $this->assignUserCapability('moodle/course:viewparticipants', $context->id, 3);
-        $context = \context_module::instance($assign->cmid);
+        $context = module::instance($assign->cmid);
         $this->assignUserCapability('mod/assign:grade', $context->id, $roleid);
 
         // Create the teacher's enrolment record.
@@ -784,9 +795,9 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $enrolid = $DB->insert_record('enrol', $manualenroldata);
 
         // Create a teacher and give them capabilities.
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $roleid = $this->assignUserCapability('moodle/course:viewparticipants', $context->id, 3);
-        $context = \context_module::instance($assign->cmid);
+        $context = module::instance($assign->cmid);
         $this->assignUserCapability('mod/assign:revealidentities', $context->id, $roleid);
 
         // Create the teacher's enrolment record.
@@ -834,7 +845,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $params['assignsubmission_onlinetext_enabled'] = 1;
         $instance = $generator->create_instance($params);
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $assign = new \assign($context, $cm, $course);
 
@@ -876,7 +887,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
             'text' => 'Submission text',
             'format' => FORMAT_MOODLE);
         $notices = array();
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $assign->save_submission($data, $notices);
     }
 
@@ -895,7 +906,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $params['assignsubmission_onlinetext_enabled'] = 1;
         $instance = $generator->create_instance($params);
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $assign = new \assign($context, $cm, $course);
 
@@ -965,7 +976,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $params['requiresubmissionstatement'] = 1;
         $instance = $generator->create_instance($params);
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $assign = new \assign($context, $cm, $course);
 
@@ -1029,7 +1040,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $params['cutoffdate'] = $now - 10;
         $instance = $generator->create_instance($params);
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $assign = new \assign($context, $cm, $course);
 
@@ -1091,7 +1102,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $params['blindmarking'] = 1;
         $instance = $generator->create_instance($params);
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $assign = new \assign($context, $cm, $course);
 
@@ -1100,7 +1111,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $this->getDataGenerator()->enrol_user($student1->id, $course->id, $studentrole->id);
 
         $this->setUser($student1);
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         $result = mod_assign_external::reveal_identities($instance->id);
         $result = external_api::clean_returnvalue(mod_assign_external::reveal_identities_returns(), $result);
         $this->assertEquals(1, count($result));
@@ -1119,7 +1130,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $params['blindmarking'] = 0;
         $instance = $generator->create_instance($params);
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $assign = new \assign($context, $cm, $course);
         $result = mod_assign_external::reveal_identities($instance->id);
@@ -1146,7 +1157,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $params['submissiondrafts'] = 1;
         $instance = $generator->create_instance($params);
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $assign = new \assign($context, $cm, $course);
 
@@ -1199,7 +1210,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $params['assignsubmission_file_maxsizebytes'] = 1024 * 1024;
         $instance = $generator->create_instance($params);
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $assign = new \assign($context, $cm, $course);
 
@@ -1215,7 +1226,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         // Create a file in a draft area.
         $draftidfile = file_get_unused_draft_itemid();
 
-        $usercontext = \context_user::instance($student1->id);
+        $usercontext = context_user::instance($student1->id);
         $filerecord = array(
             'contextid' => $usercontext->id,
             'component' => 'user',
@@ -1288,7 +1299,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $params['assignfeedback_comments_enabled'] = 1;
         $instance = $generator->create_instance($params);
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $assign = new \assign($context, $cm, $course);
 
@@ -1307,7 +1318,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         // Create a file in a draft area.
         $draftidfile = file_get_unused_draft_itemid();
 
-        $usercontext = \context_user::instance($teacher->id);
+        $usercontext = context_user::instance($teacher->id);
         $filerecord = array(
             'contextid' => $usercontext->id,
             'component' => 'user',
@@ -1364,7 +1375,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $params['assignfeedback_comments_enabled'] = 0;
         $instance = $generator->create_instance($params);
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $assign = new \assign($context, $cm, $course);
 
@@ -1534,7 +1545,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $params['teamsubmissiongroupingid'] = $grouping->id;
         $instance = $generator->create_instance($params);
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $assign = new \assign($context, $cm, $course);
 
@@ -1579,7 +1590,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $grades1[] = $student2gradeinfo;
 
         // Expect an exception since 2 grades have been submitted for the same team.
-        $this->expectException(\invalid_parameter_exception::class);
+        $this->expectException(invalid_parameter_exception::class);
         $result = mod_assign_external::save_grades($instance->id, true, $grades1);
         $result = external_api::clean_returnvalue(mod_assign_external::save_grades_returns(), $result);
 
@@ -1643,7 +1654,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $params['maxattempts'] = 5;
         $instance = $generator->create_instance($params);
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $assign = new \assign($context, $cm, $course);
 
@@ -1722,9 +1733,9 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $enrolid = $DB->insert_record('enrol', $manualenroldata);
 
         // Create a teacher and give them capabilities.
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $roleid = $this->assignUserCapability('moodle/course:viewparticipants', $context->id, 3);
-        $context = \context_module::instance($assign->cmid);
+        $context = module::instance($assign->cmid);
         $this->assignUserCapability('mod/assign:grade', $context->id, $roleid);
 
         // Create the teacher's enrolment record.
@@ -1790,7 +1801,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         // Setup test data.
         $course = $this->getDataGenerator()->create_course();
         $assign = $this->getDataGenerator()->create_module('assign', array('course' => $course->id));
-        $context = \context_module::instance($assign->cmid);
+        $context = module::instance($assign->cmid);
         $cm = get_coursemodule_from_instance('assign', $assign->id);
 
         // Test invalid instance id.
@@ -1809,14 +1820,14 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         // Setup test data.
         $course = $this->getDataGenerator()->create_course();
         $assign = $this->getDataGenerator()->create_module('assign', array('course' => $course->id));
-        $context = \context_module::instance($assign->cmid);
+        $context = module::instance($assign->cmid);
         $cm = get_coursemodule_from_instance('assign', $assign->id);
 
         // Test not-enrolled user.
         $user = self::getDataGenerator()->create_user();
         $this->setUser($user);
 
-        $this->expectException(\require_login_exception::class);
+        $this->expectException(require_login_exception::class);
         mod_assign_external::view_grading_table($assign->id);
     }
 
@@ -1831,7 +1842,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         // Setup test data.
         $course = $this->getDataGenerator()->create_course();
         $assign = $this->getDataGenerator()->create_module('assign', array('course' => $course->id));
-        $context = \context_module::instance($assign->cmid);
+        $context = module::instance($assign->cmid);
         $cm = get_coursemodule_from_instance('assign', $assign->id);
 
         // Test user with full capabilities.
@@ -1853,7 +1864,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_assign\event\grading_table_viewed', $event);
         $this->assertEquals($context, $event->get_context());
-        $moodleurl = new \moodle_url('/mod/assign/view.php', array('id' => $cm->id));
+        $moodleurl = new url('/mod/assign/view.php', array('id' => $cm->id));
         $this->assertEquals($moodleurl, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -1870,7 +1881,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         // Setup test data.
         $course = $this->getDataGenerator()->create_course();
         $assign = $this->getDataGenerator()->create_module('assign', array('course' => $course->id));
-        $context = \context_module::instance($assign->cmid);
+        $context = module::instance($assign->cmid);
         $cm = get_coursemodule_from_instance('assign', $assign->id);
 
         // Test user with no capabilities.
@@ -1884,9 +1895,9 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         assign_capability('mod/assign:view', CAP_PROHIBIT, $teacherrole->id, $context->id);
         // Empty all the caches that may be affected by this change.
         accesslib_clear_all_caches_for_unit_testing();
-        \course_modinfo::clear_instance_cache();
+        modinfo::clear_instance_cache();
 
-        $this->expectException(\require_login_exception::class);
+        $this->expectException(require_login_exception::class);
         $this->expectExceptionMessage('Course or activity not accessible. (Activity is hidden)');
         mod_assign_external::view_grading_table($assign->id);
     }
@@ -1946,14 +1957,14 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         // Setup test data.
         $course = $this->getDataGenerator()->create_course();
         $assign = $this->getDataGenerator()->create_module('assign', array('course' => $course->id));
-        $context = \context_module::instance($assign->cmid);
+        $context = module::instance($assign->cmid);
         $cm = get_coursemodule_from_instance('assign', $assign->id);
 
         // Test invalid instance id.
         try {
             mod_assign_external::view_submission_status(0);
             $this->fail('Exception expected due to invalid mod_assign instance id.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('invalidrecord', $e->errorcode);
         }
 
@@ -1963,7 +1974,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         try {
             mod_assign_external::view_submission_status($assign->id);
             $this->fail('Exception expected due to not enrolled user.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('requireloginerror', $e->errorcode);
         }
 
@@ -1984,7 +1995,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_assign\event\submission_status_viewed', $event);
         $this->assertEquals($context, $event->get_context());
-        $moodleurl = new \moodle_url('/mod/assign/view.php', array('id' => $cm->id));
+        $moodleurl = new url('/mod/assign/view.php', array('id' => $cm->id));
         $this->assertEquals($moodleurl, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -1993,12 +2004,12 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         // We need a explicit prohibit since this capability is only defined in authenticated user and guest roles.
         assign_capability('mod/assign:view', CAP_PROHIBIT, $studentrole->id, $context->id);
         accesslib_clear_all_caches_for_unit_testing();
-        \course_modinfo::clear_instance_cache();
+        modinfo::clear_instance_cache();
 
         try {
             mod_assign_external::view_submission_status($assign->id);
             $this->fail('Exception expected due to missing capability.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('requireloginerror', $e->errorcode);
         }
     }
@@ -2147,7 +2158,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $this->assertFalse(isset($result['gradingsummary']));
 
         // Should return all participants if we grant accessallgroups capability to the normal teacher role.
-        $context = \context_course::instance($assign->get_instance()->course);
+        $context = course::instance($assign->get_instance()->course);
         $teacherrole = $DB->get_record('role', array('shortname' => 'teacher'));
         assign_capability('moodle/site:accessallgroups', CAP_ALLOW, $teacherrole->id, $context->id, true);
         accesslib_clear_all_caches_for_unit_testing();
@@ -2288,7 +2299,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $this->setUser($student2);
 
         // Access control test.
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         mod_assign_external::get_submission_status($assign->get_instance()->id, $student1->id);
 
     }
@@ -2439,7 +2450,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
 
         // Add an intro attachment.
         $fs = get_file_storage();
-        $context = \context_module::instance($instance->cmid);
+        $context = module::instance($instance->cmid);
         $filerecord = array(
             'contextid' => $context->id,
             'component' => 'mod_assign',
@@ -2455,7 +2466,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         // Set optional param to indicate that assignment submission timer should start.
         $_GET['begin'] = 1;
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         (new \assign($context, $cm, $cm->course))->get_user_submission(0, true);
 
         $result = mod_assign_external::get_submission_status($assign->get_instance()->id);
@@ -2499,7 +2510,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
      */
     public function test_get_participant_no_assignment(): void {
         $this->resetAfterTest(true);
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         mod_assign_external::get_participant('-1', '-1', false);
     }
 
@@ -2515,13 +2526,13 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $assign = $result['assign'];
         $student = $result['student'];
         $course = $result['course'];
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $studentrole = $DB->get_record('role', array('shortname' => 'student'));
 
         $this->setUser($student);
         assign_capability('mod/assign:view', CAP_PROHIBIT, $studentrole->id, $context->id, true);
 
-        $this->expectException(\require_login_exception::class);
+        $this->expectException(require_login_exception::class);
         mod_assign_external::get_participant($assign->id, $student->id, false);
     }
 
@@ -2538,7 +2549,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $student = $result['student'];
         $teacher = $result['teacher'];
         $course = $result['course'];
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $teacherrole = $DB->get_record('role', array('shortname' => 'teacher'));
 
         $this->setUser($teacher);
@@ -2546,7 +2557,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         assign_capability('mod/assign:grade', CAP_PROHIBIT, $teacherrole->id, $context->id, true);
         accesslib_clear_all_caches_for_unit_testing();
 
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         mod_assign_external::get_participant($assign->id, $student->id, false);
     }
 
@@ -2564,7 +2575,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
 
         $this->setUser($teacher);
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $result = mod_assign_external::get_participant($assign->id, $student->id, false);
         $result = external_api::clean_returnvalue(mod_assign_external::get_participant_returns(), $result);
     }
@@ -2582,7 +2593,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $student = $result['student'];
         $teacher = $result['teacher'];
         $course = $result['course'];
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $teacherrole = $DB->get_record('role', array('shortname' => 'teacher'));
 
         $this->setUser($teacher);
@@ -2612,14 +2623,14 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $student = $result['student'];
         $teacher = $result['teacher'];
         $course = $result['course'];
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $teacherrole = $DB->get_record('role', array('shortname' => 'teacher'));
 
         // Create an assign instance to save a submission.
         set_config('submissionreceipts', 0, 'assign');
 
         $cm = get_coursemodule_from_instance('assign', $assignmodule->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $assign = new \assign($context, $cm, $course);
 
@@ -2667,7 +2678,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $student = $result['student'];
         $teacher = $result['teacher'];
         $course = $result['course'];
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $teacherrole = $DB->get_record('role', array('shortname' => 'teacher'));
 
         $this->setUser($teacher);
@@ -2701,11 +2712,11 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $student = $result['student'];
         $teacher = $result['teacher'];
         $course = $result['course'];
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $teacherrole = $DB->get_record('role', array('shortname' => 'teacher'));
         $group = $this->getDataGenerator()->create_group(array('courseid' => $course->id));
         $cm = get_coursemodule_from_instance('assign', $assignmodule->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $assign = new mod_assign_testable_assign($context, $cm, $course);
 
         groups_add_member($group, $student);
@@ -2752,7 +2763,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $assignconfig['course'] = $course->id;
         $instance = $generator->create_instance($assignconfig);
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $assign = new \assign($context, $cm, $course);
 
         $user = $this->getDataGenerator()->create_and_enrol($course, ...array_values($enrolconfig));
@@ -2814,7 +2825,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $student->department = 'Arts & Sciences & \' " ¢ £ © € ¥ ® < >';
         $student->institution = 'University of Awesome People & \' " ¢ £ © € ¥ ® < >';
         // Assert that we have valid user data.
-        $this->assertTrue(\core_user::validate($student));
+        $this->assertTrue(core_user::validate($student));
         // Update the user record.
         $DB->update_record('user', $student);
 
@@ -2867,11 +2878,11 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
                     // The \core_user::get_property_type() method might throw a coding_exception since
                     // core_user_external::user_description() might contain properties that are not yet included in
                     // core_user's $propertiescache.
-                    $propertytype = \core_user::get_property_type($key);
+                    $propertytype = core_user::get_property_type($key);
 
                     // Assert that user-related property types match those of the defined in core_user.
                     $this->assertEquals($propertytype, $desc->type);
-                } catch (\coding_exception $e) {
+                } catch (coding_exception $e) {
                     // All good.
                 }
             }
@@ -2901,7 +2912,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $student = $result['student'];
         $teacher = $result['teacher'];
         $course = $result['course'];
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         $gname = '<span class="multilang" lang="en">G (en)</span><span class="multilang" lang="es">G (es)</span>';
         $group = $this->getDataGenerator()->create_group(['courseid' => $course->id, 'name' => $gname]);
@@ -2940,7 +2951,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
         $course = $this->getDataGenerator()->create_course(array('enablecompletion' => 1));
         $assign = $this->getDataGenerator()->create_module('assign', array('course' => $course->id),
                                                             array('completion' => 2, 'completionview' => 1));
-        $context = \context_module::instance($assign->cmid);
+        $context = module::instance($assign->cmid);
         $cm = get_coursemodule_from_instance('assign', $assign->id);
 
         $result = mod_assign_external::view_assign($assign->id);

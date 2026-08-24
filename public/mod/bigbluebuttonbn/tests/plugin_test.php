@@ -16,7 +16,7 @@
 namespace mod_bigbluebuttonbn;
 
 use advanced_testcase;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 /**
  * Tests for the Big Blue Button Plugin class.

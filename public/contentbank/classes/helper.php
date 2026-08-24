@@ -24,6 +24,12 @@
 
 namespace core_contentbank;
 
+use core\context;
+use core\context\system;
+use core\navigation\global_navigation;
+use core\navigation\navigation_node;
+use core\url;
+
 /**
  * Helper class for the content bank.
  *
@@ -40,31 +46,31 @@ class helper {
      * @param string $title Title of the current page.
      * @param bool $internal True if is an internal page, false otherwise.
      */
-    public static function get_page_ready(\context $context, string $title, bool $internal = false): void {
+    public static function get_page_ready(context $context, string $title, bool $internal = false): void {
         global $PAGE, $DB;
 
         $PAGE->set_context($context);
         $PAGE->set_heading(self::get_page_heading($context));
         $PAGE->set_secondary_active_tab('contentbank');
-        $cburl = new \moodle_url('/contentbank/index.php', ['contextid' => $context->id]);
+        $cburl = new url('/contentbank/index.php', ['contextid' => $context->id]);
 
         switch ($context->contextlevel) {
             case CONTEXT_COURSE:
                 $courseid = $context->instanceid;
                 $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
                 $PAGE->set_course($course);
-                \navigation_node::override_active_url(new \moodle_url('/course/view.php', ['id' => $courseid]));
+                navigation_node::override_active_url(new url('/course/view.php', ['id' => $courseid]));
                 $PAGE->navbar->add($title, $cburl);
                 $PAGE->set_pagelayout('incourse');
                 break;
             case CONTEXT_COURSECAT:
                 $coursecat = $context->instanceid;
-                \navigation_node::override_active_url(new \moodle_url('/course/index.php', ['categoryid' => $coursecat]));
+                navigation_node::override_active_url(new url('/course/index.php', ['categoryid' => $coursecat]));
                 $PAGE->navbar->add($title, $cburl);
                 $PAGE->set_pagelayout('coursecategory');
                 break;
             default:
-                if ($node = $PAGE->navigation->find('contentbank', \global_navigation::TYPE_CUSTOM)) {
+                if ($node = $PAGE->navigation->find('contentbank', global_navigation::TYPE_CUSTOM)) {
                     $node->make_active();
                 }
                 $PAGE->set_pagelayout('standard');
@@ -77,11 +83,11 @@ class helper {
      * @param \context $context The current context of the page
      * @return string
      */
-    public static function get_page_heading(\context $context): string {
+    public static function get_page_heading(context $context): string {
         global $SITE;
 
         $title = get_string('contentbank');
-        if ($context->id == \context_system::instance()->id) {
+        if ($context->id == system::instance()->id) {
             $title = $SITE->fullname;
         } else if ($context->contextlevel == CONTEXT_COURSE) {
             $course = get_course($context->instanceid);

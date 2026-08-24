@@ -22,7 +22,7 @@ use communication_matrix\local\spec\features;
 use communication_matrix\tests\fixtures\mocked_matrix_client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__ . '/matrix_client_test_trait.php');

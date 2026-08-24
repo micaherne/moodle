@@ -24,6 +24,9 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -80,9 +83,9 @@ class user_profile_viewed extends base {
      */
     public function get_url() {
         if ($this->contextlevel == CONTEXT_COURSE) {
-            return new \moodle_url('/user/view.php', array('id' => $this->relateduserid, 'course' => $this->courseid));
+            return new url('/user/view.php', array('id' => $this->relateduserid, 'course' => $this->courseid));
         }
-        return new \moodle_url('/user/profile.php', array('id' => $this->relateduserid));
+        return new url('/user/profile.php', array('id' => $this->relateduserid));
     }
 
     /**
@@ -95,7 +98,7 @@ class user_profile_viewed extends base {
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
     }
 

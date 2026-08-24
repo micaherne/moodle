@@ -25,6 +25,8 @@
 
 namespace factor_nosetup\task;
 
+use core\user;
+
 /**
  * Scheduled task to add log events into DB table.
  */
@@ -75,7 +77,7 @@ class delete_unusable_factors extends \core\task\scheduled_task {
 
         foreach ($useridrecordset as $userid) {
             // If pass state is no longer possible, add delete user factor.
-            $user = \core_user::get_user($userid->userid);
+            $user = user::get_user($userid->userid);
             if (!in_array(\tool_mfa\plugininfo\factor::STATE_PASS, $factorobject->possible_states($user))) {
                 $factorobject->delete_factor_for_user($user);
             }

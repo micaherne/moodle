@@ -23,6 +23,9 @@
  */
 namespace report_log\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -75,7 +78,7 @@ class user_report_viewed extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/report/log/user.php', array('course' => $this->courseid, 'id' => $this->relateduserid,
+        return new url('/report/log/user.php', array('course' => $this->courseid, 'id' => $this->relateduserid,
                 'mode' => $this->other['mode']));
     }
 
@@ -88,11 +91,11 @@ class user_report_viewed extends \core\event\base {
     protected function validate_data() {
         parent::validate_data();
         if (empty($this->other['mode'])) {
-            throw new \coding_exception('The \'mode\' value must be set in other.');
+            throw new coding_exception('The \'mode\' value must be set in other.');
         }
 
         if (empty($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
     }
 

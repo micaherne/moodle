@@ -29,8 +29,8 @@ use tool_customlang\local\mlang\logstatus;
 use tool_customlang\local\mlang\langstring;
 use core\output\notification;
 use stored_file;
-use coding_exception;
-use moodle_exception;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use core_component;
 use stdClass;
 

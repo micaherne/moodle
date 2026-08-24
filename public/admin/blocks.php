@@ -22,6 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\plugin_manager;
+use core\url;
+
 require_once('../config.php');
 require_once("{$CFG->libdir}/adminlib.php");
 require_once("{$CFG->libdir}/blocklib.php");
@@ -38,7 +41,7 @@ $strmanageblocks = get_string('manageblocks');
 
 // If data submitted, then process and store.
 if (!empty($plugin) && !empty($action) && confirm_sesskey()) {
-    $manager = \core_plugin_manager::resolve_plugininfo_class('block');
+    $manager = plugin_manager::resolve_plugininfo_class('block');
     $pluginname = get_string('pluginname', "block_{$plugin}");
 
     if ($action === 'disable' && $manager::enable_plugin($plugin, 0)) {
@@ -59,7 +62,7 @@ if (!empty($plugin) && !empty($action) && confirm_sesskey()) {
     }
 
     // Redirect back to the page with out any params.
-    redirect(new moodle_url('/admin/blocks.php'));
+    redirect(new url('/admin/blocks.php'));
 }
 
 if (!empty($protect) && confirm_sesskey()) {

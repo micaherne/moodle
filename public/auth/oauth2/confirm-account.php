@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+
 require('../../config.php');
 require_once($CFG->libdir . '/authlib.php');
 
@@ -30,12 +33,12 @@ $username = required_param('username', PARAM_USERNAME);
 $redirect = optional_param('redirect', '', PARAM_LOCALURL);    // Where to redirect the browser once the user has been confirmed.
 
 $PAGE->set_url('/auth/oauth2/confirm-account.php');
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 $auth = \core\di::get(\core\authentication::class)->get_plugin('oauth2');
 
 if (!\auth_oauth2\api::is_enabled()) {
-    throw new \moodle_exception('notenabled', 'auth_oauth2');
+    throw new moodle_exception('notenabled', 'auth_oauth2');
 }
 
 $confirmed = $auth->user_confirm($username, $usersecret);
@@ -58,7 +61,7 @@ if ($confirmed == AUTH_CONFIRM_ALREADY && !isloggedin()) {
     // The user has confirmed successfully, let's log them in.
 
     if (!$user = get_complete_user_data('username', $username)) {
-        throw new \moodle_exception('cannotfinduser', '', '', s($username));
+        throw new moodle_exception('cannotfinduser', '', '', s($username));
     }
 
     if ($user->id == $USER->id) {

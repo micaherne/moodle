@@ -16,6 +16,7 @@
 
 namespace qtype_calculated;
 
+use core\exception\moodle_exception;
 use qtype_calculated_variable_substituter;
 
 defined('MOODLE_INTERNAL') || die();
@@ -43,25 +44,25 @@ final class variablesubstituter_test extends \advanced_testcase {
     }
 
     public function test_cannot_use_nonnumbers(): void {
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $vs = new qtype_calculated_variable_substituter(array('a' => 'frog', 'b' => -2), '.');
     }
 
     public function test_invalid_expression(): void {
         $vs = new qtype_calculated_variable_substituter(array('a' => 1, 'b' => 2), '.');
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $vs->calculate('{a} + {b}?');
     }
 
     public function test_tricky_invalid_expression(): void {
         $vs = new qtype_calculated_variable_substituter(array('a' => 1, 'b' => 2), '.');
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $vs->calculate('{a}{b}'); // Have to make sure this does not just evaluate to 12.
     }
 
     public function test_division_by_zero_expression(): void {
         $vs = new qtype_calculated_variable_substituter(array('a' => 1, 'b' => 0), '.');
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $vs->calculate('{a} / {b}');
     }
 

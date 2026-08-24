@@ -24,10 +24,13 @@
 
 namespace core_admin\local\settings;
 
+use core\lang_string;
+use core_admin\setting\setting\manage_plugins;
+
 /**
  * Generic class for managing plugins in a table that allows re-ordering and enable/disable of each plugin.
  */
-class manage_payment_gateway_plugins extends \admin_setting_manage_plugins {
+class manage_payment_gateway_plugins extends manage_plugins {
     /**
      * Get the admin settings section title (use get_string).
      *
@@ -66,7 +69,7 @@ class manage_payment_gateway_plugins extends \admin_setting_manage_plugins {
 
         $currencies = [];
         foreach ($codes as $c) {
-            $currencies[$c] = new \lang_string($c, 'core_currencies');
+            $currencies[$c] = new lang_string($c, 'core_currencies');
         }
 
         return implode(get_string('listsep', 'langconfig') . ' ', $currencies);

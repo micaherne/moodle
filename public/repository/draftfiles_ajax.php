@@ -24,16 +24,21 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\system;
+use core\context\user;
+use core\exception\moodle_exception;
+
 define('AJAX_SCRIPT', true);
 
 require('../config.php');
 require_once($CFG->libdir.'/filelib.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->dirroot.'/repository/lib.php');
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 require_login();
 if (isguestuser()) {
-    throw new \moodle_exception('noguest');
+    throw new moodle_exception('noguest');
 }
 require_sesskey();
 
@@ -41,7 +46,7 @@ $action  = required_param('action', PARAM_ALPHA);
 $draftid = required_param('itemid', PARAM_INT);
 $filepath = optional_param('filepath', '/', PARAM_PATH);
 
-$usercontext = context_user::instance($USER->id);
+$usercontext = user::instance($USER->id);
 
 echo $OUTPUT->header(); // send headers
 

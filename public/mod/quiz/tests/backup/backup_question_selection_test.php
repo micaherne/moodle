@@ -18,8 +18,10 @@ namespace mod_quiz\backup;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\module;
 use mod_quiz\quiz_settings;
 use mod_quiz\structure;
+use mod_quiz\tests\question_helper_test_trait;
 
 global $CFG;
 require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
@@ -41,7 +43,7 @@ require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.ph
  * @covers \backup_quiz_activity_structure_step
  */
 final class backup_question_selection_test extends \advanced_testcase {
-    use \quiz_question_helper_test_trait;
+    use question_helper_test_trait;
 
     /**
      * Set up data to back up.
@@ -66,7 +68,7 @@ final class backup_question_selection_test extends \advanced_testcase {
 
         $courseqbank = self::getDataGenerator()->create_module('qbank', ['course' => $course->id]);
         $coursequestions = $questiongenerator->create_categories_and_questions(
-            \context_module::instance($courseqbank->cmid),
+            module::instance($courseqbank->cmid),
             [
                 'courseparentcat' => [
                     'courseq1' => 'shortanswer',
@@ -80,7 +82,7 @@ final class backup_question_selection_test extends \advanced_testcase {
         );
         $sharedqbank = self::getDataGenerator()->create_module('qbank', ['course' => $sharedcourse->id]);
         $sharedquestions = $questiongenerator->create_categories_and_questions(
-            \context_module::instance($sharedqbank->cmid),
+            module::instance($sharedqbank->cmid),
             [
                 'sharedparentcat' => [
                     'sharedq1' => 'shortanswer',
@@ -104,7 +106,7 @@ final class backup_question_selection_test extends \advanced_testcase {
         );
         $quiz = $this->create_test_quiz($course);
         $quizquestions = $questiongenerator->create_categories_and_questions(
-            \context_module::instance($quiz->cmid),
+            module::instance($quiz->cmid),
             [
                 'quizparentcat' => [
                     'quizq1' => 'shortanswer',
@@ -398,7 +400,7 @@ final class backup_question_selection_test extends \advanced_testcase {
         // Create a question bank with 3 shared questions, each with 2 children.
         $courseqbank = self::getDataGenerator()->create_module('qbank', ['course' => $course->id]);
         $coursequestions = $questiongenerator->create_categories_and_questions(
-            \context_module::instance($courseqbank->cmid),
+            module::instance($courseqbank->cmid),
             [
                 'courseparentcat' => [
                     'courseq1' => 'multianswer',
@@ -425,7 +427,7 @@ final class backup_question_selection_test extends \advanced_testcase {
         ];
         $quiz = $this->create_test_quiz($course);
         $quizquestions = $questiongenerator->create_categories_and_questions(
-            \context_module::instance($quiz->cmid),
+            module::instance($quiz->cmid),
             [
                 'quizcat' => [
                     'quizq1' => 'multianswer',

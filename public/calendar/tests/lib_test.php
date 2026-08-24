@@ -16,6 +16,9 @@
 
 namespace core_calendar;
 
+use core\context\course;
+use core\context\system;
+
 /**
  * Class contaning unit tests for the calendar lib.
  *
@@ -452,7 +455,7 @@ final class lib_test extends \advanced_testcase {
         $course1 = $generator->create_course();
         $course2 = $generator->create_course();
         $course3 = $generator->create_course();
-        $context = \context_course::instance($course1->id);
+        $context = course::instance($course1->id);
 
         $this->setAdminUser();
         $admin = clone $USER;
@@ -553,9 +556,9 @@ final class lib_test extends \advanced_testcase {
         $course1 = $generator->create_course(); // Has capability.
         $course2 = $generator->create_course(); // Doesn't have capability.
         $course3 = $generator->create_course(); // Not enrolled.
-        $context1 = \context_course::instance($course1->id);
-        $context2 = \context_course::instance($course2->id);
-        $context3 = \context_course::instance($course3->id);
+        $context1 = course::instance($course1->id);
+        $context2 = course::instance($course2->id);
+        $context3 = course::instance($course3->id);
         $roleid = $generator->create_role();
         $contexts = [$context1, $context2, $context3];
         $enrolledcourses = [$course1, $course2];
@@ -602,7 +605,7 @@ final class lib_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $course = $generator->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $roleid = $generator->create_role();
 
         $generator->enrol_user($user->id, $course->id, 'student');
@@ -629,7 +632,7 @@ final class lib_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $course = $generator->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $roleid = $generator->create_role();
         $generator->enrol_user($user->id, $course->id, 'student');
         $generator->role_assign($roleid, $user->id, $context->id);
@@ -654,8 +657,8 @@ final class lib_test extends \advanced_testcase {
         $course2 = $generator->create_course();
         $generator->create_group(array('courseid' => $course1->id));
         $generator->create_group(array('courseid' => $course2->id));
-        $context1 = \context_course::instance($course1->id);
-        $context2 = \context_course::instance($course2->id);
+        $context1 = course::instance($course1->id);
+        $context2 = course::instance($course2->id);
         $roleid = $generator->create_role();
         $generator->enrol_user($user->id, $course1->id, 'student');
         $generator->enrol_user($user->id, $course2->id, 'student');
@@ -680,7 +683,7 @@ final class lib_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $course = $generator->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $group1 = $generator->create_group(array('courseid' => $course->id));
         $group2 = $generator->create_group(array('courseid' => $course->id));
         $roleid = $generator->create_role();
@@ -713,7 +716,7 @@ final class lib_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $course = $generator->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $roleid = $generator->create_role();
         $group = $generator->create_group(['courseid' => $course->id]);
         $generator->enrol_user($user->id, $course->id, 'student');
@@ -735,7 +738,7 @@ final class lib_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $course = $generator->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $roleid = $generator->create_role();
         $group = $generator->create_group(['courseid' => $course->id]);
         $generator->enrol_user($user->id, $course->id, 'student');
@@ -758,7 +761,7 @@ final class lib_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $course = $generator->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $roleid = $generator->create_role();
         $group = $generator->create_group(['courseid' => $course->id]);
         $generator->enrol_user($user->id, $course->id, 'student');
@@ -924,8 +927,8 @@ final class lib_test extends \advanced_testcase {
             'groupmode' => 1,
             'groupmodeforce' => 1,
         ]);
-        $course1context = \context_course::instance($course1->id);
-        $course2context = \context_course::instance($course2->id);
+        $course1context = course::instance($course1->id);
+        $course2context = course::instance($course2->id);
 
         // Create groups.
         $group1 = $generator->create_group([
@@ -1183,7 +1186,7 @@ final class lib_test extends \advanced_testcase {
     public function test_calendar_can_manage_user_event(): void {
         global $DB, $USER;
         $generator = $this->getDataGenerator();
-        $sitecontext = \context_system::instance();
+        $sitecontext = system::instance();
         $this->resetAfterTest();
         $this->setAdminUser();
         $user1 = $generator->create_user();

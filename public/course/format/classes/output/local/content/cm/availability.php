@@ -24,10 +24,12 @@
 
 namespace core_courseformat\output\local\content\cm;
 
+use core\output\renderer_base;
+use core\url;
 use core_courseformat\output\local\content\section\availability as section_avalability;
-use cm_info;
+use core_course\cm_info;
 use core_courseformat\base as course_format;
-use section_info;
+use core_course\section_info;
 use stdClass;
 use core_availability\info_module;
 use core_availability\info;
@@ -81,7 +83,7 @@ class availability extends section_avalability {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return stdClass|null data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output): ?stdClass {
+    public function export_for_template(renderer_base $output): ?stdClass {
         if (!$this->format->show_activity_editor_options($this->mod)) {
             return null;
         }
@@ -94,7 +96,7 @@ class availability extends section_avalability {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return array the availability data.
      */
-    protected function get_info(\renderer_base $output): array {
+    protected function get_info(renderer_base $output): array {
         if (!$this->mod->is_visible_on_course_page()) {
             // Nothing to be displayed to the user.
             return [];
@@ -104,7 +106,7 @@ class availability extends section_avalability {
             return ['info' => $this->user_availability_info($output)];
         }
 
-        $editurl = new \moodle_url(
+        $editurl = new url(
             '/course/modedit.php',
             ['update' => $this->mod->id, 'showonly' => 'availabilityconditionsheader']
         );
@@ -120,7 +122,7 @@ class availability extends section_avalability {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return array the availability data.
      */
-    protected function user_availability_info(\renderer_base $output): array {
+    protected function user_availability_info(renderer_base $output): array {
         if (empty($this->mod->availableinfo)) {
             return [];
         }
@@ -136,7 +138,7 @@ class availability extends section_avalability {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return array the availability data.
      */
-    protected function conditional_availability_info(\renderer_base $output): array {
+    protected function conditional_availability_info(renderer_base $output): array {
         global $CFG;
 
         // This is a teacher who is allowed to see module but still should see the

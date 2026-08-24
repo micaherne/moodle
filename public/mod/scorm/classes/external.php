@@ -24,6 +24,10 @@
  * @since      Moodle 3.0
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
+use core\user;
 use core_course\external\helper_for_get_mods_by_courses;
 use core_external\external_api;
 use core_external\external_function_parameters;
@@ -85,7 +89,7 @@ class mod_scorm_external extends external_api {
         $scorm = $DB->get_record('scorm', array('id' => $params['scormid']), '*', MUST_EXIST);
         list($course, $cm) = get_course_and_cm_from_instance($scorm, 'scorm');
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         // Call the scorm/lib API.
@@ -152,11 +156,11 @@ class mod_scorm_external extends external_api {
         $scorm = $DB->get_record('scorm', array('id' => $params['scormid']), '*', MUST_EXIST);
         $cm = get_coursemodule_from_instance('scorm', $scorm->id);
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
-        $user = core_user::get_user($params['userid'], '*', MUST_EXIST);
-        core_user::require_active_user($user);
+        $user = user::get_user($params['userid'], '*', MUST_EXIST);
+        user::require_active_user($user);
 
         // Extra checks so only users with permissions can view other users attempts.
         if ($USER->id != $user->id) {
@@ -225,7 +229,7 @@ class mod_scorm_external extends external_api {
         $scorm = $DB->get_record('scorm', array('id' => $params['scormid']), '*', MUST_EXIST);
         $cm = get_coursemodule_from_instance('scorm', $scorm->id);
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         // Check settings / permissions to view the SCORM.
@@ -332,7 +336,7 @@ class mod_scorm_external extends external_api {
         $scorm = $DB->get_record('scorm', array('id' => $params['scormid']), '*', MUST_EXIST);
         $cm = get_coursemodule_from_instance('scorm', $scorm->id);
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         scorm_require_available($scorm, true, $context);
@@ -473,7 +477,7 @@ class mod_scorm_external extends external_api {
         $scorm = $DB->get_record('scorm', array('id' => $sco->scorm), '*', MUST_EXIST);
         $cm = get_coursemodule_from_instance('scorm', $scorm->id);
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         // Check settings / permissions to view the SCORM.
@@ -565,11 +569,11 @@ class mod_scorm_external extends external_api {
         $scorm = $DB->get_record('scorm', array('id' => $sco->scorm), '*', MUST_EXIST);
         $cm = get_coursemodule_from_instance('scorm', $scorm->id);
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
-        $user = core_user::get_user($params['userid'], '*', MUST_EXIST);
-        core_user::require_active_user($user);
+        $user = user::get_user($params['userid'], '*', MUST_EXIST);
+        user::require_active_user($user);
 
         // Extra checks so only users with permissions can view other users attempts.
         if ($USER->id != $user->id) {
@@ -690,7 +694,7 @@ class mod_scorm_external extends external_api {
             $fs = get_file_storage();
             foreach ($scorms as $scorm) {
 
-                $context = context_module::instance($scorm->coursemodule);
+                $context = module::instance($scorm->coursemodule);
 
                 // Entry to return.
                 $module = helper_for_get_mods_by_courses::standard_coursemodule_element_values($scorm, 'mod_scorm');
@@ -714,7 +718,7 @@ class mod_scorm_external extends external_api {
                         if ($packagefile = $fs->get_file($context->id, 'mod_scorm', 'package', 0, '/', $scorm->reference)) {
                             $module['packagesize'] = $packagefile->get_filesize();
                             // Download URL.
-                            $module['packageurl'] = moodle_url::make_webservice_pluginfile_url(
+                            $module['packageurl'] = url::make_webservice_pluginfile_url(
                                                     $context->id, 'mod_scorm', 'package', 0, '/', $scorm->reference)->out(false);
                         }
                     }
@@ -875,7 +879,7 @@ class mod_scorm_external extends external_api {
         $scorm = $DB->get_record('scorm', array('id' => $params['scormid']), '*', MUST_EXIST);
         list($course, $cm) = get_course_and_cm_from_instance($scorm, 'scorm');
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         // If the SCORM is not open this function will throw exceptions.
@@ -945,7 +949,7 @@ class mod_scorm_external extends external_api {
         $scorm = $DB->get_record('scorm', array('id' => $params['scormid']), '*', MUST_EXIST);
         list($course, $cm) = get_course_and_cm_from_instance($scorm, 'scorm');
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         $result = array();

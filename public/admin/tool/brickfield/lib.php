@@ -23,6 +23,11 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\system;
+use core\navigation\navigation_node;
+use core\output\pix_icon;
+use core\url;
 use tool_brickfield\accessibility;
 use tool_brickfield\manager;
 use tool_brickfield\registration;
@@ -36,7 +41,7 @@ use tool_brickfield\registration;
  * @throws coding_exception
  * @throws moodle_exception
  */
-function tool_brickfield_extend_navigation_course(\navigation_node $navigation, \stdClass $course, \context $context) {
+function tool_brickfield_extend_navigation_course(navigation_node $navigation, \stdClass $course, context $context) {
     if (!accessibility::is_accessibility_enabled()) {
         // The feature has been explicitly disabled.
         return;
@@ -48,13 +53,13 @@ function tool_brickfield_extend_navigation_course(\navigation_node $navigation, 
     }
 
     // Display in the navigation if the user has site:config ability, or if the site is registered.
-    $enabled = has_capability('moodle/site:config', \context_system::instance());
+    $enabled = has_capability('moodle/site:config', system::instance());
     $enabled = $enabled || (new registration())->toolkit_is_active();
     if (!$enabled) {
         return;
     }
 
-    $url = new moodle_url(accessibility::get_plugin_url(), ['courseid' => $course->id]);
+    $url = new url(accessibility::get_plugin_url(), ['courseid' => $course->id]);
     $navigation->add(
         get_string('pluginname', manager::PLUGINNAME),
         $url,

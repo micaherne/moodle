@@ -23,6 +23,10 @@
  */
 
 namespace core\event;
+
+use core\context\course;
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -59,7 +63,7 @@ class user_graded extends base {
      */
     public static function create_from_grade(\grade_grade $grade, $userid = null) {
         $gradedata = array(
-            'context'       => \context_course::instance($grade->grade_item->courseid),
+            'context'       => course::instance($grade->grade_item->courseid),
             'objectid'      => $grade->id,
             'relateduserid' => $grade->userid,
             'other'         => array(
@@ -83,7 +87,7 @@ class user_graded extends base {
      */
     public function get_grade() {
         if ($this->is_restored()) {
-            throw new \coding_exception('get_grade() is intended for event observers only');
+            throw new coding_exception('get_grade() is intended for event observers only');
         }
         return $this->grade;
     }
@@ -124,7 +128,7 @@ class user_graded extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/grade/edit/tree/grade.php', array(
+        return new url('/grade/edit/tree/grade.php', array(
             'courseid' => $this->courseid,
             'itemid'   => $this->other['itemid'],
             'userid'   => $this->relateduserid,
@@ -141,11 +145,11 @@ class user_graded extends base {
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
 
         if (!isset($this->other['itemid'])) {
-            throw new \coding_exception('The \'itemid\' value must be set in other.');
+            throw new coding_exception('The \'itemid\' value must be set in other.');
         }
     }
 

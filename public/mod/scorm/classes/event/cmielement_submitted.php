@@ -23,6 +23,9 @@
  */
 
 namespace mod_scorm\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -70,7 +73,7 @@ abstract class cmielement_submitted extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/scorm/report/userreport.php',
+        return new url('/mod/scorm/report/userreport.php',
                 array('id' => $this->contextinstanceid, 'user' => $this->userid, 'attempt' => $this->other['attemptid']));
     }
 
@@ -84,22 +87,22 @@ abstract class cmielement_submitted extends \core\event\base {
         parent::validate_data();
 
         if (empty($this->other['attemptid'])) {
-            throw new \coding_exception("The 'attemptid' must be set in other.");
+            throw new coding_exception("The 'attemptid' must be set in other.");
         }
 
         if (empty($this->other['cmielement'])) {
-            throw new \coding_exception("The 'cmielement' must be set in other.");
+            throw new coding_exception("The 'cmielement' must be set in other.");
         }
         // Trust that 'cmielement' represents a valid CMI datamodel element:
         // just check that the given value starts with 'cmi.'.
         if (strpos($this->other['cmielement'], 'cmi.', 0) !== 0) {
-            throw new \coding_exception(
+            throw new coding_exception(
                 "A valid 'cmielement' must start with 'cmi.' ({$this->other['cmielement']}).");
         }
 
         // Warning: 'cmivalue' could be also "0" e.g. when 'cmielement' represents a score.
         if (!isset($this->other['cmivalue'])) {
-            throw new \coding_exception("The 'cmivalue' must be set in other.");
+            throw new coding_exception("The 'cmivalue' must be set in other.");
         }
     }
 }

@@ -27,9 +27,10 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/tablelib.php');
 
-use html_writer;
-use moodle_url;
-use table_sql;
+use core\exception\required_capability_exception;
+use core\output\html_writer;
+use core\url;
+use core_table\sql_table;
 use core_competency\template;
 
 /**
@@ -42,7 +43,7 @@ use core_competency\template;
  * @copyright  2015 Frédéric Massart - FMCorz.net
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class template_plans_table extends table_sql {
+class template_plans_table extends sql_table {
 
     /** @var context The context. */
     protected $context;
@@ -61,7 +62,7 @@ class template_plans_table extends table_sql {
 
         // This object should not be used without the right permissions.
         if (!$template->can_read()) {
-            throw new \required_capability_exception($template->get_context(), 'moodle/competency:templateview',
+            throw new required_capability_exception($template->get_context(), 'moodle/competency:templateview',
                 'nopermissions', '');
         }
 
@@ -84,7 +85,7 @@ class template_plans_table extends table_sql {
      * @return string
      */
     protected function col_name($row) {
-        return html_writer::link(new moodle_url('/admin/tool/lp/plan.php', array('id' => $row->id)),
+        return html_writer::link(new url('/admin/tool/lp/plan.php', array('id' => $row->id)),
             format_string($row->name, true, array('context' => $this->context)));
     }
 

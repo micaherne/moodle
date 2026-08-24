@@ -22,6 +22,13 @@
  * @author     Dan Poltawski <dan.poltawski@luns.net.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context;
+use core\output\actions\popup_action;
+use core\output\html_writer;
+use core\output\single_button;
+use core\url;
+use core_cache\cache;
+
 class repository_onedrive extends repository {
     /**
      * OAuth 2 client
@@ -76,7 +83,7 @@ class repository_onedrive extends repository {
         if ($overrideurl) {
             $returnurl = $overrideurl;
         } else {
-            $returnurl = new moodle_url('/repository/repository_callback.php');
+            $returnurl = new url('/repository/repository_callback.php');
             $returnurl->param('callback', 'yes');
             $returnurl->param('repo_id', $this->id);
             $returnurl->param('sesskey', sesskey());
@@ -125,7 +132,7 @@ class repository_onedrive extends repository {
         global $OUTPUT, $PAGE;
 
         $client = $this->get_user_oauth_client(false);
-        $url = new moodle_url($client->get_login_url());
+        $url = new url($client->get_login_url());
         $state = $url->get_param('state') . '&reloadparent=true';
         $url->param('state', $state);
 
@@ -443,7 +450,7 @@ class repository_onedrive extends repository {
         $base = 'https://graph.microsoft.com/v1.0/';
 
         // Fetch the item info.
-        $infourl = (new moodle_url($base . 'me/drive/items/' . $sourceinfo->id))->out(false);
+        $infourl = (new url($base . 'me/drive/items/' . $sourceinfo->id))->out(false);
         $response = $client->get($infourl);
         if (!$response) {
             throw new repository_exception('cannotdownload', 'repository');
@@ -585,7 +592,7 @@ class repository_onedrive extends repository {
             $systemservice = new repository_onedrive\rest($systemauth);
 
             // Get the user oauth so we can get the account to add.
-            $url = moodle_url::make_pluginfile_url($storedfile->get_contextid(),
+            $url = url::make_pluginfile_url($storedfile->get_contextid(),
                                                    $storedfile->get_component(),
                                                    $storedfile->get_filearea(),
                                                    $storedfile->get_itemid(),
@@ -886,7 +893,7 @@ class repository_onedrive extends repository {
         $base = 'https://graph.microsoft.com/v1.0/';
 
         // Fetch the item info.
-        $infourl = (new moodle_url($base . 'me/drive/items/' . $source->id))->out(false);
+        $infourl = (new url($base . 'me/drive/items/' . $source->id))->out(false);
         $response = $userauth->get($infourl);
         if (!$response) {
             throw new repository_exception('cannotdownload', 'repository');
@@ -1029,7 +1036,7 @@ class repository_onedrive extends repository {
     public static function type_config_form($mform, $classname = 'repository') {
         global $OUTPUT;
 
-        $url = new moodle_url('/admin/tool/oauth2/issuers.php');
+        $url = new url('/admin/tool/oauth2/issuers.php');
         $url = $url->out();
 
         $mform->addElement('static', null, '', get_string('oauth2serviceslink', 'repository_onedrive', $url));

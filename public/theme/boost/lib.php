@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\output\theme_config;
+use core\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -129,13 +133,13 @@ function theme_boost_user_preferences(): array {
             'type' => PARAM_BOOL,
             'null' => NULL_NOT_ALLOWED,
             'default' => false,
-            'permissioncallback' => [core_user::class, 'is_current_user'],
+            'permissioncallback' => [user::class, 'is_current_user'],
         ],
         'drawer-open-index' => [
             'type' => PARAM_BOOL,
             'null' => NULL_NOT_ALLOWED,
             'default' => true,
-            'permissioncallback' => [core_user::class, 'is_current_user'],
+            'permissioncallback' => [user::class, 'is_current_user'],
         ],
     ];
 }
@@ -153,7 +157,7 @@ function theme_boost_get_main_scss_content($theme) {
     $filename = !empty($theme->settings->preset) ? $theme->settings->preset : null;
     $fs = get_file_storage();
 
-    $context = context_system::instance();
+    $context = system::instance();
     if ($filename == 'default.scss') {
         $scss .= file_get_contents($CFG->dirroot . '/theme/boost/scss/preset/default.scss');
     } else if ($filename == 'plain.scss') {

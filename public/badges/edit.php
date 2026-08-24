@@ -23,6 +23,13 @@
  * @author     Yuliya Bozhko <yuliya.bozhko@totaralms.com>
  */
 
+use \core_badges\badge;
+use core\context\course;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/badgeslib.php');
 require_once($CFG->libdir . '/filelib.php');
@@ -40,7 +47,7 @@ $action = optional_param('action', 'badge', PARAM_TEXT);
 require_login();
 
 if (empty($CFG->enablebadges)) {
-    throw new \moodle_exception('badgesdisabled', 'badges');
+    throw new moodle_exception('badgesdisabled', 'badges');
 }
 
 if (!empty($badgeid)) {
@@ -63,14 +70,14 @@ if (!empty($badgeid)) {
         require_capability('moodle/badges:configuredetails', $context);
     }
 
-    $cancelurl = new moodle_url('/badges/overview.php', ['id' => $badgeid]);
+    $cancelurl = new url('/badges/overview.php', ['id' => $badgeid]);
 } else {
     // New badge.
     if ($courseid) {
         $course = get_course($courseid);
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
     } else {
-        $context = context_system::instance();
+        $context = system::instance();
     }
 
     $badge = new stdClass();
@@ -85,20 +92,20 @@ if (!empty($badgeid)) {
     // Check capabilities.
     require_capability('moodle/badges:createbadge', $context);
 
-    $cancelurl = new moodle_url('/badges/index.php', ['type' => $badge->type, 'id' => $courseid]);
+    $cancelurl = new url('/badges/index.php', ['type' => $badge->type, 'id' => $courseid]);
 }
 
 // Check if course badges are enabled.
 if (empty($CFG->badges_allowcoursebadges) && ($badge->type == BADGE_TYPE_COURSE)) {
-    throw new \moodle_exception('coursebadgesdisabled', 'badges');
+    throw new moodle_exception('coursebadgesdisabled', 'badges');
 }
 
-$navurl = new moodle_url('/badges/index.php', ['type' => $badge->type]);
+$navurl = new url('/badges/index.php', ['type' => $badge->type]);
 if ($badge->type == BADGE_TYPE_COURSE) {
     require_login($badge->courseid);
     $heading = format_string($course->fullname, true, ['context' => $context]);
     $title[] = $heading;
-    $navurl = new moodle_url('/badges/index.php', ['type' => $badge->type, 'id' => $badge->courseid]);
+    $navurl = new url('/badges/index.php', ['type' => $badge->type, 'id' => $badge->courseid]);
     $PAGE->set_pagelayout('incourse');
     navigation_node::override_active_url($navurl);
 } else {
@@ -107,7 +114,7 @@ if ($badge->type == BADGE_TYPE_COURSE) {
     navigation_node::override_active_url($navurl, true);
 }
 
-$currenturl = new moodle_url('/badges/edit.php', $params);
+$currenturl = new url('/badges/edit.php', $params);
 
 $PAGE->set_context($context);
 $PAGE->set_url($currenturl);
@@ -160,9 +167,9 @@ if ($form->is_cancelled()) {
 
             // If a user can configure badge criteria, they will be redirected to the criteria page.
             if (has_capability('moodle/badges:configurecriteria', $context)) {
-                redirect(new moodle_url('/badges/criteria.php', ['id' => $badgeid]));
+                redirect(new url('/badges/criteria.php', ['id' => $badgeid]));
             }
-            redirect(new moodle_url('/badges/overview.php', ['id' => $badgeid]));
+            redirect(new url('/badges/overview.php', ['id' => $badgeid]));
             break;
 
         case 'badge':

@@ -16,6 +16,8 @@
 
 namespace core\task;
 
+use core\plugin_manager;
+
 defined('MOODLE_INTERNAL') || die();
 
 // We need to keep this here because there is a provider
@@ -403,7 +405,7 @@ final class manager_test extends \advanced_testcase {
         $stubdeprecatedplugininfo->method('is_deprecated')->willReturn(true);
         $stubdeprecatedplugininfo->component = "fulldeprecatedsubtype_test";
 
-        $stubpluginman = $this->createStub(\core_plugin_manager::class);
+        $stubpluginman = $this->createStub(plugin_manager::class);
         $stubpluginman
             ->method('get_plugin_info')
             ->will($this->returnValueMap([
@@ -411,7 +413,7 @@ final class manager_test extends \advanced_testcase {
                 ['fulldeprecatedsubtype_test', $stubdeprecatedplugininfo],
             ]));
 
-        $pluginman = new \ReflectionClass(\core_plugin_manager::class);
+        $pluginman = new \ReflectionClass(plugin_manager::class);
         $pluginman->setStaticPropertyValue('singletoninstance', $stubpluginman);
 
         $DB->delete_records('task_scheduled');
@@ -483,14 +485,14 @@ final class manager_test extends \advanced_testcase {
         $stubdeletedplugininfo->method('is_deprecated')->willReturn(false);
         $stubdeletedplugininfo->method('is_deleted')->willReturn(true);
         $stubdeletedplugininfo->component = "fulldeletedsubtype_demo";
-        $stubpluginman = $this->createStub(\core_plugin_manager::class);
+        $stubpluginman = $this->createStub(plugin_manager::class);
         $stubpluginman->method('get_plugin_info')
             ->will($this->returnValueMap([
                 ['fullsubtype_example', $stubavailableplugininfo],
                 ['fulldeprecatedsubtype_test', $stubdeprecatedplugininfo],
                 ['fulldeletedsubtype_demo', $stubdeletedplugininfo],
             ]));
-        $pluginmanrc = new \ReflectionClass(\core_plugin_manager::class);
+        $pluginmanrc = new \ReflectionClass(plugin_manager::class);
         $pluginmanrc->setStaticPropertyValue('singletoninstance', $stubpluginman);
 
         $task1 = new \fullsubtype_example\task\adhoc_test(); // Available plugin type.
@@ -509,13 +511,13 @@ final class manager_test extends \advanced_testcase {
         manager::adhoc_task_complete($taskfromqueue);
 
         // Task from a deprecated plugin type cannot be queued.
-        $this->assertTrue(\core_plugin_manager::instance()->get_plugin_info('fulldeprecatedsubtype_test')->is_deprecated());
+        $this->assertTrue(plugin_manager::instance()->get_plugin_info('fulldeprecatedsubtype_test')->is_deprecated());
         $this->assertFalse(manager::queue_adhoc_task($task2));
         $classname = get_class($task2);
         $this->assertNull(manager::get_next_adhoc_task($now, true, $classname));
 
         // Task from a deleted plugin type cannot be queued.
-        $this->assertTrue(\core_plugin_manager::instance()->get_plugin_info('fulldeletedsubtype_demo')->is_deleted());
+        $this->assertTrue(plugin_manager::instance()->get_plugin_info('fulldeletedsubtype_demo')->is_deleted());
         $this->assertFalse(manager::queue_adhoc_task($task3));
         $classname = get_class($task3);
         $this->assertNull(manager::get_next_adhoc_task($now, true, $classname));
@@ -542,13 +544,13 @@ final class manager_test extends \advanced_testcase {
         $stubavailableplugininfo = $this->createStub(\fake_fullfeatured\plugininfo\fullsubtype::class);
         $stubavailableplugininfo->method('is_deprecated')->willReturn(false);
         $stubavailableplugininfo->component = "fullsubtype_example";
-        $stubpluginman = $this->createStub(\core_plugin_manager::class);
+        $stubpluginman = $this->createStub(plugin_manager::class);
         $stubpluginman
             ->method('get_plugin_info')
             ->will($this->returnValueMap([
                 ['fullsubtype_example', $stubavailableplugininfo],
             ]));
-        $pluginmanrc = new \ReflectionClass(\core_plugin_manager::class);
+        $pluginmanrc = new \ReflectionClass(plugin_manager::class);
         $pluginmanrc->setStaticPropertyValue('singletoninstance', $stubpluginman);
 
         $task1 = new \fullsubtype_example\task\adhoc_test(); // An available plugin.
@@ -563,7 +565,7 @@ final class manager_test extends \advanced_testcase {
         $stubdeprecatedplugininfo = $this->createStub(\fake_fullfeatured\plugininfo\fullsubtype::class);
         $stubdeprecatedplugininfo->method('is_deprecated')->willReturn(true);
         $stubdeprecatedplugininfo->component = "fullsubtype_example";
-        $stubpluginman = $this->createStub(\core_plugin_manager::class);
+        $stubpluginman = $this->createStub(plugin_manager::class);
         $stubpluginman
             ->method('get_plugin_info')
             ->will($this->returnValueMap([
@@ -572,7 +574,7 @@ final class manager_test extends \advanced_testcase {
         $pluginmanrc->setStaticPropertyValue('singletoninstance', $stubpluginman);
 
         // Assert prior-queued tasks can be fetched and run.
-        $this->assertTrue(\core_plugin_manager::instance()->get_plugin_info('fullsubtype_example')->is_deprecated());
+        $this->assertTrue(plugin_manager::instance()->get_plugin_info('fullsubtype_example')->is_deprecated());
         $classname = get_class($task1);
         $now = time();
         $taskfromqueue = manager::get_next_adhoc_task($now, true, $classname);

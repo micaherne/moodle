@@ -25,7 +25,7 @@
 namespace core;
 defined('MOODLE_INTERNAL') || die();
 
-use coding_exception;
+use core\exception\coding_exception;
 use JsonSerializable;
 
 /**

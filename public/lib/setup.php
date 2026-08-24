@@ -45,6 +45,13 @@
  * @global object $CFG
  * @name $CFG
  */
+use core\context\system;
+use core\exception\moodle_exception;
+use core\output\bootstrap_renderer;
+use core\output\core_renderer;
+use core\output\theme_config;
+use core\url;
+
 global $CFG; // this should be done much earlier in config.php before creating new $CFG instance
 
 if (!isset($CFG)) {
@@ -788,7 +795,7 @@ if (!defined('NO_UPGRADE_CHECK') and isset($CFG->upgraderunning)) {
     if ($CFG->upgraderunning < time()) {
         unset_config('upgraderunning');
     } else {
-        throw new \moodle_exception('upgraderunning');
+        throw new moodle_exception('upgraderunning');
     }
 }
 
@@ -800,7 +807,7 @@ if (function_exists('gc_enable')) {
 
 // detect unsupported upgrade jump as soon as possible - do not change anything, do not use system functions
 if (!empty($CFG->version) and $CFG->version < 2007101509) {
-    throw new \moodle_exception('upgraderequires19', 'error');
+    throw new moodle_exception('upgraderequires19', 'error');
     die;
 }
 
@@ -839,7 +846,7 @@ initialise_fullme();
 
 // SYSCONTEXTID is cached in local cache to eliminate 1 query per page.
 if (!defined('SYSCONTEXTID')) {
-    context_system::instance();
+    system::instance();
 }
 
 // Defining the site - aka frontpage course
@@ -1014,7 +1021,7 @@ unset($lang);
 if ($forcelang = optional_param('forcelang', '', PARAM_SAFEDIR)) {
     if (isloggedin()
         && get_string_manager()->translation_exists($forcelang, false)
-        && has_capability('moodle/site:forcelanguage', context_system::instance())) {
+        && has_capability('moodle/site:forcelanguage', system::instance())) {
         $SESSION->forcelang = $forcelang;
     } else if (isset($SESSION->forcelang)) {
         unset($SESSION->forcelang);
@@ -1180,7 +1187,7 @@ if (isset($CFG->maintenance_later) and $CFG->maintenance_later <= time()) {
     } else if (!CLI_SCRIPT) {
         // We redirect to ourselves to reload the page to get a fresh bootstrap
         // so that we get the maintenance page which is earlier in setup.
-        redirect(new moodle_url($ME));
+        redirect(new url($ME));
     }
 }
 

@@ -23,6 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 require('../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/csvlib.class.php');
@@ -37,8 +41,8 @@ raise_memory_limit(MEMORY_HUGE);
 
 admin_externalpage_setup('tooluploaduser');
 
-$returnurl = new moodle_url('/admin/tool/uploaduser/index.php');
-$bulknurl  = new moodle_url('/admin/user/user_bulk.php');
+$returnurl = new url('/admin/tool/uploaduser/index.php');
+$bulknurl  = new url('/admin/user/user_bulk.php');
 
 if (empty($iid)) {
     $mform1 = new admin_uploaduser_form1();
@@ -54,7 +58,7 @@ if (empty($iid)) {
         unset($content);
 
         if (!is_null($csvloaderror)) {
-            throw new \moodle_exception('csvloaderror', '', $returnurl, $csvloaderror);
+            throw new moodle_exception('csvloaderror', '', $returnurl, $csvloaderror);
         }
         // Continue to form2.
 

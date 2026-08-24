@@ -26,6 +26,8 @@
 
 namespace mod_data\search;
 
+use core\context\course;
+use core\context\module;
 use core_courseformat\formatactions;
 
 defined('MOODLE_INTERNAL') || die();
@@ -359,13 +361,13 @@ final class search_test extends \advanced_testcase {
         $this->create_default_data_record($data2);
 
         // Test indexing with contexts.
-        $rs = $searcharea->get_document_recordset(0, \context_module::instance($data1->cmid));
+        $rs = $searcharea->get_document_recordset(0, module::instance($data1->cmid));
         $this->assertEquals(1, iterator_count($rs));
         $rs->close();
-        $rs = $searcharea->get_document_recordset(0, \context_module::instance($data2->cmid));
+        $rs = $searcharea->get_document_recordset(0, module::instance($data2->cmid));
         $this->assertEquals(1, iterator_count($rs));
         $rs->close();
-        $rs = $searcharea->get_document_recordset(0, \context_course::instance($course1->id));
+        $rs = $searcharea->get_document_recordset(0, course::instance($course1->id));
         $this->assertEquals(2, iterator_count($rs));
         $rs->close();
     }
@@ -932,7 +934,7 @@ final class search_test extends \advanced_testcase {
         $data1contentfileid1 = $DB->insert_record('data_content', $record);
 
         $filerecord = [
-            'contextid' => \context_module::instance($data1->cmid)->id,
+            'contextid' => module::instance($data1->cmid)->id,
             'component' => 'mod_data',
             'filearea'  => 'content',
             'itemid'    => $data1contentfileid1,

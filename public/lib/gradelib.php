@@ -22,6 +22,12 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\coursecat;
+use core\exception\moodle_exception;
+use core_cache\cache;
+use core_cache\store;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -464,7 +470,7 @@ function grade_get_grades($courseid, $itemtype, $itemmodule, $iteminstance, $use
         if ($result !== true) {
             $needsupdate = array_keys($result);
             // Return regrade errors if the user has capability.
-            $context = context_course::instance($courseid);
+            $context = course::instance($courseid);
             if (has_capability('moodle/grade:edit', $context)) {
                 $return->errors = $result;
             }
@@ -902,7 +908,7 @@ function grade_format_gradevalue_percentage(?float $value, $grade_item, $decimal
  */
 function grade_format_gradevalue_letter(?float $value, $grade_item) {
     global $CFG;
-    $context = context_course::instance($grade_item->courseid, IGNORE_MISSING);
+    $context = course::instance($grade_item->courseid, IGNORE_MISSING);
     if (!$letters = grade_get_letters($context)) {
         return ''; // no letters??
     }
@@ -1091,7 +1097,7 @@ function grade_recover_history_grades($userid, $courseid) {
     //Check the user is enrolled in this course
     //Dont bother checking if they have a gradeable role. They may get one later so recover
     //whatever grades they have now just in case.
-    $course_context = context_course::instance($courseid);
+    $course_context = course::instance($courseid);
     if (!is_enrolled($course_context, $userid)) {
         debugging('Attempting to recover the grades of a user who is deleted or not enrolled. Skipping recover.');
         return false;
@@ -1173,7 +1179,7 @@ function grade_regrade_final_grades($courseid, $userid=null, $updated_item=null,
     if ($userid) {
         // one raw grade updated for one user
         if (empty($updated_item)) {
-            throw new \moodle_exception("cannotbenull", 'debug', '', "updated_item");
+            throw new moodle_exception("cannotbenull", 'debug', '', "updated_item");
         }
         if ($course_item->needsupdate) {
             $updated_item->force_regrading();
@@ -1193,7 +1199,7 @@ function grade_regrade_final_grades($courseid, $userid=null, $updated_item=null,
         // Defer recalculation to an ad-hoc task.
         if ($async) {
             $regradecache = cache::make_from_params(
-                mode: cache_store::MODE_REQUEST,
+                mode: store::MODE_REQUEST,
                 component: 'core',
                 area: 'grade_regrade_final_grades',
                 options: [
@@ -1405,7 +1411,7 @@ function grade_grab_course_grades($courseid, $modname=null, $userid=0) {
     }
 
     if (!$mods = core_component::get_plugin_list('mod') ) {
-        throw new \moodle_exception('nomodules', 'debug');
+        throw new moodle_exception('nomodules', 'debug');
     }
 
     foreach ($mods as $mod => $fullmod) {
@@ -1507,7 +1513,7 @@ function remove_course_grades($courseid, $showfeedback) {
 
     $course_category = grade_category::fetch_course_category($courseid);
     $course_category->delete('coursedelete');
-    $fs->delete_area_files(context_course::instance($courseid)->id, 'grade', 'feedback');
+    $fs->delete_area_files(course::instance($courseid)->id, 'grade', 'feedback');
     if ($showfeedback) {
         echo $OUTPUT->notification($strdeleted.' - '.get_string('grades', 'grades').', '.get_string('items', 'grades').', '.get_string('categories', 'grades'), 'notifysuccess');
     }
@@ -1548,7 +1554,7 @@ function remove_course_grades($courseid, $showfeedback) {
 function grade_course_category_delete($categoryid, $newparentid, $showfeedback) {
     global $DB;
 
-    $context = context_coursecat::instance($categoryid);
+    $context = coursecat::instance($categoryid);
     $records = $DB->get_records('grade_letters', array('contextid' => $context->id));
     foreach ($records as $record) {
         $DB->delete_records('grade_letters', array('id' => $record->id));

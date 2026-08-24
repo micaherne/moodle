@@ -17,10 +17,10 @@
 namespace core\event;
 
 use advanced_testcase;
-use context_course;
-use context_system;
+use core\context\course;
+use core\context\system;
 use Exception;
-use moodle_url;
+use core\url;
 
 defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__.'/../fixtures/event_mod_fixtures.php');
@@ -43,7 +43,7 @@ final class course_module_instance_list_viewed_test extends advanced_testcase {
 
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Trigger the page view event.
         $sink = $this->redirectEvents();
@@ -56,7 +56,7 @@ final class course_module_instance_list_viewed_test extends advanced_testcase {
         $sink->close();
 
         // Test event data.
-        $url = new moodle_url('/mod/unittests/index.php', array('id' => $course->id));
+        $url = new url('/mod/unittests/index.php', array('id' => $course->id));
         $this->assertEquals($url, $event->get_url());
         $this->assertEventContextNotUsed($event);
 
@@ -67,7 +67,7 @@ final class course_module_instance_list_viewed_test extends advanced_testcase {
      */
     public function test_event_validations(): void {
         try {
-            \mod_unittests\event\course_module_instance_list_viewed::create(array('context' => context_system::instance()));
+            \mod_unittests\event\course_module_instance_list_viewed::create(array('context' => system::instance()));
             $this->fail('Event validation should not allow course_module_instance_list_viewed event to be triggered without outside
                     course context');
         } catch (Exception $e) {

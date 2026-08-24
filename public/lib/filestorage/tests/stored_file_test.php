@@ -17,7 +17,8 @@
 namespace core;
 
 use advanced_testcase;
-use context_system;
+use core\context\system;
+use core\exception\moodle_exception;
 
 /**
  * Unit tests for lib/filestorage/stored_file.php.
@@ -41,7 +42,7 @@ final class stored_file_test extends advanced_testcase {
         $filename = 'testimage.jpg';
         $filepath = $CFG->dirroot . '/lib/filestorage/tests/fixtures/' . $filename;
         $filerecord = [
-            'contextid' => context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'component' => 'core',
             'filearea'  => 'unittest',
             'itemid'    => 0,
@@ -73,7 +74,7 @@ final class stored_file_test extends advanced_testcase {
         $filename = 'testimage_rotated.jpg';
         $filepath = $CFG->dirroot . '/lib/filestorage/tests/fixtures/' . $filename;
         $filerecord = [
-            'contextid' => context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'component' => 'core',
             'filearea'  => 'unittest',
             'itemid'    => 0,
@@ -100,7 +101,7 @@ final class stored_file_test extends advanced_testcase {
         $filename = 'testimage.jpg';
         $filepath = $CFG->dirroot . '/lib/filestorage/tests/fixtures/' . $filename;
         $filerecord = [
-            'contextid' => context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'component' => 'core',
             'filearea'  => 'unittest',
             'itemid'    => 0,
@@ -128,7 +129,7 @@ final class stored_file_test extends advanced_testcase {
 
         $fs = get_file_storage();
         $filerecord = [
-            'contextid' => context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'component' => 'core',
             'filearea' => 'unittest',
             'itemid' => 0,
@@ -140,7 +141,7 @@ final class stored_file_test extends advanced_testcase {
         $referenceid = $DB->get_field('repository_instances', 'id', ['typeid' => FILE_INTERNAL]);
         $referencestr = \file_storage::pack_reference($filerecord);
         $copyrecord = [
-            'contextid' => context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'component' => 'core',
             'filearea' => 'unittest',
             'itemid' => 1,
@@ -158,14 +159,14 @@ final class stored_file_test extends advanced_testcase {
         try {
             $hackedfile->sync_external_file();
             $this->fail('Should not work because this is a recursive reference');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertStringContainsString('File references itself: ' . $file->get_id(), $e->getMessage());
         }
 
         // Create another file that references the copy.
         $reference2str = \file_storage::pack_reference($copyrecord);
         $copy2record = [
-            'contextid' => context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'component' => 'core',
             'filearea' => 'unittest',
             'itemid' => 2,
@@ -183,7 +184,7 @@ final class stored_file_test extends advanced_testcase {
         try {
             $hackedfile->sync_external_file();
             $this->fail('Should not work because this is a recursive reference');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertStringContainsString('File references itself: ' . $file->get_id(), $e->getMessage());
         }
 

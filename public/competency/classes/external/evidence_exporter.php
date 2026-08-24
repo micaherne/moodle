@@ -24,8 +24,8 @@
 namespace core_competency\external;
 defined('MOODLE_INTERNAL') || die();
 
-use context_system;
-use renderer_base;
+use core\context\system;
+use core\output\renderer_base;
 use core_competency\evidence;
 use core_competency\user_competency;
 use core_user\external\user_summary_exporter;
@@ -50,7 +50,7 @@ class evidence_exporter extends \core\external\persistent_exporter {
             // We let developers know that they must fix their code without breaking anything, and
             // fallback on the previous behaviour. This should be removed at a later stage: Moodle 3.5.
             debugging('Missing related context in evidence_exporter.', DEBUG_DEVELOPER);
-            $related['context'] = context_system::instance();
+            $related['context'] = system::instance();
         }
         parent::__construct($data, $related);
     }
@@ -111,7 +111,7 @@ class evidence_exporter extends \core\external\persistent_exporter {
      */
     protected function get_format_parameters_for_gradename() {
         return [
-            'context' => context_system::instance(), // The system context is cached, so we can get it right away.
+            'context' => system::instance(), // The system context is cached, so we can get it right away.
         ];
     }
 

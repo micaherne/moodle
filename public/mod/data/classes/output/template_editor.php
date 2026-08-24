@@ -16,10 +16,11 @@
 
 namespace mod_data\output;
 
-use templatable;
-use renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\output\renderable;
 use mod_data\manager;
-use moodle_url;
+use core\url;
 use texteditor;
 
 /**
@@ -54,7 +55,7 @@ class template_editor implements templatable, renderable {
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         $instance = $this->manager->get_instance();
         $cm = $this->manager->get_coursemodule();
 
@@ -62,7 +63,7 @@ class template_editor implements templatable, renderable {
             'title' => get_string('header' . $this->templatename, 'data'),
             'sesskey' => sesskey(),
             'disableeditor' => true,
-            'url' => new moodle_url('/mod/data/templates.php', ['id' => $cm->id, 'mode' => $this->templatename]),
+            'url' => new url('/mod/data/templates.php', ['id' => $cm->id, 'mode' => $this->templatename]),
         ];
 
         // Determine whether to use HTML editors.

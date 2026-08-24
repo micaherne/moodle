@@ -26,6 +26,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -476,7 +479,7 @@ class qformat_default {
                     if ($pageid) {
                         // the new page follows on from this page
                         if (!$page = $DB->get_record("lesson_pages", array("id" => $pageid))) {
-                            throw new \moodle_exception('invalidpageid', 'lesson');
+                            throw new moodle_exception('invalidpageid', 'lesson');
                         }
                         $newpage->prevpageid = $pageid;
                         $newpage->nextpageid = $page->nextpageid;

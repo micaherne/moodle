@@ -16,10 +16,12 @@
 
 namespace mod_data\output;
 
+use core\output\renderer_base;
+use core\output\single_button;
 use mod_data\manager;
-use moodle_url;
-use templatable;
-use renderable;
+use core\url;
+use core\output\templatable;
+use core\output\renderable;
 
 /**
  * Renderable class for the action bar elements for an empty database activity.
@@ -48,7 +50,7 @@ class empty_database_action_bar implements templatable, renderable {
      * @param \renderer_base $output The renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         global $PAGE;
 
         $instance = $this->manager->get_instance();
@@ -58,8 +60,8 @@ class empty_database_action_bar implements templatable, renderable {
         if (has_capability('mod/data:manageentries', $PAGE->context)) {
             $params = ['d' => $instance->id, 'backto' => $PAGE->url->out(false)];
 
-            $importentrieslink = new moodle_url('/mod/data/import.php', $params);
-            $importentriesbutton = new \single_button($importentrieslink,
+            $importentrieslink = new url('/mod/data/import.php', $params);
+            $importentriesbutton = new single_button($importentrieslink,
                 get_string('importentries', 'mod_data'), 'get');
             $data['importentriesbutton'] = $importentriesbutton->export_for_template($output);
         }

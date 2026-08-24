@@ -24,6 +24,11 @@
  * @author     Yuliya Bozhko <yuliya.bozhko@totaralms.com>
  */
 
+use \core_badges\badge;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/badgeslib.php');
 
@@ -33,24 +38,24 @@ $awards = optional_param('awards', '', PARAM_ALPHANUM);
 require_login();
 
 if (empty($CFG->enablebadges)) {
-    throw new \moodle_exception('badgesdisabled', 'badges');
+    throw new moodle_exception('badgesdisabled', 'badges');
 }
 
 $badge = new badge($badgeid);
 $context = $badge->get_context();
-$navurl = new moodle_url('/badges/index.php', array('type' => $badge->type));
+$navurl = new url('/badges/index.php', array('type' => $badge->type));
 $title = [$badge->name];
 
 if ($badge->type == BADGE_TYPE_COURSE) {
     if (empty($CFG->badges_allowcoursebadges)) {
-        throw new \moodle_exception('coursebadgesdisabled', 'badges');
+        throw new moodle_exception('coursebadgesdisabled', 'badges');
     }
     require_login($badge->courseid);
     $course = get_course($badge->courseid);
     $heading = format_string($course->fullname, true, ['context' => $context]);
     $title[] = $heading;
 
-    $navurl = new moodle_url('/badges/index.php', array('type' => $badge->type, 'id' => $badge->courseid));
+    $navurl = new url('/badges/index.php', array('type' => $badge->type, 'id' => $badge->courseid));
     $PAGE->set_pagelayout('standard');
     navigation_node::override_active_url($navurl);
 } else {
@@ -59,7 +64,7 @@ if ($badge->type == BADGE_TYPE_COURSE) {
     navigation_node::override_active_url($navurl, true);
 }
 
-$currenturl = new moodle_url('/badges/overview.php', array('id' => $badge->id));
+$currenturl = new url('/badges/overview.php', array('id' => $badge->id));
 
 $PAGE->set_context($context);
 $PAGE->set_url($currenturl);

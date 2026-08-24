@@ -16,7 +16,8 @@
 
 
 namespace mod_h5pactivity\local;
-use context_module;
+use core\context\course;
+use core\context\module;
 use stdClass;
 
 /**
@@ -41,7 +42,7 @@ final class manager_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $activity = $this->getDataGenerator()->create_module('h5pactivity', ['course' => $course]);
         $cm = get_coursemodule_from_id('h5pactivity', $activity->cmid, 0, false, MUST_EXIST);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $manager = manager::create_from_instance($activity);
         $manageractivity = $manager->get_instance();
@@ -346,7 +347,7 @@ final class manager_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $activity = $this->getDataGenerator()->create_module('h5pactivity', ['course' => $course]);
         $cm = get_coursemodule_from_id('h5pactivity', $activity->cmid, 0, false, MUST_EXIST);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $manager = manager::create_from_instance($activity);
         $grader = $manager->get_grader();
@@ -1136,7 +1137,7 @@ final class manager_test extends \advanced_testcase {
         // At the time of writing this is not set by default (see MDL-80028).
         $teacherrole = $DB->get_record('role', ['shortname' => 'teacher']);
         role_change_permission($teacherrole->id,
-            \context_course::instance($course->id), 'mod/h5pactivity:reviewattempts', CAP_ALLOW);
+            course::instance($course->id), 'mod/h5pactivity:reviewattempts', CAP_ALLOW);
 
         $manager = manager::create_from_instance($activity);
 

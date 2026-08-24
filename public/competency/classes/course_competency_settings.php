@@ -23,8 +23,8 @@
  */
 namespace core_competency;
 
-use lang_string;
-use context_course;
+use core\lang_string;
+use core\context\course;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -86,7 +86,7 @@ class course_competency_settings extends persistent {
      * @return bool
      */
     public static function can_read($courseid) {
-        $context = context_course::instance($courseid);
+        $context = course::instance($courseid);
 
         $capabilities = array('moodle/competency:coursecompetencyview', 'moodle/competency:coursecompetencymanage');
 
@@ -100,7 +100,7 @@ class course_competency_settings extends persistent {
      * @return bool
      */
     public static function can_manage_course($courseid) {
-        $context = context_course::instance($courseid);
+        $context = course::instance($courseid);
 
         $capabilities = array('moodle/competency:coursecompetencyconfigure');
 
@@ -136,6 +136,6 @@ class course_competency_settings extends persistent {
      * @return context The context
      */
     public function get_context() {
-        return context_course::instance($this->get('courseid'));
+        return course::instance($this->get('courseid'));
     }
 }

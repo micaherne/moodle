@@ -19,6 +19,7 @@ namespace core_courseformat\output\local\overview;
 use core\output\externable;
 use core\output\local\dropdown\dialog;
 use core\output\local\properties\button;
+use core\output\renderer_base;
 use core_courseformat\external\overviewdialog_exporter;
 use stdClass;
 
@@ -129,7 +130,7 @@ class overviewdialog extends dialog implements externable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return array data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         $data = [
             ...parent::export_for_template($output),
             'title' => $this->title,
@@ -152,7 +153,7 @@ class overviewdialog extends dialog implements externable {
      * @param \renderer_base $renderer The renderer requesting the template name
      * @return string the template name
      */
-    public function get_template_name(\renderer_base $renderer): string {
+    public function get_template_name(renderer_base $renderer): string {
         return 'core_courseformat/local/overview/overviewdialog';
     }
 

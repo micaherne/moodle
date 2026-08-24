@@ -23,6 +23,10 @@
  * @package course
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once("../config.php");
 require_once($CFG->dirroot. '/course/lib.php');
 
@@ -37,7 +41,7 @@ $heading = $site->fullname;
 if ($categoryid) {
     $category = core_course_category::get($categoryid); // This will validate access.
     $PAGE->set_category_by_id($categoryid);
-    $PAGE->set_url(new moodle_url('/course/index.php', array('categoryid' => $categoryid)));
+    $PAGE->set_url(new url('/course/index.php', array('categoryid' => $categoryid)));
     $PAGE->set_pagetype('course-index-category');
     $heading = $category->get_formatted_name();
 } else if ($category = core_course_category::user_top()) {
@@ -48,11 +52,11 @@ if ($categoryid) {
         $PAGE->set_category_by_id($categoryid);
         $PAGE->set_context($category->get_context());
         if (!core_course_category::is_simple_site()) {
-            $PAGE->set_url(new moodle_url('/course/index.php', array('categoryid' => $categoryid)));
+            $PAGE->set_url(new url('/course/index.php', array('categoryid' => $categoryid)));
             $heading = $category->get_formatted_name();
         }
     } else {
-        $PAGE->set_context(context_system::instance());
+        $PAGE->set_context(system::instance());
     }
     $PAGE->set_pagetype('course-index-category');
 } else {

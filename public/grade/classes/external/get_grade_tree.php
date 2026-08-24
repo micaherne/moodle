@@ -16,6 +16,7 @@
 
 namespace core_grades\external;
 
+use core\context\course;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
@@ -62,7 +63,7 @@ class get_grade_tree extends external_api {
             ]
         );
 
-        $context = \context_course::instance($params['courseid']);
+        $context = course::instance($params['courseid']);
         parent::validate_context($context);
         // Make sure that the user has the capability to view the full grade tree in the course.
         require_capability('moodle/grade:viewall', $context);

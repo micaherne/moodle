@@ -28,6 +28,7 @@ namespace tool_messageinbound\privacy;
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
+use core\context\user;
 use core_privacy\tests\provider_testcase;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -62,8 +63,8 @@ final class provider_test extends provider_testcase {
         $dg = $this->getDataGenerator();
         $u1 = $dg->create_user();
         $u2 = $dg->create_user();
-        $u1ctx = \context_user::instance($u1->id);
-        $u2ctx = \context_user::instance($u2->id);
+        $u1ctx = user::instance($u1->id);
+        $u2ctx = user::instance($u2->id);
 
         $contexts = provider::get_contexts_for_userid($u1->id)->get_contexts();
         $this->assertCount(1, $contexts);
@@ -83,9 +84,9 @@ final class provider_test extends provider_testcase {
         $u1 = $dg->create_user();
         $u2 = $dg->create_user();
         $u3 = $dg->create_user();
-        $u1ctx = \context_user::instance($u1->id);
-        $u2ctx = \context_user::instance($u2->id);
-        $u3ctx = \context_user::instance($u3->id);
+        $u1ctx = user::instance($u1->id);
+        $u2ctx = user::instance($u2->id);
+        $u3ctx = user::instance($u3->id);
 
         $addressmanager = new \core\message\inbound\address_manager();
         $addressmanager->set_handler('\tool_messageinbound\message\inbound\invalid_recipient_handler');
@@ -124,8 +125,8 @@ final class provider_test extends provider_testcase {
         $dg = $this->getDataGenerator();
         $u1 = $dg->create_user();
         $u2 = $dg->create_user();
-        $u1ctx = \context_user::instance($u1->id);
-        $u2ctx = \context_user::instance($u2->id);
+        $u1ctx = user::instance($u1->id);
+        $u2ctx = user::instance($u2->id);
 
         $addressmanager = new \core\message\inbound\address_manager();
         $addressmanager->set_handler('\tool_messageinbound\message\inbound\invalid_recipient_handler');
@@ -168,8 +169,8 @@ final class provider_test extends provider_testcase {
         $dg = $this->getDataGenerator();
         $u1 = $dg->create_user();
         $u2 = $dg->create_user();
-        $u1ctx = \context_user::instance($u1->id);
-        $u2ctx = \context_user::instance($u2->id);
+        $u1ctx = user::instance($u1->id);
+        $u2ctx = user::instance($u2->id);
 
         $addressmanager = new \core\message\inbound\address_manager();
         $addressmanager->set_handler('\tool_messageinbound\message\inbound\invalid_recipient_handler');
@@ -216,8 +217,8 @@ final class provider_test extends provider_testcase {
         $dg = $this->getDataGenerator();
         $u1 = $dg->create_user();
         $u2 = $dg->create_user();
-        $u1ctx = \context_user::instance($u1->id);
-        $u2ctx = \context_user::instance($u2->id);
+        $u1ctx = user::instance($u1->id);
+        $u2ctx = user::instance($u2->id);
 
         $addressmanager = new \core\message\inbound\address_manager();
         $addressmanager->set_handler('\tool_messageinbound\message\inbound\invalid_recipient_handler');
@@ -248,8 +249,8 @@ final class provider_test extends provider_testcase {
         $dg = $this->getDataGenerator();
         $u1 = $dg->create_user();
         $u2 = $dg->create_user();
-        $u1ctx = \context_user::instance($u1->id);
-        $u2ctx = \context_user::instance($u2->id);
+        $u1ctx = user::instance($u1->id);
+        $u2ctx = user::instance($u2->id);
 
         $addressmanager = new \core\message\inbound\address_manager();
         $addressmanager->set_handler('\tool_messageinbound\message\inbound\invalid_recipient_handler');

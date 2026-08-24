@@ -16,6 +16,8 @@
 
 namespace core_admin\setting\setting;
 
+use core\output\html_writer;
+
 /**
  * Displays the result of a check via AJAX.
  *
@@ -107,7 +109,7 @@ class check extends \core_admin\setting {
         }
 
         // Wrap in a div with a reference. The JS getAndRender will replace this with the response from the webservice.
-        $statusdiv = \html_writer::div($output, '', ['data-check-reference' => $domref]);
+        $statusdiv = html_writer::div($output, '', ['data-check-reference' => $domref]);
 
         return format_admin_setting($this, $this->visiblename, '', $statusdiv);
     }

@@ -29,6 +29,9 @@ require_once(__DIR__ . '/../../behat/behat_base.php');
 
 use Behat\Gherkin\Node\TableNode as TableNode;
 use Behat\Behat\Tester\Exception\PendingException as PendingException;
+use core\exception\coding_exception;
+use core\test\testing_util;
+use core_course\cm_info;
 
 /**
  * Class to quickly create Behat test data using component data generators.

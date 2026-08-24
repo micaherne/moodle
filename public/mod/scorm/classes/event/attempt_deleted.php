@@ -23,6 +23,9 @@
  */
 
 namespace mod_scorm\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -74,7 +77,7 @@ class attempt_deleted extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/scorm/report.php', array('id' => $this->contextinstanceid));
+        return new url('/mod/scorm/report.php', array('id' => $this->contextinstanceid));
     }
 
     /**
@@ -87,7 +90,7 @@ class attempt_deleted extends \core\event\base {
         parent::validate_data();
 
         if (empty($this->other['attemptid'])) {
-            throw new \coding_exception('The \'attemptid\' must be set in other.');
+            throw new coding_exception('The \'attemptid\' must be set in other.');
         }
     }
 

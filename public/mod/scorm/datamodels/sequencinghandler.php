@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\module;
+use core\exception\moodle_exception;
+
 require_once('../../../config.php');
 require_once($CFG->dirroot.'/mod/scorm/locallib.php');
 
@@ -33,7 +36,7 @@ if (!empty($id)) {
     $course = $DB->get_record("course", array("id" => $scorm->course), '*', MUST_EXIST);
     $cm = get_coursemodule_from_instance("scorm", $scorm->id, $course->id, false, MUST_EXIST);
 } else {
-    throw new \moodle_exception('missingparameter');
+    throw new moodle_exception('missingparameter');
 }
 
 $PAGE->set_url('/mod/scorm/datamodels/sequencinghandler.php',
@@ -44,7 +47,7 @@ require_login($course, false, $cm);
 if (!empty($scoid) && !empty($function)) {
     require_once($CFG->dirroot.'/mod/scorm/datamodels/scorm_13lib.php');
 
-    if (has_capability('mod/scorm:savetrack', context_module::instance($cm->id))) {
+    if (has_capability('mod/scorm:savetrack', module::instance($cm->id))) {
         $result = null;
         switch ($function) {
             case 'scorm_seq_flow' :

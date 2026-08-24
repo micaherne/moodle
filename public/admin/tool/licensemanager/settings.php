@@ -22,10 +22,12 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($hassiteconfig) {
-    $temp = new admin_externalpage('licensemanager',
+    $temp = new externalpage('licensemanager',
         get_string('licensemanager', 'tool_licensemanager'),
         \tool_licensemanager\helper::get_licensemanager_url());
 

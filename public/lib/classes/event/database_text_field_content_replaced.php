@@ -24,6 +24,8 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -76,10 +78,10 @@ class database_text_field_content_replaced extends \core\event\base {
         parent::validate_data();
 
         if (!isset($this->other['search'])) {
-            throw new \coding_exception('The \'search\' value must be set in other.');
+            throw new coding_exception('The \'search\' value must be set in other.');
         }
         if (!isset($this->other['replace'])) {
-            throw new \coding_exception('The \'replace\' value must be set in other.');
+            throw new coding_exception('The \'replace\' value must be set in other.');
         }
     }
 }

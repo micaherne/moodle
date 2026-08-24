@@ -23,6 +23,11 @@
  * @author    Petr Skoda <petr.skoda@totaralms.com>
  */
 
+use core\context\user;
+use core\output\html_writer;
+use core\url;
+use core_table\output\html_table;
+
 require(__DIR__ . '/../../config.php');
 require_once(__DIR__ . '/locallib.php');
 
@@ -30,16 +35,16 @@ require_login(null, false);
 
 if (isguestuser()) {
     // No guests here!
-    redirect(new moodle_url('/'));
+    redirect(new url('/'));
     die;
 }
 if (\core\session\manager::is_loggedinas()) {
     // No login-as users.
-    redirect(new moodle_url('/user/index.php'));
+    redirect(new url('/user/index.php'));
     die;
 }
 
-$context = context_user::instance($USER->id);
+$context = user::instance($USER->id);
 require_capability('report/usersessions:manageownsessions', $context);
 
 $delete = optional_param('delete', 0, PARAM_INT);
@@ -75,7 +80,7 @@ if ($deleteall && confirm_sesskey()) {
 // Create the breadcrumb.
 $PAGE->add_report_nodes($USER->id, array(
         'name' => get_string('navigationlink', 'report_usersessions'),
-        'url' => new moodle_url('/report/usersessions/user.php')
+        'url' => new url('/report/usersessions/user.php')
     ));
 
 echo $OUTPUT->header();
@@ -94,7 +99,7 @@ foreach ($sessions as $session) {
 
     } else {
         $lastaccess = report_usersessions_format_duration(time() - $session->timemodified);
-        $url = new moodle_url($PAGE->url, ['delete' => $session->id, 'sesskey' => sesskey(), 'lastip' => $session->lastip]);
+        $url = new url($PAGE->url, ['delete' => $session->id, 'sesskey' => sesskey(), 'lastip' => $session->lastip]);
         $deletelink = html_writer::link($url, get_string('logout'));
     }
     $data[] = array(userdate($session->timecreated), $lastaccess, report_usersessions_format_ip($session->lastip), $deletelink);
@@ -108,7 +113,7 @@ echo html_writer::table($table);
 
 // Provide button to log out all other sessions.
 if (count($sessions) > 1) {
-    $url = new moodle_url($PAGE->url, ['deleteall' => true]);
+    $url = new url($PAGE->url, ['deleteall' => true]);
     echo $OUTPUT->single_button($url, get_string('logoutothersessions', 'report_usersessions'));
 }
 

@@ -16,6 +16,8 @@
 
 namespace core;
 
+use core\context\system;
+
 // phpcs:disable moodle.PHPUnit.TestCaseNames.Missing
 /**
  * Just a wrapper to access protected apis for testing.
@@ -51,8 +53,8 @@ final class core_externallib_test extends \advanced_testcase {
      */
     public function test_get_context_wrapper(): void {
         $this->assertEquals(
-            \context_system::instance(),
-            \core\test_exernal_api::get_context_wrapper(['contextid' => \context_system::instance()->id])
+            system::instance(),
+            \core\test_exernal_api::get_context_wrapper(['contextid' => system::instance()->id])
         );
         $this->assertDebuggingCalled(
             'test_exernal_api::get_context_wrapper() is deprecated. Please use Reflection instead.'

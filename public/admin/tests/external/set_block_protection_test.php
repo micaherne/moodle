@@ -18,6 +18,9 @@ declare(strict_types=1);
 
 namespace core_admin\external;
 
+use core\exception\require_login_exception;
+use core\exception\required_capability_exception;
+
 /**
  * Unit tests to test block protection changes.
  *
@@ -31,7 +34,7 @@ final class set_block_protection_test extends \core_external\tests\externallib_t
      * Test execute method with no login.
      */
     public function test_execute_no_login(): void {
-        $this->expectException(\require_login_exception::class);
+        $this->expectException(require_login_exception::class);
         set_block_protection::execute('block_login', 1);
     }
 
@@ -42,7 +45,7 @@ final class set_block_protection_test extends \core_external\tests\externallib_t
         $this->resetAfterTest();
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         set_block_protection::execute('block_login', 1);
     }
 

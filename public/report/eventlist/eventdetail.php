@@ -21,6 +21,8 @@
  * @copyright 2014 Adrian Greeve <adrian@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\exception\moodle_exception;
+
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
@@ -34,7 +36,7 @@ $completelist = report_eventlist_list_generator::get_all_events_list(false);
 
 // Check that $eventname is a valid event.
 if (!array_key_exists($eventname, $completelist)) {
-    throw new \moodle_exception('errorinvalidevent', 'report_eventlist');
+    throw new moodle_exception('errorinvalidevent', 'report_eventlist');
 }
 
 // Break up the full event name to usable parts.
@@ -45,7 +47,7 @@ $directory = core_component::get_component_directory($component[1]);
 $directory = $directory . '/classes/event';
 // Verify that the directory is valid.
 if (!is_dir($directory)) {
-    throw new \moodle_exception('errorinvaliddirectory', 'report_eventlist');
+    throw new moodle_exception('errorinvaliddirectory', 'report_eventlist');
 }
 $filename = end($component);
 $eventfiles = $directory . '/' . $filename . '.php';

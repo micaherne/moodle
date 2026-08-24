@@ -25,8 +25,8 @@
 
 namespace mod_h5pactivity\local;
 
-use context_module;
-use cm_info;
+use core\context\module;
+use core_course\cm_info;
 use moodle_recordset;
 use stdClass;
 

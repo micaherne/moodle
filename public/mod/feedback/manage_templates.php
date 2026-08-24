@@ -23,6 +23,10 @@
  * @package mod_feedback
  */
 
+use core\context\module;
+use core\context\system;
+use core\url;
+
 require_once("../../config.php");
 require_once("lib.php");
 
@@ -30,16 +34,16 @@ $id = required_param('id', PARAM_INT);
 $templateid = optional_param('deletetemplate', 0, PARAM_INT);
 
 list($course, $cm) = get_course_and_cm_from_cmid($id, 'feedback');
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 
 require_login($course, true, $cm);
 require_capability('mod/feedback:edititems', $context);
 
 $feedback = $PAGE->activityrecord;
-$systemcontext = context_system::instance();
+$systemcontext = system::instance();
 
 $params = ['id' => $id];
-$url = new moodle_url('/mod/feedback/manage_templates.php', $params);
+$url = new url('/mod/feedback/manage_templates.php', $params);
 
 $PAGE->set_url($url);
 
@@ -67,7 +71,7 @@ if ($templateid) {
     }
 
     feedback_delete_template($template);
-    $successurl = new moodle_url('/mod/feedback/manage_templates.php', ['id' => $id]);
+    $successurl = new url('/mod/feedback/manage_templates.php', ['id' => $id]);
     redirect($url, get_string('template_deleted', 'feedback'), null, \core\output\notification::NOTIFY_SUCCESS);
 }
 $PAGE->activityheader->set_attrs([
@@ -82,7 +86,7 @@ $templates = feedback_get_template_list($course, 'own');
 echo $OUTPUT->box_start('coursetemplates');
 echo $OUTPUT->heading(get_string('coursetemplates', 'mod_feedback'), 3);
 
-$baseurl = new moodle_url('/mod/feedback/use_templ.php', $params);
+$baseurl = new url('/mod/feedback/use_templ.php', $params);
 $tablecourse = new mod_feedback_templates_table('feedback_template_course_table', $baseurl);
 $tablecourse->display($templates);
 echo $OUTPUT->box_end();

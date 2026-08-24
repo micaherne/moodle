@@ -33,6 +33,9 @@
  * @todo Final removal in Moodle 6.0 MDL-80804.
  */
 
+use core\exception\moodle_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -111,7 +114,7 @@ abstract class moodle_list {
         $this->pageparamname = $pageparamname;
         $this->itemsperpage = $itemsperpage;
         if ($pageurl === null) {
-            $this->pageurl = new moodle_url($PAGE->url);
+            $this->pageurl = new url($PAGE->url);
             $this->pageurl->params(array($this->pageparamname => $this->page));
         } else {
             $this->pageurl = $pageurl;
@@ -188,7 +191,7 @@ abstract class moodle_list {
         }
 
         if (!$suppresserror) {
-            throw new \moodle_exception('listnoitem');
+            throw new moodle_exception('listnoitem');
         }
         return null;
     }
@@ -380,7 +383,7 @@ abstract class moodle_list {
                     $peers[$itemkey+1] = $id;
                     $peers[$itemkey] = $olditem;
                 } else {
-                    throw new \moodle_exception('listcantmoveup');
+                    throw new moodle_exception('listcantmoveup');
                 }
                 break;
 
@@ -390,7 +393,7 @@ abstract class moodle_list {
                     $peers[$itemkey-1] = $id;
                     $peers[$itemkey] = $olditem;
                 } else {
-                    throw new \moodle_exception('listcantmovedown');
+                    throw new moodle_exception('listcantmovedown');
                 }
                 break;
         }
@@ -428,7 +431,7 @@ abstract class moodle_list {
 
         $item = $this->find_item($id);
         if (!isset($item->parentlist->parentitem->parentlist)) {
-            throw new \moodle_exception('listcantmoveleft');
+            throw new moodle_exception('listcantmoveleft');
         } else {
             $newpeers = $this->get_items_peers($item->parentlist->parentitem->id);
             if (isset($item->parentlist->parentitem->parentlist->parentitem)) {
@@ -458,7 +461,7 @@ abstract class moodle_list {
         $peers = $this->get_items_peers($id);
         $itemkey = array_search($id, $peers);
         if (!isset($peers[$itemkey-1])) {
-            throw new \moodle_exception('listcantmoveright');
+            throw new moodle_exception('listcantmoveright');
         } else {
             $DB->set_field($this->table, "parent", $peers[$itemkey-1], array("id"=>$peers[$itemkey]));
             $newparent = $this->find_item($peers[$itemkey-1]);
@@ -681,21 +684,21 @@ abstract class list_item {
             } else {
                 $action = $strmoveleft;
             }
-            $url = new moodle_url($this->parentlist->pageurl, (array('sesskey'=>sesskey(), 'left'=>$this->id)));
+            $url = new url($this->parentlist->pageurl, (array('sesskey'=>sesskey(), 'left'=>$this->id)));
             $this->icons['left'] = $this->image_icon($action, $url, $leftarrow);
         } else {
             $this->icons['left'] =  $this->image_spacer();
         }
 
         if (!$first) {
-            $url = new moodle_url($this->parentlist->pageurl, (array('sesskey'=>sesskey(), 'moveup'=>$this->id)));
+            $url = new url($this->parentlist->pageurl, (array('sesskey'=>sesskey(), 'moveup'=>$this->id)));
             $this->icons['up'] = $this->image_icon($strmoveup, $url, 'up');
         } else {
             $this->icons['up'] =  $this->image_spacer();
         }
 
         if (!$last) {
-            $url = new moodle_url($this->parentlist->pageurl, (array('sesskey'=>sesskey(), 'movedown'=>$this->id)));
+            $url = new url($this->parentlist->pageurl, (array('sesskey'=>sesskey(), 'movedown'=>$this->id)));
             $this->icons['down'] = $this->image_icon($strmovedown, $url, 'down');
         } else {
             $this->icons['down'] =  $this->image_spacer();
@@ -703,7 +706,7 @@ abstract class list_item {
 
         if (!empty($lastitem)) {
             $makechildof = get_string('makechildof', 'question', $lastitem->name);
-            $url = new moodle_url($this->parentlist->pageurl, (array('sesskey'=>sesskey(), 'right'=>$this->id)));
+            $url = new url($this->parentlist->pageurl, (array('sesskey'=>sesskey(), 'right'=>$this->id)));
             $this->icons['right'] = $this->image_icon($makechildof, $url, $rightarrow);
         } else {
             $this->icons['right'] =  $this->image_spacer();

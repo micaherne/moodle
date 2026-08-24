@@ -28,6 +28,7 @@ namespace mod_feedback\privacy;
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
+use core\context\module;
 use core_privacy\tests\provider_testcase;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -101,21 +102,21 @@ final class provider_test extends provider_testcase {
 
         $contextids = provider::get_contexts_for_userid($u1->id)->get_contextids();
         $this->assertCount(4, $contextids);
-        $this->assertTrue(in_array(\context_module::instance($cm0a->cmid)->id, $contextids));
-        $this->assertTrue(in_array(\context_module::instance($cm1a->cmid)->id, $contextids));
-        $this->assertTrue(in_array(\context_module::instance($cm2a->cmid)->id, $contextids));
-        $this->assertFalse(in_array(\context_module::instance($cm1b->cmid)->id, $contextids));
-        $this->assertTrue(in_array(\context_module::instance($cm2b->cmid)->id, $contextids));
-        $this->assertFalse(in_array(\context_module::instance($cm2c->cmid)->id, $contextids));
+        $this->assertTrue(in_array(module::instance($cm0a->cmid)->id, $contextids));
+        $this->assertTrue(in_array(module::instance($cm1a->cmid)->id, $contextids));
+        $this->assertTrue(in_array(module::instance($cm2a->cmid)->id, $contextids));
+        $this->assertFalse(in_array(module::instance($cm1b->cmid)->id, $contextids));
+        $this->assertTrue(in_array(module::instance($cm2b->cmid)->id, $contextids));
+        $this->assertFalse(in_array(module::instance($cm2c->cmid)->id, $contextids));
 
         $contextids = provider::get_contexts_for_userid($u2->id)->get_contextids();
         $this->assertCount(2, $contextids);
-        $this->assertFalse(in_array(\context_module::instance($cm0a->cmid)->id, $contextids));
-        $this->assertFalse(in_array(\context_module::instance($cm1a->cmid)->id, $contextids));
-        $this->assertFalse(in_array(\context_module::instance($cm2a->cmid)->id, $contextids));
-        $this->assertTrue(in_array(\context_module::instance($cm1b->cmid)->id, $contextids));
-        $this->assertFalse(in_array(\context_module::instance($cm2b->cmid)->id, $contextids));
-        $this->assertTrue(in_array(\context_module::instance($cm2c->cmid)->id, $contextids));
+        $this->assertFalse(in_array(module::instance($cm0a->cmid)->id, $contextids));
+        $this->assertFalse(in_array(module::instance($cm1a->cmid)->id, $contextids));
+        $this->assertFalse(in_array(module::instance($cm2a->cmid)->id, $contextids));
+        $this->assertTrue(in_array(module::instance($cm1b->cmid)->id, $contextids));
+        $this->assertFalse(in_array(module::instance($cm2b->cmid)->id, $contextids));
+        $this->assertTrue(in_array(module::instance($cm2c->cmid)->id, $contextids));
     }
 
     /**
@@ -157,14 +158,14 @@ final class provider_test extends provider_testcase {
         $this->create_tmp_submission_with_answers($feedback, $u2, $answers);
 
         // Only u1 in cm0.
-        $context = \context_module::instance($cm0->cmid);
+        $context = module::instance($cm0->cmid);
         $userlist = new \core_privacy\local\request\userlist($context, $component);
         provider::get_users_in_context($userlist);
 
         $this->assertCount(1, $userlist);
         $this->assertEquals([$u1->id], $userlist->get_userids());
 
-        $context = \context_module::instance($cm1a->cmid);
+        $context = module::instance($cm1a->cmid);
         $userlist = new \core_privacy\local\request\userlist($context, $component);
         provider::get_users_in_context($userlist);
 
@@ -179,7 +180,7 @@ final class provider_test extends provider_testcase {
         $this->assertEquals($expected, $actual);
 
         // Only u2 in cm1b.
-        $context = \context_module::instance($cm1b->cmid);
+        $context = module::instance($cm1b->cmid);
         $userlist = new \core_privacy\local\request\userlist($context, $component);
         provider::get_users_in_context($userlist);
 
@@ -187,7 +188,7 @@ final class provider_test extends provider_testcase {
         $this->assertEquals([$u2->id], $userlist->get_userids());
 
         // Only u1 in cm2.
-        $context = \context_module::instance($cm2->cmid);
+        $context = module::instance($cm2->cmid);
         $userlist = new \core_privacy\local\request\userlist($context, $component);
         provider::get_users_in_context($userlist);
 
@@ -229,8 +230,8 @@ final class provider_test extends provider_testcase {
         }
 
         $appctx = new approved_contextlist($u1, 'mod_feedback', [
-            \context_module::instance($cm0a->cmid)->id,
-            \context_module::instance($cm1a->cmid)->id
+            module::instance($cm0a->cmid)->id,
+            module::instance($cm1a->cmid)->id
         ]);
         provider::delete_data_for_user($appctx);
 
@@ -262,8 +263,8 @@ final class provider_test extends provider_testcase {
         $cm0 = $dg->create_module('feedback', ['course' => SITEID]);
         $cm1 = $dg->create_module('feedback', ['course' => $c1, 'anonymous' => FEEDBACK_ANONYMOUS_NO]);
         $cm2 = $dg->create_module('feedback', ['course' => $c2]);
-        $context0 = \context_module::instance($cm0->cmid);
-        $context1 = \context_module::instance($cm1->cmid);
+        $context0 = module::instance($cm0->cmid);
+        $context1 = module::instance($cm1->cmid);
 
         $u1 = $dg->create_user();
         $u2 = $dg->create_user();
@@ -338,7 +339,7 @@ final class provider_test extends provider_testcase {
             $this->create_tmp_submission_with_answers($feedback, $u2, $answers);
         }
 
-        provider::delete_data_for_all_users_in_context(\context_module::instance($cm1a->cmid));
+        provider::delete_data_for_all_users_in_context(module::instance($cm1a->cmid));
 
         $this->assert_no_feedback_data_for_user($cm1a, $u1);
         $this->assert_no_feedback_data_for_user($cm1a, $u2);
@@ -392,15 +393,15 @@ final class provider_test extends provider_testcase {
         }
 
         $appctx = new approved_contextlist($u1, 'mod_feedback', [
-            \context_module::instance($cm0a->cmid)->id,
-            \context_module::instance($cm1a->cmid)->id,
-            \context_module::instance($cm2a->cmid)->id,
-            \context_module::instance($cm2b->cmid)->id,
+            module::instance($cm0a->cmid)->id,
+            module::instance($cm1a->cmid)->id,
+            module::instance($cm2a->cmid)->id,
+            module::instance($cm2b->cmid)->id,
         ]);
         provider::export_user_data($appctx);
 
         // CM0A.
-        $data = writer::with_context(\context_module::instance($cm0a->cmid))->get_data();
+        $data = writer::with_context(module::instance($cm0a->cmid))->get_data();
         $this->assertCount(2, $data->submissions);
         $submission = $data->submissions[0];
         $this->assertEquals(transform::yesno(false), $submission['inprogress']);
@@ -420,7 +421,7 @@ final class provider_test extends provider_testcase {
         $this->assertEquals('a', $submission['answers'][1]['answer']);
 
         // CM1A.
-        $data = writer::with_context(\context_module::instance($cm1a->cmid))->get_data();
+        $data = writer::with_context(module::instance($cm1a->cmid))->get_data();
         $this->assertCount(1, $data->submissions);
         $submission = $data->submissions[0];
         $this->assertEquals(transform::yesno(true), $submission['inprogress']);
@@ -432,7 +433,7 @@ final class provider_test extends provider_testcase {
         $this->assertEquals('a', $submission['answers'][1]['answer']);
 
         // CM2A.
-        $data = writer::with_context(\context_module::instance($cm2a->cmid))->get_data();
+        $data = writer::with_context(module::instance($cm2a->cmid))->get_data();
         $this->assertCount(2, $data->submissions);
         $submission = $data->submissions[0];
         $this->assertEquals(transform::yesno(false), $submission['inprogress']);
@@ -450,11 +451,11 @@ final class provider_test extends provider_testcase {
         $this->assertEquals('1337', $submission['answers'][0]['answer']);
 
         // CM2B (no data).
-        $data = writer::with_context(\context_module::instance($cm2b->cmid))->get_data();
+        $data = writer::with_context(module::instance($cm2b->cmid))->get_data();
         $this->assertEmpty($data);
 
         // CM2C (not exported).
-        $data = writer::with_context(\context_module::instance($cm2b->cmid))->get_data();
+        $data = writer::with_context(module::instance($cm2b->cmid))->get_data();
         $this->assertEmpty($data);
     }
 

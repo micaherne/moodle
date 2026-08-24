@@ -16,6 +16,8 @@
 
 namespace core_courseformat\local;
 
+use core\context\module;
+use core\exception\moodle_exception;
 use core_courseformat\formatactions;
 use core_courseformat\hook\after_cm_name_edited;
 
@@ -57,7 +59,7 @@ final class cmactions_test extends \advanced_testcase {
         $cmactions = new cmactions($course);
 
         if ($expectexception) {
-            $this->expectException(\moodle_exception::class);
+            $this->expectException(moodle_exception::class);
         }
         $result = $cmactions->rename($activity->cmid, $newname);
         $this->assertEquals($expected, $result);
@@ -190,7 +192,7 @@ final class cmactions_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\core\event\course_module_updated', $event);
-        $this->assertEquals(\context_module::instance($activity->cmid), $event->get_context());
+        $this->assertEquals(module::instance($activity->cmid), $event->get_context());
     }
 
     /**
@@ -237,7 +239,7 @@ final class cmactions_test extends \advanced_testcase {
             ['course' => $course->id, 'duedate' => time()],
             ['completion' => COMPLETION_TRACKING_MANUAL],
         );
-        $modcontext = \context_module::instance($module->cmid);
+        $modcontext = module::instance($module->cmid);
         $cm = $DB->get_record('course_modules', ['id' => $module->cmid]);
         $this->assertInstanceOf('context_module', $modcontext);
         $this->assertEquals(1, $DB->count_records('event', ['instance' => $module->id, 'modulename' => 'assign']));
@@ -280,7 +282,7 @@ final class cmactions_test extends \advanced_testcase {
         $cmactions->delete($module->cmid);
 
         // Verify the context has been removed.
-        $this->assertFalse(\context_module::instance($module->cmid, IGNORE_MISSING));
+        $this->assertFalse(module::instance($module->cmid, IGNORE_MISSING));
 
         // Verify the course_module record has been deleted.
         $this->assertEmpty($DB->count_records('course_modules', ['id' => $module->cmid]));
@@ -338,7 +340,7 @@ final class cmactions_test extends \advanced_testcase {
         // Generate a quiz.
         $course = $this->getDataGenerator()->create_course(['enablecompletion' => COMPLETION_ENABLED]);
         $module = $this->getDataGenerator()->create_module('quiz', ['course' => $course->id]);
-        $modcontext = \context_module::instance($module->cmid);
+        $modcontext = module::instance($module->cmid);
 
         // Add some questions to this module.
         /** @var \core_question_generator $qgen */
@@ -353,7 +355,7 @@ final class cmactions_test extends \advanced_testcase {
         $cmactions->delete($module->cmid);
 
         // Verify the context has been removed.
-        $this->assertFalse(\context_module::instance($module->cmid, IGNORE_MISSING));
+        $this->assertFalse(module::instance($module->cmid, IGNORE_MISSING));
 
         // Verify the course_module record has been deleted.
         $this->assertEmpty($DB->count_records('course_modules', ['id' => $module->cmid]));
@@ -406,7 +408,7 @@ final class cmactions_test extends \advanced_testcase {
 
         // Delete the module.
         $cmactions = new cmactions($course);
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage('Missing file mod/TestModuleToDelete/lib.php');
         $cmactions->delete($cm->id);
 
@@ -432,7 +434,7 @@ final class cmactions_test extends \advanced_testcase {
         // Create course, module and context.
         $course = $this->getDataGenerator()->create_course();
         $module = $this->getDataGenerator()->create_module('assign', ['course' => $course->id]);
-        $modcontext = \context_module::instance($module->cmid);
+        $modcontext = module::instance($module->cmid);
 
         // Check events generated when deleting module.
         $sink = $this->redirectEvents();
@@ -459,7 +461,7 @@ final class cmactions_test extends \advanced_testcase {
         $this->assertEquals($cm->deletioninprogress, '1');
 
         // Verify the context has not yet been removed.
-        $this->assertEquals($modcontext, \context_module::instance($module->cmid, IGNORE_MISSING));
+        $this->assertEquals($modcontext, module::instance($module->cmid, IGNORE_MISSING));
 
         // Set up a sink to catch the 'course_module_deleted' event.
         $sink = $this->redirectEvents();
@@ -479,7 +481,7 @@ final class cmactions_test extends \advanced_testcase {
         $this->assertEquals($cm, $event->get_record_snapshot('course_modules', $module->cmid));
 
         // Verify the context has been removed.
-        $this->assertFalse(\context_module::instance($module->cmid, IGNORE_MISSING));
+        $this->assertFalse(module::instance($module->cmid, IGNORE_MISSING));
 
         // Verify the course_module record has been deleted.
         $this->assertEquals(0, $DB->count_records('course_modules', ['id' => $module->cmid]));
@@ -535,7 +537,7 @@ final class cmactions_test extends \advanced_testcase {
         $this->assertEquals($cm, $event->get_record_snapshot('course_modules', $module->cmid));
 
         // Verify the context has been removed.
-        $this->assertFalse(\context_module::instance($module->cmid, IGNORE_MISSING));
+        $this->assertFalse(module::instance($module->cmid, IGNORE_MISSING));
 
         // Verify the course_module record has been deleted.
         $this->assertEquals(0, $DB->count_records('course_modules', ['id' => $module->cmid]));
@@ -929,7 +931,7 @@ final class cmactions_test extends \advanced_testcase {
 
         // Lookup cmid and sectionid based on names.
         $cmactions = new cmactions($course1);
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage('Invalid course module ID: ' . $cm5->cmid);
         // For backup/restore operations, we need to be logged in.
         $this->setAdminUser();
@@ -953,7 +955,7 @@ final class cmactions_test extends \advanced_testcase {
             ['course' => $course->id, 'name' => 'cm1', 'section' => 1],
         );
         $cmactions = new cmactions($course);
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage('This section does not exist');
         // For backup/restore operations, we need to be logged in.
         $this->setAdminUser();
@@ -1013,7 +1015,7 @@ final class cmactions_test extends \advanced_testcase {
         $course = self::getDataGenerator()->create_course();
         $res = self::getDataGenerator()->create_module('assign', ['course' => $course]);
         $cm = get_coursemodule_from_id('assign', $res->cmid, 0, false, MUST_EXIST);
-        $cmcontext = \context_module::instance($cm->id);
+        $cmcontext = module::instance($cm->id);
 
         // Enrol student user.
         $user = self::getDataGenerator()->create_user();
@@ -1026,7 +1028,7 @@ final class cmactions_test extends \advanced_testcase {
         // Duplicate module.
         $cmactions = new cmactions($course);
         $newcm = $cmactions->duplicate($res->cmid);
-        $newcmcontext = \context_module::instance($newcm->id);
+        $newcmcontext = module::instance($newcm->id);
 
         // Assert that user still has capability.
         $this->assertTrue(has_capability('gradereport/grader:view', $newcmcontext, $user));
@@ -1079,7 +1081,7 @@ final class cmactions_test extends \advanced_testcase {
         $course = self::getDataGenerator()->create_course();
         $res = self::getDataGenerator()->create_module('assign', ['course' => $course]);
         $cm = get_coursemodule_from_id('assign', $res->cmid, 0, false, MUST_EXIST);
-        $cmcontext = \context_module::instance($cm->id);
+        $cmcontext = module::instance($cm->id);
 
         // Enrol student user.
         $user = self::getDataGenerator()->create_user();
@@ -1093,7 +1095,7 @@ final class cmactions_test extends \advanced_testcase {
         // Duplicate module.
         $cmactions = new cmactions($course);
         $newcm = $cmactions->duplicate($res->cmid);
-        $newcmcontext = \context_module::instance($newcm->id);
+        $newcmcontext = module::instance($newcm->id);
 
         // Assert that user still has role assigned.
         $this->assertTrue(user_has_role_assignment($user->id, $newroleid, $newcmcontext->id));

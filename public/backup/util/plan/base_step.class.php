@@ -27,6 +27,8 @@
  *
  * TODO: Finish phpdocs
  */
+use core\exception\moodle_exception;
+
 abstract class base_step implements executable, loggable {
 
     /** @var string One simple name for identification purposes */

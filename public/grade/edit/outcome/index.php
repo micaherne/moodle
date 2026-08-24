@@ -22,6 +22,14 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\url;
+use core_table\output\html_table;
+
 require_once(__DIR__.'/../../../config.php');
 require_once($CFG->dirroot.'/grade/lib.php');
 require_once($CFG->libdir.'/gradelib.php');
@@ -29,7 +37,7 @@ require_once($CFG->libdir.'/gradelib.php');
 $courseid = optional_param('id', 0, PARAM_INT);
 $action   = optional_param('action', '', PARAM_ALPHA);
 
-$url = new moodle_url('/grade/edit/outcome/index.php', ['id' => $courseid]);
+$url = new url('/grade/edit/outcome/index.php', ['id' => $courseid]);
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('admin');
 
@@ -37,14 +45,14 @@ $PAGE->set_pagelayout('admin');
 if ($courseid) {
     $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
     require_login($course);
-    $context = context_course::instance($course->id);
+    $context = course::instance($course->id);
     require_capability('moodle/grade:manageoutcomes', $context);
 
     if (empty($CFG->enableoutcomes)) {
         redirect('../../index.php?id='.$courseid);
     }
     // This page doesn't exist on the navigation so map it to another
-    navigation_node::override_active_url(new moodle_url('/grade/edit/outcome/course.php', array('id'=>$courseid)));
+    navigation_node::override_active_url(new url('/grade/edit/outcome/course.php', array('id'=>$courseid)));
     $PAGE->navbar->add(get_string('manageoutcomes', 'grades'), $url);
 } else {
     if (empty($CFG->enableoutcomes)) {
@@ -52,7 +60,7 @@ if ($courseid) {
     }
     require_once $CFG->libdir.'/adminlib.php';
     admin_externalpage_setup('outcomes');
-    $context = context_system::instance();
+    $context = system::instance();
     $PAGE->set_primary_active_tab('siteadminnode');
 }
 
@@ -80,9 +88,9 @@ switch ($action) {
         }
 
         if (empty($outcome->courseid)) {
-            require_capability('moodle/grade:manage', context_system::instance());
+            require_capability('moodle/grade:manage', system::instance());
         } else if ($outcome->courseid != $courseid) {
-            throw new \moodle_exception('invalidcourseid');
+            throw new moodle_exception('invalidcourseid');
         }
 
         if (!$outcome->can_delete()) {
@@ -95,7 +103,7 @@ switch ($action) {
             $PAGE->set_title(get_string('outcomedelete', 'grades'));
             $PAGE->navbar->add(get_string('outcomedelete', 'grades'));
             echo $OUTPUT->header();
-            $confirmurl = new moodle_url('index.php', array(
+            $confirmurl = new url('index.php', array(
                     'id' => $courseid, 'outcomeid' => $outcome->id,
                     'action'=> 'delete',
                     'sesskey' =>  sesskey(),
@@ -110,7 +118,7 @@ switch ($action) {
         break;
 }
 
-$systemcontext = context_system::instance();
+$systemcontext = system::instance();
 $caneditsystemscales = has_capability('moodle/course:managescales', $systemcontext);
 
 if ($courseid) {
@@ -143,7 +151,7 @@ if ($courseid and $outcomes = grade_outcome::fetch_all_local($courseid)) {
             } else if ($scale->courseid == $courseid) {
                 $caneditthisscale = $caneditcoursescales;
             } else {
-                $context = context_course::instance($scale->courseid);
+                $context = course::instance($scale->courseid);
                 $caneditthisscale = has_capability('moodle/course:managescales', $context);
             }
             if ($caneditthisscale) {
@@ -193,7 +201,7 @@ if ($outcomes = grade_outcome::fetch_all_global()) {
             } else if ($scale->courseid == $courseid) {
                 $caneditthisscale = $caneditcoursescales;
             } else {
-                $context = context_course::instance($scale->courseid);
+                $context = course::instance($scale->courseid);
                 $caneditthisscale = has_capability('moodle/course:managescales', $context);
             }
             if ($caneditthisscale) {
@@ -207,10 +215,10 @@ if ($outcomes = grade_outcome::fetch_all_global()) {
         $line[] = $outcome->get_item_uses_count();
 
         $buttons = "";
-        if (has_capability('moodle/grade:manage', context_system::instance())) {
+        if (has_capability('moodle/grade:manage', system::instance())) {
             $buttons .= grade_button('edit', $courseid, $outcome);
         }
-        if (has_capability('moodle/grade:manage', context_system::instance()) and $outcome->can_delete()) {
+        if (has_capability('moodle/grade:manage', system::instance()) and $outcome->can_delete()) {
             $buttons .= grade_button('delete', $courseid, $outcome);
         }
         $line[] = $buttons;
@@ -251,7 +259,7 @@ echo $OUTPUT->footer();
  */
 function grade_print_scale_link($courseid, $scale, $gpr) {
     global $CFG, $OUTPUT;
-    $url = new moodle_url('/grade/edit/scale/edit.php', array('courseid' => $courseid, 'id' => $scale->id));
+    $url = new url('/grade/edit/scale/edit.php', array('courseid' => $courseid, 'id' => $scale->id));
     $url = $gpr->add_url_params($url);
     return html_writer::link($url, $scale->get_name());
 }

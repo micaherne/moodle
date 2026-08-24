@@ -24,7 +24,7 @@
 
 namespace core;
 
-use coding_exception;
+use core\exception\coding_exception;
 use core\dataformat\base;
 use core_php_time_limit;
 use stored_file;

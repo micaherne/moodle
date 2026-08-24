@@ -16,6 +16,7 @@
 
 namespace qbank_comment\event;
 
+use core\context\system;
 use core\event\question_deleted;
 
 /**
@@ -36,7 +37,7 @@ class question_deleted_observer {
      */
     public static function delete_question_comments(question_deleted $event): void {
         \core_comment\manager::delete_comments([
-            'contextid' => \context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'component' => 'qbank_comment',
             'commentarea' => 'question',
             'itemid' => $event->objectid,

@@ -16,7 +16,7 @@
 
 namespace mod_qbank\task;
 
-use context_system;
+use core\context\system;
 use core\context;
 use core\task\adhoc_task;
 use core\task\manager;
@@ -70,7 +70,7 @@ class transfer_question_categories extends adhoc_task {
 
             if (!$oldcontext = context::instance_by_id($oldtopcategory->contextid, IGNORE_MISSING)) {
                 // That context does not exist anymore, we will treat these as if they were at site context level.
-                $oldcontext = context_system::instance();
+                $oldcontext = system::instance();
             }
 
             $trans = $DB->start_delegated_transaction();

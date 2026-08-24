@@ -24,6 +24,10 @@
 
 namespace core_analytics\local\indicator;
 
+use core\context\module;
+use core\exception\coding_exception;
+use core_course\cm_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -151,7 +155,7 @@ abstract class community_of_inquiry_activity extends linear {
         $package = stristr($class, "\\", true);
         $type = str_replace("mod_", "", $package);
         if ($type === $package) {
-            throw new \coding_exception("$class does not belong to any module specific namespace");
+            throw new coding_exception("$class does not belong to any module specific namespace");
         }
         return $type;
     }
@@ -162,8 +166,8 @@ abstract class community_of_inquiry_activity extends linear {
      * @param \cm_info $cm
      * @return int
      */
-    public function get_cognitive_depth_level(\cm_info $cm) {
-        throw new \coding_exception('Overwrite get_cognitive_depth_level method to set your activity potential cognitive ' .
+    public function get_cognitive_depth_level(cm_info $cm) {
+        throw new coding_exception('Overwrite get_cognitive_depth_level method to set your activity potential cognitive ' .
             'depth level');
     }
 
@@ -173,8 +177,8 @@ abstract class community_of_inquiry_activity extends linear {
      * @param \cm_info $cm
      * @return int
      */
-    public function get_social_breadth_level(\cm_info $cm) {
-        throw new \coding_exception('Overwrite get_social_breadth_level method to set your activity potential social ' .
+    public function get_social_breadth_level(cm_info $cm) {
+        throw new coding_exception('Overwrite get_social_breadth_level method to set your activity potential social ' .
             'breadth level');
     }
 
@@ -256,10 +260,10 @@ abstract class community_of_inquiry_activity extends linear {
      * @param \stdClass|false $user
      * @return bool
      */
-    protected function any_feedback($action, \cm_info $cm, $contextid, $user) {
+    protected function any_feedback($action, cm_info $cm, $contextid, $user) {
 
         if (!in_array($action, ['submitted', 'replied', 'viewed'])) {
-            throw new \coding_exception('Provided action "' . $action . '" is not valid.');
+            throw new coding_exception('Provided action "' . $action . '" is not valid.');
         }
 
         if (empty($this->activitylogs[$contextid])) {
@@ -300,7 +304,7 @@ abstract class community_of_inquiry_activity extends linear {
      * @param int $after Timestamp, defaults to the graded date or false if we don't check the date.
      * @return bool
      */
-    protected function feedback_viewed(\cm_info $cm, $contextid, $userid, $after = null) {
+    protected function feedback_viewed(cm_info $cm, $contextid, $userid, $after = null) {
         return $this->feedback_post_action($cm, $contextid, $userid, $this->feedback_viewed_events(), $after);
     }
 
@@ -315,7 +319,7 @@ abstract class community_of_inquiry_activity extends linear {
      * @param int $after Timestamp, defaults to the graded date or false if we don't check the date.
      * @return bool
      */
-    protected function feedback_replied(\cm_info $cm, $contextid, $userid, $after = null) {
+    protected function feedback_replied(cm_info $cm, $contextid, $userid, $after = null) {
         return $this->feedback_post_action($cm, $contextid, $userid, $this->feedback_replied_events(), $after);
     }
 
@@ -330,7 +334,7 @@ abstract class community_of_inquiry_activity extends linear {
      * @param int $after Timestamp, defaults to the graded date or false if we don't check the date.
      * @return bool
      */
-    protected function feedback_submitted(\cm_info $cm, $contextid, $userid, $after = null) {
+    protected function feedback_submitted(cm_info $cm, $contextid, $userid, $after = null) {
         return $this->feedback_post_action($cm, $contextid, $userid, $this->feedback_submitted_events(), $after);
     }
 
@@ -340,7 +344,7 @@ abstract class community_of_inquiry_activity extends linear {
      * @return string[]
      */
     protected function feedback_viewed_events() {
-        throw new \coding_exception('Activities with a potential cognitive or social level that include viewing feedback ' .
+        throw new coding_exception('Activities with a potential cognitive or social level that include viewing feedback ' .
             'should define "feedback_viewed_events" method or should override feedback_viewed method.');
     }
 
@@ -350,7 +354,7 @@ abstract class community_of_inquiry_activity extends linear {
      * @return string[]
      */
     protected function feedback_replied_events() {
-        throw new \coding_exception('Activities with a potential cognitive or social level that include replying to feedback ' .
+        throw new coding_exception('Activities with a potential cognitive or social level that include replying to feedback ' .
             'should define "feedback_replied_events" method or should override feedback_replied method.');
     }
 
@@ -360,7 +364,7 @@ abstract class community_of_inquiry_activity extends linear {
      * @return string[]
      */
     protected function feedback_submitted_events() {
-        throw new \coding_exception('Activities with a potential cognitive or social level that include viewing feedback ' .
+        throw new coding_exception('Activities with a potential cognitive or social level that include viewing feedback ' .
             'should define "feedback_submitted_events" method or should override feedback_submitted method.');
     }
 
@@ -374,7 +378,7 @@ abstract class community_of_inquiry_activity extends linear {
      * @param int|false $after
      * @return bool
      */
-    protected function feedback_post_action(\cm_info $cm, $contextid, $userid, $eventnames, $after = null) {
+    protected function feedback_post_action(cm_info $cm, $contextid, $userid, $eventnames, $after = null) {
         if ($after === null) {
             if ($this->feedback_check_grades()) {
                 if (!$after = $this->get_graded_date($contextid, $userid)) {
@@ -483,7 +487,7 @@ abstract class community_of_inquiry_activity extends linear {
 
         if ($cm = $this->retrieve('cm', $sampleid)) {
             // Samples are at cm level or below.
-            $useractivities = array(\context_module::instance($cm->id)->id => $cm);
+            $useractivities = array(module::instance($cm->id)->id => $cm);
         } else {
             // Activities that should be completed during this time period.
             $useractivities = $this->get_activities($starttime, $endtime, $user);
@@ -510,7 +514,7 @@ abstract class community_of_inquiry_activity extends linear {
 
         // Pity that we need to pass through logging readers API when most of the people just uses the standard one.
         if (!$logstore = \core_analytics\manager::get_analytics_logstore()) {
-            throw new \coding_exception('No log store available');
+            throw new coding_exception('No log store available');
         }
         $events = $logstore->get_events_select_iterator($select, $params, 'timecreated ASC', 0, 0);
 
@@ -590,7 +594,7 @@ abstract class community_of_inquiry_activity extends linear {
             if (!is_int($potentiallevel)
                     || $potentiallevel > self::MAX_COGNITIVE_LEVEL
                     || $potentiallevel < self::COGNITIVE_LEVEL_1) {
-                throw new \coding_exception('Activities\' potential cognitive depth go from 1 to 5.');
+                throw new coding_exception('Activities\' potential cognitive depth go from 1 to 5.');
             }
             $scoreperlevel = $scoreperactivity / $potentiallevel;
 
@@ -679,7 +683,7 @@ abstract class community_of_inquiry_activity extends linear {
             if (!is_int($potentiallevel)
                     || $potentiallevel > self::MAX_SOCIAL_LEVEL
                     || $potentiallevel < self::SOCIAL_LEVEL_1) {
-                throw new \coding_exception('Activities\' potential social breadth go from 1 to ' .
+                throw new coding_exception('Activities\' potential social breadth go from 1 to ' .
                     community_of_inquiry_activity::MAX_SOCIAL_LEVEL . '.');
             }
             $scoreperlevel = $scoreperactivity / $potentiallevel;
@@ -734,7 +738,7 @@ abstract class community_of_inquiry_activity extends linear {
         } else if ($this->get_indicator_type() == self::INDICATOR_SOCIAL) {
             return $this->social_calculate_sample($sampleid, $tablename, $starttime, $endtime);
         }
-        throw new \coding_exception("Indicator type is invalid.");
+        throw new coding_exception("Indicator type is invalid.");
     }
 
     /**
@@ -790,7 +794,7 @@ abstract class community_of_inquiry_activity extends linear {
      * @param \stdClass|false $student
      * @return bool
      */
-    protected function activity_completed_by(\cm_info $activity, $starttime, $endtime, $student = false) {
+    protected function activity_completed_by(cm_info $activity, $starttime, $endtime, $student = false) {
 
         // We can't check uservisible because:
         // - Any activity with available until would not be counted.
@@ -906,7 +910,7 @@ abstract class community_of_inquiry_activity extends linear {
      * @param \stdClass|false $student
      * @return null
      */
-    protected function activity_type_completed_by(\cm_info $activity, $starttime, $endtime, $student = false) {
+    protected function activity_type_completed_by(cm_info $activity, $starttime, $endtime, $student = false) {
 
         $fieldname = $this->get_timeclose_field();
         if (!$fieldname) {
@@ -984,7 +988,7 @@ abstract class community_of_inquiry_activity extends linear {
      * @param \cm_info $cm
      * @return void
      */
-    protected function fill_instance_data(\cm_info $cm) {
+    protected function fill_instance_data(cm_info $cm) {
         global $DB;
 
         if (!isset($this->instancedata[$cm->instance])) {

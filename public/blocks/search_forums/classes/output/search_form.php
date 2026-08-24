@@ -25,11 +25,11 @@
 namespace block_search_forums\output;
 defined('MOODLE_INTERNAL') || die();
 
-use help_icon;
-use moodle_url;
-use renderable;
-use renderer_base;
-use templatable;
+use core\output\help_icon;
+use core\url;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 
 /**
  * Search form renderable class.
@@ -54,7 +54,7 @@ class search_form implements renderable, templatable {
      */
     public function __construct($courseid) {
         $this->courseid = $courseid;
-        $this->actionurl = new moodle_url('/mod/forum/search.php', ['id' => $courseid]);
+        $this->actionurl = new url('/mod/forum/search.php', ['id' => $courseid]);
         $this->helpicon = new help_icon('search', 'core');
     }
 

@@ -23,6 +23,11 @@
  */
 
 
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\output\tabobject;
+
 defined('MOODLE_INTERNAL') || die();
 
 
@@ -42,16 +47,16 @@ class core_question_bank_renderer extends plugin_renderer_base {
      */
     public function extra_horizontal_navigation($active = null) {
         // Horizontal navigation for question bank.
-        if ($questionnode = $this->page->settingsnav->find("questionbank", \navigation_node::TYPE_CONTAINER)) {
+        if ($questionnode = $this->page->settingsnav->find("questionbank", navigation_node::TYPE_CONTAINER)) {
             if ($children = $questionnode->children) {
                 $tabs = [];
                 foreach ($children as $key => $node) {
-                    $tabs[] = new \tabobject($node->key, $node->action, $node->text);
+                    $tabs[] = new tabobject($node->key, $node->action, $node->text);
                 }
                 if (empty($active) && $questionnode->find_active_node()) {
                     $active = $questionnode->find_active_node()->key;
                 }
-                return \html_writer::div(print_tabs([$tabs], $active, null, null, true),
+                return html_writer::div(print_tabs([$tabs], $active, null, null, true),
                         'questionbank-navigation');
             }
         }

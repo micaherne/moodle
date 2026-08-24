@@ -23,6 +23,8 @@
  */
 
 namespace tool_lpmigrate\form;
+
+use core\context;
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/formslib.php');
@@ -46,7 +48,7 @@ class migrate_framework extends \moodleform {
      * Constructor.
      * @param \context $context The page context.
      */
-    public function __construct(\context $context) {
+    public function __construct(context $context) {
         $this->pagecontext = $context;
         parent::__construct();
     }

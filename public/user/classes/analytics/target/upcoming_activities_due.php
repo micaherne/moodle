@@ -24,6 +24,12 @@
 
 namespace core_user\analytics\target;
 
+use core\context;
+use core\exception\coding_exception;
+use core\lang_string;
+use core\output\pix_icon;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/lib/enrollib.php');
@@ -71,8 +77,8 @@ class upcoming_activities_due extends \core_analytics\local\target\binary {
      *
      * @return \lang_string
      */
-    public static function get_name(): \lang_string {
-        return new \lang_string('target:upcomingactivitiesdue', 'user');
+    public static function get_name(): lang_string {
+        return new lang_string('target:upcomingactivitiesdue', 'user');
     }
 
     /**
@@ -82,7 +88,7 @@ class upcoming_activities_due extends \core_analytics\local\target\binary {
      * @param  \context $context
      * @return string
      */
-    public function get_insight_subject(int $modelid, \context $context) {
+    public function get_insight_subject(int $modelid, context $context) {
         return get_string('youhaveupcomingactivitiesdue');
     }
 
@@ -183,7 +189,7 @@ class upcoming_activities_due extends \core_analytics\local\target\binary {
      *                                                              insight (you can return null if you are happy with the
      *                                                              default insight URL calculated in prediction_info())
      */
-    public function get_insight_body_for_prediction(\context $context, \stdClass $user, \core_analytics\prediction $prediction,
+    public function get_insight_body_for_prediction(context $context, \stdClass $user, \core_analytics\prediction $prediction,
             array &$actions) {
         global $OUTPUT;
 
@@ -195,7 +201,7 @@ class upcoming_activities_due extends \core_analytics\local\target\binary {
         if (empty($activitiesdue)) {
             // We can throw an exception here because this is a target based on assumptions and we require the
             // activities_due indicator.
-            throw new \coding_exception('The activities_due indicator must be part of the model indicators.');
+            throw new coding_exception('The activities_due indicator must be part of the model indicators.');
         }
 
         $activitiestext = [];
@@ -205,7 +211,7 @@ class upcoming_activities_due extends \core_analytics\local\target\binary {
             $activitiesdue[$key]->formattedtime = userdate($activitydue->time);
 
             // We provide the URL to the activity through a script that records the user click.
-            $activityurl = new \moodle_url($activitydue->url);
+            $activityurl = new url($activitydue->url);
             $actionurl = \core_analytics\prediction_action::transform_to_forward_url($activityurl, 'viewupcoming',
                 $prediction->get_prediction_data()->id);
             $activitiesdue[$key]->url = $actionurl->out(false);
@@ -264,8 +270,8 @@ class upcoming_activities_due extends \core_analytics\local\target\binary {
         }
 
         // We force a lookahead of 30 days so we are sure that the upcoming activities due are shown.
-        $url = new \moodle_url('/calendar/view.php', ['view' => 'upcoming', 'lookahead' => '30']);
-        $pix = new \pix_icon('i/calendar', get_string('viewupcomingactivitiesdue', 'calendar'));
+        $url = new url('/calendar/view.php', ['view' => 'upcoming', 'lookahead' => '30']);
+        $pix = new pix_icon('i/calendar', get_string('viewupcomingactivitiesdue', 'calendar'));
         $action = new \core_analytics\prediction_action('viewupcoming', $prediction,
             $url, $pix, get_string('viewupcomingactivitiesdue', 'calendar'));
 

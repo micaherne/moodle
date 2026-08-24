@@ -16,7 +16,7 @@
 
 namespace core\output\requirements;
 
-use cache;
+use core_cache\cache;
 use core_component;
 use core_minify;
 use core\exception\coding_exception;

@@ -16,7 +16,7 @@
 
 namespace tiny_autosave;
 
-use context;
+use core\context;
 use editor_tiny\plugin;
 use editor_tiny\plugin_with_configuration;
 

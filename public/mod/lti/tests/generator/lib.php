@@ -24,6 +24,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -46,7 +49,7 @@ class mod_lti_generator extends testing_module_generator {
         if (!isset($record->toolurl)) {
             $record->toolurl = '';
         } else {
-            $toolurl = new moodle_url($record->toolurl);
+            $toolurl = new url($record->toolurl);
             $record->toolurl = $toolurl->out(false);
         }
         if (!isset($record->resourcekey)) {
@@ -122,7 +125,7 @@ class mod_lti_generator extends testing_module_generator {
         if (!isset($data['baseurl'])) {
             throw new coding_exception('Must specify baseurl when creating a LTI tool type.');
         }
-        $data['baseurl'] = (new moodle_url($data['baseurl']))->out(false); // Permits relative URLs in behat features.
+        $data['baseurl'] = (new url($data['baseurl']))->out(false); // Permits relative URLs in behat features.
 
         // Sensible defaults permitting the tool type to be used in a launch.
         $data['lti_acceptgrades'] = $data['lti_acceptgrades'] ?? LTI_SETTING_ALWAYS;
@@ -152,7 +155,7 @@ class mod_lti_generator extends testing_module_generator {
             throw new coding_exception('Must specify a non-site course when creating a course tool type.');
         }
 
-        $type['baseurl'] = (new moodle_url($type['baseurl']))->out(false); // Permits relative URLs in behat features.
+        $type['baseurl'] = (new url($type['baseurl']))->out(false); // Permits relative URLs in behat features.
         $type['coursevisible'] = $type['coursevisible'] ?? LTI_COURSEVISIBLE_ACTIVITYCHOOSER;
         $type['state'] = LTI_TOOL_STATE_CONFIGURED; // The default for course tools.
 

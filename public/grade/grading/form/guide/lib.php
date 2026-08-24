@@ -22,6 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
+use core\navigation\global_navigation;
+use core\navigation\navigation_node;
+use core\navigation\settings_navigation;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\url;
 use core_external\external_format_value;
 use core_external\external_multiple_structure;
 use core_external\external_single_structure;
@@ -96,7 +103,7 @@ class gradingform_guide_controller extends gradingform_controller {
         }
         if ($this->is_form_defined() && ($options = $this->get_options()) && !empty($options['alwaysshowdefinition'])) {
             $node->add(get_string('gradingof', 'gradingform_guide', get_grading_manager($this->get_areaid())->get_area_title()),
-                    new moodle_url('/grade/grading/form/'.$this->get_method_name().'/preview.php',
+                    new url('/grade/grading/form/'.$this->get_method_name().'/preview.php',
                         array('areaid' => $this->get_areaid())), settings_navigation::TYPE_CUSTOM);
         }
     }

@@ -24,56 +24,91 @@
 * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
 
-$ADMIN->add('modules', new admin_category('modsettings', new lang_string('activitymodules')));
-$ADMIN->add('modules', new admin_category('formatsettings', new lang_string('courseformats')));
-$ADMIN->add('modules', new admin_category('customfieldsettings', new lang_string('customfields', 'core_customfield')));
-$ADMIN->add('modules', new admin_category('blocksettings', new lang_string('blocks')));
-$ADMIN->add('modules', new admin_category('authsettings', new lang_string('authentication', 'admin')));
-$ADMIN->add('modules', new admin_category('enrolments', new lang_string('enrolments', 'enrol')));
-$ADMIN->add('modules', new admin_category('editorsettings', new lang_string('editors', 'editor')));
-$ADMIN->add('modules', new admin_category('antivirussettings', new lang_string('antiviruses', 'antivirus')));
-$ADMIN->add('modules', new admin_category('mlbackendsettings', new lang_string('mlbackendsettings', 'admin')));
-$ADMIN->add('modules', new admin_category('filtersettings', new lang_string('managefilters')));
-$ADMIN->add('modules', new admin_category('mediaplayers', new lang_string('type_media_plural', 'plugin')));
-$ADMIN->add('modules', new admin_category('fileconverterplugins', new lang_string('type_fileconverter_plural', 'plugin')));
-$ADMIN->add('modules', new admin_category('paymentgateways', new lang_string('type_paygw_plural', 'plugin')));
-$ADMIN->add('modules', new admin_category('dataformatsettings', new lang_string('dataformats')));
-$ADMIN->add('modules', new admin_category('portfoliosettings', new lang_string('portfolios', 'portfolio'),
+use core\lang_string;
+use core\output\html_writer;
+use core\plugin_manager;
+use core\url;
+use core_admin\setting\page\manageblocks;
+use core_admin\setting\page\managefilters;
+use core_admin\setting\page\managemods;
+use core_admin\setting\page\manageportfolios;
+use core_admin\setting\page\manageqbehaviours;
+use core_admin\setting\page\manageqtypes;
+use core_admin\setting\page\managerepositories;
+use core_admin\setting\page\pluginsoverview;
+use core_admin\setting\setting\check;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configduration;
+use core_admin\setting\setting\confightmleditor;
+use core_admin\setting\setting\configmultiselect;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\description;
+use core_admin\setting\setting\heading;
+use core_admin\setting\setting\manage_fileconverter_plugins;
+use core_admin\setting\setting\manageantiviruses;
+use core_admin\setting\setting\manageauths;
+use core_admin\setting\setting\managecontentbankcontenttypes;
+use core_admin\setting\setting\managecustomfields;
+use core_admin\setting\setting\managedataformats;
+use core_admin\setting\setting\manageenrols;
+use core_admin\setting\setting\manageformats;
+use core_admin\setting\setting\question_behaviour;
+use core_admin\setting\setting\searchsetupinfo;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\category;
+use core_admin\setting\tree\externalpage;
+
+$ADMIN->add('modules', new category('modsettings', new lang_string('activitymodules')));
+$ADMIN->add('modules', new category('formatsettings', new lang_string('courseformats')));
+$ADMIN->add('modules', new category('customfieldsettings', new lang_string('customfields', 'core_customfield')));
+$ADMIN->add('modules', new category('blocksettings', new lang_string('blocks')));
+$ADMIN->add('modules', new category('authsettings', new lang_string('authentication', 'admin')));
+$ADMIN->add('modules', new category('enrolments', new lang_string('enrolments', 'enrol')));
+$ADMIN->add('modules', new category('editorsettings', new lang_string('editors', 'editor')));
+$ADMIN->add('modules', new category('antivirussettings', new lang_string('antiviruses', 'antivirus')));
+$ADMIN->add('modules', new category('mlbackendsettings', new lang_string('mlbackendsettings', 'admin')));
+$ADMIN->add('modules', new category('filtersettings', new lang_string('managefilters')));
+$ADMIN->add('modules', new category('mediaplayers', new lang_string('type_media_plural', 'plugin')));
+$ADMIN->add('modules', new category('fileconverterplugins', new lang_string('type_fileconverter_plural', 'plugin')));
+$ADMIN->add('modules', new category('paymentgateways', new lang_string('type_paygw_plural', 'plugin')));
+$ADMIN->add('modules', new category('dataformatsettings', new lang_string('dataformats')));
+$ADMIN->add('modules', new category('portfoliosettings', new lang_string('portfolios', 'portfolio'),
     empty($CFG->enableportfolios)));
-$ADMIN->add('modules', new admin_category('repositorysettings', new lang_string('repositories', 'repository')));
-$ADMIN->add('modules', new admin_category('qbanksettings', new lang_string('type_qbank_plural', 'plugin')));
-$ADMIN->add('modules', new admin_category('qbehavioursettings', new lang_string('questionbehaviours', 'admin')));
-$ADMIN->add('modules', new admin_category('qtypesettings', new lang_string('questiontypes', 'admin')));
-$ADMIN->add('modules', new admin_category('plagiarism', new lang_string('plagiarism', 'plagiarism')));
-$ADMIN->add('modules', new admin_category('coursereports', new lang_string('coursereports')));
-$ADMIN->add('modules', new admin_category('reportplugins', new lang_string('reports')));
-$ADMIN->add('modules', new admin_category('searchplugins', new lang_string('search', 'admin')));
-$ADMIN->add('modules', new admin_category('tools', new lang_string('tools', 'admin')));
-$ADMIN->add('modules', new admin_category('cache', new lang_string('caching', 'cache')));
-$ADMIN->add('cache', new admin_category('cachestores', new lang_string('cachestores', 'cache')));
-$ADMIN->add('modules', new admin_category('calendartype', new lang_string('calendartypes', 'calendar')));
-$ADMIN->add('modules', new admin_category('communicationsettings', new lang_string('communication', 'core_communication')));
-$ADMIN->add('modules', new admin_category('sms', new lang_string('sms', 'core_sms')));
-$ADMIN->add('modules', new admin_category('contentbanksettings', new lang_string('contentbank')));
-$ADMIN->add('modules', new admin_category('localplugins', new lang_string('localplugins')));
+$ADMIN->add('modules', new category('repositorysettings', new lang_string('repositories', 'repository')));
+$ADMIN->add('modules', new category('qbanksettings', new lang_string('type_qbank_plural', 'plugin')));
+$ADMIN->add('modules', new category('qbehavioursettings', new lang_string('questionbehaviours', 'admin')));
+$ADMIN->add('modules', new category('qtypesettings', new lang_string('questiontypes', 'admin')));
+$ADMIN->add('modules', new category('plagiarism', new lang_string('plagiarism', 'plagiarism')));
+$ADMIN->add('modules', new category('coursereports', new lang_string('coursereports')));
+$ADMIN->add('modules', new category('reportplugins', new lang_string('reports')));
+$ADMIN->add('modules', new category('searchplugins', new lang_string('search', 'admin')));
+$ADMIN->add('modules', new category('tools', new lang_string('tools', 'admin')));
+$ADMIN->add('modules', new category('cache', new lang_string('caching', 'cache')));
+$ADMIN->add('cache', new category('cachestores', new lang_string('cachestores', 'cache')));
+$ADMIN->add('modules', new category('calendartype', new lang_string('calendartypes', 'calendar')));
+$ADMIN->add('modules', new category('communicationsettings', new lang_string('communication', 'core_communication')));
+$ADMIN->add('modules', new category('sms', new lang_string('sms', 'core_sms')));
+$ADMIN->add('modules', new category('contentbanksettings', new lang_string('contentbank')));
+$ADMIN->add('modules', new category('localplugins', new lang_string('localplugins')));
 
 
 if ($hassiteconfig) {
     /* @var admin_root $ADMIN */
     $ADMIN->locate('modules')->set_sorting(true);
 
-    $ADMIN->add('modules', new admin_page_pluginsoverview());
+    $ADMIN->add('modules', new pluginsoverview());
 
     // activity modules
 
-    $ADMIN->add('modsettings', new admin_page_managemods());
+    $ADMIN->add('modsettings', new managemods());
 
-    $temp = new admin_settingpage('managemodulescommon', new lang_string('commonactivitysettings', 'admin'));
-    $temp->add(new admin_setting_configcheckbox('requiremodintro',
+    $temp = new settingpage('managemodulescommon', new lang_string('commonactivitysettings', 'admin'));
+    $temp->add(new configcheckbox('requiremodintro',
         get_string('requiremodintro', 'admin'), get_string('requiremodintro_desc', 'admin'), 0));
     $ADMIN->add('modsettings', $temp);
 
-    $plugins = core_plugin_manager::instance()->get_plugins_of_type('mod');
+    $plugins = plugin_manager::instance()->get_plugins_of_type('mod');
     core_collator::asort_objects_by_property($plugins, 'displayname');
     foreach ($plugins as $plugin) {
         /** @var \core\plugininfo\mod $plugin */
@@ -81,10 +116,10 @@ if ($hassiteconfig) {
     }
 
     // course formats
-    $temp = new admin_settingpage('manageformats', new lang_string('manageformats', 'core_admin'));
-    $temp->add(new admin_setting_manageformats());
+    $temp = new settingpage('manageformats', new lang_string('manageformats', 'core_admin'));
+    $temp->add(new manageformats());
     $ADMIN->add('formatsettings', $temp);
-    $plugins = core_plugin_manager::instance()->get_plugins_of_type('format');
+    $plugins = plugin_manager::instance()->get_plugins_of_type('format');
     core_collator::asort_objects_by_property($plugins, 'displayname');
     foreach ($plugins as $plugin) {
         /** @var \core\plugininfo\format $plugin */
@@ -92,10 +127,10 @@ if ($hassiteconfig) {
     }
 
     // Custom fields.
-    $temp = new admin_settingpage('managecustomfields', new lang_string('managecustomfields', 'core_admin'));
-    $temp->add(new admin_setting_managecustomfields());
+    $temp = new settingpage('managecustomfields', new lang_string('managecustomfields', 'core_admin'));
+    $temp->add(new managecustomfields());
     $ADMIN->add('customfieldsettings', $temp);
-    $plugins = core_plugin_manager::instance()->get_plugins_of_type('customfield');
+    $plugins = plugin_manager::instance()->get_plugins_of_type('customfield');
     core_collator::asort_objects_by_property($plugins, 'displayname');
     foreach ($plugins as $plugin) {
         /** @var \core\plugininfo\customfield $plugin */
@@ -103,8 +138,8 @@ if ($hassiteconfig) {
     }
 
     // blocks
-    $ADMIN->add('blocksettings', new admin_page_manageblocks());
-    $plugins = core_plugin_manager::instance()->get_plugins_of_type('block');
+    $ADMIN->add('blocksettings', new manageblocks());
+    $plugins = plugin_manager::instance()->get_plugins_of_type('block');
     core_collator::asort_objects_by_property($plugins, 'displayname');
     foreach ($plugins as $plugin) {
         /** @var \core\plugininfo\block $plugin */
@@ -112,33 +147,33 @@ if ($hassiteconfig) {
     }
 
     // authentication plugins
-    $temp = new admin_settingpage('manageauths', new lang_string('authsettings', 'admin'));
-    $temp->add(new admin_setting_manageauths());
-    $temp->add(new admin_setting_heading('manageauthscommonheading', new lang_string('commonsettings', 'admin'), ''));
-    $temp->add(new admin_setting_configcheckbox('allowaccountssameemail',
+    $temp = new settingpage('manageauths', new lang_string('authsettings', 'admin'));
+    $temp->add(new manageauths());
+    $temp->add(new heading('manageauthscommonheading', new lang_string('commonsettings', 'admin'), ''));
+    $temp->add(new configcheckbox('allowaccountssameemail',
                     new lang_string('allowaccountssameemail', 'core_auth'),
                     new lang_string('allowaccountssameemail_desc', 'core_auth'), 0));
-    $temp->add(new admin_setting_configcheckbox('authpreventaccountcreation', new lang_string('authpreventaccountcreation', 'admin'), new lang_string('authpreventaccountcreation_help', 'admin'), 0));
+    $temp->add(new configcheckbox('authpreventaccountcreation', new lang_string('authpreventaccountcreation', 'admin'), new lang_string('authpreventaccountcreation_help', 'admin'), 0));
     $options = array(0 => get_string('no'), 1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 10 => 10, 20 => 20, 50 => 50);
-    $temp->add(new admin_setting_configselect('limitconcurrentlogins',
+    $temp->add(new configselect('limitconcurrentlogins',
         new lang_string('limitconcurrentlogins', 'core_auth'),
         new lang_string('limitconcurrentlogins_desc', 'core_auth'), 0, $options));
-    $setting = new admin_setting_configtext('allowemailaddresses', new lang_string('allowemailaddresses', 'admin'),
+    $setting = new configtext('allowemailaddresses', new lang_string('allowemailaddresses', 'admin'),
         new lang_string('configallowemailaddresses', 'admin'), '', PARAM_NOTAGS);
     $setting->set_force_ltr(true);
     $temp->add($setting);
-    $setting = new admin_setting_configtext('denyemailaddresses', new lang_string('denyemailaddresses', 'admin'),
+    $setting = new configtext('denyemailaddresses', new lang_string('denyemailaddresses', 'admin'),
         new lang_string('configdenyemailaddresses', 'admin'), '', PARAM_NOTAGS);
     $setting->set_force_ltr(true);
     $temp->add($setting);
-    $temp->add(new admin_setting_configcheckbox('verifychangedemail', new lang_string('verifychangedemail', 'admin'), new lang_string('configverifychangedemail', 'admin'), 1));
+    $temp->add(new configcheckbox('verifychangedemail', new lang_string('verifychangedemail', 'admin'), new lang_string('configverifychangedemail', 'admin'), 1));
 
     $ADMIN->add('authsettings', $temp);
 
-    $temp = new admin_externalpage('authtestsettings', get_string('testsettings', 'core_auth'), new moodle_url("/auth/test_settings.php"), 'moodle/site:config', true);
+    $temp = new externalpage('authtestsettings', get_string('testsettings', 'core_auth'), new url("/auth/test_settings.php"), 'moodle/site:config', true);
     $ADMIN->add('authsettings', $temp);
 
-    $plugins = core_plugin_manager::instance()->get_plugins_of_type('auth');
+    $plugins = plugin_manager::instance()->get_plugins_of_type('auth');
     core_collator::asort_objects_by_property($plugins, 'displayname');
     foreach ($plugins as $plugin) {
         /** @var \core\plugininfo\auth $plugin */
@@ -146,14 +181,14 @@ if ($hassiteconfig) {
     }
 
     // Enrolment plugins
-    $temp = new admin_settingpage('manageenrols', new lang_string('manageenrols', 'enrol'));
-    $temp->add(new admin_setting_manageenrols());
+    $temp = new settingpage('manageenrols', new lang_string('manageenrols', 'enrol'));
+    $temp->add(new manageenrols());
     $ADMIN->add('enrolments', $temp);
 
-    $temp = new admin_externalpage('enroltestsettings', get_string('testsettings', 'core_enrol'), new moodle_url("/enrol/test_settings.php"), 'moodle/site:config', true);
+    $temp = new externalpage('enroltestsettings', get_string('testsettings', 'core_enrol'), new url("/enrol/test_settings.php"), 'moodle/site:config', true);
     $ADMIN->add('enrolments', $temp);
 
-    $plugins = core_plugin_manager::instance()->get_plugins_of_type('enrol');
+    $plugins = plugin_manager::instance()->get_plugins_of_type('enrol');
     core_collator::asort_objects_by_property($plugins, 'displayname');
     foreach ($plugins as $plugin) {
         /** @var \core\plugininfo\enrol $plugin */
@@ -162,7 +197,7 @@ if ($hassiteconfig) {
 
 
 /// Editor plugins
-    $temp = new admin_settingpage('manageeditors', new lang_string('editorsettings', 'editor'));
+    $temp = new settingpage('manageeditors', new lang_string('editorsettings', 'editor'));
     $temp->add(new \core_admin\admin\admin_setting_plugin_manager(
         'editor',
         \core_admin\table\editor_management_table::class,
@@ -170,7 +205,7 @@ if ($hassiteconfig) {
         get_string('editorsettings', 'editor'),
     ));
     $ADMIN->add('editorsettings', $temp);
-    $plugins = core_plugin_manager::instance()->get_plugins_of_type('editor');
+    $plugins = plugin_manager::instance()->get_plugins_of_type('editor');
     core_collator::asort_objects_by_property($plugins, 'displayname');
     foreach ($plugins as $plugin) {
         /** @var \core\plugininfo\editor $plugin */
@@ -178,19 +213,19 @@ if ($hassiteconfig) {
     }
 
     // Antivirus plugins.
-    $temp = new admin_settingpage('manageantiviruses', new lang_string('antivirussettings', 'antivirus'));
-    $temp->add(new admin_setting_manageantiviruses());
+    $temp = new settingpage('manageantiviruses', new lang_string('antivirussettings', 'antivirus'));
+    $temp->add(new manageantiviruses());
 
     // Status check.
-    $temp->add(new admin_setting_heading('antivirus/statuschecks', new lang_string('statuschecks'), ''));
-    $temp->add(new admin_setting_check('antivirus/checkantivirus', new \core\check\environment\antivirus()));
+    $temp->add(new heading('antivirus/statuschecks', new lang_string('statuschecks'), ''));
+    $temp->add(new check('antivirus/checkantivirus', new \core\check\environment\antivirus()));
 
     // Common settings.
-    $temp->add(new admin_setting_heading('antiviruscommonsettings', new lang_string('antiviruscommonsettings', 'antivirus'), ''));
+    $temp->add(new heading('antiviruscommonsettings', new lang_string('antiviruscommonsettings', 'antivirus'), ''));
 
     // Alert email.
     $temp->add(
-        new admin_setting_configtext(
+        new configtext(
             'antivirus/notifyemail',
             new lang_string('notifyemail', 'antivirus'),
             new lang_string('notifyemail_help', 'antivirus'),
@@ -200,7 +235,7 @@ if ($hassiteconfig) {
     );
 
     // Notify level.
-    $temp->add(new admin_setting_configselect('antivirus/notifylevel',
+    $temp->add(new configselect('antivirus/notifylevel',
         get_string('notifylevel', 'antivirus'), '', core\antivirus\scanner::SCAN_RESULT_ERROR, [
             core\antivirus\scanner::SCAN_RESULT_ERROR => get_string('notifylevelerror', 'antivirus'),
             core\antivirus\scanner::SCAN_RESULT_FOUND => get_string('notifylevelfound', 'antivirus')
@@ -208,10 +243,10 @@ if ($hassiteconfig) {
     );
 
     // Threshold for check displayed on the /report/status/index.php page.
-    $url = new moodle_url('/report/status/index.php');
+    $url = new url('/report/status/index.php');
     $link = html_writer::link($url, get_string('pluginname', 'report_status'));
     $temp->add(
-        new admin_setting_configduration(
+        new configduration(
             'antivirus/threshold',
             new lang_string('threshold', 'antivirus'),
             get_string('threshold_desc', 'antivirus', $link),
@@ -221,7 +256,7 @@ if ($hassiteconfig) {
 
     // Enable quarantine.
     $temp->add(
-        new admin_setting_configcheckbox(
+        new configcheckbox(
             'antivirus/enablequarantine',
             new lang_string('enablequarantine', 'antivirus'),
             new lang_string('enablequarantine_help', 'antivirus',
@@ -232,7 +267,7 @@ if ($hassiteconfig) {
 
     // Quarantine time.
     $temp->add(
-        new admin_setting_configduration(
+        new configduration(
             'antivirus/quarantinetime',
             new lang_string('quarantinetime', 'antivirus'),
             new lang_string('quarantinetime_desc', 'antivirus'),
@@ -241,7 +276,7 @@ if ($hassiteconfig) {
     );
 
     $ADMIN->add('antivirussettings', $temp);
-    $plugins = core_plugin_manager::instance()->get_plugins_of_type('antivirus');
+    $plugins = plugin_manager::instance()->get_plugins_of_type('antivirus');
     core_collator::asort_objects_by_property($plugins, 'displayname');
     foreach ($plugins as $plugin) {
         /* @var \core\plugininfo\antivirus $plugin */
@@ -249,24 +284,24 @@ if ($hassiteconfig) {
     }
 
     // Machine learning backend plugins.
-    $plugins = core_plugin_manager::instance()->get_plugins_of_type('mlbackend');
+    $plugins = plugin_manager::instance()->get_plugins_of_type('mlbackend');
     foreach ($plugins as $plugin) {
         $plugin->load_settings($ADMIN, 'mlbackendsettings', $hassiteconfig);
     }
 
 /// Filter plugins
 
-    $ADMIN->add('filtersettings', new admin_page_managefilters());
+    $ADMIN->add('filtersettings', new managefilters());
 
     // "filtersettings" settingpage
-    $temp = new admin_settingpage('commonfiltersettings', new lang_string('commonfiltersettings', 'admin'));
+    $temp = new settingpage('commonfiltersettings', new lang_string('commonfiltersettings', 'admin'));
     if ($ADMIN->fulltree) {
         $items = array();
-        $items[] = new admin_setting_configselect('filteruploadedfiles', new lang_string('filteruploadedfiles', 'admin'), new lang_string('configfilteruploadedfiles', 'admin'), 0,
+        $items[] = new configselect('filteruploadedfiles', new lang_string('filteruploadedfiles', 'admin'), new lang_string('configfilteruploadedfiles', 'admin'), 0,
                 array('0' => new lang_string('none'), '1' => new lang_string('allfiles'), '2' => new lang_string('htmlfilesonly')));
-        $items[] = new admin_setting_configcheckbox('filtermatchoneperpage', new lang_string('filtermatchoneperpage', 'admin'), new lang_string('configfiltermatchoneperpage', 'admin'), 0);
-        $items[] = new admin_setting_configcheckbox('filtermatchonepertext', new lang_string('filtermatchonepertext', 'admin'), new lang_string('configfiltermatchonepertext', 'admin'), 0);
-        $items[] = new admin_setting_configcheckbox('filternavigationwithsystemcontext',
+        $items[] = new configcheckbox('filtermatchoneperpage', new lang_string('filtermatchoneperpage', 'admin'), new lang_string('configfiltermatchoneperpage', 'admin'), 0);
+        $items[] = new configcheckbox('filtermatchonepertext', new lang_string('filtermatchonepertext', 'admin'), new lang_string('configfiltermatchonepertext', 'admin'), 0);
+        $items[] = new configcheckbox('filternavigationwithsystemcontext',
                 new lang_string('filternavigationwithsystemcontext', 'admin'),
                 new lang_string('configfilternavigationwithsystemcontext', 'admin'), 1);
         foreach ($items as $item) {
@@ -276,7 +311,7 @@ if ($hassiteconfig) {
     }
     $ADMIN->add('filtersettings', $temp);
 
-    $plugins = core_plugin_manager::instance()->get_plugins_of_type('filter');
+    $plugins = plugin_manager::instance()->get_plugins_of_type('filter');
     core_collator::asort_objects_by_property($plugins, 'displayname');
     foreach ($plugins as $plugin) {
         /** @var \core\plugininfo\filter $plugin */
@@ -284,8 +319,8 @@ if ($hassiteconfig) {
     }
 
     // Media players.
-    $temp = new admin_settingpage('managemediaplayers', new lang_string('managemediaplayers', 'media'));
-    $temp->add(new admin_setting_heading('mediaformats', get_string('mediaformats', 'core_media'),
+    $temp = new settingpage('managemediaplayers', new lang_string('managemediaplayers', 'media'));
+    $temp->add(new heading('mediaformats', get_string('mediaformats', 'core_media'),
         format_text(get_string('mediaformats_desc', 'core_media'), FORMAT_MARKDOWN)));
     $temp->add(new \core_admin\admin\admin_setting_plugin_manager(
         'media',
@@ -293,28 +328,28 @@ if ($hassiteconfig) {
         'managemediaplayers',
         new lang_string('managemediaplayers', 'core_media'),
     ));
-    $temp->add(new admin_setting_heading('managemediaplayerscommonheading', new lang_string('commonsettings', 'admin'), ''));
-    $temp->add(new admin_setting_configtext('media_default_width',
+    $temp->add(new heading('managemediaplayerscommonheading', new lang_string('commonsettings', 'admin'), ''));
+    $temp->add(new configtext('media_default_width',
         new lang_string('defaultwidth', 'core_media'), new lang_string('defaultwidthdesc', 'core_media'),
         640, PARAM_INT, 10));
-    $temp->add(new admin_setting_configtext('media_default_height',
+    $temp->add(new configtext('media_default_height',
         new lang_string('defaultheight', 'core_media'), new lang_string('defaultheightdesc', 'core_media'),
         360, PARAM_INT, 10));
     $ADMIN->add('mediaplayers', $temp);
 
     // Convert plugins.
-    $temp = new admin_settingpage('managefileconverterplugins', new lang_string('type_fileconvertermanage', 'plugin'));
-    $temp->add(new admin_setting_manage_fileconverter_plugins());
+    $temp = new settingpage('managefileconverterplugins', new lang_string('type_fileconvertermanage', 'plugin'));
+    $temp->add(new manage_fileconverter_plugins());
     $ADMIN->add('fileconverterplugins', $temp);
 
-    $plugins = core_plugin_manager::instance()->get_plugins_of_type('fileconverter');
+    $plugins = plugin_manager::instance()->get_plugins_of_type('fileconverter');
     core_collator::asort_objects_by_property($plugins, 'displayname');
     foreach ($plugins as $plugin) {
         /** @var \core\plugininfo\media $plugin */
         $plugin->load_settings($ADMIN, 'fileconverterplugins', $hassiteconfig);
     }
 
-    $plugins = core_plugin_manager::instance()->get_plugins_of_type('media');
+    $plugins = plugin_manager::instance()->get_plugins_of_type('media');
     core_collator::asort_objects_by_property($plugins, 'displayname');
     foreach ($plugins as $plugin) {
         /** @var \core\plugininfo\media $plugin */
@@ -322,17 +357,17 @@ if ($hassiteconfig) {
     }
 
     // Payment gateway plugins.
-    $temp = new admin_settingpage('managepaymentgateways', new lang_string('type_paygwmanage', 'plugin'));
+    $temp = new settingpage('managepaymentgateways', new lang_string('type_paygwmanage', 'plugin'));
     $temp->add(new \core_admin\local\settings\manage_payment_gateway_plugins());
-    $temp->add(new admin_setting_description(
+    $temp->add(new description(
         'managepaymentgatewayspostfix',
         '',
         new lang_string('gotopaymentaccounts', 'payment',
-            html_writer::link(new moodle_url('/payment/accounts.php'), get_string('paymentaccounts', 'payment')))
+            html_writer::link(new url('/payment/accounts.php'), get_string('paymentaccounts', 'payment')))
     ));
     $ADMIN->add('paymentgateways', $temp);
 
-    $plugins = core_plugin_manager::instance()->get_plugins_of_type('paygw');
+    $plugins = plugin_manager::instance()->get_plugins_of_type('paygw');
     core_collator::asort_objects_by_property($plugins, 'displayname');
     foreach ($plugins as $plugin) {
         /** @var \core\plugininfo\paygw $plugin */
@@ -340,11 +375,11 @@ if ($hassiteconfig) {
     }
 
     // Data format settings.
-    $temp = new admin_settingpage('managedataformats', new lang_string('managedataformats'));
-    $temp->add(new admin_setting_managedataformats());
+    $temp = new settingpage('managedataformats', new lang_string('managedataformats'));
+    $temp->add(new managedataformats());
     $ADMIN->add('dataformatsettings', $temp);
 
-    $plugins = core_plugin_manager::instance()->get_plugins_of_type('dataformat');
+    $plugins = plugin_manager::instance()->get_plugins_of_type('dataformat');
     core_collator::asort_objects_by_property($plugins, 'displayname');
     foreach ($plugins as $plugin) {
         /** @var \core\plugininfo\dataformat $plugin */
@@ -357,48 +392,48 @@ if ($hassiteconfig) {
     $url = "$CFG->wwwroot/$CFG->admin/portfolio.php";
 
     // Add manage page (with table)
-    $temp = new admin_page_manageportfolios();
+    $temp = new manageportfolios();
     $ADMIN->add('portfoliosettings', $temp);
 
     // Add common settings page
-    $temp = new admin_settingpage('manageportfolioscommon', new lang_string('commonportfoliosettings', 'portfolio'));
-    $temp->add(new admin_setting_heading('manageportfolioscommon', '', new lang_string('commonsettingsdesc', 'portfolio')));
+    $temp = new settingpage('manageportfolioscommon', new lang_string('commonportfoliosettings', 'portfolio'));
+    $temp->add(new heading('manageportfolioscommon', '', new lang_string('commonsettingsdesc', 'portfolio')));
     $fileinfo = portfolio_filesize_info(); // make sure this is defined in one place since its used inside portfolio too to detect insane settings
     $fileoptions = $fileinfo['options'];
-    $temp->add(new admin_setting_configselect(
+    $temp->add(new configselect(
         'portfolio_moderate_filesize_threshold',
         new lang_string('moderatefilesizethreshold', 'portfolio'),
         new lang_string('moderatefilesizethresholddesc', 'portfolio'),
         $fileinfo['moderate'], $fileoptions));
-    $temp->add(new admin_setting_configselect(
+    $temp->add(new configselect(
         'portfolio_high_filesize_threshold',
         new lang_string('highfilesizethreshold', 'portfolio'),
         new lang_string('highfilesizethresholddesc', 'portfolio'),
         $fileinfo['high'], $fileoptions));
 
-    $temp->add(new admin_setting_configtext(
+    $temp->add(new configtext(
         'portfolio_moderate_db_threshold',
         new lang_string('moderatedbsizethreshold', 'portfolio'),
         new lang_string('moderatedbsizethresholddesc', 'portfolio'),
         20, PARAM_INT, 3));
 
-    $temp->add(new admin_setting_configtext(
+    $temp->add(new configtext(
         'portfolio_high_db_threshold',
         new lang_string('highdbsizethreshold', 'portfolio'),
         new lang_string('highdbsizethresholddesc', 'portfolio'),
         50, PARAM_INT, 3));
 
     $ADMIN->add('portfoliosettings', $temp);
-    $ADMIN->add('portfoliosettings', new admin_externalpage('portfolionew', new lang_string('addnewportfolio', 'portfolio'), $url, 'moodle/site:config', true));
-    $ADMIN->add('portfoliosettings', new admin_externalpage('portfoliodelete', new lang_string('deleteportfolio', 'portfolio'), $url, 'moodle/site:config', true));
-    $ADMIN->add('portfoliosettings', new admin_externalpage('portfoliocontroller', new lang_string('manageportfolios', 'portfolio'), $url, 'moodle/site:config', true));
+    $ADMIN->add('portfoliosettings', new externalpage('portfolionew', new lang_string('addnewportfolio', 'portfolio'), $url, 'moodle/site:config', true));
+    $ADMIN->add('portfoliosettings', new externalpage('portfoliodelete', new lang_string('deleteportfolio', 'portfolio'), $url, 'moodle/site:config', true));
+    $ADMIN->add('portfoliosettings', new externalpage('portfoliocontroller', new lang_string('manageportfolios', 'portfolio'), $url, 'moodle/site:config', true));
 
     foreach (portfolio_instances(false, false) as $portfolio) {
         require_once($CFG->dirroot . '/portfolio/' . $portfolio->get('plugin') . '/lib.php');
         $classname = 'portfolio_plugin_' . $portfolio->get('plugin');
         $ADMIN->add(
             'portfoliosettings',
-            new admin_externalpage(
+            new externalpage(
                 'portfoliosettings' . $portfolio->get('id'),
                 $portfolio->get('name'),
                 $url . '?action=edit&pf=' . $portfolio->get('id'),
@@ -413,30 +448,30 @@ if ($hassiteconfig) {
     $url = $CFG->wwwroot.'/'.$CFG->admin.'/repository.php';
 
     // Add main page (with table)
-    $temp = new admin_page_managerepositories();
+    $temp = new managerepositories();
     $ADMIN->add('repositorysettings', $temp);
 
     // Add common settings page
-    $temp = new admin_settingpage('managerepositoriescommon', new lang_string('commonrepositorysettings', 'repository'));
-    $temp->add(new admin_setting_configtext('repositorycacheexpire', new lang_string('cacheexpire', 'repository'), new lang_string('configcacheexpire', 'repository'), 120, PARAM_INT));
-    $temp->add(new admin_setting_configtext('repositorygetfiletimeout', new lang_string('getfiletimeout', 'repository'), new lang_string('configgetfiletimeout', 'repository'), 30, PARAM_INT));
-    $temp->add(new admin_setting_configtext('repositorysyncfiletimeout', new lang_string('syncfiletimeout', 'repository'), new lang_string('configsyncfiletimeout', 'repository'), 1, PARAM_INT));
-    $temp->add(new admin_setting_configtext('repositorysyncimagetimeout', new lang_string('syncimagetimeout', 'repository'), new lang_string('configsyncimagetimeout', 'repository'), 3, PARAM_INT));
-    $temp->add(new admin_setting_configcheckbox('repositoryallowexternallinks', new lang_string('allowexternallinks', 'repository'), new lang_string('configallowexternallinks', 'repository'), 1));
-    $temp->add(new admin_setting_configcheckbox('legacyfilesinnewcourses', new lang_string('legacyfilesinnewcourses', 'admin'), new lang_string('legacyfilesinnewcourses_help', 'admin'), 0));
-    $temp->add(new admin_setting_configcheckbox('legacyfilesaddallowed', new lang_string('legacyfilesaddallowed', 'admin'), new lang_string('legacyfilesaddallowed_help', 'admin'), 1));
+    $temp = new settingpage('managerepositoriescommon', new lang_string('commonrepositorysettings', 'repository'));
+    $temp->add(new configtext('repositorycacheexpire', new lang_string('cacheexpire', 'repository'), new lang_string('configcacheexpire', 'repository'), 120, PARAM_INT));
+    $temp->add(new configtext('repositorygetfiletimeout', new lang_string('getfiletimeout', 'repository'), new lang_string('configgetfiletimeout', 'repository'), 30, PARAM_INT));
+    $temp->add(new configtext('repositorysyncfiletimeout', new lang_string('syncfiletimeout', 'repository'), new lang_string('configsyncfiletimeout', 'repository'), 1, PARAM_INT));
+    $temp->add(new configtext('repositorysyncimagetimeout', new lang_string('syncimagetimeout', 'repository'), new lang_string('configsyncimagetimeout', 'repository'), 3, PARAM_INT));
+    $temp->add(new configcheckbox('repositoryallowexternallinks', new lang_string('allowexternallinks', 'repository'), new lang_string('configallowexternallinks', 'repository'), 1));
+    $temp->add(new configcheckbox('legacyfilesinnewcourses', new lang_string('legacyfilesinnewcourses', 'admin'), new lang_string('legacyfilesinnewcourses_help', 'admin'), 0));
+    $temp->add(new configcheckbox('legacyfilesaddallowed', new lang_string('legacyfilesaddallowed', 'admin'), new lang_string('legacyfilesaddallowed_help', 'admin'), 1));
     $ADMIN->add('repositorysettings', $temp);
-    $ADMIN->add('repositorysettings', new admin_externalpage('repositorynew',
+    $ADMIN->add('repositorysettings', new externalpage('repositorynew',
         new lang_string('addplugin', 'repository'), $url, 'moodle/site:config', true));
-    $ADMIN->add('repositorysettings', new admin_externalpage('repositorydelete',
+    $ADMIN->add('repositorysettings', new externalpage('repositorydelete',
         new lang_string('deleterepository', 'repository'), $url, 'moodle/site:config', true));
-    $ADMIN->add('repositorysettings', new admin_externalpage('repositorycontroller',
+    $ADMIN->add('repositorysettings', new externalpage('repositorycontroller',
         new lang_string('manage', 'repository'), $url, 'moodle/site:config', true));
-    $ADMIN->add('repositorysettings', new admin_externalpage('repositoryinstancenew',
+    $ADMIN->add('repositorysettings', new externalpage('repositoryinstancenew',
         new lang_string('createrepository', 'repository'), $url, 'moodle/site:config', true));
-    $ADMIN->add('repositorysettings', new admin_externalpage('repositoryinstanceedit',
+    $ADMIN->add('repositorysettings', new externalpage('repositoryinstanceedit',
         new lang_string('editrepositoryinstance', 'repository'), $url, 'moodle/site:config', true));
-    $plugins = core_plugin_manager::instance()->get_plugins_of_type('repository');
+    $plugins = plugin_manager::instance()->get_plugins_of_type('repository');
     core_collator::asort_objects_by_property($plugins, 'displayname');
     foreach ($plugins as $plugin) {
         /** @var \core\plugininfo\repository $plugin */
@@ -446,10 +481,10 @@ if ($hassiteconfig) {
 
 // Question bank settings.
 if ($hassiteconfig || has_capability('moodle/question:config', $systemcontext)) {
-    $temp = new admin_settingpage('manageqbanks', new lang_string('manageqbanks', 'admin'));
+    $temp = new settingpage('manageqbanks', new lang_string('manageqbanks', 'admin'));
     $temp->add(new \core_question\admin\manage_qbank_plugins_page());
     $ADMIN->add('qbanksettings', $temp);
-    $plugins = core_plugin_manager::instance()->get_plugins_of_type('qbank');
+    $plugins = plugin_manager::instance()->get_plugins_of_type('qbank');
 
     foreach ($plugins as $plugin) {
         /** @var \core\plugininfo\qbank $plugin */
@@ -461,18 +496,18 @@ if ($hassiteconfig || has_capability('moodle/question:config', $systemcontext)) 
 if ($hassiteconfig || has_capability('moodle/question:config', $systemcontext)) {
 
     // Question behaviour settings.
-    $ADMIN->add('qbehavioursettings', new admin_page_manageqbehaviours());
+    $ADMIN->add('qbehavioursettings', new manageqbehaviours());
 
     // Question type settings.
-    $ADMIN->add('qtypesettings', new admin_page_manageqtypes());
+    $ADMIN->add('qtypesettings', new manageqtypes());
 
     // Question preview defaults.
-    $settings = new admin_settingpage('qdefaultsetting',
+    $settings = new settingpage('qdefaultsetting',
             get_string('questionpreviewdefaults', 'question'),
             'moodle/question:config');
     $ADMIN->add('qtypesettings', $settings);
 
-    $settings->add(new admin_setting_heading('qdefaultsetting_preview_options',
+    $settings->add(new heading('qdefaultsetting_preview_options',
             '', get_string('questionpreviewdefaults_desc', 'question')));
 
     // These keys are question_display_options::HIDDEN and VISIBLE.
@@ -481,11 +516,11 @@ if ($hassiteconfig || has_capability('moodle/question:config', $systemcontext)) 
         1 => get_string('shown', 'question'),
     );
 
-    $settings->add(new admin_setting_question_behaviour('question_preview/behaviour',
+    $settings->add(new question_behaviour('question_preview/behaviour',
             get_string('howquestionsbehave', 'question'), '',
                     'deferredfeedback'));
 
-    $settings->add(new admin_setting_configselect('question_preview/correctness',
+    $settings->add(new configselect('question_preview/correctness',
             get_string('whethercorrect', 'question'), '', 1, $hiddenofvisible));
 
     // These keys are question_display_options::HIDDEN, MARK_ONLY and MARK_AND_MAX.
@@ -494,38 +529,38 @@ if ($hassiteconfig || has_capability('moodle/question:config', $systemcontext)) 
         1 => get_string('showmaxmarkonly', 'question'),
         2 => get_string('showmarkandmax', 'question'),
     );
-    $settings->add(new admin_setting_configselect('question_preview/marks',
+    $settings->add(new configselect('question_preview/marks',
             get_string('marks', 'question'), '', 2, $marksoptions));
 
-    $settings->add(new admin_setting_configselect('question_preview/markdp',
+    $settings->add(new configselect('question_preview/markdp',
             get_string('decimalplacesingrades', 'question'), '', 2, array(0, 1, 2, 3, 4, 5, 6, 7)));
 
-    $settings->add(new admin_setting_configselect('question_preview/feedback',
+    $settings->add(new configselect('question_preview/feedback',
             get_string('specificfeedback', 'question'), '', 1, $hiddenofvisible));
 
-    $settings->add(new admin_setting_configselect('question_preview/generalfeedback',
+    $settings->add(new configselect('question_preview/generalfeedback',
             get_string('generalfeedback', 'question'), '', 1, $hiddenofvisible));
 
-    $settings->add(new admin_setting_configselect('question_preview/rightanswer',
+    $settings->add(new configselect('question_preview/rightanswer',
             get_string('rightanswer', 'question'), '', 1, $hiddenofvisible));
 
-    $settings->add(new admin_setting_configselect('question_preview/history',
+    $settings->add(new configselect('question_preview/history',
             get_string('responsehistory', 'question'), '', 0, $hiddenofvisible));
 
     // Question editing settings.
-    $settings = new admin_settingpage('qediting',
+    $settings = new settingpage('qediting',
             get_string('questionediting', 'question'),
             'moodle/question:config');
     $ADMIN->add('qtypesettings', $settings);
 
-    $settings->add(new admin_setting_heading('qediting_options',
+    $settings->add(new heading('qediting_options',
             '', get_string('questionediting_desc', 'question')));
 
-    $settings->add(new admin_setting_configcheckbox('questiondefaultssave',
+    $settings->add(new configcheckbox('questiondefaultssave',
             get_string('questiondefaultssave', 'question'), get_string('questiondefaultssave_desc', 'question'), 1));
 
     // Settings for particular question types.
-    $plugins = core_plugin_manager::instance()->get_plugins_of_type('qtype');
+    $plugins = plugin_manager::instance()->get_plugins_of_type('qtype');
     core_collator::asort_objects_by_property($plugins, 'displayname');
     foreach ($plugins as $plugin) {
         /** @var \core\plugininfo\qtype $plugin */
@@ -533,7 +568,7 @@ if ($hassiteconfig || has_capability('moodle/question:config', $systemcontext)) 
     }
 
     // Settings for particular question behaviours.
-    $plugins = core_plugin_manager::instance()->get_plugins_of_type('qbehaviour');
+    $plugins = plugin_manager::instance()->get_plugins_of_type('qbehaviour');
     core_collator::asort_objects_by_property($plugins, 'displayname');
     foreach ($plugins as $plugin) {
         /** @var \core\plugininfo\qtype $plugin */
@@ -543,10 +578,10 @@ if ($hassiteconfig || has_capability('moodle/question:config', $systemcontext)) 
 
 // Plagiarism plugin settings
 if ($hassiteconfig && !empty($CFG->enableplagiarism)) {
-    $ADMIN->add('plagiarism', new admin_externalpage('manageplagiarismplugins', new lang_string('manageplagiarism', 'plagiarism'),
+    $ADMIN->add('plagiarism', new externalpage('manageplagiarismplugins', new lang_string('manageplagiarism', 'plagiarism'),
         $CFG->wwwroot . '/' . $CFG->admin . '/plagiarism.php'));
 
-    $plugins = core_plugin_manager::instance()->get_plugins_of_type('plagiarism');
+    $plugins = plugin_manager::instance()->get_plugins_of_type('plagiarism');
     core_collator::asort_objects_by_property($plugins, 'displayname');
     foreach ($plugins as $plugin) {
         /** @var \core\plugininfo\plagiarism $plugin */
@@ -555,7 +590,7 @@ if ($hassiteconfig && !empty($CFG->enableplagiarism)) {
 }
 
 // Comments report, note this page is really just a means to delete comments so check that.
-$ADMIN->add('reports', new admin_externalpage('comments', new lang_string('comments'), $CFG->wwwroot . '/comment/index.php',
+$ADMIN->add('reports', new externalpage('comments', new lang_string('comments'), $CFG->wwwroot . '/comment/index.php',
     'moodle/comment:delete'));
 
 // Course reports settings
@@ -564,7 +599,7 @@ if ($hassiteconfig) {
     foreach (core_component::get_plugin_list('coursereport') as $report => $path) {
         $file = $CFG->dirroot . '/course/report/' . $report . '/settings.php';
         if (file_exists($file)) {
-            $settings = new admin_settingpage('coursereport' . $report,
+            $settings = new settingpage('coursereport' . $report,
                     new lang_string('pluginname', 'coursereport_' . $report), 'moodle/site:config');
             // settings.php may create a subcategory or unset the settings completely
             include($file);
@@ -587,7 +622,7 @@ $pages = array();
 foreach (core_component::get_plugin_list('report') as $report => $plugindir) {
     $settings_path = "$plugindir/settings.php";
     if (file_exists($settings_path)) {
-        $settings = new admin_settingpage('report' . $report,
+        $settings = new settingpage('report' . $report,
                 new lang_string('pluginname', 'report_' . $report), 'moodle/site:config');
         include($settings_path);
         if ($settings) {
@@ -595,7 +630,7 @@ foreach (core_component::get_plugin_list('report') as $report => $plugindir) {
         }
     }
 }
-$ADMIN->add('reportplugins', new admin_externalpage('managereports', new lang_string('reportsmanage', 'admin'),
+$ADMIN->add('reportplugins', new externalpage('managereports', new lang_string('reportsmanage', 'admin'),
                                                     $CFG->wwwroot . '/' . $CFG->admin . '/reports.php'));
 core_collator::asort_objects_by_property($pages, 'visiblename');
 foreach ($pages as $page) {
@@ -604,7 +639,7 @@ foreach ($pages as $page) {
 
 if ($hassiteconfig) {
     // Global Search engine plugins.
-    $temp = new admin_settingpage('manageglobalsearch', new lang_string('globalsearchmanage', 'admin'));
+    $temp = new settingpage('manageglobalsearch', new lang_string('globalsearchmanage', 'admin'));
 
     $pages = array();
     $engines = array();
@@ -612,7 +647,7 @@ if ($hassiteconfig) {
         $engines[$engine] = new lang_string('pluginname', 'search_' . $engine);
         $settingspath = "$plugindir/settings.php";
         if (file_exists($settingspath)) {
-            $settings = new admin_settingpage('search' . $engine,
+            $settings = new settingpage('search' . $engine,
                     new lang_string('pluginname', 'search_' . $engine), 'moodle/site:config');
             include($settingspath);
             if ($settings) {
@@ -622,11 +657,11 @@ if ($hassiteconfig) {
     }
 
     // Setup status.
-    $temp->add(new admin_setting_searchsetupinfo());
+    $temp->add(new searchsetupinfo());
 
     // Search engine selection.
-    $temp->add(new admin_setting_heading('searchengineheading', new lang_string('searchengine', 'admin'), ''));
-    $searchengineselect = new admin_setting_configselect('searchengine',
+    $temp->add(new heading('searchengineheading', new lang_string('searchengine', 'admin'), ''));
+    $searchengineselect = new configselect('searchengine',
             new lang_string('selectsearchengine', 'admin'), '', 'simpledb', $engines);
     $searchengineselect->set_validate_function(function(string $value): string {
         global $CFG;
@@ -639,29 +674,29 @@ if ($hassiteconfig) {
         }
     });
     $temp->add($searchengineselect);
-    $temp->add(new admin_setting_heading('searchoptionsheading', new lang_string('searchoptions', 'admin'), ''));
-    $temp->add(new admin_setting_configcheckbox('searchindexwhendisabled',
+    $temp->add(new heading('searchoptionsheading', new lang_string('searchoptions', 'admin'), ''));
+    $temp->add(new configcheckbox('searchindexwhendisabled',
             new lang_string('searchindexwhendisabled', 'admin'), new lang_string('searchindexwhendisabled_desc', 'admin'),
             0));
-    $temp->add(new admin_setting_configduration('searchindextime',
+    $temp->add(new configduration('searchindextime',
             new lang_string('searchindextime', 'admin'), new lang_string('searchindextime_desc', 'admin'),
             600));
-    $temp->add(new admin_setting_heading('searchcoursesheading', new lang_string('searchablecourses', 'admin'), ''));
+    $temp->add(new heading('searchcoursesheading', new lang_string('searchablecourses', 'admin'), ''));
     $options = [
         0 => new lang_string('searchallavailablecourses_off', 'admin'),
         1 => new lang_string('searchallavailablecourses_on', 'admin')
     ];
-    $temp->add(new admin_setting_configselect('searchallavailablecourses',
+    $temp->add(new configselect('searchallavailablecourses',
             new lang_string('searchallavailablecourses', 'admin'),
             new lang_string('searchallavailablecoursesdesc', 'admin'),
             0, $options));
-    $temp->add(new admin_setting_configcheckbox('searchincludeallcourses',
+    $temp->add(new configcheckbox('searchincludeallcourses',
         new lang_string('searchincludeallcourses', 'admin'), new lang_string('searchincludeallcourses_desc', 'admin'),
         0));
 
     // Search display options.
-    $temp->add(new admin_setting_heading('searchdisplay', new lang_string('searchdisplay', 'admin'), ''));
-    $temp->add(new admin_setting_configcheckbox('searchenablecategories',
+    $temp->add(new heading('searchdisplay', new lang_string('searchdisplay', 'admin'), ''));
+    $temp->add(new configcheckbox('searchenablecategories',
         new lang_string('searchenablecategories', 'admin'),
         new lang_string('searchenablecategories_desc', 'admin'),
         0));
@@ -669,20 +704,20 @@ if ($hassiteconfig) {
     foreach (\core_search\manager::get_search_area_categories() as $category) {
         $options[$category->get_name()] = $category->get_visiblename();
     }
-    $temp->add(new admin_setting_configselect('searchdefaultcategory',
+    $temp->add(new configselect('searchdefaultcategory',
         new lang_string('searchdefaultcategory', 'admin'),
         new lang_string('searchdefaultcategory_desc', 'admin'),
         \core_search\manager::SEARCH_AREA_CATEGORY_ALL, $options));
-    $temp->add(new admin_setting_configcheckbox('searchhideallcategory',
+    $temp->add(new configcheckbox('searchhideallcategory',
         new lang_string('searchhideallcategory', 'admin'),
         new lang_string('searchhideallcategory_desc', 'admin'),
         0));
 
     // Top result options.
-    $temp->add(new admin_setting_heading('searchtopresults', new lang_string('searchtopresults', 'admin'), ''));
+    $temp->add(new heading('searchtopresults', new lang_string('searchtopresults', 'admin'), ''));
     // Max Top results.
     $options = range(0, 10);
-    $temp->add(new admin_setting_configselect('searchmaxtopresults',
+    $temp->add(new configselect('searchmaxtopresults',
         new lang_string('searchmaxtopresults', 'admin'),
         new lang_string('searchmaxtopresults_desc', 'admin'),
         3, $options));
@@ -691,16 +726,16 @@ if ($hassiteconfig) {
     foreach (role_get_names() as $role) {
         $options[$role->id] = $role->localname;
     }
-    $temp->add(new admin_setting_configmultiselect('searchteacherroles',
+    $temp->add(new configmultiselect('searchteacherroles',
         new lang_string('searchteacherroles', 'admin'),
         new lang_string('searchteacherroles_desc', 'admin'),
         [], $options));
 
-    $temp->add(new admin_setting_heading('searchmanagement', new lang_string('searchmanagement', 'admin'),
+    $temp->add(new heading('searchmanagement', new lang_string('searchmanagement', 'admin'),
             new lang_string('searchmanagement_desc', 'admin')));
 
     // Get list of search engines including those with alternate settings.
-    $searchenginequeryonlyselect = new admin_setting_configselect('searchenginequeryonly',
+    $searchenginequeryonlyselect = new configselect('searchenginequeryonly',
             new lang_string('searchenginequeryonly', 'admin'),
             new lang_string('searchenginequeryonly_desc', 'admin'), '', function() use($engines) {
                 $options = ['' => new lang_string('searchenginequeryonly_none', 'admin')];
@@ -727,15 +762,15 @@ if ($hassiteconfig) {
         }
     });
     $temp->add($searchenginequeryonlyselect);
-    $temp->add(new admin_setting_configcheckbox('searchbannerenable',
+    $temp->add(new configcheckbox('searchbannerenable',
             new lang_string('searchbannerenable', 'admin'), new lang_string('searchbannerenable_desc', 'admin'),
             0));
-    $temp->add(new admin_setting_confightmleditor('searchbanner',
+    $temp->add(new confightmleditor('searchbanner',
             new lang_string('searchbanner', 'admin'), '', ''));
 
     $ADMIN->add('searchplugins', $temp);
-    $ADMIN->add('searchplugins', new admin_externalpage('searchareas', new lang_string('searchareas', 'admin'),
-        new moodle_url('/admin/searchareas.php')));
+    $ADMIN->add('searchplugins', new externalpage('searchareas', new lang_string('searchareas', 'admin'),
+        new url('/admin/searchareas.php')));
 
     core_collator::asort_objects_by_property($pages, 'visiblename');
     foreach ($pages as $page) {
@@ -745,7 +780,7 @@ if ($hassiteconfig) {
 
 /// Add all admin tools
 if ($hassiteconfig) {
-    $settingspage = new admin_settingpage('toolsmanagement', new lang_string('toolsmanage', 'admin'));
+    $settingspage = new settingpage('toolsmanagement', new lang_string('toolsmanage', 'admin'));
     $ADMIN->add('tools', $settingspage);
     $settingspage->add(new \core_admin\admin\admin_setting_plugin_manager(
         'tool',
@@ -756,7 +791,7 @@ if ($hassiteconfig) {
 }
 
 // Now add various admin tools.
-$plugins = core_plugin_manager::instance()->get_plugins_of_type('tool');
+$plugins = plugin_manager::instance()->get_plugins_of_type('tool');
 core_collator::asort_objects_by_property($plugins, 'displayname');
 foreach ($plugins as $plugin) {
     /** @var \core\plugininfo\tool $plugin */
@@ -765,15 +800,15 @@ foreach ($plugins as $plugin) {
 
 // Now add the Cache plugins
 if ($hassiteconfig) {
-    $ADMIN->add('cache', new admin_externalpage('cacheconfig', new lang_string('cacheconfig', 'cache'), $CFG->wwwroot .'/cache/admin.php'));
-    $ADMIN->add('cache', new admin_externalpage('cachetestperformance', new lang_string('testperformance', 'cache'), $CFG->wwwroot . '/cache/testperformance.php'));
-    $ADMIN->add('cache', new admin_externalpage('cacheusage',
+    $ADMIN->add('cache', new externalpage('cacheconfig', new lang_string('cacheconfig', 'cache'), $CFG->wwwroot .'/cache/admin.php'));
+    $ADMIN->add('cache', new externalpage('cachetestperformance', new lang_string('testperformance', 'cache'), $CFG->wwwroot . '/cache/testperformance.php'));
+    $ADMIN->add('cache', new externalpage('cacheusage',
             new lang_string('cacheusage', 'cache'), $CFG->wwwroot . '/cache/usage.php'));
     $ADMIN->locate('cachestores')->set_sorting(true);
     foreach (core_component::get_plugin_list('cachestore') as $plugin => $path) {
         $settingspath = $path.'/settings.php';
         if (file_exists($settingspath)) {
-            $settings = new admin_settingpage('cachestore_'.$plugin.'_settings', new lang_string('pluginname', 'cachestore_'.$plugin), 'moodle/site:config');
+            $settings = new settingpage('cachestore_'.$plugin.'_settings', new lang_string('pluginname', 'cachestore_'.$plugin), 'moodle/site:config');
             include($settingspath);
             $ADMIN->add('cachestores', $settings);
         }
@@ -782,7 +817,7 @@ if ($hassiteconfig) {
 
 // Add Calendar type settings.
 if ($hassiteconfig) {
-    $plugins = core_plugin_manager::instance()->get_plugins_of_type('calendartype');
+    $plugins = plugin_manager::instance()->get_plugins_of_type('calendartype');
     core_collator::asort_objects_by_property($plugins, 'displayname');
     foreach ($plugins as $plugin) {
         /** @var \core\plugininfo\calendartype $plugin */
@@ -792,11 +827,11 @@ if ($hassiteconfig) {
 
 // Communication plugins.
 if ($hassiteconfig && core_communication\api::is_available()) {
-    $temp = new admin_settingpage('managecommunicationproviders',
+    $temp = new settingpage('managecommunicationproviders',
         new lang_string('managecommunicationproviders', 'core_communication'));
     $temp->add(new \core_communication\admin\manage_communication_providers_page());
     $ADMIN->add('communicationsettings', $temp);
-    $plugins = core_plugin_manager::instance()->get_plugins_of_type('communication');
+    $plugins = plugin_manager::instance()->get_plugins_of_type('communication');
     foreach ($plugins as $plugin) {
         /** @var \core\plugininfo\communication $plugin */
         $plugin->load_settings($ADMIN, 'communicationsettings', $hassiteconfig);
@@ -807,7 +842,7 @@ if ($hassiteconfig && core_communication\api::is_available()) {
 if ($hassiteconfig) {
     $ADMIN->add(
         'sms',
-        new admin_externalpage(
+        new externalpage(
             'smsgateway',
             new lang_string('manage_sms_gateways', 'core_sms'),
             $CFG->wwwroot . '/sms/sms_gateways.php',
@@ -816,7 +851,7 @@ if ($hassiteconfig) {
     foreach (core_component::get_plugin_list('smsgateway') as $plugin => $path) {
         $settingspath = $path . '/settings.php';
         if (file_exists($settingspath)) {
-            $settings = new admin_settingpage(
+            $settings = new settingpage(
                 'smsgateway_' . $plugin . '_settings',
                 new lang_string('pluginname', 'smsgateway_' . $plugin),
                 'moodle/site:config',
@@ -829,16 +864,16 @@ if ($hassiteconfig) {
 
 // Content bank content types.
 if ($hassiteconfig) {
-    $temp = new admin_settingpage('managecontentbanktypes', new lang_string('managecontentbanktypes'));
-    $temp->add(new admin_setting_managecontentbankcontenttypes());
+    $temp = new settingpage('managecontentbanktypes', new lang_string('managecontentbanktypes'));
+    $temp->add(new managecontentbankcontenttypes());
     $ADMIN->add('contentbanksettings', $temp);
     $ADMIN->add('contentbanksettings',
-        new admin_externalpage('contentbank', new lang_string('contentbankcustomfields', 'contentbank'),
+        new externalpage('contentbank', new lang_string('contentbankcustomfields', 'contentbank'),
             $CFG->wwwroot . '/contentbank/customfield.php',
             'moodle/contentbank:configurecustomfields'
         )
     );
-    $plugins = core_plugin_manager::instance()->get_plugins_of_type('contenttype');
+    $plugins = plugin_manager::instance()->get_plugins_of_type('contenttype');
     foreach ($plugins as $plugin) {
         /** @var \core\plugininfo\contentbank $plugin */
         $plugin->load_settings($ADMIN, 'contentbanksettings', $hassiteconfig);
@@ -847,13 +882,13 @@ if ($hassiteconfig) {
 
 /// Add all local plugins - must be always last!
 if ($hassiteconfig) {
-    $ADMIN->add('localplugins', new admin_externalpage('managelocalplugins', new lang_string('localpluginsmanage'),
+    $ADMIN->add('localplugins', new externalpage('managelocalplugins', new lang_string('localpluginsmanage'),
                                                         $CFG->wwwroot . '/' . $CFG->admin . '/localplugins.php'));
 }
 
 // Extend settings for each local plugin. Note that their settings may be in any part of the
 // settings tree and may be visible not only for administrators.
-$plugins = core_plugin_manager::instance()->get_plugins_of_type('local');
+$plugins = plugin_manager::instance()->get_plugins_of_type('local');
 core_collator::asort_objects_by_property($plugins, 'displayname');
 foreach ($plugins as $plugin) {
     /** @var \core\plugininfo\local $plugin */

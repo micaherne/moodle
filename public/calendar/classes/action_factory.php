@@ -26,6 +26,7 @@ namespace core_calendar;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\url;
 use core_calendar\local\event\factories\action_factory_interface;
 use core_calendar\local\event\value_objects\action;
 
@@ -37,7 +38,7 @@ use core_calendar\local\event\value_objects\action;
  */
 class action_factory implements action_factory_interface {
 
-    public function create_instance($name, \moodle_url $url, $itemcount, $actionable) {
+    public function create_instance($name, url $url, $itemcount, $actionable) {
         return new action ($name, $url, $itemcount, $actionable);
     }
 }

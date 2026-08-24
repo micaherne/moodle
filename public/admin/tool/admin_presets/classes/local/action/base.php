@@ -16,7 +16,8 @@
 
 namespace tool_admin_presets\local\action;
 
-use context_system;
+use core\context\system;
+use core\navigation\navigation_node;
 use core_adminpresets\manager;
 use tool_admin_presets\output\export_import;
 
@@ -140,7 +141,7 @@ class base {
             $PAGE->navbar->add($title);
         }
 
-        if ($node = $PAGE->settingsnav->find('tool_admin_presets', \navigation_node::TYPE_SETTING)) {
+        if ($node = $PAGE->settingsnav->find('tool_admin_presets', navigation_node::TYPE_SETTING)) {
             $node->make_active();
         }
 
@@ -201,7 +202,7 @@ class base {
             if (array_key_exists($action, self::$eventsactionsmap)) {
                 $eventnamespace = '\\tool_admin_presets\\event\\' . self::$eventsactionsmap[$action];
                 $eventdata = [
-                    'context' => context_system::instance(),
+                    'context' => system::instance(),
                     'objectid' => $this->id
                 ];
                 $event = $eventnamespace::create($eventdata);

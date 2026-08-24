@@ -26,12 +26,12 @@
 namespace mod_bigbluebuttonbn;
 
 use calendar_event;
-use context_module;
+use core\context\module;
 use core_courseformat\formatactions;
 use mod_bigbluebuttonbn\test\testcase_helper_trait;
 use mod_bigbluebuttonbn_mod_form;
 use MoodleQuickForm;
-use navigation_node;
+use core\navigation\navigation_node;
 use ReflectionClass;
 use stdClass;
 
@@ -737,7 +737,7 @@ final class lib_test extends \advanced_testcase {
         $CFG->bigbluebuttonbn_meetingevents_enabled = true;
 
         $PAGE->set_cm($bbactivitycm);
-        $PAGE->set_context(context_module::instance($bbactivitycm->id));
+        $PAGE->set_context(module::instance($bbactivitycm->id));
         $PAGE->set_url('/mod/bigbluebuttonbn/view.php', ['id' => $bbactivitycm->id]);
         $settingnav = $PAGE->settingsnav;
 
@@ -765,7 +765,7 @@ final class lib_test extends \advanced_testcase {
         $CFG->bigbluebuttonbn_meetingevents_enabled = true;
 
         $PAGE->set_cm($bbactivitycmuser);
-        $PAGE->set_context(context_module::instance($bbactivitycm->id));
+        $PAGE->set_context(module::instance($bbactivitycm->id));
         $PAGE->set_url('/mod/bigbluebuttonbn/view.php', ['id' => $bbactivitycm->id]);
 
         $settingnav = $PAGE->settingsnav;

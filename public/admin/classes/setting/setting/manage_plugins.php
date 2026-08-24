@@ -16,6 +16,8 @@
 
 namespace core_admin\setting\setting;
 
+use core\plugin_manager;
+use core\url;
 use core_admin\admin_search;
 
 /**
@@ -116,7 +118,7 @@ abstract class manage_plugins extends \core_admin\setting {
         }
 
         $query = \core_text::strtolower($query);
-        $plugins = \core_plugin_manager::instance()->get_plugins_of_type($this->get_plugin_type());
+        $plugins = plugin_manager::instance()->get_plugins_of_type($this->get_plugin_type());
         foreach ($plugins as $name => $plugin) {
             $localised = $plugin->displayname;
             if (strpos(\core_text::strtolower($name), $query) !== false) {
@@ -137,7 +139,7 @@ abstract class manage_plugins extends \core_admin\setting {
      * @return moodle_url
      */
     protected function get_manage_url() {
-        return new \moodle_url('/admin/updatesetting.php');
+        return new url('/admin/updatesetting.php');
     }
 
     /**
@@ -151,7 +153,7 @@ abstract class manage_plugins extends \core_admin\setting {
         global $CFG, $OUTPUT, $DB, $PAGE;
 
         $context = (object) [
-            'manageurl' => new \moodle_url($this->get_manage_url(), [
+            'manageurl' => new url($this->get_manage_url(), [
                     'type' => $this->get_plugin_type(),
                     'sesskey' => sesskey(),
                 ]),
@@ -159,12 +161,12 @@ abstract class manage_plugins extends \core_admin\setting {
             'plugins' => [],
         ];
 
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $allplugins = $pluginmanager->get_plugins_of_type($this->get_plugin_type());
         $enabled = $pluginmanager->get_enabled_plugins($this->get_plugin_type());
         $plugins = array_merge($enabled, $allplugins);
         foreach ($plugins as $key => $plugin) {
-            $pluginlink = new \moodle_url($context->manageurl, ['plugin' => $key]);
+            $pluginlink = new url($context->manageurl, ['plugin' => $key]);
 
             $pluginkey = (object) [
                 'plugin' => $plugin->displayname,
@@ -178,19 +180,19 @@ abstract class manage_plugins extends \core_admin\setting {
             ];
 
             // Enable/Disable link.
-            $togglelink = new \moodle_url($pluginlink);
+            $togglelink = new url($pluginlink);
             if ($plugin->is_enabled()) {
                 $toggletarget = false;
                 $togglelink->param('action', 'disable');
 
                 if (count($context->plugins)) {
                     // This is not the first plugin.
-                    $pluginkey->moveuplink = new \moodle_url($pluginlink, ['action' => 'up']);
+                    $pluginkey->moveuplink = new url($pluginlink, ['action' => 'up']);
                 }
 
                 if (count($enabled) > count($context->plugins) + 1) {
                     // This is not the last plugin.
-                    $pluginkey->movedownlink = new \moodle_url($pluginlink, ['action' => 'down']);
+                    $pluginkey->movedownlink = new url($pluginlink, ['action' => 'down']);
                 }
 
                 $pluginkey->info = $this->get_info_column($plugin);
@@ -203,7 +205,7 @@ abstract class manage_plugins extends \core_admin\setting {
             $pluginkey->togglelink = $togglelink;
 
             $frankenstyle = $plugin->type . '_' . $plugin->name;
-            if ($uninstalllink = \core_plugin_manager::instance()->get_uninstall_url($frankenstyle, 'manage')) {
+            if ($uninstalllink = plugin_manager::instance()->get_uninstall_url($frankenstyle, 'manage')) {
                 // This plugin supports uninstallation.
                 $pluginkey->uninstalllink = $uninstalllink;
             }

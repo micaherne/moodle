@@ -16,6 +16,8 @@
 
 namespace mod_feedback\form;
 
+use core\exception\moodle_exception;
+
 /**
  * Tests the confirm use template form
  *
@@ -86,7 +88,7 @@ final class create_template_form_test extends \advanced_testcase {
         $this->setUser($manager);
         $submitdata = create_template_form::mock_ajax_submit($data);
         if (!$accessallowed) {
-            $this->expectException(\moodle_exception::class);
+            $this->expectException(moodle_exception::class);
         }
         $form = new create_template_form(null, null, 'post', '', null, true,
             $submitdata, true);
@@ -160,7 +162,7 @@ final class create_template_form_test extends \advanced_testcase {
 
         $submitdata = create_template_form::mock_ajax_submit($data);
         if (!$accessallowed) {
-            $this->expectException(\moodle_exception::class);
+            $this->expectException(moodle_exception::class);
         }
         $form = new create_template_form(null, null, 'post', '', null, true,
             $submitdata, true);

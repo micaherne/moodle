@@ -25,6 +25,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\output\renderer_base;
+use core\url;
+
 global $CFG;
 require_once($CFG->libdir . '/form/autocomplete.php');
 
@@ -187,8 +191,8 @@ class MoodleQuickForm_tags extends MoodleQuickForm_autocomplete {
         global $OUTPUT;
 
         $managelink = '';
-        if (has_capability('moodle/tag:manage', context_system::instance()) && $this->showstandard) {
-            $url = new moodle_url('/tag/manage.php', array('tc' => $this->get_tag_collection()));
+        if (has_capability('moodle/tag:manage', system::instance()) && $this->showstandard) {
+            $url = new url('/tag/manage.php', array('tc' => $this->get_tag_collection()));
             $managelink = ' ' . $OUTPUT->action_link($url, get_string('managestandardtags', 'tag'));
         }
 
@@ -254,8 +258,8 @@ class MoodleQuickForm_tags extends MoodleQuickForm_autocomplete {
     public function export_for_template(renderer_base $output) {
 
         $context = parent::export_for_template($output);
-        if (has_capability('moodle/tag:manage', context_system::instance()) && $this->showstandard) {
-            $url = new moodle_url('/tag/manage.php', array('tc' => $this->get_tag_collection()));
+        if (has_capability('moodle/tag:manage', system::instance()) && $this->showstandard) {
+            $url = new url('/tag/manage.php', array('tc' => $this->get_tag_collection()));
             $context['managestandardtagsurl'] = $url->out(false);
         }
 

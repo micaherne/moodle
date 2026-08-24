@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\url;
 use mod_lti\output\course_tools_page;
 
 require_once("../../config.php");
@@ -34,15 +37,15 @@ $id = required_param('id', PARAM_INT); // Course Id.
 $course = get_course($id);
 require_course_login($course, false);
 
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 if (!has_capability('mod/lti:addpreconfiguredinstance', $context)) {
-    throw new \moodle_exception('nopermissions', 'error', '', get_string('courseexternaltoolsnoviewpermissions', 'mod_lti'));
+    throw new moodle_exception('nopermissions', 'error', '', get_string('courseexternaltoolsnoviewpermissions', 'mod_lti'));
 }
 
 // Page setup.
 global $PAGE, $OUTPUT;
 $pagetitle = get_string('courseexternaltools', 'mod_lti');
-$pageurl = new moodle_url('/mod/lti/coursetools.php', ['id' => $course->id]);
+$pageurl = new url('/mod/lti/coursetools.php', ['id' => $course->id]);
 $PAGE->set_pagelayout('incourse');
 $PAGE->set_context($context);
 $PAGE->set_url($pageurl);

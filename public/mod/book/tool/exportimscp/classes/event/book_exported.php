@@ -23,6 +23,9 @@
  */
 
 namespace booktool_exportimscp\event;
+
+use core\context\module;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -43,7 +46,7 @@ class book_exported extends \core\event\base {
      * @param \context_module $context
      * @return book_exported
      */
-    public static function create_from_book(\stdClass $book, \context_module $context) {
+    public static function create_from_book(\stdClass $book, module $context) {
         $data = array(
             'context' => $context,
             'objectid' => $book->id
@@ -78,7 +81,7 @@ class book_exported extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/book/tool/exportimscp/index.php', array('id' => $this->contextinstanceid));
+        return new url('/mod/book/tool/exportimscp/index.php', array('id' => $this->contextinstanceid));
     }
 
     /**

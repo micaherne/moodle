@@ -16,7 +16,8 @@
 
 namespace gradepenalty_duedate\privacy;
 
-use context;
+use core\context;
+use core\context\user;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -69,7 +70,7 @@ class provider implements
         $data = (object) $rules;
 
         // Write out the data.
-        writer::with_context(\context_user::instance($user->id))->export_data([
+        writer::with_context(user::instance($user->id))->export_data([
             get_string('privacy:metadata:gradepenalty_duedate_rule', 'gradepenalty_duedate'),
             'rules',
         ], $data);
@@ -115,7 +116,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist): void {
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_user) {
+        if (!$context instanceof user) {
             return;
         }
 
@@ -135,7 +136,7 @@ class provider implements
     public static function delete_data_for_users(approved_userlist $userlist): void {
         $context = $userlist->get_context();
 
-        if ($context instanceof \context_user) {
+        if ($context instanceof user) {
             static::delete_user_data($context->instanceid);
         }
     }

@@ -17,6 +17,7 @@
 namespace mod_lti\local;
 
 use core\context\course;
+use core\exception\moodle_exception;
 
 /**
  * Helper class specifically dealing with LTI types (preconfigured tools).
@@ -117,7 +118,7 @@ class types_helper {
                 if ($restrictedtool) {
                     $record = $DB->get_record('lti_types_categories', ['typeid' => $tooltypeid, 'categoryid' => $coursecategory]);
                     if (!$record) {
-                        throw new \moodle_exception('You are not allowed to change this setting for this tool.');
+                        throw new moodle_exception('You are not allowed to change this setting for this tool.');
                     }
                 }
 

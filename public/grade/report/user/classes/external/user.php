@@ -16,8 +16,8 @@
 
 namespace gradereport_user\external;
 
-use context_course;
-use core_user;
+use core\context\course;
+use core\user as core_user;
 use core_external\external_api;
 use core_external\external_description;
 use core_external\external_format_value;
@@ -28,7 +28,7 @@ use core_external\external_value;
 use core_external\external_warnings;
 use grade_plugin_return;
 use graded_users_iterator;
-use moodle_exception;
+use core\exception\moodle_exception;
 use stdClass;
 use gradereport_user\report\user as user_report;
 
@@ -73,7 +73,7 @@ class user extends external_api {
         // Function get_course internally throws an exception if the course doesn't exist.
         $course = get_course($courseid);
 
-        $context = context_course::instance($courseid);
+        $context = course::instance($courseid);
         self::validate_context($context);
 
         // Specific capabilities.
@@ -395,7 +395,7 @@ class user extends external_api {
 
         $course = get_course($params['courseid']);
 
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         self::validate_context($context);
 
         $userid = $params['userid'];

@@ -16,6 +16,9 @@
 
 namespace bbbext_simple\bigbluebuttonbn;
 
+use core\navigation\navigation_node;
+use core\navigation\settings_navigation;
+use core\url;
 use mod_bigbluebuttonbn\local\extension\navigation_append_addon as navigation_append_addon_interface;
 
 /**
@@ -36,11 +39,11 @@ class navigation_append_addon implements navigation_append_addon_interface {
      * @param \navigation_node $nodenav The current navigation node.
      * @return void
      */
-    public function append_settings_navigation(\settings_navigation $settingsnav, \navigation_node $nodenav): void {
+    public function append_settings_navigation(settings_navigation $settingsnav, navigation_node $nodenav): void {
         $nodenav->add(
             get_string('settings_navigation_append', 'bbbext_simple'),
-            new \moodle_url('#'),
-            \navigation_node::TYPE_SETTING,
+            new url('#'),
+            navigation_node::TYPE_SETTING,
             null,
             'settings_navigation_append'
         );

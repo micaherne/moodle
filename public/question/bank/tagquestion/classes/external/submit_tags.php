@@ -22,6 +22,8 @@ require_once($CFG->dirroot . '/question/engine/lib.php');
 require_once($CFG->dirroot . '/question/engine/datalib.php');
 require_once($CFG->libdir . '/questionlib.php');
 
+use core\context;
+use core\exception\moodle_exception;
 use core_tag_tag;
 use core_external\external_api;
 use core_external\external_function_parameters;
@@ -72,7 +74,7 @@ class submit_tags extends external_api {
                 'formdata' => $formdata
         ]);
 
-        $editingcontext = \context::instance_by_id($params['contextid']);
+        $editingcontext = context::instance_by_id($params['contextid']);
         self::validate_context($editingcontext);
         parse_str($params['formdata'], $data);
 
@@ -83,11 +85,11 @@ class submit_tags extends external_api {
                   JOIN {question_bank_entries} qbe ON qbe.id = qv.questionbankentryid
                   JOIN {question_categories} qc ON qc.id = qbe.questioncategoryid
                  WHERE q.id = ?', [$questionid])) {
-            throw new \moodle_exception('questiondoesnotexist', 'question');
+            throw new moodle_exception('questiondoesnotexist', 'question');
         }
 
         $cantag = question_has_capability_on($question, 'tag');
-        $questioncontext = \context::instance_by_id($question->contextid);
+        $questioncontext = context::instance_by_id($question->contextid);
         $contexts = new \core_question\local\bank\question_edit_contexts($editingcontext);
 
         $formoptions = [

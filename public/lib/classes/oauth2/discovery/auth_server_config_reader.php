@@ -16,7 +16,9 @@
 
 namespace core\oauth2\discovery;
 
+use core\exception\moodle_exception;
 use core\http_client;
+use core\url;
 use GuzzleHttp\Exception\ClientException;
 
 /**
@@ -34,7 +36,7 @@ class auth_server_config_reader {
     protected \stdClass $metadata;
 
     /** @var \moodle_url the base URL for the auth server which was last used during a read.*/
-    protected \moodle_url $issuerurl;
+    protected url $issuerurl;
 
     /**
      * Constructor.
@@ -53,7 +55,7 @@ class auth_server_config_reader {
      * @return \stdClass the configuration data object.
      * @throws ClientException|\GuzzleHttp\Exception\GuzzleException if the http client experiences any problems.
      */
-    public function read_configuration(\moodle_url $issuerurl): \stdClass {
+    public function read_configuration(url $issuerurl): \stdClass {
         $this->issuerurl = $issuerurl;
         $this->validate_uri();
 
@@ -71,14 +73,14 @@ class auth_server_config_reader {
      */
     protected function validate_uri() {
         if (!empty($this->issuerurl->get_query_string())) {
-            throw new \moodle_exception('Error: '.__METHOD__.': Auth server base URL cannot contain a query component.');
+            throw new moodle_exception('Error: '.__METHOD__.': Auth server base URL cannot contain a query component.');
         }
         if (strtolower($this->issuerurl->get_scheme()) !== 'https') {
-            throw new \moodle_exception('Error: '.__METHOD__.': Auth server base URL must use HTTPS scheme.');
+            throw new moodle_exception('Error: '.__METHOD__.': Auth server base URL must use HTTPS scheme.');
         }
         // This catches URL fragments. Since a query string is ruled out above, out_omit_querystring(false) returns only fragments.
         if ($this->issuerurl->out_omit_querystring() != $this->issuerurl->out(false)) {
-            throw new \moodle_exception('Error: '.__METHOD__.': Auth server base URL must not contain fragments.');
+            throw new moodle_exception('Error: '.__METHOD__.': Auth server base URL must not contain fragments.');
         }
     }
 
@@ -90,7 +92,7 @@ class auth_server_config_reader {
      *
      * @return \moodle_url the full URL to the auth server metadata.
      */
-    protected function get_configuration_url(): \moodle_url {
+    protected function get_configuration_url(): url {
         $path = $this->issuerurl->get_path();
         if (!empty($path) && $path !== '/') {
             // Insert the well known suffix between the host and path components.
@@ -104,6 +106,6 @@ class auth_server_config_reader {
             $uri .= ".well-known/$this->wellknownsuffix";
         }
 
-        return new \moodle_url($uri);
+        return new url($uri);
     }
 }

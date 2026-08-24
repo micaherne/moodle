@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->dirroot.'/mod/lti/locallib.php');
@@ -30,7 +33,7 @@ require_once($CFG->dirroot.'/mod/lti/locallib.php');
 // No guest autologin.
 require_login(0, false);
 
-$pageurl = new moodle_url('/mod/lti/toolproxies.php');
+$pageurl = new url('/mod/lti/toolproxies.php');
 $PAGE->set_url($pageurl);
 
 admin_externalpage_setup('ltitoolproxies');

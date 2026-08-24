@@ -15,6 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle. If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\module;
+use core\exception\moodle_exception;
+
 require_once('../../config.php');
 require_once(__DIR__ . '/create_form.php');
 require_once($CFG->dirroot . '/mod/wiki/lib.php');
@@ -36,7 +39,7 @@ $uid = optional_param('uid', 0, PARAM_INT);
 // so sesskey must be checked
 if ($action == 'create') {
     if (!confirm_sesskey()) {
-        throw new \moodle_exception('invalidsesskey');
+        throw new moodle_exception('invalidsesskey');
     }
 }
 
@@ -44,25 +47,25 @@ if (!empty($swid)) {
     $subwiki = wiki_get_subwiki($swid);
 
     if (!$wiki = wiki_get_wiki($subwiki->wikiid)) {
-        throw new \moodle_exception('incorrectwikiid', 'wiki');
+        throw new moodle_exception('incorrectwikiid', 'wiki');
     }
 
 } else {
     $subwiki = wiki_get_subwiki_by_group($wid, $group, $uid);
 
     if (!$wiki = wiki_get_wiki($wid)) {
-        throw new \moodle_exception('incorrectwikiid', 'wiki');
+        throw new moodle_exception('incorrectwikiid', 'wiki');
     }
 
 }
 
 if (!$cm = get_coursemodule_from_instance('wiki', $wiki->id)) {
-    throw new \moodle_exception('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 
 $groups = new stdClass();
 if (groups_get_activity_groupmode($cm)) {
-    $modulecontext = context_module::instance($cm->id);
+    $modulecontext = module::instance($cm->id);
     $canaccessgroups = has_capability('moodle/site:accessallgroups', $modulecontext);
     if ($canaccessgroups) {
         $groups->availablegroups = groups_get_all_groups($cm->course, 0, 0, 'g.*', false, true);

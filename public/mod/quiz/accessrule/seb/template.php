@@ -23,12 +23,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+
 require_once('../../../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
 $action = optional_param('action', 'view', PARAM_ALPHANUMEXT);
 
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 $manager = new \quizaccess_seb\template_controller();
 $manager->execute($action);

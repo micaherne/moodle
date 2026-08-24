@@ -16,7 +16,7 @@
 
 namespace mod_feedback\output;
 
-use plugin_renderer_base;
+use core\output\plugin_renderer_base;
 
 /**
  * Class renderer

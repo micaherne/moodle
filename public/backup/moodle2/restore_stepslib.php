@@ -27,6 +27,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
+use core\context\block;
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\exception\coding_exception;
+use core_cache\helper;
 use core_question\local\bank\question_version_status;
 use core_question\versions;
 
@@ -45,11 +52,11 @@ class restore_create_and_clean_temp_stuff extends restore_execution_step {
         }
         // Create the old-course-ctxid to new-course-ctxid mapping, we need that available since the beginning
         $itemid = $this->task->get_old_contextid();
-        $newitemid = context_course::instance($this->get_courseid())->id;
+        $newitemid = course::instance($this->get_courseid())->id;
         restore_dbops::set_backup_ids_record($this->get_restoreid(), 'context', $itemid, $newitemid);
         // Create the old-system-ctxid to new-system-ctxid mapping, we need that available since the beginning
         $itemid = $this->task->get_old_system_contextid();
-        $newitemid = context_system::instance()->id;
+        $newitemid = system::instance()->id;
         restore_dbops::set_backup_ids_record($this->get_restoreid(), 'context', $itemid, $newitemid);
         // Create the old-course-id to new-course-id mapping, we need that available since the beginning
         $itemid = $this->task->get_old_courseid();
@@ -325,7 +332,7 @@ class restore_gradebook_structure_step extends restore_structure_step {
         $data = (object)$data;
         $oldid = $data->id;
 
-        $data->contextid = context_course::instance($this->get_courseid())->id;
+        $data->contextid = course::instance($this->get_courseid())->id;
 
         $gradeletter = (array)$data;
         unset($gradeletter['id']);
@@ -802,8 +809,8 @@ class restore_rebuild_course_cache extends restore_execution_step {
 
         // Rebuild cache now that all sections are in place
         rebuild_course_cache($this->get_courseid());
-        cache_helper::purge_by_event('changesincourse');
-        cache_helper::purge_by_event('changesincoursecat');
+        helper::purge_by_event('changesincourse');
+        helper::purge_by_event('changesincoursecat');
     }
 }
 
@@ -1195,7 +1202,7 @@ class restore_groups_structure_step extends restore_structure_step {
 
         // Only allow the idnumber to be set if the user has permission and the idnumber is not already in use by
         // another a group in the same course
-        $context = context_course::instance($data->courseid);
+        $context = course::instance($data->courseid);
         if (isset($data->idnumber) and has_capability('moodle/course:changeidnumber', $context, $this->task->get_userid())) {
             if (groups_get_group_by_idnumber($data->courseid, $data->idnumber)) {
                 unset($data->idnumber);
@@ -1243,7 +1250,7 @@ class restore_groups_structure_step extends restore_structure_step {
         }
 
         // Invalidate the course group data cache just in case.
-        cache_helper::invalidate_by_definition('core', 'groupdata', array(), array($data->courseid));
+        helper::invalidate_by_definition('core', 'groupdata', array(), array($data->courseid));
     }
 
     /**
@@ -1268,7 +1275,7 @@ class restore_groups_structure_step extends restore_structure_step {
 
         // Only allow the idnumber to be set if the user has permission and the idnumber is not already in use by
         // another a grouping in the same course
-        $context = context_course::instance($data->courseid);
+        $context = course::instance($data->courseid);
         if (isset($data->idnumber) and has_capability('moodle/course:changeidnumber', $context, $this->task->get_userid())) {
             if (groups_get_grouping_by_idnumber($data->courseid, $data->idnumber)) {
                 unset($data->idnumber);
@@ -1302,7 +1309,7 @@ class restore_groups_structure_step extends restore_structure_step {
         // Save the id mapping
         $this->set_mapping('grouping', $oldid, $newitemid, $restorefiles);
         // Invalidate the course group data cache just in case.
-        cache_helper::invalidate_by_definition('core', 'groupdata', array(), array($data->courseid));
+        helper::invalidate_by_definition('core', 'groupdata', array(), array($data->courseid));
     }
 
     /**
@@ -1334,7 +1341,7 @@ class restore_groups_structure_step extends restore_structure_step {
         // Add grouping related files, matching with "grouping" mappings
         $this->add_related_files('grouping', 'description', 'grouping');
         // Invalidate the course group data.
-        cache_helper::invalidate_by_definition('core', 'groupdata', array(), array($this->get_courseid()));
+        helper::invalidate_by_definition('core', 'groupdata', array(), array($this->get_courseid()));
     }
 
 }
@@ -1458,7 +1465,7 @@ class restore_scales_structure_step extends restore_structure_step {
             $data->courseid = $data->courseid ? $this->get_courseid() : 0;
             // If global scale (course=0), check the user has perms to create it
             // falling to course scale if not
-            $systemctx = context_system::instance();
+            $systemctx = system::instance();
             if ($data->courseid == 0 && !has_capability('moodle/course:managescales', $systemctx , $this->task->get_userid())) {
                 $data->courseid = $this->get_courseid();
             }
@@ -1520,7 +1527,7 @@ class restore_outcomes_structure_step extends restore_structure_step {
             $data->courseid = $data->courseid ? $this->get_courseid() : null;
             // If global outcome (course=null), check the user has perms to create it
             // falling to course outcome if not
-            $systemctx = context_system::instance();
+            $systemctx = system::instance();
             if (is_null($data->courseid) && !has_capability('moodle/grade:manageoutcomes', $systemctx , $this->task->get_userid())) {
                 $data->courseid = $this->get_courseid();
             }
@@ -1708,7 +1715,7 @@ class restore_section_structure_step extends restore_structure_step {
                 array(
                     'objectid' => $section->id,
                     'courseid' => $section->course,
-                    'context' => context_course::instance($section->course),
+                    'context' => course::instance($section->course),
                     'other' => array('sectionnum' => $section->section)
                 )
             );
@@ -2109,7 +2116,7 @@ class restore_course_structure_step extends restore_structure_step {
         $data = (object)$data;
 
         core_tag_tag::add_item_tag('core', 'course', $this->get_courseid(),
-                context_course::instance($this->get_courseid()), $data->rawname);
+                course::instance($this->get_courseid()), $data->rawname);
     }
 
     /**
@@ -2171,7 +2178,7 @@ class restore_course_structure_step extends restore_structure_step {
 
         // Deal with legacy allowed modules.
         if ($this->legacyrestrictmodules) {
-            $context = context_course::instance($this->get_courseid());
+            $context = course::instance($this->get_courseid());
 
             list($roleids) = get_roles_with_cap_in_context($context, 'moodle/course:manageactivities');
             list($managerroleids) = get_roles_with_cap_in_context($context, 'moodle/site:config');
@@ -2577,7 +2584,7 @@ class restore_fix_restorer_access_step extends restore_execution_step {
         }
 
         $courseid = $this->get_courseid();
-        $context = context_course::instance($courseid);
+        $context = course::instance($courseid);
 
         if (is_enrolled($context, $userid, 'moodle/course:update', true) or is_viewing($context, $userid, 'moodle/course:update')) {
             // Current user may access the course (admin, category manager or restored teacher enrolment usually)
@@ -2982,7 +2989,7 @@ class restore_badges_structure_step extends restore_structure_step {
 
         if (!empty($data->rawname)) {
             core_tag_tag::add_item_tag('core_badges', 'badge', $badgeid,
-                context_course::instance($this->get_courseid()), $data->rawname);
+                course::instance($this->get_courseid()), $data->rawname);
         }
     }
 
@@ -4518,7 +4525,7 @@ class restore_block_instance_structure_step extends restore_structure_step {
                                                  AND $subpagepatternsql", $params);
             if (!empty($existingblock)) {
                 // Save the context mapping in case something else is linking to this block's context.
-                $newcontext = context_block::instance(reset($existingblock)->id);
+                $newcontext = block::instance(reset($existingblock)->id);
                 $this->set_mapping('context', $oldcontextid, $newcontext->id);
                 // There is at least one very similar block visible on the page where we
                 // are trying to restore the block. In these circumstances the block API
@@ -4539,7 +4546,7 @@ class restore_block_instance_structure_step extends restore_structure_step {
             foreach($birecs as $birec) {
                 if ($birec->configdata == $data->configdata) {
                     // Save the context mapping in case something else is linking to this block's context.
-                    $newcontext = context_block::instance($birec->id);
+                    $newcontext = block::instance($birec->id);
                     $this->set_mapping('context', $oldcontextid, $newcontext->id);
                     return false;
                 }
@@ -4582,7 +4589,7 @@ class restore_block_instance_structure_step extends restore_structure_step {
         // Save the mapping (with restorefiles support)
         $this->set_mapping('block_instance', $oldid, $newitemid, true);
         // Create the block context
-        $newcontextid = context_block::instance($newitemid)->id;
+        $newcontextid = block::instance($newitemid)->id;
         // Save the block contexts mapping and sent it to task
         $this->set_mapping('context', $oldcontextid, $newcontextid);
         $this->task->set_contextid($newcontextid);
@@ -4727,7 +4734,7 @@ class restore_module_structure_step extends restore_structure_step {
             $data->availability = upgrade_group_members_only($data->groupingid, $data->availability);
         }
 
-        if (!has_capability('moodle/course:setforcedlanguage', context_course::instance($data->course))) {
+        if (!has_capability('moodle/course:setforcedlanguage', course::instance($data->course))) {
             unset($data->lang);
         }
 
@@ -4738,7 +4745,7 @@ class restore_module_structure_step extends restore_structure_step {
         // set the new course_module id in the task
         $this->task->set_moduleid($newitemid);
         // we can now create the context safely
-        $ctxid = context_module::instance($newitemid)->id;
+        $ctxid = module::instance($newitemid)->id;
         // set the new context id in the task
         $this->task->set_contextid($ctxid);
         // update sequence field in course_section
@@ -5125,7 +5132,7 @@ class restore_create_categories_and_questions extends restore_structure_step {
         }
         $data->contextid = $mapping->parentitemid;
 
-        $context = \context::instance_by_id($data->contextid);
+        $context = context::instance_by_id($data->contextid);
 
         // Before 3.5, question categories could be created at top level.
         // From 3.5 onwards, all question categories should be a child of a special category called the "top" category.
@@ -5589,7 +5596,7 @@ class restore_move_module_questions_categories extends restore_execution_step {
                     && has_capability('mod/qbank:view', $originalcontext)
                 ) {
                     $originalquestions = get_questions_category(question_get_top_category($contextid), false);
-                    $targetcoursecontext = context_course::instance($this->get_courseid());
+                    $targetcoursecontext = course::instance($this->get_courseid());
                     foreach ($originalquestions as $originalquestion) {
                         $backupids = restore_dbops::get_backup_ids_record(
                             $this->get_restoreid(),
@@ -5634,7 +5641,7 @@ class restore_move_module_questions_categories extends restore_execution_step {
                 // that was not included in the backup and does not exist in the site being restored to.
                 $course = get_course($this->get_courseid());
                 $defaultqbank = core_question\local\bank\question_bank_helper::get_default_open_instance_system_type($course, true);
-                $context = context_module::instance($defaultqbank->id);
+                $context = module::instance($defaultqbank->id);
                 $newcontext = new stdClass();
                 $newcontext->newitemid = $context->id;
             }
@@ -5746,7 +5753,7 @@ class restore_move_module_questions_categories extends restore_execution_step {
         ";
         $categories = $DB->get_records_sql(
             $coursecatsql,
-            ['courselevel' => context_course::LEVEL, 'courseid' => $this->task->get_courseid()],
+            ['courselevel' => course::LEVEL, 'courseid' => $this->task->get_courseid()],
         );
         foreach ($categories as $category) {
             question_category_delete_safe($category);
@@ -6838,7 +6845,7 @@ class restore_course_search_index extends restore_execution_step {
      * When this step is executed, we add the course context to the queue for reindexing.
      */
     protected function define_execution() {
-        $context = \context_course::instance($this->task->get_courseid());
+        $context = course::instance($this->task->get_courseid());
         \core_search\manager::request_index($context);
     }
 }
@@ -6855,7 +6862,7 @@ class restore_activity_search_index extends restore_execution_step {
      * When this step is executed, we add the activity context to the queue for reindexing.
      */
     protected function define_execution() {
-        $context = \context::instance_by_id($this->task->get_contextid());
+        $context = context::instance_by_id($this->task->get_contextid());
         \core_search\manager::request_index($context);
     }
 }
@@ -6875,7 +6882,7 @@ class restore_block_search_index extends restore_execution_step {
         // A block in the restore list may be skipped because a duplicate is detected.
         // In this case, there is no new blockid (or context) to get.
         if (!empty($this->task->get_blockid())) {
-            $context = \context_block::instance($this->task->get_blockid());
+            $context = block::instance($this->task->get_blockid());
             \core_search\manager::request_index($context);
         }
     }

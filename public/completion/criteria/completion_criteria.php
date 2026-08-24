@@ -24,6 +24,9 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\output\pix_icon;
+
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot.'/completion/data_object.php');
 require_once($CFG->dirroot.'/completion/completion_criteria_completion.php');
@@ -176,7 +179,7 @@ abstract class completion_criteria extends data_object {
         global $CFG, $COMPLETION_CRITERIA_TYPES;
 
         if (!isset($params['criteriatype']) || !isset($COMPLETION_CRITERIA_TYPES[$params['criteriatype']])) {
-            throw new \moodle_exception('invalidcriteriatype', 'completion');
+            throw new moodle_exception('invalidcriteriatype', 'completion');
         }
 
         $class = 'completion_criteria_'.$COMPLETION_CRITERIA_TYPES[$params['criteriatype']];

@@ -24,6 +24,9 @@
 
 namespace core_analytics\local\target;
 
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -42,7 +45,7 @@ abstract class discrete extends base {
      */
     public function is_linear() {
         // Not supported yet.
-        throw new \coding_exception('Sorry, this version\'s prediction processors only support targets with binary values.' .
+        throw new coding_exception('Sorry, this version\'s prediction processors only support targets with binary values.' .
             ' You can write your own and overwrite this method though.');
     }
 
@@ -66,7 +69,7 @@ abstract class discrete extends base {
     public function get_display_value($value, $ignoredsubtype = false) {
 
         if (!self::is_a_class($value)) {
-            throw new \moodle_exception('errorpredictionformat', 'analytics');
+            throw new moodle_exception('errorpredictionformat', 'analytics');
         }
 
         // To discard any possible weird keys devs used.
@@ -74,13 +77,13 @@ abstract class discrete extends base {
         $descriptions = array_values(static::classes_description());
 
         if (count($classes) !== count($descriptions)) {
-            throw new \coding_exception('You need to describe all your classes (' . json_encode($classes) .
+            throw new coding_exception('You need to describe all your classes (' . json_encode($classes) .
                 ') in self::classes_description');
         }
 
         $key = array_search($value, $classes);
         if ($key === false) {
-            throw new \coding_exception('You need to describe all your classes (' . json_encode($classes) .
+            throw new coding_exception('You need to describe all your classes (' . json_encode($classes) .
                 ') in self::classes_description');
         }
 
@@ -97,7 +100,7 @@ abstract class discrete extends base {
     public function get_calculation_outcome($value, $ignoredsubtype = false) {
 
         if (!self::is_a_class($value)) {
-            throw new \moodle_exception('errorpredictionformat', 'analytics');
+            throw new moodle_exception('errorpredictionformat', 'analytics');
         }
 
         if (in_array($value, $this->ignored_predicted_classes(), false)) {
@@ -119,7 +122,7 @@ abstract class discrete extends base {
      */
     public static function get_classes() {
         // Coding exception as this will only be called if this target have non-linear values.
-        throw new \coding_exception('Overwrite get_classes() and return an array with the different values the ' .
+        throw new coding_exception('Overwrite get_classes() and return an array with the different values the ' .
             'target calculation can return');
     }
 
@@ -131,7 +134,7 @@ abstract class discrete extends base {
      * @return array
      */
     protected static function classes_description() {
-        throw new \coding_exception('Overwrite classes_description() and return an array with a description for each of the ' .
+        throw new coding_exception('Overwrite classes_description() and return an array with a description for each of the ' .
             'different values the target calculation can return. Indexes should match self::get_classes indexes');
     }
 
@@ -147,7 +150,7 @@ abstract class discrete extends base {
      */
     public function ignored_predicted_classes() {
         // Coding exception as this will only be called if this target have non-linear values.
-        throw new \coding_exception('Overwrite ignored_predicted_classes() and return an array with the classes that should not ' .
+        throw new coding_exception('Overwrite ignored_predicted_classes() and return an array with the classes that should not ' .
             'trigger the callback');
     }
 

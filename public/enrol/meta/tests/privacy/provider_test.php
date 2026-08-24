@@ -26,6 +26,7 @@ namespace enrol_meta\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\course;
 use core_privacy\local\request\writer;
 use core_privacy\local\request\approved_contextlist;
 use enrol_meta\privacy\provider;
@@ -75,7 +76,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
             )
         ));
         // Check context course fro provider to user1.
-        $context = \context_course::instance($course1->id);
+        $context = course::instance($course1->id);
         $contextlist = provider::get_contexts_for_userid($user1->id);
         $this->assertEquals($context->id, $contextlist->current()->id);
     }
@@ -149,7 +150,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
                                      WHERE g.courseid = ?", [$course1->id])
         );
 
-        $coursecontext1 = \context_course::instance($course1->id);
+        $coursecontext1 = course::instance($course1->id);
         provider::delete_data_for_all_users_in_context($coursecontext1);
         $this->assertEquals(
             0,
@@ -191,8 +192,8 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         );
 
         $this->setUser($user1);
-        $coursecontext1 = \context_course::instance($course1->id);
-        $coursecontext2 = \context_course::instance($course2->id);
+        $coursecontext1 = course::instance($course1->id);
+        $coursecontext2 = course::instance($course2->id);
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist($user1, 'enrol_meta',
                 [$coursecontext1->id]);
         provider::delete_data_for_user($approvedcontextlist);
@@ -240,7 +241,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
                                      WHERE g.courseid = ?", [$course1->id])
         );
 
-        $coursecontext1 = \context_course::instance($course1->id);
+        $coursecontext1 = course::instance($course1->id);
 
         $approveduserlist = new \core_privacy\local\request\approved_userlist($coursecontext1, 'enrol_meta',
                 [$user1->id, $user2->id]);
@@ -291,7 +292,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
                 )
         ));
 
-        $context = \context_course::instance($course1->id);
+        $context = course::instance($course1->id);
 
         $userlist = new \core_privacy\local\request\userlist($context, 'enrol_meta');
         \enrol_meta\privacy\provider::get_users_in_context($userlist);

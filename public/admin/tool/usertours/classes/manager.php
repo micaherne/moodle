@@ -16,6 +16,9 @@
 
 namespace tool_usertours;
 
+use core\output\html_writer;
+use core\url;
+use core\user;
 use tool_usertours\local\forms;
 use tool_usertours\local\table;
 use core\notification;
@@ -251,7 +254,7 @@ class manager {
         global $PAGE, $OUTPUT;
 
         $this->header();
-        echo \html_writer::span(get_string('tourlist_explanation', 'tool_usertours'));
+        echo html_writer::span(get_string('tourlist_explanation', 'tool_usertours'));
         $table = new table\tour_list();
         $tours = helper::get_tours();
         foreach ($tours as $tour) {
@@ -274,25 +277,25 @@ class manager {
             ],
         ];
 
-        echo \html_writer::start_tag('div', [
+        echo html_writer::start_tag('div', [
                 'class' => 'tour-actions mt-3',
             ]);
 
-        echo \html_writer::start_tag('ul');
+        echo html_writer::start_tag('ul');
         foreach ($actions as $config) {
-            $action = \html_writer::start_tag('li');
+            $action = html_writer::start_tag('li');
             $linkproperties = $config->linkproperties;
             $linkproperties['href'] = $config->link;
             $linkproperties['class'] = 'text-body';
-            $action .= \html_writer::start_tag('a', $linkproperties);
+            $action .= html_writer::start_tag('a', $linkproperties);
             $action .= $OUTPUT->pix_icon($config->img, $config->title, 'tool_usertours', ['class' => 'iconsize-medium']);
-            $action .= \html_writer::div($config->title);
-            $action .= \html_writer::end_tag('a');
-            $action .= \html_writer::end_tag('li');
+            $action .= html_writer::div($config->title);
+            $action .= html_writer::end_tag('a');
+            $action .= html_writer::end_tag('li');
             echo $action;
         }
-        echo \html_writer::end_tag('ul');
-        echo \html_writer::end_tag('div');
+        echo html_writer::end_tag('ul');
+        echo html_writer::end_tag('div');
 
         // JS for Tour management.
         $PAGE->requires->js_call_amd('tool_usertours/managetours', 'setup');
@@ -307,7 +310,7 @@ class manager {
      */
     protected function get_edit_tour_link($id = null) {
         $addlink = helper::get_edit_tour_link($id);
-        return \html_writer::link($addlink, get_string('newtour', 'tool_usertours'));
+        return html_writer::link($addlink, get_string('newtour', 'tool_usertours'));
     }
 
     /**
@@ -326,7 +329,7 @@ class manager {
      */
     protected function get_import_tour_link() {
         $importlink = helper::get_import_tour_link();
-        return \html_writer::link($importlink, get_string('importtour', 'tool_usertours'));
+        return html_writer::link($importlink, get_string('importtour', 'tool_usertours'));
     }
 
     /**
@@ -468,11 +471,11 @@ class manager {
         $PAGE->navbar->add($tourname, $tour->get_view_link());
 
         $this->header($tourname);
-        echo \html_writer::span(get_string('viewtour_info', 'tool_usertours', [
+        echo html_writer::span(get_string('viewtour_info', 'tool_usertours', [
                 'tourname'  => $tourname,
                 'path'      => $tour->get_pathmatch(),
             ]));
-        echo \html_writer::div(get_string('viewtour_edit', 'tool_usertours', [
+        echo html_writer::div(get_string('viewtour_edit', 'tool_usertours', [
                 'editlink'  => $tour->get_edit_link()->out(),
                 'resetlink' => $tour->get_reset_link()->out(),
             ]));
@@ -613,10 +616,10 @@ class manager {
      * @param   moodle_url  $pageurl        The URL to match.
      * @return  array
      */
-    public static function get_matching_tours(\moodle_url $pageurl): array {
+    public static function get_matching_tours(url $pageurl): array {
         global $PAGE;
 
-        if (\core_user::awaiting_action()) {
+        if (user::awaiting_action()) {
             // User not fully ready to use the site. Don't show any tours, we need the user to get properly set up so
             // that all require_login() and other bits work as expected.
             return [];
@@ -694,7 +697,7 @@ class manager {
         if (empty($stepid)) {
             $attributes['class'] = 'createstep';
         }
-        echo \html_writer::link($addlink, get_string('newstep', 'tool_usertours'), $attributes);
+        echo html_writer::link($addlink, get_string('newstep', 'tool_usertours'), $attributes);
     }
 
     /**

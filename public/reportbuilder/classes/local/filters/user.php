@@ -18,9 +18,9 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\local\filters;
 
-use context_system;
-use core_user;
-use lang_string;
+use core\context\system;
+use core\user as core_user;
+use core\lang_string;
 use MoodleQuickForm;
 use core_reportbuilder\local\helpers\database;
 
@@ -79,7 +79,7 @@ class user extends base {
             'multiple' => true,
             'valuehtmlcallback' => static function($userid): string {
                 $user = core_user::get_user($userid);
-                return fullname($user, has_capability('moodle/site:viewfullnames', context_system::instance()));
+                return fullname($user, has_capability('moodle/site:viewfullnames', system::instance()));
             }
         ];
         $mform->addElement('autocomplete', "{$this->name}_value", $valuelabel, [], $options)

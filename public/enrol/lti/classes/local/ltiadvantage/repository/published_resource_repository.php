@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace enrol_lti\local\ltiadvantage\repository;
+use core\context\course;
 use core_availability\info_module;
 use enrol_lti\local\ltiadvantage\viewobject\published_resource;
 
@@ -154,7 +155,7 @@ class published_resource_repository {
 
         // Only users who have the ability to publish content should see published content.
         $resources = array_filter($resources, function($resource) use ($userid) {
-            return has_capability('enrol/lti:config', \context_course::instance($resource->courseid), $userid);
+            return has_capability('enrol/lti:config', course::instance($resource->courseid), $userid);
         });
 
         // Make sure the user can access each course or module, excluding those which are inaccessible from the return.

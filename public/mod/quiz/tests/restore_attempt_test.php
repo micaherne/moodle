@@ -17,7 +17,7 @@
 namespace mod_quiz;
 
 use backup;
-use core_user;
+use core\user;
 use restore_controller;
 use restore_dbops;
 
@@ -99,7 +99,7 @@ final class restore_attempt_test extends \advanced_testcase {
         // User 01 has supplied the wrong answer, assert dates match the backup file too.
         $user01attempt = $DB->get_record('quiz_attempts', [
             'quiz' => $restoredquiz->id,
-            'userid' => core_user::get_user_by_username('user01')->id,
+            'userid' => user::get_user_by_username('user01')->id,
         ]);
 
         $this->assertEquals(1634751274, $user01attempt->timestart);
@@ -109,7 +109,7 @@ final class restore_attempt_test extends \advanced_testcase {
         // User 04 has supplied the correct answer, assert dates match the backup file too.
         $user04attempt = $DB->get_record('quiz_attempts', [
             'quiz' => $restoredquiz->id,
-            'userid' => core_user::get_user_by_username('user04')->id,
+            'userid' => user::get_user_by_username('user04')->id,
         ]);
 
         $this->assertEquals(1634751341, $user04attempt->timestart);

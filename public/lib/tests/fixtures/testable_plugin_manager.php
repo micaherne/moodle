@@ -23,6 +23,8 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\plugin_manager;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__.'/testable_update_api.php');
@@ -33,7 +35,7 @@ require_once(__DIR__.'/testable_update_api.php');
  * @copyright 2015 David Mudrak <david@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class testable_core_plugin_manager extends core_plugin_manager {
+class testable_core_plugin_manager extends plugin_manager {
 
     /** @var testable_core_plugin_manager holds the singleton instance */
     protected static $singletoninstance;

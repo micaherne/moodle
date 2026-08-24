@@ -21,16 +21,21 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\navigation\navigation_node;
+use core\output\single_button;
+use core\url;
+
 require_once('../../config.php');
 
 require_admin();
 
 $format = required_param('format', PARAM_PLUGIN);
 $confirm = optional_param('confirm', false, PARAM_BOOL);
-$backurl = new moodle_url('/admin/settings.php', ['section' => 'formatsetting'.$format]);
+$backurl = new url('/admin/settings.php', ['section' => 'formatsetting'.$format]);
 
 $PAGE->set_url('/admin/course/resetindentation.php', ['format' => $format]);
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 if ($confirm) {
     require_sesskey();
@@ -54,7 +59,7 @@ $strtitle = get_string('resetindentation', 'admin');
 $PAGE->set_title($strtitle);
 $PAGE->set_heading($strtitle);
 
-navigation_node::override_active_url(new moodle_url(
+navigation_node::override_active_url(new url(
     '/admin/course/resetindentation.php',
     ['action' => 'confirm', 'format' => $format]
 ));
@@ -63,7 +68,7 @@ echo $OUTPUT->header();
 
 $displayoptions = ['confirmtitle' => get_string('resetindentation_title', 'admin')];
 $confirmbutton = new single_button(
-    new moodle_url('/admin/course/resetindentation.php', ['confirm' => 1, 'format' => $format, 'sesskey' => sesskey()]),
+    new url('/admin/course/resetindentation.php', ['confirm' => 1, 'format' => $format, 'sesskey' => sesskey()]),
     get_string('resetindentation', 'admin'),
     'post',
     single_button::BUTTON_DANGER

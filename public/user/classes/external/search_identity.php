@@ -16,6 +16,8 @@
 
 namespace core_user\external;
 
+use core\context\system;
+use core\user;
 use core_external\external_api;
 use core_external\external_description;
 use core_external\external_function_parameters;
@@ -59,7 +61,7 @@ class search_identity extends external_api {
         $query = clean_param($params['query'], PARAM_TEXT);
 
         // Validate context.
-        $context = \context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         require_capability('moodle/user:viewalldetails', $context);
 
@@ -119,7 +121,7 @@ class search_identity extends external_api {
         return new external_single_structure([
             'list' => new external_multiple_structure(
                 new external_single_structure([
-                    'id' => new external_value(\core_user::get_property_type('id'), 'ID of the user'),
+                    'id' => new external_value(user::get_property_type('id'), 'ID of the user'),
                     // The output of the {@see fullname()} can contain formatting HTML such as <ruby> tags.
                     // So we need PARAM_RAW here and the caller is supposed to render it appropriately.
                     'fullname' => new external_value(PARAM_RAW, 'The fullname of the user'),

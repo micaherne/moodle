@@ -28,10 +28,34 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\context\user as context_user;
+use core\context_helper;
 use core\di;
 use core\email;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\exception\require_login_exception;
+use core\exception\require_login_session_timeout_exception;
 use core\hook;
 use core\hook\email\before_email_to_user;
+use core\lang_string;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\output\theme_config;
+use core\plugin_manager;
+use core\url;
+use core\user as core_user;
+use core_cache\cache;
+use core_cache\helper;
+use core_cache\store;
+use core_course\cm_info;
+use core_course\modinfo;
+use core_filters\filter_manager;
+use core_table\output\html_table;
+use core_table\output\html_table_cell;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -995,12 +1019,12 @@ function set_config($name, $value, $plugin = null, bool $log = false) {
 
     // Update siteidentifier cache, if required.
     if ($iscore && $name === 'siteidentifier') {
-        cache_helper::update_site_identifier($value);
+        helper::update_site_identifier($value);
     }
 
     // Invalidate cache, if required.
     if ($invalidatecache) {
-        cache_helper::invalidate_by_definition('core', 'config', [], $invalidatecachekey);
+        helper::invalidate_by_definition('core', 'config', [], $invalidatecachekey);
     }
 
     return true;
@@ -1120,10 +1144,10 @@ function unset_config($name, $plugin = null, bool $log = false) {
     if (empty($plugin)) {
         unset($CFG->$name);
         $DB->delete_records('config', array('name' => $name));
-        cache_helper::invalidate_by_definition('core', 'config', array(), 'core');
+        helper::invalidate_by_definition('core', 'config', array(), 'core');
     } else {
         $DB->delete_records('config_plugins', array('name' => $name, 'plugin' => $plugin));
-        cache_helper::invalidate_by_definition('core', 'config', array(), $plugin);
+        helper::invalidate_by_definition('core', 'config', array(), $plugin);
     }
 
     return true;
@@ -1146,7 +1170,7 @@ function unset_all_config_for_plugin($plugin) {
     $params = array($DB->sql_like_escape($plugin.'_', '|') . '%');
     $DB->delete_records_select('config', $like, $params);
     // Finally clear both the plugin cache and the core cache (suspect settings now removed from core).
-    cache_helper::invalidate_by_definition('core', 'config', array(), array('core', $plugin));
+    helper::invalidate_by_definition('core', 'config', array(), array('core', $plugin));
 
     return true;
 }
@@ -1169,7 +1193,7 @@ function get_users_from_config($value, $capability, $includeadmins = true) {
     // We have to make sure that users still have the necessary capability,
     // it should be faster to fetch them all first and then test if they are present
     // instead of validating them one-by-one.
-    $users = get_users_by_capability(context_system::instance(), $capability);
+    $users = get_users_by_capability(system::instance(), $capability);
     if ($includeadmins) {
         $admins = get_admins();
         foreach ($admins as $admin) {
@@ -1227,14 +1251,14 @@ function purge_caches($options = []) {
         $options = array_merge($defaults, array_intersect_key($options, $defaults)); // Override defaults with specified options.
     }
     if ($options['muc']) {
-        cache_helper::purge_all();
+        helper::purge_all();
     } else if ($options['courses']) {
         if ($options['courses'] === true) {
             $courseids = [];
         } else {
             $courseids = preg_split('/\s*,\s*/', $options['courses'], -1, PREG_SPLIT_NO_EMPTY);
         }
-        course_modinfo::purge_course_caches($courseids);
+        modinfo::purge_course_caches($courseids);
     }
     if ($options['theme']) {
         theme_reset_all_caches();
@@ -1265,7 +1289,7 @@ function purge_caches($options = []) {
 function purge_other_caches() {
     global $DB, $CFG;
     if (class_exists('core_plugin_manager')) {
-        core_plugin_manager::reset_caches();
+        plugin_manager::reset_caches();
     }
 
     // Bump up cacherev field for all courses.
@@ -2374,7 +2398,7 @@ function require_login($courseorid = null, $autologinguest = true, $cm = null, $
     if ($course->id != SITEID and \core\session\manager::is_loggedinas()) {
         if ($USER->loginascontext->contextlevel == CONTEXT_COURSE) {
             if ($USER->loginascontext->instanceid != $course->id) {
-                throw new \moodle_exception('loginasonecourse', '',
+                throw new moodle_exception('loginasonecourse', '',
                     $CFG->wwwroot.'/course/view.php?id='.$USER->loginascontext->instanceid);
             }
         }
@@ -2479,10 +2503,10 @@ function require_login($courseorid = null, $autologinguest = true, $cm = null, $
     }
 
     // Fetch the system context, the course context, and prefetch its child contexts.
-    $sysctx = context_system::instance();
-    $coursecontext = context_course::instance($course->id, MUST_EXIST);
+    $sysctx = system::instance();
+    $coursecontext = course::instance($course->id, MUST_EXIST);
     if ($cm) {
-        $cmcontext = context_module::instance($cm->id, MUST_EXIST);
+        $cmcontext = module::instance($cm->id, MUST_EXIST);
     } else {
         $cmcontext = null;
     }
@@ -2514,7 +2538,7 @@ function require_login($courseorid = null, $autologinguest = true, $cm = null, $
                 $PAGE->set_context(null);
                 // We need to override the navigation URL as the course won't have been added to the navigation and thus
                 // the navigation will mess up when trying to find it.
-                navigation_node::override_active_url(new moodle_url('/'));
+                navigation_node::override_active_url(new url('/'));
                 notice(get_string('coursehidden'), $CFG->wwwroot .'/');
             }
         }
@@ -2627,7 +2651,7 @@ function require_login($courseorid = null, $autologinguest = true, $cm = null, $
                     $PAGE->set_context(null);
                     // We need to override the navigation URL as the course won't have been added to the navigation and thus
                     // the navigation will mess up when trying to find it.
-                    navigation_node::override_active_url(new moodle_url('/'));
+                    navigation_node::override_active_url(new url('/'));
                     notice(get_string('coursehidden'), $CFG->wwwroot .'/');
                 }
             }
@@ -2706,7 +2730,7 @@ function require_login($courseorid = null, $autologinguest = true, $cm = null, $
  */
 function require_admin() {
     require_login(null, false);
-    require_capability('moodle/site:config', context_system::instance());
+    require_capability('moodle/site:config', system::instance());
 }
 
 /**
@@ -2859,17 +2883,17 @@ function validate_user_key($keyvalue, $script, $instance) {
     global $DB;
 
     if (!$key = $DB->get_record('user_private_key', array('script' => $script, 'value' => $keyvalue, 'instance' => $instance))) {
-        throw new \moodle_exception('invalidkey');
+        throw new moodle_exception('invalidkey');
     }
 
     if (!empty($key->validuntil) and $key->validuntil < time()) {
-        throw new \moodle_exception('expiredkey');
+        throw new moodle_exception('expiredkey');
     }
 
     if ($key->iprestriction) {
         $remoteaddr = getremoteaddr(null);
         if (empty($remoteaddr) or !address_in_subnet($remoteaddr, $key->iprestriction)) {
-            throw new \moodle_exception('ipmismatch');
+            throw new moodle_exception('ipmismatch');
         }
     }
     return $key;
@@ -2888,7 +2912,7 @@ function require_user_key_login($script, $instance = null, $keyvalue = null) {
     global $DB;
 
     if (\core\session\manager::supports_cookies()) {
-        throw new \moodle_exception('sessioncookiesdisable');
+        throw new moodle_exception('sessioncookiesdisable');
     }
 
     // Extra safety.
@@ -2901,7 +2925,7 @@ function require_user_key_login($script, $instance = null, $keyvalue = null) {
     $key = validate_user_key($keyvalue, $script, $instance);
 
     if (!$user = $DB->get_record('user', array('id' => $key->userid))) {
-        throw new \moodle_exception('invaliduserid');
+        throw new moodle_exception('invaliduserid');
     }
 
     core_user::require_active_user($user, true, true);
@@ -3956,7 +3980,7 @@ function authenticate_user_login(
                 // If able to change password, set flag and move on.
                 if ($authplugin->can_change_password()) {
                     // Check if we are on internal change password page, or service is external, don't show notification.
-                    $internalchangeurl = new moodle_url('/login/change_password.php');
+                    $internalchangeurl = new url('/login/change_password.php');
                     if (!($PAGE->has_set_url() && $internalchangeurl->compare($PAGE->url)) && $authplugin->is_internal()) {
                         \core\notification::error(get_string('passwordpolicynomatch', '', $errmsg));
                     }
@@ -3964,13 +3988,13 @@ function authenticate_user_login(
                 } else if ($authplugin->can_reset_password()) {
                     // Else force a reset if possible.
                     \core\notification::error(get_string('forcepasswordresetnotice', '', $errmsg));
-                    redirect(new moodle_url('/login/forgot_password.php'));
+                    redirect(new url('/login/forgot_password.php'));
                 } else {
                     $notifymsg = get_string('forcepasswordresetfailurenotice', '', $errmsg);
                     // If support page is set, add link for help.
                     if (!empty($CFG->supportpage)) {
-                        $link = \html_writer::link($CFG->supportpage, $CFG->supportpage);
-                        $link = \html_writer::tag('p', $link);
+                        $link = html_writer::link($CFG->supportpage, $CFG->supportpage);
+                        $link = html_writer::tag('p', $link);
                         $notifymsg .= $link;
                     }
 
@@ -4169,7 +4193,7 @@ function complete_user_login($user, array $extrauserinfo = []) {
                 redirect($CFG->wwwroot.'/login/change_password.php');
             }
         } else {
-            throw new \moodle_exception('nopasswordchangeforced', 'auth');
+            throw new moodle_exception('nopasswordchangeforced', 'auth');
         }
     }
     return $USER;
@@ -4474,7 +4498,7 @@ function delete_course($courseorid, $showfeedback = true, bool $asyncpreferred =
             return false;
         }
     }
-    $context = context_course::instance($courseid);
+    $context = course::instance($courseid);
 
     // Frontpage course can not be deleted!!
     if ($courseid == SITEID) {
@@ -4598,7 +4622,7 @@ function remove_course_contents($courseid, $showfeedback = true, ?array $options
     $options = (array)$options;
 
     $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
-    $coursecontext = context_course::instance($courseid);
+    $coursecontext = course::instance($courseid);
     $fs = get_file_storage();
 
     // Delete course completion information, this has to be done before grades and enrols.
@@ -4675,7 +4699,7 @@ function remove_course_contents($courseid, $showfeedback = true, ?array $options
                         // and cannot be deleted while the activities that use them still exist.
                         question_delete_activity($cm, coursedeletion: $coursedeletion);
                         // Delete all tag instances associated with the instance of this module.
-                        core_tag_tag::delete_instances("mod_{$modname}", null, context_module::instance($cm->id)->id);
+                        core_tag_tag::delete_instances("mod_{$modname}", null, module::instance($cm->id)->id);
                         core_tag_tag::remove_all_item_tags('core', 'course_modules', $cm->id);
                         // Notify the competency subsystem.
                         \core_competency\api::hook_course_module_deleted($cm);
@@ -4838,7 +4862,7 @@ function remove_course_contents($courseid, $showfeedback = true, ?array $options
     fulldelete($CFG->dataroot.'/'.$course->id);
 
     // Delete from cache to reduce the cache size especially makes sense in case of bulk course deletion.
-    course_modinfo::purge_course_cache($courseid);
+    modinfo::purge_course_cache($courseid);
 
     // Trigger a course content deleted event.
     $event = \core\event\course_content_deleted::create(array(
@@ -4901,7 +4925,7 @@ function reset_course_userdata($data, ?\core_course\exception\reset_timeout $tim
     require_once($CFG->dirroot.'/group/lib.php');
 
     $data->courseid = $data->id;
-    $context = context_course::instance($data->courseid);
+    $context = course::instance($data->courseid);
 
     $eventparams = array(
         'context' => $context,
@@ -5235,7 +5259,7 @@ function reset_course_userdata($data, ?\core_course\exception\reset_timeout $tim
         }
         // Purge the course cache after resetting course start date. MDL-76936
         if ($data->timeshift) {
-            course_modinfo::purge_course_cache($data->courseid);
+            modinfo::purge_course_cache($data->courseid);
         }
         $progress->end_progress();
         \core_course\exception\reset_timeout::throw_if_expired($timeout);
@@ -5909,7 +5933,7 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '', 
     } else {
         // Trigger event for failing to send email.
         $event = \core\event\email_failed::create(array(
-            'context' => context_system::instance(),
+            'context' => system::instance(),
             'userid' => $from->id,
             'relateduserid' => $user->id,
             'other' => array(
@@ -6001,7 +6025,7 @@ function setnew_password_and_mail($user, $fasthash = false) {
     \core\di::get(\core\authentication\password::class)->update($user, $newpassword, $fasthash);
 
     $a = new stdClass();
-    $placeholders = \core_user::get_name_placeholders($user);
+    $placeholders = core_user::get_name_placeholders($user);
     foreach ($placeholders as $field => $value) {
         $a->{$field} = $value;
     }
@@ -6037,7 +6061,7 @@ function send_confirmation_email($user, $confirmationurl = null) {
     $data->sitename  = format_string($site->fullname);
     $data->admin     = generate_email_signoff();
     // Add user name fields to $data based on $user.
-    $placeholders = \core_user::get_name_placeholders($user);
+    $placeholders = core_user::get_name_placeholders($user);
     foreach ($placeholders as $field => $value) {
         $data->{$field} = $value;
     }
@@ -6048,7 +6072,7 @@ function send_confirmation_email($user, $confirmationurl = null) {
         $confirmationurl = '/login/confirm.php';
     }
 
-    $confirmationurl = new moodle_url($confirmationurl);
+    $confirmationurl = new url($confirmationurl);
     // Remove data parameter just in case it was included in the confirmation so we can add it manually later.
     $confirmationurl->remove_params('data');
     $confirmationpath = $confirmationurl->out(false);
@@ -6086,7 +6110,7 @@ function send_password_change_confirmation_email($user, $resetrecord) {
     $pwresetmins = isset($CFG->pwresettime) ? floor($CFG->pwresettime / MINSECS) : 30;
 
     $data = new stdClass();
-    $placeholders = \core_user::get_name_placeholders($user);
+    $placeholders = core_user::get_name_placeholders($user);
     foreach ($placeholders as $field => $value) {
         $data->{$field} = $value;
     }
@@ -6115,7 +6139,7 @@ function send_password_change_info($user) {
     $supportuser = core_user::get_support_user();
 
     $data = new stdClass();
-    $placeholders = \core_user::get_name_placeholders($user);
+    $placeholders = core_user::get_name_placeholders($user);
     foreach ($placeholders as $field => $value) {
         $data->{$field} = $value;
     }
@@ -7133,7 +7157,7 @@ function get_plugin_list_with_function($plugintype, $function, $file = 'lib.php'
                     $pluginfunctions[$plugintype . '_' . $pluginname] = $functionname;
                 } else {
                     // Invalidate the cache for next run.
-                    \cache_helper::invalidate_by_definition('core', 'plugin_functions');
+                    helper::invalidate_by_definition('core', 'plugin_functions');
                 }
             }
         }
@@ -7186,7 +7210,7 @@ function get_plugins_with_function($function, $file = 'lib.php', $include = true
         return $pluginfunctions;
     };
 
-    $cache = \cache::make('core', 'plugin_functions');
+    $cache = cache::make('core', 'plugin_functions');
 
     // Including both although I doubt that we will find two functions definitions with the same name.
     // Clean the filename as cache_helper::hash_key only allows a-zA-Z0-9_.
@@ -7198,7 +7222,7 @@ function get_plugins_with_function($function, $file = 'lib.php', $include = true
     $dirty = false;
 
     // Use the plugin manager to check that plugins are currently installed.
-    $pluginmanager = \core_plugin_manager::instance();
+    $pluginmanager = plugin_manager::instance();
 
     if ($pluginfunctions !== false) {
 
@@ -9041,7 +9065,7 @@ function get_performance_info() {
 
     $info['html'] .= '</ul>';
     $html = '';
-    if ($stats = cache_helper::get_stats()) {
+    if ($stats = helper::get_stats()) {
 
         $table = new html_table();
         $table->attributes['class'] = 'cachesused table table-dark table-sm w-auto table-bordered';
@@ -9060,7 +9084,7 @@ function get_performance_info() {
         foreach ($stats as $definition => $details) {
             $numstores = count($details['stores']);
             $first = key($details['stores']);
-            if ($first !== cache_store::STATIC_ACCEL) {
+            if ($first !== store::STATIC_ACCEL) {
                 $numstores++; // Add a blank space for the missing static store.
             }
             $maxstores = max($maxstores, $numstores);
@@ -9089,15 +9113,15 @@ function get_performance_info() {
 
         foreach ($stats as $definition => $details) {
             switch ($details['mode']) {
-                case cache_store::MODE_APPLICATION:
+                case store::MODE_APPLICATION:
                     $modeclass = 'application';
                     $mode = ' <span title="application cache">App</span>';
                     break;
-                case cache_store::MODE_SESSION:
+                case store::MODE_SESSION:
                     $modeclass = 'session';
                     $mode = ' <span title="session cache">Ses</span>';
                     break;
-                case cache_store::MODE_REQUEST:
+                case store::MODE_REQUEST:
                     $modeclass = 'request';
                     $mode = ' <span title="request cache">Req</span>';
                     break;
@@ -9109,7 +9133,7 @@ function get_performance_info() {
             $storec = 0;
             foreach ($details['stores'] as $store => $data) {
 
-                if ($storec == 0 && $store !== cache_store::STATIC_ACCEL) {
+                if ($storec == 0 && $store !== store::STATIC_ACCEL) {
                     $row[] = '';
                     $row[] = '';
                     $row[] = '';
@@ -9137,14 +9161,14 @@ function get_performance_info() {
                 $cell->attributes = ['class' => $cachestoreclass];
                 $row[] = $cell;
 
-                if ($store !== cache_store::STATIC_ACCEL) {
+                if ($store !== store::STATIC_ACCEL) {
                     // The static cache is never set.
                     $cell = new html_table_cell($data['sets']);
                     $cell->attributes = ['class' => $cachestoreclass];
                     $row[] = $cell;
 
                     if ($data['hits'] || $data['sets']) {
-                        if ($data['iobytes'] === cache_store::IO_BYTES_NOT_SUPPORTED) {
+                        if ($data['iobytes'] === store::IO_BYTES_NOT_SUPPORTED) {
                             $size = '-';
                         } else {
                             $size = display_size($data['iobytes'], 1, 'KB');
@@ -9190,7 +9214,7 @@ function get_performance_info() {
                 $storetotal['hits']   += $data['hits'];
                 $storetotal['misses'] += $data['misses'];
                 $storetotal['sets']   += $data['sets'];
-                if ($data['iobytes'] !== cache_store::IO_BYTES_NOT_SUPPORTED) {
+                if ($data['iobytes'] !== store::IO_BYTES_NOT_SUPPORTED) {
                     $storetotals[$store]['iobytes'] += $data['iobytes'];
                     $storetotal['iobytes'] += $data['iobytes'];
                 }

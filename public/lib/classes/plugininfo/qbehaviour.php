@@ -23,8 +23,11 @@
  */
 namespace core\plugininfo;
 
-use core_plugin_manager;
-use moodle_url;
+use core\context\system;
+use core\plugin_manager;
+use core\url;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\part_of_admin_tree;
 
 /**
  * Class for question behaviours.
@@ -40,7 +43,7 @@ class qbehaviour extends base {
      * @return array|null of enabled plugins $pluginname=>$pluginname, null means unknown
      */
     public static function get_enabled_plugins() {
-        $plugins = core_plugin_manager::instance()->get_installed_plugins('qbehaviour');
+        $plugins = plugin_manager::instance()->get_installed_plugins('qbehaviour');
         if (!$plugins) {
             return array();
         }
@@ -82,7 +85,7 @@ class qbehaviour extends base {
             add_to_config_log('disabledbehaviours', $oldvalue, $new, 'question');
             set_config('disabledbehaviours', $new, 'question');
             // Reset caches.
-            \core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
         }
 
         return $haschanged;
@@ -138,7 +141,7 @@ class qbehaviour extends base {
      * @return moodle_url
      */
     public static function get_manage_url() {
-        return new moodle_url('/admin/qbehaviours.php');
+        return new url('/admin/qbehaviours.php');
     }
 
     #[\Override]
@@ -147,7 +150,7 @@ class qbehaviour extends base {
     }
 
     #[\Override]
-    public function load_settings(\part_of_admin_tree $adminroot, $parentnodename, $hassiteconfig) {
+    public function load_settings(part_of_admin_tree $adminroot, $parentnodename, $hassiteconfig) {
         $ADMIN = $adminroot; // May be used in settings.php.
 
         if (!$this->is_installed_and_upgraded()) {
@@ -157,12 +160,12 @@ class qbehaviour extends base {
         $section = $this->get_settings_section_name();
 
         $settings = null;
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         if (
             ($hassiteconfig || has_capability('moodle/question:config', $systemcontext)) &&
             file_exists($this->full_path('settings.php'))
         ) {
-            $settings = new \admin_settingpage(
+            $settings = new settingpage(
                 $section,
                 $this->displayname,
                 'moodle/question:config',

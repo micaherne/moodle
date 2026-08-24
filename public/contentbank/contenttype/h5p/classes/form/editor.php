@@ -26,6 +26,9 @@ namespace contenttype_h5p\form;
 
 use contenttype_h5p\content;
 use contenttype_h5p\contenttype;
+use core\context;
+use core\exception\moodle_exception;
+use core\url;
 use core_contentbank\form\edit_content;
 use core_h5p\api;
 use core_h5p\editor as h5peditor;
@@ -63,8 +66,8 @@ class editor extends edit_content {
         $library = optional_param('library', null, PARAM_TEXT);
 
         if (empty($id) && empty($library)) {
-            $returnurl = new \moodle_url('/contentbank/index.php', ['contextid' => $this->_customdata['contextid']]);
-            throw new \moodle_exception('invalidcontentid', 'error', $returnurl);
+            $returnurl = new url('/contentbank/index.php', ['contextid' => $this->_customdata['contextid']]);
+            throw new moodle_exception('invalidcontentid', 'error', $returnurl);
         }
 
         $this->h5peditor = new h5peditor();
@@ -154,7 +157,7 @@ class editor extends edit_content {
             // The initial name of the content is the title of the H5P content.
             $cbrecord = new stdClass();
             $cbrecord->name = json_decode($data->h5pparams)->metadata->title;
-            $context = \context::instance_by_id($data->contextid, MUST_EXIST);
+            $context = context::instance_by_id($data->contextid, MUST_EXIST);
             // Create entry in content bank.
             $contenttype = new contenttype($context);
             $newcontent = $contenttype->create_content($cbrecord);

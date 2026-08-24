@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\navigation\navigation_node;
+use core\navigation\settings_navigation;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -32,7 +36,7 @@ defined('MOODLE_INTERNAL') || die;
  */
 function booktool_importhtml_extend_settings_navigation(settings_navigation $settings, navigation_node $node) {
     if (has_capability('booktool/importhtml:import', $settings->get_page()->cm->context)) {
-        $url = new moodle_url('/mod/book/tool/importhtml/index.php', array('id' => $settings->get_page()->cm->id));
+        $url = new url('/mod/book/tool/importhtml/index.php', array('id' => $settings->get_page()->cm->id));
         $node->add(get_string('import', 'booktool_importhtml'), $url, navigation_node::TYPE_SETTING, null, 'importchapter', null);
     }
 }

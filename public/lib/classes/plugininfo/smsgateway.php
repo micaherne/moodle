@@ -16,8 +16,10 @@
 
 namespace core\plugininfo;
 
-use core_plugin_manager;
-use moodle_url;
+use core\plugin_manager;
+use core\url;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\part_of_admin_tree;
 
 /**
  * SMS gateway subplugin info class.
@@ -39,7 +41,7 @@ class smsgateway extends base {
 
     #[\Override]
     public function load_settings(
-        \part_of_admin_tree $adminroot,
+        part_of_admin_tree $adminroot,
         $parentnodename,
         $hassiteconfig,
     ): void {
@@ -60,7 +62,7 @@ class smsgateway extends base {
 
         $settings = null;
         if (file_exists($this->full_path('settings.php'))) {
-            $settings = new \admin_settingpage($section, $this->displayname, 'moodle/site:config', $this->is_enabled() === false);
+            $settings = new settingpage($section, $this->displayname, 'moodle/site:config', $this->is_enabled() === false);
             include($this->full_path('settings.php')); // This may also set $settings to null.
         }
         if ($settings) {
@@ -69,13 +71,13 @@ class smsgateway extends base {
     }
 
     #[\Override]
-    public static function get_manage_url(): moodle_url {
-        return new moodle_url('/sms/sms_gateways.php');
+    public static function get_manage_url(): url {
+        return new url('/sms/sms_gateways.php');
     }
 
     #[\Override]
     public static function get_enabled_plugins(): ?array {
-        $pluginmanager = core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $plugins = $pluginmanager->get_installed_plugins('smsgateway');
 
         if (!$plugins) {

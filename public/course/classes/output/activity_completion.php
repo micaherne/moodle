@@ -16,15 +16,15 @@
 
 namespace core_course\output;
 
-use cm_info;
+use core_course\cm_info;
 use core_availability\info;
 use core_completion\cm_completion_details;
-use core_user;
+use core\user;
 use core_user\fields;
-use renderable;
-use renderer_base;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use templatable;
+use core\output\templatable;
 
 /**
  * The activity completion renderable class.
@@ -103,7 +103,7 @@ class activity_completion implements renderable, templatable {
         $overrideby = $this->cmcompletion->overridden_by();
         if (!empty($overrideby)) {
             $userfields = fields::for_name();
-            $overridebyrecord = core_user::get_user($overrideby, 'id ' . $userfields->get_sql()->selects, MUST_EXIST);
+            $overridebyrecord = user::get_user($overrideby, 'id ' . $userfields->get_sql()->selects, MUST_EXIST);
             return fullname($overridebyrecord);
         }
         return '';

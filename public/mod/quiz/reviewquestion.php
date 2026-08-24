@@ -23,6 +23,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\output\action_link;
+use core\output\user_picture;
+use core\url;
 use mod_quiz\output\attempt_summary_information;
 
 require_once(__DIR__ . '/../../config.php');
@@ -33,9 +37,9 @@ $slot = required_param('slot', PARAM_INT);
 $seq = optional_param('step', null, PARAM_INT);
 $cmid = optional_param('cmid', null, PARAM_INT);
 
-$baseurl = new moodle_url('/mod/quiz/reviewquestion.php',
+$baseurl = new url('/mod/quiz/reviewquestion.php',
         ['attempt' => $attemptid, 'slot' => $slot]);
-$currenturl = new moodle_url($baseurl);
+$currenturl = new url($baseurl);
 if (!is_null($seq)) {
     $currenturl->param('step', $seq);
 }
@@ -85,7 +89,7 @@ $summary->set_caption(get_string('summaryofattempt', 'quiz'));
 $userpicture = new user_picture($student);
 $userpicture->courseid = $attemptobj->get_courseid();
 $summary->add_item('user', $userpicture,
-    new action_link(new moodle_url('/user/view.php', ['id' => $student->id, 'course' => $attemptobj->get_courseid()]),
+    new action_link(new url('/user/view.php', ['id' => $student->id, 'course' => $attemptobj->get_courseid()]),
         fullname($student, true)));
 
 // Quiz name.

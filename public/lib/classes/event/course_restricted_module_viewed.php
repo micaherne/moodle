@@ -16,6 +16,8 @@
 
 namespace core\event;
 
+use core\url;
+
 /**
  * Restricted module viewed event class.
  *
@@ -62,6 +64,6 @@ class course_restricted_module_viewed extends \core\event\course_module_viewed {
      */
     public function get_url() {
         $cm = get_coursemodule_from_id(null, $this->contextinstanceid, 0, false, MUST_EXIST);
-        return new \moodle_url("/mod/$cm->modname/view.php", ['id' => $this->contextinstanceid]);
+        return new url("/mod/$cm->modname/view.php", ['id' => $this->contextinstanceid]);
     }
 }

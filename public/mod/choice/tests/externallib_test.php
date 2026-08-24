@@ -16,6 +16,11 @@
 
 namespace mod_choice;
 
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\exception\required_capability_exception;
+use core\url;
 use core_external\external_api;
 use mod_choice_external;
 
@@ -248,14 +253,14 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             mod_choice_external::get_choice_results($separatechoice->id, $group2->id);
             $this->fail('Exception expected due to not visible group.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('notingroup', $e->errorcode);
         }
 
         try {
             mod_choice_external::get_choice_results($separatechoice->id, 0); // All participants also throws error.
             $this->fail('Exception expected due to not visible group.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('notingroup', $e->errorcode);
         }
 
@@ -273,7 +278,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             mod_choice_external::get_choice_results($separatechoice->id, $group1->id);
             $this->fail('Exception expected due to not visible group.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('notingroup', $e->errorcode);
         }
 
@@ -334,7 +339,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             mod_choice_external::get_choice_results($separatechoice->id, 0);
             $this->fail('Exception expected due to not visible group.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('notingroup', $e->errorcode);
         }
     }
@@ -498,14 +503,14 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // Setup test data.
         $course = $this->getDataGenerator()->create_course();
         $choice = $this->getDataGenerator()->create_module('choice', array('course' => $course->id));
-        $context = \context_module::instance($choice->cmid);
+        $context = module::instance($choice->cmid);
         $cm = get_coursemodule_from_instance('choice', $choice->id);
 
         // Test invalid instance id.
         try {
             mod_choice_external::view_choice(0);
             $this->fail('Exception expected due to invalid mod_choice instance id.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('invalidcoursemodule', $e->errorcode);
         }
 
@@ -515,7 +520,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             mod_choice_external::view_choice($choice->id);
             $this->fail('Exception expected due to not enrolled user.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('requireloginerror', $e->errorcode);
         }
 
@@ -536,7 +541,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_choice\event\course_module_viewed', $event);
         $this->assertEquals($context, $event->get_context());
-        $moodlechoice = new \moodle_url('/mod/choice/view.php', array('id' => $cm->id));
+        $moodlechoice = new url('/mod/choice/view.php', array('id' => $cm->id));
         $this->assertEquals($moodlechoice, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -598,7 +603,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Now, prohibit capabilities.
         $this->setUser($student1);
-        $contextcourse1 = \context_course::instance($course1->id);
+        $contextcourse1 = course::instance($course1->id);
         // Prohibit capability = mod:choice:choose on Course1 for students.
         assign_capability('mod/choice:choose', CAP_PROHIBIT, $studentrole->id, $contextcourse1->id);
         accesslib_clear_all_caches_for_unit_testing();
@@ -646,7 +651,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             mod_choice_external::delete_choice_responses($choice->id, array($myresponses[0], $myresponses[0]));
             $this->fail('Exception expected due to missing permissions.');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             $this->assertEquals('nopermissions', $e->errorcode);
         }
 
@@ -656,7 +661,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             mod_choice_external::delete_choice_responses($choice->id, array($myresponses[0], $myresponses[1]));
             $this->fail('Exception expected due to expired choice.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('expired', $e->errorcode);
         }
 

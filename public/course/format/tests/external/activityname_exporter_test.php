@@ -16,6 +16,7 @@
 
 namespace core_courseformat\external;
 
+use core\context\system;
 use core_courseformat\output\local\overview\overviewtable;
 
 /**
@@ -50,7 +51,7 @@ final class activityname_exporter_test extends \advanced_testcase {
 
         $source = new \core_courseformat\output\local\overview\activityname($cm);
 
-        $exporter = new activityname_exporter($source, ['context' => \context_system::instance()]);
+        $exporter = new activityname_exporter($source, ['context' => system::instance()]);
         $data = $exporter->export($renderer);
 
         $this->assertObjectHasProperty('activityname', $data);
@@ -100,7 +101,7 @@ final class activityname_exporter_test extends \advanced_testcase {
         $source = new \core_courseformat\output\local\overview\activityname($cm);
         $source->set_nogroupserror(true);
 
-        $exporter = new activityname_exporter($source, ['context' => \context_system::instance()]);
+        $exporter = new activityname_exporter($source, ['context' => system::instance()]);
         $data = $exporter->export($renderer);
 
         $expected = [

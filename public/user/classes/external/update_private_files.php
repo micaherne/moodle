@@ -16,12 +16,13 @@
 
 namespace core_user\external;
 
+use core\exception\moodle_exception;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_value;
 use core_external\external_warnings;
-use context_user;
+use core\context\user;
 
 /**
  * Updates current user private files.
@@ -61,12 +62,12 @@ class update_private_files extends external_api {
         ]);
         $warnings = [];
 
-        $usercontext = context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         self::validate_context($usercontext);
 
         $fs = get_file_storage();
         if (empty($fs->get_area_files($usercontext->id, 'user', 'draft', $params['draftitemid']))) {
-            throw new \moodle_exception('Invalid draft item id.');
+            throw new moodle_exception('Invalid draft item id.');
         }
 
         // Data structure for the draft item id.

@@ -25,6 +25,7 @@
 
 namespace cachestore_session\privacy;
 
+use core\context;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -86,7 +87,7 @@ class provider implements
      *
      * @param \context $context A user context.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
     }
 
     /**

@@ -16,10 +16,11 @@
 
 namespace block_site_main_menu\output;
 
+use core\output\renderer_base;
 use core_courseformat\base as courseformat;
-use renderable;
-use section_info;
-use templatable;
+use core\output\renderable;
+use core_course\section_info;
+use core\output\templatable;
 
 /**
  * Class mainsection
@@ -50,7 +51,7 @@ class mainsection implements renderable, templatable {
      * @param \renderer_base $output
      * @return array
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         $format = $this->format;
         $course = $format->get_course();
         $section = $this->section;

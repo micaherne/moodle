@@ -15,6 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace core\output;
+use core\context\course;
+use core\context\module;
+use core\url;
 use ReflectionMethod;
 
 /**
@@ -45,11 +48,11 @@ final class participants_action_bar_test extends \advanced_testcase {
             'course' => $course->id
         ]);
         if ($type == 'course') {
-            $context = \context_course::instance($course->id);
-            $url = new \moodle_url('/course/view.php', ['id' => $course->id]);
+            $context = course::instance($course->id);
+            $url = new url('/course/view.php', ['id' => $course->id]);
         } else {
-            $url = new \moodle_url('/mod/assign/view.php', ['id' => $module->id]);
-            $context = \context_module::instance($module->cmid);
+            $url = new url('/mod/assign/view.php', ['id' => $module->id]);
+            $context = module::instance($module->cmid);
             $cm = get_coursemodule_from_instance('assign', $module->id, $course->id);
             $PAGE->set_cm($cm);
         }

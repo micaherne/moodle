@@ -17,7 +17,7 @@
 namespace core_courseformat\external;
 
 use core\external\exporter;
-use renderer_base;
+use core\output\renderer_base;
 
 /**
  * The overviewitem data exporter for Webservice.

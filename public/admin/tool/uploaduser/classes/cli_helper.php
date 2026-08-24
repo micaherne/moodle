@@ -26,6 +26,7 @@ namespace tool_uploaduser;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\exception\moodle_exception;
 use tool_uploaduser\local\cli_progress_tracker;
 
 require_once($CFG->dirroot.'/user/profile/lib.php');
@@ -199,7 +200,7 @@ class cli_helper {
         if (!PHPUNIT_TEST) {
             die($errorcode);
         } else {
-            throw new \moodle_exception('CLI script finished with error code '.$errorcode);
+            throw new moodle_exception('CLI script finished with error code '.$errorcode);
         }
     }
 

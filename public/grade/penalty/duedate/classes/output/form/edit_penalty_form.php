@@ -23,7 +23,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/formslib.php');
 require_once(__DIR__ . '/../../../lib.php');
 
-use action_menu_link;
+use core\output\action_menu\link;
 use core\output\action_menu;
 use core\output\html_writer;
 use core\output\pix_icon;
@@ -309,7 +309,7 @@ class edit_penalty_form extends moodleform {
         $menu->set_kebab_trigger();
 
         // Insert below button.
-        $menu->add(new action_menu_link(
+        $menu->add(new link(
             new url('#'),
             new pix_icon('t/add', ''),
             get_string('insertrule', 'gradepenalty_duedate'),
@@ -318,7 +318,7 @@ class edit_penalty_form extends moodleform {
         ));
 
         // Delete button.
-        $menu->add(new action_menu_link(
+        $menu->add(new link(
             new url('#'),
             new pix_icon('i/trash', ''),
             get_string('delete'),

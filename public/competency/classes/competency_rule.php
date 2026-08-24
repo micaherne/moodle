@@ -25,7 +25,7 @@
 namespace core_competency;
 defined('MOODLE_INTERNAL') || die();
 
-use coding_exception;
+use core\exception\coding_exception;
 
 /**
  * Competency rule base abstract class.

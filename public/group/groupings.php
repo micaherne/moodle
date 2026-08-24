@@ -23,6 +23,13 @@
  * @package core_group
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\url;
+use core_table\output\html_table;
+
 require_once '../config.php';
 require_once $CFG->dirroot.'/group/lib.php';
 
@@ -31,11 +38,11 @@ $courseid = required_param('id', PARAM_INT);
 $PAGE->set_url('/group/groupings.php', array('id'=>$courseid));
 
 if (!$course = $DB->get_record('course', array('id'=>$courseid))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 
 require_login($course);
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 require_capability('moodle/course:managegroups', $context);
 
 $strgrouping     = get_string('grouping', 'group');
@@ -50,7 +57,7 @@ $struses         = get_string('activities');
 $strparticipants = get_string('participants');
 $strmanagegrping = get_string('showgroupsingrouping', 'group');
 
-navigation_node::override_active_url(new moodle_url('/group/index.php', array('id'=>$courseid)));
+navigation_node::override_active_url(new url('/group/index.php', array('id'=>$courseid)));
 $PAGE->navbar->add($strgroupings);
 
 /// Print header
@@ -83,18 +90,18 @@ if ($groupings = $DB->get_records('groupings', array('courseid'=>$course->id), '
         }
         $line[2] = $DB->count_records('course_modules', array('course'=>$course->id, 'groupingid'=>$grouping->id));
 
-        $url = new moodle_url('/group/grouping.php', array('id' => $grouping->id));
+        $url = new url('/group/grouping.php', array('id' => $grouping->id));
         $buttons  = html_writer::link($url, $OUTPUT->pix_icon('t/edit', $stredit, 'core',
                 array('class' => 'iconsmall')), array('title' => $stredit));
         if (empty($grouping->idnumber) || $canchangeidnumber) {
             // It's only possible to delete groups without an idnumber unless the user has the changeidnumber capability.
-            $url = new moodle_url('/group/grouping.php', array('id' => $grouping->id, 'delete' => 1));
+            $url = new url('/group/grouping.php', array('id' => $grouping->id, 'delete' => 1));
             $buttons .= html_writer::link($url, $OUTPUT->pix_icon('t/delete', $strdelete, 'core',
                     array('class' => 'iconsmall')), array('title' => $strdelete));
         } else {
             $buttons .= $OUTPUT->spacer();
         }
-        $url = new moodle_url('/group/assign.php', array('id' => $grouping->id));
+        $url = new url('/group/assign.php', array('id' => $grouping->id));
         $buttons .= html_writer::link($url, $OUTPUT->pix_icon('t/groups', $strmanagegrping, 'core',
                 array('class' => 'iconsmall')), array('title' => $strmanagegrping));
 
@@ -112,7 +119,7 @@ $table->data  = $data;
 echo html_writer::table($table);
 
 echo $OUTPUT->container_start('buttons mt-3');
-echo $OUTPUT->single_button(new moodle_url('grouping.php', array('courseid'=>$courseid)), $srtnewgrouping);
+echo $OUTPUT->single_button(new url('grouping.php', array('courseid'=>$courseid)), $srtnewgrouping);
 echo $OUTPUT->container_end();
 
 echo $OUTPUT->footer();

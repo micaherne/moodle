@@ -16,13 +16,15 @@
 
 namespace mod_quiz;
 
-use coding_exception;
-use context_module;
+use core\exception\coding_exception;
+use core\context\module as context_module;
 use core\context;
 use core\context\module;
 use core\exception\invalid_parameter_exception;
 use core\exception\moodle_exception;
 use core\output\inplace_editable;
+use core\url;
+use core_course\cm_info;
 use core_question\local\bank\version_options;
 use mod_quiz\event\quiz_grade_item_created;
 use mod_quiz\event\quiz_grade_item_deleted;
@@ -192,7 +194,7 @@ class structure {
      * @param \context $context
      * @return \core\output\inplace_editable
      */
-    public function make_slot_display_number_in_place_editable(int $slotid, \context $context): \core\output\inplace_editable {
+    public function make_slot_display_number_in_place_editable(int $slotid, context $context): \core\output\inplace_editable {
         $slot = $this->get_slot_by_id($slotid);
         $editable = has_capability('mod/quiz:manage', $context) && $this->can_display_number_be_customised($slot->slot);
 
@@ -325,7 +327,7 @@ class structure {
             return question_has_capability_on($this->get_question_by_id($slot->questionid), 'use');
         } else {
             // Random question.
-            $context = \context::instance_by_id($slot->contextid);
+            $context = context::instance_by_id($slot->contextid);
             return has_capability('moodle/question:useall', $context);
         }
     }
@@ -353,7 +355,7 @@ class structure {
      *
      * @return context_module the context of the quiz that this is the structure of.
      */
-    public function get_context(): context_module {
+    public function get_context(): module {
         return $this->quizobj->get_context();
     }
 
@@ -405,8 +407,8 @@ class structure {
         if (!$this->can_be_edited()) {
             $reportlink = quiz_attempt_summary_link_to_reports($this->get_quiz(),
                     $this->quizobj->get_cm(), $this->quizobj->get_context());
-            throw new \moodle_exception('cannoteditafterattempts', 'quiz',
-                    new \moodle_url('/mod/quiz/edit.php', ['cmid' => $this->get_cmid()]), $reportlink);
+            throw new moodle_exception('cannoteditafterattempts', 'quiz',
+                    new url('/mod/quiz/edit.php', ['cmid' => $this->get_cmid()]), $reportlink);
         }
     }
 
@@ -845,7 +847,7 @@ class structure {
 
         $movingslot = $this->get_slot_by_id($idmove);
         if (empty($movingslot)) {
-            throw new \moodle_exception('Bad slot ID ' . $idmove);
+            throw new moodle_exception('Bad slot ID ' . $idmove);
         }
         $movingslotnumber = (int) $movingslot->slot;
 
@@ -1875,7 +1877,7 @@ class structure {
      */
     private function get_used_category_description(stdClass $qcategory, bool $includesubcategories): string {
 
-        $context = \context::instance_by_id($qcategory->contextid);
+        $context = context::instance_by_id($qcategory->contextid);
 
         if ($context->contextlevel != CONTEXT_MODULE) {
             throw new coding_exception('Unsupported context.');
@@ -1913,7 +1915,7 @@ class structure {
               JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = ?
              WHERE c.id {$insql}
         ";
-        $params = array_merge([context_module::LEVEL], $inparams);
+        $params = array_merge([module::LEVEL], $inparams);
 
         $this->questionsources = $DB->get_records_sql($sql, $params);
     }
@@ -1934,7 +1936,7 @@ class structure {
             return null;
         }
 
-        $cminfo = \cm_info::create($this->questionsources[$this->questions[$questionid]->contextid]);
+        $cminfo = cm_info::create($this->questionsources[$this->questions[$questionid]->contextid]);
 
         return (object) [
             'cminfo' => $cminfo,

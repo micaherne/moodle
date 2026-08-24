@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+
 define('NO_OUTPUT_BUFFERING', true);
 
 require('../../config.php');
@@ -44,6 +46,6 @@ echo $OUTPUT->heading(get_string('pluginname', 'report_security'));
 echo $table->render($OUTPUT);
 echo $OUTPUT->footer();
 
-$event = \report_security\event\report_viewed::create(['context' => context_system::instance()]);
+$event = \report_security\event\report_viewed::create(['context' => system::instance()]);
 $event->trigger();
 

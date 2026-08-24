@@ -24,6 +24,14 @@
 
 namespace tool_analytics\output;
 
+use core\context;
+use core\context\system;
+use core\navigation\breadcrumb_navigation_node;
+use core\navigation\navigation_node;
+use core\output\renderer_base;
+use core\output\single_select;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -67,11 +75,11 @@ class helper {
      * @param \context|null $context Defaults to context_system
      * @return null
      */
-    public static function set_navbar(string $title, \moodle_url $url, ?\context $context = null) {
+    public static function set_navbar(string $title, url $url, ?context $context = null) {
         global $PAGE;
 
         if (!$context) {
-            $context = \context_system::instance();
+            $context = system::instance();
         }
 
         $PAGE->set_context($context);
@@ -79,15 +87,15 @@ class helper {
         $PAGE->set_secondary_active_tab('siteadminnode');
         $PAGE->set_primary_active_tab('siteadminnode');
 
-        if ($siteadmin = $PAGE->settingsnav->find('root', \navigation_node::TYPE_SITE_ADMIN)) {
+        if ($siteadmin = $PAGE->settingsnav->find('root', navigation_node::TYPE_SITE_ADMIN)) {
             $PAGE->navbar->add($siteadmin->get_content(), $siteadmin->action(),
-                \breadcrumb_navigation_node::TYPE_SITE_ADMIN, null, 'root');
+                breadcrumb_navigation_node::TYPE_SITE_ADMIN, null, 'root');
         }
 
-        if ($analytics = $PAGE->settingsnav->find('analytics', \navigation_node::TYPE_SETTING)) {
+        if ($analytics = $PAGE->settingsnav->find('analytics', navigation_node::TYPE_SETTING)) {
             $PAGE->navbar->add($analytics->get_content(), $analytics->action());
         }
-        if ($analyticmodels = $PAGE->settingsnav->find('analyticmodels', \navigation_node::TYPE_SETTING)) {
+        if ($analyticmodels = $PAGE->settingsnav->find('analyticmodels', navigation_node::TYPE_SETTING)) {
             $PAGE->navbar->add($analyticmodels->get_content(), $analyticmodels->action());
         }
         $PAGE->navbar->add($title);
@@ -107,7 +115,7 @@ class helper {
     public static function reset_page() {
         global $PAGE;
         $PAGE->reset_theme_and_output();
-        $PAGE->set_context(\context_system::instance());
+        $PAGE->set_context(system::instance());
     }
     /**
      * Convert a list of contexts to an associative array where the value is the context name.
@@ -120,12 +128,12 @@ class helper {
      * @param  bool             $shortentext
      * @return \stdClass
      */
-    public static function prediction_context_selector(array $contexts, \moodle_url $url, \renderer_base $output,
+    public static function prediction_context_selector(array $contexts, url $url, renderer_base $output,
             ?int $selected = null, ?bool $includeall = false, ?bool $shortentext = true): \stdClass {
 
         foreach ($contexts as $contextid => $unused) {
             // We prepare this to be used as single_select template options.
-            $context = \context::instance_by_id($contextid);
+            $context = context::instance_by_id($contextid);
 
             // Special name for system level predictions as showing "System is not visually nice".
             if ($contextid == SYSCONTEXTID) {
@@ -152,7 +160,7 @@ class helper {
         if (!$selected) {
             $selected = '';
         }
-        $singleselect = new \single_select($url, 'contextid', $contexts, $selected, $nothing);
+        $singleselect = new single_select($url, 'contextid', $contexts, $selected, $nothing);
         return $singleselect->export_for_template($output);
     }
 }

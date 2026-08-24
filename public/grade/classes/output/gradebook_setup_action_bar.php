@@ -16,8 +16,11 @@
 
 namespace core_grades\output;
 
-use moodle_url;
-use html_writer;
+use core\output\action_menu;
+use core\output\action_menu\link_secondary;
+use core\output\renderer_base;
+use core\url;
+use core\output\html_writer;
 
 /**
  * Renderable class for the action bar elements in the gradebook setup pages.
@@ -43,7 +46,7 @@ class gradebook_setup_action_bar extends action_bar {
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         global $CFG;
 
         if ($this->context->contextlevel !== CONTEXT_COURSE) {
@@ -52,13 +55,13 @@ class gradebook_setup_action_bar extends action_bar {
         $courseid = $this->context->instanceid;
         // Get the data used to output the general navigation selector.
         $generalnavselector = new general_action_bar($this->context,
-            new moodle_url('/grade/edit/tree/index.php', ['id' => $courseid]), 'settings', 'setup');
+            new url('/grade/edit/tree/index.php', ['id' => $courseid]), 'settings', 'setup');
         $data = $generalnavselector->export_for_template($output);
         $actions = [];
-        $additemurl = new moodle_url('#');
+        $additemurl = new url('#');
 
         // Add a button to the action bar dropdown with a link to the 'add grade item' modal.
-        $actions[] = new \action_menu_link_secondary(
+        $actions[] = new link_secondary(
             $additemurl,
             null,
             get_string('additem', 'grades'),
@@ -73,7 +76,7 @@ class gradebook_setup_action_bar extends action_bar {
         // If outcomes are enabled, add a button to the action bar dropdown with a link to the 'add outcome item' modal.
         if (!empty($CFG->enableoutcomes) && count(\grade_outcome::fetch_all_available($courseid)) > 0) {
             // Add a button to the action bar dropdown with a link to the 'add outcome item' modal.
-            $actions[] = new \action_menu_link_secondary(
+            $actions[] = new link_secondary(
                 $additemurl,
                 null,
                 get_string('addoutcomeitem', 'grades'),
@@ -87,7 +90,7 @@ class gradebook_setup_action_bar extends action_bar {
         }
 
         // Add a button to the action bar dropdown with a link to the 'add category' modal.
-        $actions[] = new \action_menu_link_secondary(
+        $actions[] = new link_secondary(
             $additemurl,
             null,
             get_string('addcategory', 'grades'),
@@ -99,7 +102,7 @@ class gradebook_setup_action_bar extends action_bar {
             ]
         );
 
-        $addmenu = new \action_menu($actions);
+        $addmenu = new action_menu($actions);
         $addmenu->set_menu_trigger(get_string('add'), 'btn fw-bold');
         $data['addmenu'] = $addmenu->export_for_template($output);
 

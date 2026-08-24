@@ -14,6 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+use core\context\system;
+use core\context\user as context_user;
+use core\context_helper;
+use core\exception\coding_exception;
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
+use core\output\user_picture;
+use core\user as core_user;
 use core_external\external_description;
 use core_external\external_value;
 use core_external\external_format_value;
@@ -132,7 +141,7 @@ class core_user_external extends \core_external\external_api {
         require_once($CFG->dirroot."/user/profile/lib.php"); // Required for customfields related function.
 
         // Ensure the current user is allowed to run this function.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         require_capability('moodle/user:create', $context);
 
@@ -324,7 +333,7 @@ class core_user_external extends \core_external\external_api {
         require_once($CFG->dirroot."/user/lib.php");
 
         // Ensure the current user is allowed to run this function.
-        $context = context_system::instance();
+        $context = system::instance();
         require_capability('moodle/user:delete', $context);
         self::validate_context($context);
 
@@ -404,7 +413,7 @@ class core_user_external extends \core_external\external_api {
             $userid = $USER->id;
         }
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         self::validate_context($systemcontext);
         $params = array(
             'userid' => $userid,
@@ -556,7 +565,7 @@ class core_user_external extends \core_external\external_api {
         require_once($CFG->dirroot.'/user/editlib.php');
 
         // Ensure the current user is allowed to run this function.
-        $context = context_system::instance();
+        $context = system::instance();
         require_capability('moodle/user:update', $context);
         self::validate_context($context);
 
@@ -775,7 +784,7 @@ class core_user_external extends \core_external\external_api {
         // Retrieve the users.
         $users = $DB->get_records_list('user', $field, $cleanedvalues, 'id');
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         // Finally retrieve each users information.
@@ -1055,7 +1064,7 @@ class core_user_external extends \core_external\external_api {
             }
             context_helper::preload_from_record($user);
             $course = $courses[$courseids[$user->id]];
-            $context = context_course::instance($courseids[$user->id], IGNORE_MISSING);
+            $context = course::instance($courseids[$user->id], IGNORE_MISSING);
             self::validate_context($context);
             if ($userarray = \core\user::get_user_details($user, $course)) {
                 $userarray['initials'] = core_user::get_initials($user);
@@ -1387,7 +1396,7 @@ class core_user_external extends \core_external\external_api {
 
         $params = self::validate_parameters(self::remove_user_device_parameters(), array('uuid' => $uuid, 'appid' => $appid));
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         // Warnings array, it can be empty at the end but is mandatory.
@@ -1467,9 +1476,9 @@ class core_user_external extends \core_external\external_api {
         $course = get_course($params['courseid']);
 
         if ($course->id == SITEID) {
-            $context = context_system::instance();
+            $context = system::instance();
         } else {
-            $context = context_course::instance($course->id);
+            $context = course::instance($course->id);
         }
         self::validate_context($context);
 
@@ -1547,9 +1556,9 @@ class core_user_external extends \core_external\external_api {
         core_user::require_active_user($user);
 
         if ($course->id == SITEID) {
-            $coursecontext = context_system::instance();;
+            $coursecontext = system::instance();;
         } else {
-            $coursecontext = context_course::instance($course->id);
+            $coursecontext = course::instance($course->id);
         }
         self::validate_context($coursecontext);
 
@@ -1630,7 +1639,7 @@ class core_user_external extends \core_external\external_api {
         $preferences = array();
         $warnings = array();
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         if (empty($params['name'])) {
@@ -1727,7 +1736,7 @@ class core_user_external extends \core_external\external_api {
             )
         );
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         if (!empty($CFG->disableuserimages)) {
@@ -1830,7 +1839,7 @@ class core_user_external extends \core_external\external_api {
         $warnings = array();
         $saved = array();
 
-        $context = context_system::instance();
+        $context = system::instance();
         $PAGE->set_context($context);
 
         $userscache = array();
@@ -1933,7 +1942,7 @@ class core_user_external extends \core_external\external_api {
 
         $warnings = array();
 
-        $context = context_system::instance();
+        $context = system::instance();
         try {
             // We expect an exception here since the user didn't agree the site policy yet.
             self::validate_context($context);
@@ -2016,7 +2025,7 @@ class core_user_external extends \core_external\external_api {
         $params = self::validate_parameters(self::get_private_files_info_parameters(), array('userid' => $userid));
         $warnings = array();
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         if (empty($params['userid']) || $params['userid'] == $USER->id) {

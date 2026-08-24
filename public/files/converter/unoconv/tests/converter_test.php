@@ -16,6 +16,8 @@
 
 namespace fileconverter_unoconv;
 
+use core\context\system;
+
 /**
  * A set of tests for some of the unoconv functionality within Moodle.
  *
@@ -62,7 +64,7 @@ final class converter_test extends \advanced_testcase {
 
         // Mock the file to be converted.
         $filerecord = [
-            'contextid' => \context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'component' => 'test',
             'filearea'  => 'unittest',
             'itemid'    => 0,

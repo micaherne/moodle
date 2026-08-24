@@ -23,8 +23,8 @@
  */
 namespace core\content\export\exporters;
 
-use coding_exception;
-use context;
+use core\exception\coding_exception;
+use core\context;
 use core\content\export\zipwriter;
 use core_component;
 use stdClass;

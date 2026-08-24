@@ -16,9 +16,12 @@
 
 namespace quiz_overview;
 
+use core\context\module;
+use core\url;
 use core_question\local\bank\question_version_status;
 use mod_quiz\external\submit_question_version;
 use mod_quiz\quiz_attempt;
+use mod_quiz\tests\question_helper_test_trait;
 use question_engine;
 use mod_quiz\quiz_settings;
 use mod_quiz\local\reports\attempts_report;
@@ -45,7 +48,7 @@ require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.ph
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class report_test extends \advanced_testcase {
-    use \quiz_question_helper_test_trait;
+    use question_helper_test_trait;
 
     /**
      * Data provider for test_report_sql.
@@ -185,7 +188,7 @@ final class report_test extends \advanced_testcase {
 
         // Actually getting the SQL to run is quite hard. Do a minimal set up of
         // some objects.
-        $context = \context_module::instance($quiz->cmid);
+        $context = module::instance($quiz->cmid);
         $cm = get_coursemodule_from_id('quiz', $quiz->cmid);
         $qmsubselect = quiz_report_qm_filter_select($quiz);
         $studentsjoins = get_enrolled_with_capabilities_join($context, '',
@@ -206,7 +209,7 @@ final class report_test extends \advanced_testcase {
         $table->download = $isdownloading; // Cannot call the is_downloading API, because it gives errors.
         $table->define_columns(['fullname']);
         $table->sortable(true, 'uniqueid');
-        $table->define_baseurl(new \moodle_url('/mod/quiz/report.php'));
+        $table->define_baseurl(new url('/mod/quiz/report.php'));
         $table->setup();
 
         // Run the query.
@@ -324,7 +327,7 @@ final class report_test extends \advanced_testcase {
         $generator->enrol_user($student->id, $course->id);
         $generator->enrol_user($student->id, $course->id, null, 'self');
 
-        $context = \context_module::instance($quiz->cmid);
+        $context = module::instance($quiz->cmid);
         $cm = get_coursemodule_from_id('quiz', $quiz->cmid);
         $allowedjoins = get_enrolled_with_capabilities_join($context, '', ['mod/quiz:attempt', 'mod/quiz:reviewmyattempts']);
         $quizattemptsreport = new \testable_quiz_attempts_report();
@@ -354,7 +357,7 @@ final class report_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $quiz = $this->create_test_quiz($course);
         $cm = get_fast_modinfo($course->id)->get_cm($quiz->cmid);
-        $context = \context_module::instance($quiz->cmid);
+        $context = module::instance($quiz->cmid);
 
         /** @var core_question_generator $questiongenerator */
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');

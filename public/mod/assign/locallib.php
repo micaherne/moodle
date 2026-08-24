@@ -109,7 +109,24 @@ require_once($CFG->dirroot . '/mod/assign/renderable.php');
 require_once($CFG->dirroot . '/mod/assign/gradingtable.php');
 require_once($CFG->libdir . '/portfolio/caller.php');
 
+use core\context;
+use core\context\course;
+use core\context\module;
+use core\context_helper;
 use core\deprecation;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\exception\required_capability_exception;
+use core\output\action_link;
+use core\output\actions\confirm_action;
+use core\output\html_writer;
+use core\output\user_picture;
+use core\url;
+use core\user;
+use core_block\output\block_contents;
+use core_cache\cache;
+use core_course\cm_info;
+use core_table\flexible_table;
 use mod_assign\downloader;
 use mod_assign\event\submission_removed;
 use mod_assign\event\submission_status_updated;
@@ -287,9 +304,9 @@ class assign {
         $params['action'] = $action;
         $cm = $this->get_course_module();
         if ($cm) {
-            $currenturl = new moodle_url('/mod/assign/view.php', array('id' => $cm->id));
+            $currenturl = new url('/mod/assign/view.php', array('id' => $cm->id));
         } else {
-            $currenturl = new moodle_url('/mod/assign/index.php', array('id' => $this->get_course()->id));
+            $currenturl = new url('/mod/assign/index.php', array('id' => $this->get_course()->id));
         }
 
         $currenturl->params($params);
@@ -693,7 +710,7 @@ class assign {
         }
         // Now show the right view page.
         if ($action == 'redirect') {
-            $nextpageurl = new moodle_url('/mod/assign/view.php', $nextpageparams);
+            $nextpageurl = new url('/mod/assign/view.php', $nextpageparams);
             $messages = '';
             $messagetype = \core\output\notification::NOTIFY_INFO;
             $errors = $this->get_error_messages();
@@ -869,13 +886,13 @@ class assign {
             // Call save_settings hook for submission plugins.
             foreach ($this->submissionplugins as $plugin) {
                 if (!$this->update_plugin_instance($plugin, $formdata)) {
-                    throw new \moodle_exception($plugin->get_error());
+                    throw new moodle_exception($plugin->get_error());
                     return false;
                 }
             }
             foreach ($this->feedbackplugins as $plugin) {
                 if (!$this->update_plugin_instance($plugin, $formdata)) {
-                    throw new \moodle_exception($plugin->get_error());
+                    throw new moodle_exception($plugin->get_error());
                     return false;
                 }
             }
@@ -929,13 +946,13 @@ class assign {
 
         foreach ($this->submissionplugins as $plugin) {
             if (!$plugin->delete_instance()) {
-                throw new \moodle_exception($plugin->get_error());
+                throw new moodle_exception($plugin->get_error());
                 $result = false;
             }
         }
         foreach ($this->feedbackplugins as $plugin) {
             if (!$plugin->delete_instance()) {
-                throw new \moodle_exception($plugin->get_error());
+                throw new moodle_exception($plugin->get_error());
                 $result = false;
             }
         }
@@ -1388,7 +1405,7 @@ class assign {
             if (!empty($formdata->$enabledname)) {
                 $plugin->enable();
                 if (!$plugin->save_settings($formdata)) {
-                    throw new \moodle_exception($plugin->get_error());
+                    throw new moodle_exception($plugin->get_error());
                     return false;
                 }
             } else {
@@ -1651,13 +1668,13 @@ class assign {
         // Call save_settings hook for submission plugins.
         foreach ($this->submissionplugins as $plugin) {
             if (!$this->update_plugin_instance($plugin, $formdata)) {
-                throw new \moodle_exception($plugin->get_error());
+                throw new moodle_exception($plugin->get_error());
                 return false;
             }
         }
         foreach ($this->feedbackplugins as $plugin) {
             if (!$this->update_plugin_instance($plugin, $formdata)) {
-                throw new \moodle_exception($plugin->get_error());
+                throw new moodle_exception($plugin->get_error());
                 return false;
             }
         }
@@ -1971,7 +1988,7 @@ class assign {
         if ($this->context) {
             return $this->context->get_course_context();
         } else {
-            return context_course::instance($this->course->id);
+            return course::instance($this->course->id);
         }
     }
 
@@ -2448,7 +2465,7 @@ class assign {
                     [
                         'where' => $keywordswhere,
                         'params' => $keywordsparams,
-                    ] = \core_user::get_users_search_sql($this->context, $this->usersearch['usersearch']);
+                    ] = user::get_users_search_sql($this->context, $this->usersearch['usersearch']);
                     $additionalfilters .= " AND $keywordswhere";
                     $params = array_merge($params, $keywordsparams);
                 }
@@ -3013,7 +3030,7 @@ class assign {
                 \core\cron::setup_user($user, $course);
 
                 // Context lookups are already cached.
-                $coursecontext = context_course::instance($course->id);
+                $coursecontext = course::instance($course->id);
                 if (!is_enrolled($coursecontext, $user->id)) {
                     $courseshortname = format_string($course->shortname,
                                                      true,
@@ -3030,7 +3047,7 @@ class assign {
                 $modinfo = get_fast_modinfo($course, $user->id);
                 $cm = $modinfo->get_cm($submission->cmid);
                 // Context lookups are already cached.
-                $contextmodule = context_module::instance($cm->id);
+                $contextmodule = module::instance($cm->id);
 
                 if (!$cm->uservisible) {
                     // Hold mail notification for assignments the user cannot access until later.
@@ -3045,7 +3062,7 @@ class assign {
                     $messagetype = 'feedbackavailableanon';
                     // There's no point in having an "anonymous grader" if the notification email
                     // comes from them. Send the email from the noreply user instead.
-                    $grader = core_user::get_noreply_user();
+                    $grader = user::get_noreply_user();
                 }
 
                 $eventtype = 'assign_notification';
@@ -3107,7 +3124,7 @@ class assign {
         $newlyavailable = $DB->get_records_sql($sql, $params);
         foreach ($newlyavailable as $record) {
             $cm = get_coursemodule_from_instance('assign', $record->id, 0, false, MUST_EXIST);
-            $context = context_module::instance($cm->id);
+            $context = module::instance($cm->id);
 
             $assignment = new assign($context, null, null);
             $assignment->update_calendar($cm->id);
@@ -3626,7 +3643,7 @@ class assign {
 
         $plugin = $this->get_plugin_by_type($pluginsubtype, $plugintype);
         if (!$plugin) {
-            throw new \moodle_exception('invalidformdata', '');
+            throw new moodle_exception('invalidformdata', '');
             return;
         }
 
@@ -4017,7 +4034,7 @@ class assign {
         );
         $result = $renderer->render($header);
         $result .= $renderer->notification(get_string('nosubmission', 'mod_assign'));
-        $url = new moodle_url('/mod/assign/view.php', ['id' => $cm->id, 'action' => 'grading']);
+        $url = new url('/mod/assign/view.php', ['id' => $cm->id, 'action' => 'grading']);
         $result .= $renderer->continue_button($url);
         $result .= $this->view_footer();
         return $result;
@@ -4687,9 +4704,9 @@ class assign {
         }
 
         if (!$this->can_edit_submission($userid, $USER->id)) {
-            throw new \moodle_exception('nopermission');
+            throw new moodle_exception('nopermission');
         }
-        $user = core_user::get_user($userid, '*', MUST_EXIST);
+        $user = user::get_user($userid, '*', MUST_EXIST);
 
         $o = '';
         $header = new assign_header($this->get_instance(),
@@ -4698,11 +4715,11 @@ class assign {
                                     $this->get_course_module()->id);
         $o .= $this->get_renderer()->render($header);
 
-        $confirmurl = new moodle_url('/mod/assign/view.php', $urlparams);
+        $confirmurl = new url('/mod/assign/view.php', $urlparams);
 
         $urlparams = array('id' => $this->get_course_module()->id,
                            'action' => 'view');
-        $cancelurl = new moodle_url('/mod/assign/view.php', $urlparams);
+        $cancelurl = new url('/mod/assign/view.php', $urlparams);
 
         if ($userid == $USER->id) {
             if ($this->is_time_limit_enabled($userid)) {
@@ -4746,11 +4763,11 @@ class assign {
         $urlparams = array('id'=>$this->get_course_module()->id,
                            'action'=>'revealidentitiesconfirm',
                            'sesskey'=>sesskey());
-        $confirmurl = new moodle_url('/mod/assign/view.php', $urlparams);
+        $confirmurl = new url('/mod/assign/view.php', $urlparams);
 
         $urlparams = array('id'=>$this->get_course_module()->id,
                            'action'=>'grading');
-        $cancelurl = new moodle_url('/mod/assign/view.php', $urlparams);
+        $cancelurl = new url('/mod/assign/view.php', $urlparams);
 
         $o .= $this->get_renderer()->confirm(get_string('revealidentitiesconfirm', 'assign'),
                                              $confirmurl,
@@ -4777,7 +4794,7 @@ class assign {
         $newparams = array('id' => $this->get_course_module()->id, 'action' => $returnaction);
         $params = array_merge($newparams, $params);
 
-        $url = new moodle_url('/mod/assign/view.php', $params);
+        $url = new url('/mod/assign/view.php', $params);
         return $this->get_renderer()->single_button($url, get_string('back'), 'get');
     }
 
@@ -4874,7 +4891,7 @@ class assign {
             ]
         );
         $actionformtext = $this->get_renderer()->render($buttons);
-        $currenturl = new moodle_url('/mod/assign/view.php', ['id' => $this->get_course_module()->id, 'action' => 'grading']);
+        $currenturl = new url('/mod/assign/view.php', ['id' => $this->get_course_module()->id, 'action' => 'grading']);
         $PAGE->activityheader->set_attrs(['hidecompletion' => true]);
 
         $PAGE->requires->js_call_amd('mod_assign/user', 'init', [$currenturl->out(false)]);
@@ -5102,7 +5119,7 @@ class assign {
             $o .= $this->get_renderer()->notification($notice);
         }
 
-        $url = new moodle_url('/mod/assign/view.php', array('id'=>$this->get_course_module()->id, 'action'=>'view'));
+        $url = new url('/mod/assign/view.php', array('id'=>$this->get_course_module()->id, 'action'=>'view'));
         $o .= $this->get_renderer()->continue_button($url);
 
         $o .= $this->view_footer();
@@ -5170,7 +5187,7 @@ class assign {
 
         if ($userid == $USER->id) {
             if (!$this->can_edit_submission($userid, $USER->id)) {
-                throw new \moodle_exception('nopermission');
+                throw new moodle_exception('nopermission');
             }
             // User is editing their own submission.
             require_capability('mod/assign:submit', $this->context);
@@ -5178,7 +5195,7 @@ class assign {
         } else {
             // User is editing another user's submission.
             if (!$this->can_edit_submission($userid, $USER->id)) {
-                throw new \moodle_exception('nopermission');
+                throw new moodle_exception('nopermission');
             }
 
             $name = $this->fullname($user);
@@ -5210,7 +5227,7 @@ class assign {
         if ($timelimitenabled && !empty($submission->timestarted) && $this->get_instance()->timelimit) {
             $navbc = $this->get_timelimit_panel($submission);
             $regions = $PAGE->blocks->get_regions();
-            $bc = new \block_contents();
+            $bc = new block_contents();
             $bc->attributes['id'] = 'mod_assign_timelimit_block';
             $bc->attributes['role'] = 'navigation';
             $bc->attributes['aria-labelledby'] = 'mod_assign_timelimit_block_title';
@@ -5244,15 +5261,15 @@ class assign {
             empty($submission->timestarted)
         ) {
             // Timed assignment should always get a confirmation that the user wants to start it.
-            $confirmation = new \confirm_action(
+            $confirmation = new confirm_action(
                 get_string('confirmstart', 'assign', format_time($this->get_instance()->timelimit)),
                 null,
                 get_string('beginassignment', 'assign')
             );
             // The 'begin' flag indicates that the user is starting a timed assignment.
             $urlparams = ['id' => $this->get_course_module()->id, 'action' => 'editsubmission', 'begin' => 1];
-            $beginbutton = new \action_link(
-                new moodle_url('/mod/assign/view.php', $urlparams),
+            $beginbutton = new action_link(
+                new url('/mod/assign/view.php', $urlparams),
                 get_string('beginassignment', 'assign'),
                 $confirmation,
                 ['class' => 'btn btn-primary']
@@ -5384,7 +5401,7 @@ class assign {
             return;
         }
 
-        throw new \moodle_exception('invalidformdata', '');
+        throw new moodle_exception('invalidformdata', '');
     }
 
     /**
@@ -6964,11 +6981,11 @@ class assign {
             $userfrom->lastname = $uniqueidforuser;
             $userfrom->email = $CFG->noreplyaddress;
         } else {
-            $info->username = core_user::get_fullname($userfrom, $context, ['override' => true]);
+            $info->username = user::get_fullname($userfrom, $context, ['override' => true]);
         }
 
         // Information about the recipient (for greeting, etc.).
-        $info->recipentname = core_user::get_fullname($userto, $context, ['override' => true]);
+        $info->recipentname = user::get_fullname($userto, $context, ['override' => true]);
 
         // Information about the assignment.
         $info->assignment = format_string($assignmentname, true, ['context' => $context]);
@@ -7043,7 +7060,7 @@ class assign {
             'uniqueidforuser' => $uniqueidforuser,
         ];
         // Check if the userfrom is real and visible.
-        if (!empty($userfrom->id) && core_user::is_real_user($userfrom->id)) {
+        if (!empty($userfrom->id) && user::is_real_user($userfrom->id)) {
             $userpicture = new user_picture($userfrom);
             $userpicture->size = 1; // Use f1 size.
             $userpicture->includetoken = $userto->id; // Generate an out-of-session token for the user receiving the message.
@@ -7067,7 +7084,7 @@ class assign {
      */
     public function send_notification($userfrom, $userto, $messagetype, $eventtype, $updatetime, $extrainfo = []) {
         global $USER;
-        $userid = core_user::is_real_user($userfrom->id) ? $userfrom->id : $USER->id;
+        $userid = user::is_real_user($userfrom->id) ? $userfrom->id : $USER->id;
         $uniqueid = $this->get_uniqueid_for_user($userid);
         $oldforcelang = force_current_language($userto->lang);
         self::send_assignment_notification($userfrom,
@@ -7136,7 +7153,7 @@ class assign {
         $extrainfo = $this->get_submission_summaries_for_messages($submission);
         force_current_language($oldforcelang);
         if ($submission->userid == $USER->id) {
-            $this->send_notification(core_user::get_noreply_user(),
+            $this->send_notification(user::get_noreply_user(),
                                      $user,
                                      'submissionreceipt',
                                      'assign_notification',
@@ -7256,7 +7273,7 @@ class assign {
             require_capability('mod/assign:submit', $this->context);
         } else {
             if (!$this->can_edit_submission($userid, $USER->id)) {
-                throw new \moodle_exception('nopermission');
+                throw new moodle_exception('nopermission');
             }
         }
 
@@ -8144,7 +8161,7 @@ class assign {
         } else {
             $user = $DB->get_record('user', array('id'=>$userid), '*', MUST_EXIST);
             if (!$this->can_edit_submission($userid, $USER->id)) {
-                throw new \moodle_exception('nopermission');
+                throw new moodle_exception('nopermission');
             }
         }
         $instance = $this->get_instance();
@@ -8180,7 +8197,7 @@ class assign {
 
         // Get the flags to check if it is locked.
         if ($flags && $flags->locked) {
-            throw new \moodle_exception('submissionslocked', 'assign');
+            throw new moodle_exception('submissionslocked', 'assign');
             return true;
         }
 
@@ -8500,7 +8517,7 @@ class assign {
         $usergrade = get_string('notgraded', 'assign');
         if (has_all_capabilities($capabilitylist, $this->get_course_context())) {
             $urlparams = array('id'=>$this->get_course()->id);
-            $url = new moodle_url('/grade/report/grader/index.php', $urlparams);
+            $url = new url('/grade/report/grader/index.php', $urlparams);
             if (isset($gradinginfo->items[0]->grades[$userid]->grade)) {
                 $usergrade = $gradinginfo->items[0]->grades[$userid]->str_grade;
             }
@@ -8859,7 +8876,7 @@ class assign {
         global $USER;
 
         if (!$this->can_edit_submission($userid, $USER->id)) {
-            $user = core_user::get_user($userid);
+            $user = user::get_user($userid);
             $message = get_string('usersubmissioncannotberemoved', 'assign', fullname($user));
             $this->set_error_message($message);
             return false;
@@ -9439,7 +9456,7 @@ class assign {
                 if ($gradingmodified) {
                     if (!$plugin->save($grade, $formdata)) {
                         $result = false;
-                        throw new \moodle_exception($plugin->get_error());
+                        throw new moodle_exception($plugin->get_error());
                     }
                     // If $feedbackmodified is true, keep it true.
                     $feedbackmodified = $feedbackmodified || $gradingmodified;
@@ -9652,7 +9669,7 @@ class assign {
             if (empty($SESSION->mod_assign_useridlist[$this->get_useridlist_key($useridlistid)])) {
                 // If the userid list is not stored we must not save, as it is possible that the user in a
                 // given row position may not be the same now as when the grading page was generated.
-                $url = new moodle_url('/mod/assign/view.php', array('id' => $this->get_course_module()->id));
+                $url = new url('/mod/assign/view.php', array('id' => $this->get_course_module()->id));
                 throw new moodle_exception('useridlistnotcached', 'mod_assign', $url);
             }
             $useridlist = $SESSION->mod_assign_useridlist[$this->get_useridlist_key($useridlistid)];
@@ -9978,7 +9995,7 @@ class assign {
         global $DB;
 
         $cm = get_coursemodule_from_instance('assign', $assignid, 0, false, MUST_EXIST);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $currentgroup = groups_get_activity_group($cm, true);
         $users = get_enrolled_users($context, "mod/assign:submit", $currentgroup, 'u.id');
@@ -10308,7 +10325,7 @@ class assign {
      */
     protected function add_grade_notices() {
         if (has_capability('mod/assign:grade', $this->get_context()) && get_config('assign', 'has_rescaled_null_grades_' . $this->get_instance()->id)) {
-            $link = new \moodle_url('/mod/assign/view.php', array('id' => $this->get_course_module()->id, 'action' => 'fixrescalednullgrades'));
+            $link = new url('/mod/assign/view.php', array('id' => $this->get_course_module()->id, 'action' => 'fixrescalednullgrades'));
             \core\notification::warning(get_string('fixrescalednullgrades', 'mod_assign', ['link' => $link->out()]));
         }
     }
@@ -10369,7 +10386,7 @@ class assign {
                 // If the sesskey is not valid, then display the error notice.
                 $o .= $this->get_renderer()->notification(get_string('invalidsesskey', 'error'), 'notifyerror');
             }
-            $url = new moodle_url(
+            $url = new url(
                 url: '/mod/assign/view.php',
                 params: [
                     'id' => $this->get_course_module()->id,
@@ -10379,8 +10396,8 @@ class assign {
             $o .= $this->get_renderer()->continue_button($url);
         } else {
             // Ask for confirmation.
-            $continue = new \moodle_url('/mod/assign/view.php', array('id' => $this->get_course_module()->id, 'action' => 'fixrescalednullgrades', 'confirm' => true, 'sesskey' => sesskey()));
-            $cancel = new \moodle_url('/mod/assign/view.php', array('id' => $this->get_course_module()->id));
+            $continue = new url('/mod/assign/view.php', array('id' => $this->get_course_module()->id, 'action' => 'fixrescalednullgrades', 'confirm' => true, 'sesskey' => sesskey()));
+            $cancel = new url('/mod/assign/view.php', array('id' => $this->get_course_module()->id));
             $o .= $OUTPUT->confirm(get_string('fixrescalednullgradesconfirm', 'mod_assign'), $continue, $cancel);
         }
 
@@ -10683,7 +10700,7 @@ class assign {
         ]);
         if (!empty($markers) && count($markers) >= ($number + 1)) {
             // Then get the name of the one at the column position requested, e.g. marker1, marker2, etc...
-            return \core_user::get_user($markers[$number]);
+            return user::get_user($markers[$number]);
         }
         return null;
     }
@@ -10757,7 +10774,7 @@ class assign_portfolio_caller extends portfolio_module_caller_base {
     public function load_data() {
         global $DB;
 
-        $context = context_module::instance($this->cmid);
+        $context = module::instance($this->cmid);
 
         if (empty($this->fileid)) {
             if (empty($this->sid) || empty($this->area)) {
@@ -10806,7 +10823,7 @@ class assign_portfolio_caller extends portfolio_module_caller_base {
 
         if ($this->plugin && $this->editor) {
             $options = portfolio_format_text_options();
-            $context = context_module::instance($this->cmid);
+            $context = module::instance($this->cmid);
             $options->context = $context;
 
             $plugin = $this->get_submission_plugin();
@@ -10878,7 +10895,7 @@ class assign_portfolio_caller extends portfolio_module_caller_base {
             }
             if (count($files) > 1) {
                 $baseid = 'assign' . $this->cmid . $this->area;
-                $context = context_module::instance($this->cmid);
+                $context = module::instance($this->cmid);
 
                 // If we have multiple files, they should be grouped together into a folder.
                 $entry = new portfolio_format_leap2a_entry($baseid . 'group',
@@ -10907,7 +10924,7 @@ class assign_portfolio_caller extends portfolio_module_caller_base {
 
         require_once($CFG->dirroot . '/mod/assign/locallib.php');
 
-        $context = context_module::instance($this->cmid);
+        $context = module::instance($this->cmid);
 
         $assignment = new assign($context, null, null);
         return $assignment->get_submission_plugin_by_type($this->plugin);
@@ -10924,7 +10941,7 @@ class assign_portfolio_caller extends portfolio_module_caller_base {
         if ($this->plugin && $this->editor) {
             $plugin = $this->get_submission_plugin();
             $options = portfolio_format_text_options();
-            $options->context = context_module::instance($this->cmid);
+            $options->context = module::instance($this->cmid);
 
             $text = format_text($plugin->get_editor_text($this->editor, $this->sid),
                                 $plugin->get_editor_format($this->editor, $this->sid),
@@ -10957,7 +10974,7 @@ class assign_portfolio_caller extends portfolio_module_caller_base {
      * @return bool
      */
     public function check_permissions() {
-        $context = context_module::instance($this->cmid);
+        $context = module::instance($this->cmid);
         return has_capability('mod/assign:exportownsubmission', $context);
     }
 
@@ -11043,7 +11060,7 @@ function move_group_override($id, $move, $assignid) {
     // Get assignment and context.
     $assign = $DB->get_record('assign', ['id' => $assignid], '*', MUST_EXIST);
     $cm = get_coursemodule_from_instance('assign', $assign->id, $assign->course, false, MUST_EXIST);
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     // Use the manager class.
     $manager = new mod_assign\override_manager($assign, $context);
@@ -11070,7 +11087,7 @@ function reorder_group_overrides($assignid) {
     // Get assignment and context.
     $assign = $DB->get_record('assign', ['id' => $assignid], '*', MUST_EXIST);
     $cm = get_coursemodule_from_instance('assign', $assign->id, $assign->course, false, MUST_EXIST);
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     // Use the manager class.
     $manager = new mod_assign\override_manager($assign, $context);

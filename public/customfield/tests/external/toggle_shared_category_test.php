@@ -18,6 +18,7 @@ declare(strict_types=1);
 
 namespace core_customfield\external;
 
+use core\exception\moodle_exception;
 use core_external\external_api;
 use core_customfield\shared;
 use core_customfield_generator;
@@ -98,7 +99,7 @@ final class toggle_shared_category_test extends \core_external\tests\externallib
 
         $this->setUser($user);
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $str = "Sorry, but you do not currently have permissions to do that (Configure shared custom fields).";
         $this->expectExceptionMessage($str);
         toggle_shared_category::execute(

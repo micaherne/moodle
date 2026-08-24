@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/lib.php');
 require_once(__DIR__.'/locallib.php');
@@ -48,7 +53,7 @@ if ($id) {
 
 require_course_login($course, true, $cm);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 require_capability('mod/book:read', $context);
 
 $allowedit  = has_capability('mod/book:edit', $context);
@@ -114,7 +119,7 @@ if (!$chapterid) {
     $PAGE->set_url('/mod/book/view.php', ['id' => $id, 'chapterid' => $chapterid]);
     // The chapter doesnt exist or it is hidden for students.
     if (!$chapter or ($chapter->hidden and !$viewhidden)) {
-        $courseurl = new moodle_url('/course/view.php', ['id' => $course->id]);
+        $courseurl = new url('/course/view.php', ['id' => $course->id]);
         throw new moodle_exception('errorchapter', 'mod_book', $courseurl);
     }
     // Add the Book TOC block.

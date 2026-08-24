@@ -16,9 +16,11 @@
 
 namespace mod_quiz;
 
+use core\context\module;
 use core_question\local\bank\question_version_status;
 use mod_quiz\external\submit_question_version;
 use mod_quiz\question\bank\qbank_helper;
+use mod_quiz\tests\question_helper_test_trait;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -35,7 +37,7 @@ require_once(__DIR__ . '/quiz_question_helper_test_trait.php');
  * @coversDefaultClass \mod_quiz\question\bank\qbank_helper
  */
 final class qbank_helper_test extends \advanced_testcase {
-    use \quiz_question_helper_test_trait;
+    use question_helper_test_trait;
 
     /**
      * @var \stdClass test student user.
@@ -64,7 +66,7 @@ final class qbank_helper_test extends \advanced_testcase {
 
         $quiz = $this->create_test_quiz($this->course);
         // Test for questions from a different context.
-        $context = \context_module::instance($quiz->cmid);
+        $context = module::instance($quiz->cmid);
 
         // Create a couple of questions.
         /** @var \core_question_generator $questiongenerator */
@@ -116,7 +118,7 @@ final class qbank_helper_test extends \advanced_testcase {
 
         // Create a quiz.
         $quiz = $this->create_test_quiz($this->course);
-        $quizcontext = \context_module::instance(get_coursemodule_from_instance("quiz", $quiz->id, $this->course->id)->id);
+        $quizcontext = module::instance(get_coursemodule_from_instance("quiz", $quiz->id, $this->course->id)->id);
 
         // Create a question in the quiz question bank.
         /** @var \core_question_generator $questiongenerator */
@@ -157,7 +159,7 @@ final class qbank_helper_test extends \advanced_testcase {
 
         // Create a quiz.
         $quiz = $this->create_test_quiz($this->course);
-        $quizcontext = \context_module::instance(get_coursemodule_from_instance("quiz", $quiz->id, $this->course->id)->id);
+        $quizcontext = module::instance(get_coursemodule_from_instance("quiz", $quiz->id, $this->course->id)->id);
 
         // Create some questions with drafts in the quiz question bank.
         /** @var \core_question_generator $questiongenerator */

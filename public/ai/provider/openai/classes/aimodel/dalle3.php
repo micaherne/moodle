@@ -16,6 +16,7 @@
 
 namespace aiprovider_openai\aimodel;
 
+use core\exception\coding_exception;
 use core_ai\aimodel\base;
 
 /**
@@ -66,7 +67,7 @@ class dalle3 extends base implements openai_base, openai_image_base {
         } else if ($ratio === 'portrait') {
             $size = '1024x1792';
         } else {
-            throw new \coding_exception('Invalid aspect ratio: ' . $ratio);
+            throw new coding_exception('Invalid aspect ratio: ' . $ratio);
         }
         return $size;
     }

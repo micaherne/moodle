@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\exception\coding_exception;
+use core_cache\cache;
 use core_cache\configurable_cache_interface;
 use core_cache\definition;
 use core_cache\key_aware_cache_interface;

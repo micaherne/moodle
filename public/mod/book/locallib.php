@@ -22,6 +22,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\context_helper;
+use core\output\actions\confirm_action;
+use core\output\html_writer;
+use core\url;
+use core_block\output\block_contents;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once(__DIR__.'/lib.php');
@@ -164,7 +174,7 @@ function book_add_fake_block($chapters, $chapter, $book, $cm, $edit = null) {
     global $PAGE, $USER;
 
     if ($edit === null) {
-        if (has_capability('mod/book:edit', context_module::instance($cm->id))) {
+        if (has_capability('mod/book:edit', module::instance($cm->id))) {
             if (isset($USER->editing)) {
                 $edit = $USER->editing;
             } else {
@@ -204,7 +214,7 @@ function book_get_toc($chapters, $chapter, $book, $cm, $edit) {
     $ns = 0;    // Subchapter number
     $first = 1;
 
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
     $viewhidden = has_capability('mod/book:viewhiddenchapters', $context);
 
     switch ($book->numbering) {
@@ -291,7 +301,7 @@ function book_get_toc($chapters, $chapter, $book, $cm, $edit) {
                 $toc .= html_writer::tag('strong', $titleout, array('class' => 'text-truncate'));
             } else {
                 $toc .= html_writer::link(
-                    new moodle_url('view.php', ['id' => $cm->id, 'chapterid' => $ch->id]),
+                    new url('view.php', ['id' => $cm->id, 'chapterid' => $ch->id]),
                     $titleout,
                     [
                         'title' => $titleunescaped,
@@ -303,7 +313,7 @@ function book_get_toc($chapters, $chapter, $book, $cm, $edit) {
             $toc .= html_writer::start_tag('div', array('class' => 'action-list d-flex ms-auto'));
             if ($i != 1) {
                 $toc .= html_writer::link(
-                    new moodle_url('move.php', ['id' => $cm->id, 'chapterid' => $ch->id, 'up' => '1', 'sesskey' => $USER->sesskey]),
+                    new url('move.php', ['id' => $cm->id, 'chapterid' => $ch->id, 'up' => '1', 'sesskey' => $USER->sesskey]),
                     $OUTPUT->pix_icon('t/up', null),
                     [
                         'title' => get_string('movechapterup', 'mod_book', $titleunescaped),
@@ -313,7 +323,7 @@ function book_get_toc($chapters, $chapter, $book, $cm, $edit) {
             }
             if ($i != count($chapters)) {
                 $toc .= html_writer::link(
-                    new moodle_url(
+                    new url(
                         'move.php',
                         ['id' => $cm->id, 'chapterid' => $ch->id, 'up' => '0', 'sesskey' => $USER->sesskey]
                     ),
@@ -325,7 +335,7 @@ function book_get_toc($chapters, $chapter, $book, $cm, $edit) {
                 );
             }
             $toc .= html_writer::link(
-                new moodle_url('edit.php', ['cmid' => $cm->id, 'id' => $ch->id]),
+                new url('edit.php', ['cmid' => $cm->id, 'id' => $ch->id]),
                 $OUTPUT->pix_icon('t/edit', null),
                 [
                     'title' => get_string('editchapter', 'mod_book', $titleunescaped),
@@ -335,7 +345,7 @@ function book_get_toc($chapters, $chapter, $book, $cm, $edit) {
 
             $deleteaction = new confirm_action(get_string('deletechapter', 'mod_book', $titleunescaped));
             $toc .= $OUTPUT->action_link(
-                new moodle_url('delete.php', [
+                new url('delete.php', [
                     'id'        => $cm->id,
                     'chapterid' => $ch->id,
                     'sesskey'   => sesskey(),
@@ -351,7 +361,7 @@ function book_get_toc($chapters, $chapter, $book, $cm, $edit) {
 
             if ($ch->hidden) {
                 $toc .= html_writer::link(
-                    new moodle_url('show.php', ['id' => $cm->id, 'chapterid' => $ch->id, 'sesskey' => $USER->sesskey]),
+                    new url('show.php', ['id' => $cm->id, 'chapterid' => $ch->id, 'sesskey' => $USER->sesskey]),
                     $OUTPUT->pix_icon('t/show', null),
                     [
                         'title' => get_string('showchapter', 'mod_book', $titleunescaped),
@@ -360,7 +370,7 @@ function book_get_toc($chapters, $chapter, $book, $cm, $edit) {
                 );
             } else {
                 $toc .= html_writer::link(
-                    new moodle_url('show.php', ['id' => $cm->id, 'chapterid' => $ch->id, 'sesskey' => $USER->sesskey]),
+                    new url('show.php', ['id' => $cm->id, 'chapterid' => $ch->id, 'sesskey' => $USER->sesskey]),
                     $OUTPUT->pix_icon('t/hide', null),
                     [
                         'title' => get_string('hidechapter', 'mod_book', $titleunescaped),
@@ -371,7 +381,7 @@ function book_get_toc($chapters, $chapter, $book, $cm, $edit) {
 
             $buttontitle = get_string('addafterchapter', 'mod_book', ['title' => $ch->title]);
             $toc .= html_writer::link(
-                new moodle_url('edit.php', ['cmid' => $cm->id, 'pagenum' => $ch->pagenum, 'subchapter' => $ch->subchapter]),
+                new url('edit.php', ['cmid' => $cm->id, 'pagenum' => $ch->pagenum, 'subchapter' => $ch->subchapter]),
                 $OUTPUT->pix_icon('add', null, 'mod_book'),
                 [
                     'title' => $buttontitle,
@@ -454,7 +464,7 @@ function book_get_toc($chapters, $chapter, $book, $cm, $edit) {
                     $toc .= html_writer::tag('strong', $title, array('class' => $cssclass));
                 } else {
                     $toc .= html_writer::link(
-                        new moodle_url('view.php', ['id' => $cm->id, 'chapterid' => $ch->id]),
+                        new url('view.php', ['id' => $cm->id, 'chapterid' => $ch->id]),
                         $title,
                         [
                             'class' => $cssclass,
@@ -524,7 +534,7 @@ function mod_book_get_tagged_chapters($tag, $exclusivemode = false, $fromctx = 0
                     'coursemodulecontextlevel' => CONTEXT_MODULE);
 
     if ($ctx) {
-        $context = $ctx ? context::instance_by_id($ctx) : context_system::instance();
+        $context = $ctx ? context::instance_by_id($ctx) : system::instance();
         $query .= $rec ? ' AND (ctx.id = :contextid OR ctx.path LIKE :path)' : ' AND ctx.id = :contextid';
         $params['contextid'] = $context->id;
         $params['path'] = $context->path.'/%';
@@ -560,7 +570,7 @@ function mod_book_get_tagged_chapters($tag, $exclusivemode = false, $fromctx = 0
                     if (empty($taggeditem->hidden)) {
                         $accessible = true;
                     } else {
-                        $accessible = has_capability('mod/book:viewhiddenchapters', context_module::instance($cm->id));
+                        $accessible = has_capability('mod/book:viewhiddenchapters', module::instance($cm->id));
                     }
                 }
                 $builder->set_accessible($taggeditem, $accessible);
@@ -581,12 +591,12 @@ function mod_book_get_tagged_chapters($tag, $exclusivemode = false, $fromctx = 0
             context_helper::preload_from_record($item);
             $modinfo = get_fast_modinfo($item->courseid);
             $cm = $modinfo->get_cm($item->cmid);
-            $pageurl = new moodle_url('/mod/book/view.php', array('chapterid' => $item->id, 'b' => $item->bookid));
-            $pagename = format_string($item->title, true, array('context' => context_module::instance($item->cmid)));
+            $pageurl = new url('/mod/book/view.php', array('chapterid' => $item->id, 'b' => $item->bookid));
+            $pagename = format_string($item->title, true, array('context' => module::instance($item->cmid)));
             $pagename = html_writer::link($pageurl, $pagename);
             $courseurl = course_get_url($item->courseid, $cm->sectionnum);
             $cmname = html_writer::link($cm->url, $cm->get_formatted_name());
-            $coursename = format_string($item->fullname, true, array('context' => context_course::instance($item->courseid)));
+            $coursename = format_string($item->fullname, true, array('context' => course::instance($item->courseid)));
             $coursename = html_writer::link($courseurl, $coursename);
             $icon = html_writer::link($pageurl, html_writer::empty_tag('img', array('src' => $cm->get_icon_url())));
             $tagfeed->add($icon, $pagename, $cmname.'<br>'.$coursename);

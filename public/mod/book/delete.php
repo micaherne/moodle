@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\url;
+
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/locallib.php');
 
@@ -41,7 +44,7 @@ $chapter = $DB->get_record('book_chapters', ['id' => $chapterid, 'bookid' => $bo
 require_login($course, false, $cm);
 require_sesskey();
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 require_capability('mod/book:edit', $context);
 
 $PAGE->set_url('/mod/book/delete.php', ['id' => $id, 'chapterid' => $chapterid]);
@@ -103,7 +106,7 @@ if ($confirm) {
         ]);
     }
 
-    redirect(new moodle_url('/mod/book/view.php', ['id' => $cm->id]), $message);
+    redirect(new url('/mod/book/view.php', ['id' => $cm->id]), $message);
 }
 
-redirect(new moodle_url('/mod/book/view.php', ['id' => $cm->id]));
+redirect(new url('/mod/book/view.php', ['id' => $cm->id]));

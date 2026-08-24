@@ -21,6 +21,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->libdir . '/questionlib.php');
@@ -50,7 +52,7 @@ final class qformat_xml_import_export_test extends advanced_testcase {
         $qbank = self::getDataGenerator()->create_module('qbank', ['course' => $course->id]);
 
         $qformat = new qformat_xml();
-        $qformat->setContexts([context_module::instance($qbank->cmid)]);
+        $qformat->setContexts([module::instance($qbank->cmid)]);
         $qformat->setCourse($course);
         $qformat->setFilename(__DIR__ . '/fixtures/' . $filename);
         $qformat->setRealfilename($filename);
@@ -296,7 +298,7 @@ final class qformat_xml_import_export_test extends advanced_testcase {
 
         $category = $generator->create_question_category([
                 'name' => 'Alpha',
-                'contextid' => context_module::instance($this->qbank->cmid)->id,
+                'contextid' => module::instance($this->qbank->cmid)->id,
                 'info' => 'This is Alpha category for test',
                 'infoformat' => '0',
                 'idnumber' => 'alpha-idnumber',
@@ -331,7 +333,7 @@ final class qformat_xml_import_export_test extends advanced_testcase {
 
         $categorydelta = $generator->create_question_category([
                 'name' => 'Delta',
-                'contextid' => context_module::instance($this->qbank->cmid)->id,
+                'contextid' => module::instance($this->qbank->cmid)->id,
                 'info' => 'This is Delta category for test',
                 'infoformat' => '2',
                 'stamp' => make_unique_id_code(),
@@ -339,7 +341,7 @@ final class qformat_xml_import_export_test extends advanced_testcase {
                 'sortorder' => '999']);
         $categoryepsilon = $generator->create_question_category([
                 'name' => 'Epsilon',
-                'contextid' => context_module::instance($this->qbank->cmid)->id,
+                'contextid' => module::instance($this->qbank->cmid)->id,
                 'info' => 'This is Epsilon category for test',
                 'infoformat' => '4',
                 'stamp' => make_unique_id_code(),
@@ -347,7 +349,7 @@ final class qformat_xml_import_export_test extends advanced_testcase {
                 'sortorder' => '999']);
         $categoryzeta = $generator->create_question_category([
                 'name' => 'Zeta',
-                'contextid' => context_module::instance($this->qbank->cmid)->id,
+                'contextid' => module::instance($this->qbank->cmid)->id,
                 'info' => 'This is Zeta category for test',
                 'infoformat' => '0',
                 'stamp' => make_unique_id_code(),
@@ -385,7 +387,7 @@ final class qformat_xml_import_export_test extends advanced_testcase {
 
         $categoryiota = $generator->create_question_category([
                 'name' => 'Iota',
-                'contextid' => context_module::instance($this->qbank->cmid)->id,
+                'contextid' => module::instance($this->qbank->cmid)->id,
                 'info' => 'This is Iota category for test',
                 'infoformat' => '2',
                 'stamp' => make_unique_id_code(),
@@ -404,7 +406,7 @@ final class qformat_xml_import_export_test extends advanced_testcase {
                 'penalty' => '1']);
         $categorykappa = $generator->create_question_category([
                 'name' => 'Kappa',
-                'contextid' => context_module::instance($this->qbank->cmid)->id,
+                'contextid' => module::instance($this->qbank->cmid)->id,
                 'info' => 'This is Kappa category for test',
                 'infoformat' => '4',
                 'stamp' => make_unique_id_code(),
@@ -440,7 +442,7 @@ final class qformat_xml_import_export_test extends advanced_testcase {
                 'idnumber' => '']);
         $categorylambda = $generator->create_question_category([
                 'name' => 'Lambda',
-                'contextid' => context_module::instance($this->qbank->cmid)->id,
+                'contextid' => module::instance($this->qbank->cmid)->id,
                 'info' => 'This is Lambda category for test',
                 'infoformat' => '0',
                 'stamp' => make_unique_id_code(),
@@ -459,7 +461,7 @@ final class qformat_xml_import_export_test extends advanced_testcase {
                 'penalty' => '1']);
         $categorymu = $generator->create_question_category([
                 'name' => 'Mu',
-                'contextid' => context_module::instance($this->qbank->cmid)->id,
+                'contextid' => module::instance($this->qbank->cmid)->id,
                 'info' => 'This is Mu category for test',
                 'infoformat' => '0',
                 'stamp' => make_unique_id_code(),
@@ -498,7 +500,7 @@ final class qformat_xml_import_export_test extends advanced_testcase {
 
         $category = $generator->create_question_category([
                 'name' => 'Alpha',
-                'contextid' => context_module::instance($this->qbank->cmid)->id,
+                'contextid' => module::instance($this->qbank->cmid)->id,
                 'info' => 'This is Alpha category for test',
                 'infoformat' => '0',
                 'idnumber' => 'The inequalities < & >',

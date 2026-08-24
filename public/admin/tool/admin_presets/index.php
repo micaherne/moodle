@@ -23,6 +23,10 @@
  * @license          http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 
 global $CFG, $PAGE;
@@ -32,7 +36,7 @@ $mode = optional_param('mode', 'show', PARAM_ALPHAEXT);
 
 require_login();
 
-if (!$context = context_system::instance()) {
+if (!$context = system::instance()) {
     throw new moodle_exception('wrongcontext', 'error');
 }
 
@@ -46,7 +50,7 @@ if (!class_exists($classname)) {
     throw new moodle_exception('falseaction', 'tool_admin_presets', $action);
 }
 
-$url = new moodle_url('/admin/tool/admin_presets/index.php');
+$url = new url('/admin/tool/admin_presets/index.php');
 $url->param('action', $action);
 $url->param('mode', $mode);
 $PAGE->set_url($url);

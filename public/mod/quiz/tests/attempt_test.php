@@ -16,6 +16,8 @@
 
 namespace mod_quiz;
 
+use core\exception\moodle_exception;
+use core\url;
 use core_question\local\bank\condition;
 use core_question\local\bank\question_version_status;
 use core_question_generator;
@@ -84,75 +86,75 @@ final class attempt_test extends \advanced_testcase {
         $url = '/mod/quiz/attempt.php';
         $params = ['attempt' => $attemptid, 'cmid' => $cmid, 'page' => 2];
 
-        $this->assertEquals(new \moodle_url($url, $params), $attempt->attempt_url(null, 2));
+        $this->assertEquals(new url($url, $params), $attempt->attempt_url(null, 2));
 
         $params['page'] = 1;
-        $this->assertEquals(new \moodle_url($url, $params), $attempt->attempt_url(3));
+        $this->assertEquals(new url($url, $params), $attempt->attempt_url(3));
 
         $questionattempt = $attempt->get_question_attempt(4);
         $expecteanchor = $questionattempt->get_outer_question_div_unique_id();
-        $this->assertEquals(new \moodle_url($url, $params, $expecteanchor), $attempt->attempt_url(4));
+        $this->assertEquals(new url($url, $params, $expecteanchor), $attempt->attempt_url(4));
 
         $questionattempt = $attempt->get_question_attempt(3);
         $expecteanchor = '#' . $questionattempt->get_outer_question_div_unique_id();
-        $this->assertEquals(new \moodle_url('#'), $attempt->attempt_url(null, 2, 2));
-        $this->assertEquals(new \moodle_url($expecteanchor), $attempt->attempt_url(3, -1, 1));
+        $this->assertEquals(new url('#'), $attempt->attempt_url(null, 2, 2));
+        $this->assertEquals(new url($expecteanchor), $attempt->attempt_url(3, -1, 1));
 
         $questionattempt = $attempt->get_question_attempt(4);
         $expecteanchor = $questionattempt->get_outer_question_div_unique_id();
-        $this->assertEquals(new \moodle_url(null, null, $expecteanchor, null), $attempt->attempt_url(4, -1, 1));
+        $this->assertEquals(new url(null, null, $expecteanchor, null), $attempt->attempt_url(4, -1, 1));
 
         // Summary page.
         $url = '/mod/quiz/summary.php';
         unset($params['page']);
-        $this->assertEquals(new \moodle_url($url, $params), $attempt->summary_url());
+        $this->assertEquals(new url($url, $params), $attempt->summary_url());
 
         // Review page.
         $url = '/mod/quiz/review.php';
-        $this->assertEquals(new \moodle_url($url, $params), $attempt->review_url());
+        $this->assertEquals(new url($url, $params), $attempt->review_url());
 
         $params['page'] = 1;
-        $this->assertEquals(new \moodle_url($url, $params), $attempt->review_url(3, -1, false));
-        $this->assertEquals(new \moodle_url($url, $params, $expecteanchor), $attempt->review_url(4, -1, false));
+        $this->assertEquals(new url($url, $params), $attempt->review_url(3, -1, false));
+        $this->assertEquals(new url($url, $params, $expecteanchor), $attempt->review_url(4, -1, false));
 
         unset($params['page']);
-        $this->assertEquals(new \moodle_url($url, $params), $attempt->review_url(null, 2, true));
-        $this->assertEquals(new \moodle_url($url, $params), $attempt->review_url(1, -1, true));
+        $this->assertEquals(new url($url, $params), $attempt->review_url(null, 2, true));
+        $this->assertEquals(new url($url, $params), $attempt->review_url(1, -1, true));
 
         $params['page'] = 2;
-        $this->assertEquals(new \moodle_url($url, $params), $attempt->review_url(null, 2, false));
+        $this->assertEquals(new url($url, $params), $attempt->review_url(null, 2, false));
         unset($params['page']);
 
         $params['showall'] = 0;
-        $this->assertEquals(new \moodle_url($url, $params), $attempt->review_url(null, 0, false));
-        $this->assertEquals(new \moodle_url($url, $params), $attempt->review_url(1, -1, false));
+        $this->assertEquals(new url($url, $params), $attempt->review_url(null, 0, false));
+        $this->assertEquals(new url($url, $params), $attempt->review_url(1, -1, false));
 
         $params['page'] = 1;
         unset($params['showall']);
-        $this->assertEquals(new \moodle_url($url, $params), $attempt->review_url(3, -1, false));
+        $this->assertEquals(new url($url, $params), $attempt->review_url(3, -1, false));
 
         $params['page'] = 2;
-        $this->assertEquals(new \moodle_url($url, $params), $attempt->review_url(null, 2));
-        $this->assertEquals(new \moodle_url('#'), $attempt->review_url(null, -1, null, 0));
+        $this->assertEquals(new url($url, $params), $attempt->review_url(null, 2));
+        $this->assertEquals(new url('#'), $attempt->review_url(null, -1, null, 0));
 
         $questionattempt = $attempt->get_question_attempt(3);
         $expecteanchor = '#' . $questionattempt->get_outer_question_div_unique_id();
-        $this->assertEquals(new \moodle_url($expecteanchor), $attempt->review_url(3, -1, null, 0));
+        $this->assertEquals(new url($expecteanchor), $attempt->review_url(3, -1, null, 0));
 
         $questionattempt = $attempt->get_question_attempt(4);
         $expecteanchor = '#' . $questionattempt->get_outer_question_div_unique_id();
-        $this->assertEquals(new \moodle_url($expecteanchor), $attempt->review_url(4, -1, null, 0));
-        $this->assertEquals(new \moodle_url('#'), $attempt->review_url(null, 2, true, 0));
+        $this->assertEquals(new url($expecteanchor), $attempt->review_url(4, -1, null, 0));
+        $this->assertEquals(new url('#'), $attempt->review_url(null, 2, true, 0));
 
         $questionattempt = $attempt->get_question_attempt(1);
         $expecteanchor = '#' . $questionattempt->get_outer_question_div_unique_id();
-        $this->assertEquals(new \moodle_url($expecteanchor), $attempt->review_url(1, -1, true, 0));
-        $this->assertEquals(new \moodle_url($expecteanchor), $attempt->review_url(1, -1, false, 0));
-        $this->assertEquals(new \moodle_url($url, $params), $attempt->review_url(null, 2, false, 0));
-        $this->assertEquals(new \moodle_url('#'), $attempt->review_url(null, 0, false, 0));
+        $this->assertEquals(new url($expecteanchor), $attempt->review_url(1, -1, true, 0));
+        $this->assertEquals(new url($expecteanchor), $attempt->review_url(1, -1, false, 0));
+        $this->assertEquals(new url($url, $params), $attempt->review_url(null, 2, false, 0));
+        $this->assertEquals(new url('#'), $attempt->review_url(null, 0, false, 0));
 
         $params['page'] = 1;
-        $this->assertEquals(new \moodle_url($url, $params), $attempt->review_url(3, -1, false, 0));
+        $this->assertEquals(new url($url, $params), $attempt->review_url(3, -1, false, 0));
 
         // Setup another attempt.
         $attempt = $this->create_quiz_and_attempt_with_layout(
@@ -163,58 +165,58 @@ final class attempt_test extends \advanced_testcase {
         $attemptid = $attempt->get_attempt()->id;
         $cmid = $attempt->get_cmid();
         $params = ['attempt' => $attemptid, 'cmid' => $cmid];
-        $this->assertEquals(new \moodle_url($url, $params), $attempt->review_url());
+        $this->assertEquals(new url($url, $params), $attempt->review_url());
 
         $params['page'] = 2;
-        $this->assertEquals(new \moodle_url($url, $params), $attempt->review_url(null, 2));
+        $this->assertEquals(new url($url, $params), $attempt->review_url(null, 2));
 
         $params['page'] = 1;
         unset($params['showall']);
-        $this->assertEquals(new \moodle_url($url, $params), $attempt->review_url(11, -1, false));
+        $this->assertEquals(new url($url, $params), $attempt->review_url(11, -1, false));
 
         $questionattempt = $attempt->get_question_attempt(12);
         $expecteanchor = $questionattempt->get_outer_question_div_unique_id();
-        $this->assertEquals(new \moodle_url($url, $params, $expecteanchor), $attempt->review_url(12, -1, false));
+        $this->assertEquals(new url($url, $params, $expecteanchor), $attempt->review_url(12, -1, false));
 
         $params['showall'] = 1;
         unset($params['page']);
-        $this->assertEquals(new \moodle_url($url, $params), $attempt->review_url(null, 2, true));
+        $this->assertEquals(new url($url, $params), $attempt->review_url(null, 2, true));
 
-        $this->assertEquals(new \moodle_url($url, $params), $attempt->review_url(1, -1, true));
+        $this->assertEquals(new url($url, $params), $attempt->review_url(1, -1, true));
         $params['page'] = 2;
         unset($params['showall']);
-        $this->assertEquals(new \moodle_url($url, $params),  $attempt->review_url(null, 2, false));
+        $this->assertEquals(new url($url, $params),  $attempt->review_url(null, 2, false));
         unset($params['page']);
-        $this->assertEquals(new \moodle_url($url, $params), $attempt->review_url(null, 0, false));
+        $this->assertEquals(new url($url, $params), $attempt->review_url(null, 0, false));
         $params['page'] = 1;
-        $this->assertEquals(new \moodle_url($url, $params), $attempt->review_url(11, -1, false));
-        $this->assertEquals(new \moodle_url($url, $params, $expecteanchor), $attempt->review_url(12, -1, false));
+        $this->assertEquals(new url($url, $params), $attempt->review_url(11, -1, false));
+        $this->assertEquals(new url($url, $params, $expecteanchor), $attempt->review_url(12, -1, false));
         $params['page'] = 2;
-        $this->assertEquals(new \moodle_url($url, $params), $attempt->review_url(null, 2));
-        $this->assertEquals(new \moodle_url('#'), $attempt->review_url(null, -1, null, 0));
+        $this->assertEquals(new url($url, $params), $attempt->review_url(null, 2));
+        $this->assertEquals(new url('#'), $attempt->review_url(null, -1, null, 0));
 
         $questionattempt = $attempt->get_question_attempt(3);
         $expecteanchor = $questionattempt->get_outer_question_div_unique_id();
-        $this->assertEquals(new \moodle_url(null, null, $expecteanchor), $attempt->review_url(3, -1, null, 0));
+        $this->assertEquals(new url(null, null, $expecteanchor), $attempt->review_url(3, -1, null, 0));
 
         $questionattempt = $attempt->get_question_attempt(4);
         $expecteanchor = $questionattempt->get_outer_question_div_unique_id();
-        $this->assertEquals(new \moodle_url(null, null, $expecteanchor), $attempt->review_url(4, -1, null, 0));
+        $this->assertEquals(new url(null, null, $expecteanchor), $attempt->review_url(4, -1, null, 0));
 
         $questionattempt = $attempt->get_question_attempt(1);
         $expecteanchor = '#' . $questionattempt->get_outer_question_div_unique_id();
-        $this->assertEquals(new \moodle_url($expecteanchor), $attempt->review_url(1, -1, true, 0));
-        $this->assertEquals(new \moodle_url('#'), $attempt->review_url(null, 2, true, 0));
+        $this->assertEquals(new url($expecteanchor), $attempt->review_url(1, -1, true, 0));
+        $this->assertEquals(new url('#'), $attempt->review_url(null, 2, true, 0));
 
         $params['page'] = 2;
         $questionattempt = $attempt->get_question_attempt(1);
         $expecteanchor = '#' . $questionattempt->get_outer_question_div_unique_id();
-        $this->assertEquals(new \moodle_url($expecteanchor), $attempt->review_url(1, -1, false, 0));
-        $this->assertEquals(new \moodle_url($url, $params), $attempt->review_url(null, 2, false, 0));
-        $this->assertEquals(new \moodle_url('#'), $attempt->review_url(null, 0, false, 0));
+        $this->assertEquals(new url($expecteanchor), $attempt->review_url(1, -1, false, 0));
+        $this->assertEquals(new url($url, $params), $attempt->review_url(null, 2, false, 0));
+        $this->assertEquals(new url('#'), $attempt->review_url(null, 0, false, 0));
 
         $params['page'] = 1;
-        $this->assertEquals(new \moodle_url($url, $params), $attempt->review_url(11, -1, false, 0));
+        $this->assertEquals(new url($url, $params), $attempt->review_url(11, -1, false, 0));
     }
 
     /**
@@ -499,7 +501,7 @@ final class attempt_test extends \advanced_testcase {
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
         $attempt = quiz_create_attempt($quizobj, 1, false, time(), false, $student1->id);
 
-        $this->expectExceptionObject(new \moodle_exception('questiondraftonly', 'mod_quiz', '', $question->name));
+        $this->expectExceptionObject(new moodle_exception('questiondraftonly', 'mod_quiz', '', $question->name));
         quiz_start_new_attempt($quizobj, $quba, $attempt, 1, time());
     }
 
@@ -542,7 +544,7 @@ final class attempt_test extends \advanced_testcase {
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
         $newattempt = quiz_create_attempt($quizobj, 2, $attempt, time(), false, $student1->id);
 
-        $this->expectExceptionObject(new \moodle_exception('questiondraftonly', 'mod_quiz', '', $question->name));
+        $this->expectExceptionObject(new moodle_exception('questiondraftonly', 'mod_quiz', '', $question->name));
         quiz_start_attempt_built_on_last($quba, $newattempt, $attempt);
     }
 

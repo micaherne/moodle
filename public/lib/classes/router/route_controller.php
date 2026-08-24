@@ -16,7 +16,7 @@
 
 namespace core\router;
 
-use moodle_url;
+use core\url;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -55,7 +55,7 @@ trait route_controller {
      */
     public static function redirect(
         ResponseInterface $response,
-        string|moodle_url $url,
+        string|url $url,
     ): ResponseInterface {
         return util::redirect($response, $url);
     }

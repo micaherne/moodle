@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -62,7 +64,7 @@ function block_accessreview_user_preferences(): array {
             'null' => NULL_NOT_ALLOWED,
             'default' => 0,
             'choices' => [0, 1],
-            'permissioncallback' => [core_user::class, 'is_current_user'],
+            'permissioncallback' => [user::class, 'is_current_user'],
         ],
     ];
 }

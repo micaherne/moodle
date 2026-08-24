@@ -23,7 +23,7 @@
  */
 namespace gradereport_singleview\local\ui;
 
-use html_writer;
+use core\output\html_writer;
 
 defined('MOODLE_INTERNAL') || die;
 

@@ -24,6 +24,8 @@
 
 namespace core\analytics\time_splitting;
 
+use core\lang_string;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -44,8 +46,8 @@ class deciles_accum extends \core_analytics\local\time_splitting\accumulative_pa
      *
      * @return \lang_string
      */
-    public static function get_name(): \lang_string {
-        return new \lang_string('timesplitting:decilesaccum');
+    public static function get_name(): lang_string {
+        return new lang_string('timesplitting:decilesaccum');
     }
 
     /**

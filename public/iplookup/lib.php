@@ -24,6 +24,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -77,7 +79,7 @@ function iplookup_find_location($ip) {
             return $info;
         }
 
-        $requesturl = new moodle_url('https://api.geoplugin.com', ['ip' => $ip, 'auth' => $CFG->geopluginapikey]);
+        $requesturl = new url('https://api.geoplugin.com', ['ip' => $ip, 'auth' => $CFG->geopluginapikey]);
         $response = download_file_content($requesturl->out(false), null, null, true);
         if ($response->response_code != 200) {
             $info['error'] = get_string('cannotgeoplugin', 'error');

@@ -16,7 +16,7 @@
 
 namespace mod_quiz\local\reports;
 
-use html_writer;
+use core\output\html_writer;
 use MoodleQuickForm;
 
 defined('MOODLE_INTERNAL') || die();

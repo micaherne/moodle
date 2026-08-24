@@ -24,7 +24,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
 use core\report_helper;
+use core\url;
 
 require_once(__DIR__.'/../../config.php');
 require_once("{$CFG->libdir}/completionlib.php");
@@ -47,9 +51,9 @@ $edituser = optional_param('edituser', 0, PARAM_INT);
 
 
 $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 
-$url = new moodle_url('/report/completion/index.php', array('course'=>$course->id));
+$url = new url('/report/completion/index.php', array('course'=>$course->id));
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('report');
 
@@ -98,7 +102,7 @@ $modinfo = get_fast_modinfo($course);
 $completion = new completion_info($course);
 
 if (!$completion->has_criteria()) {
-    throw new \moodle_exception('nocriteriaset', 'completion', $CFG->wwwroot.'/course/report.php?id='.$course->id);
+    throw new moodle_exception('nocriteriaset', 'completion', $CFG->wwwroot.'/course/report.php?id='.$course->id);
 }
 
 // Get criteria and put in correct order
@@ -478,8 +482,8 @@ if (!$csv) {
 
                 // Display icon
                 $iconlink = $CFG->wwwroot.'/course/view.php?id='.$criterion->courseinstance;
-                $iconattributes['title'] = format_string($crs->fullname, true, array('context' => context_course::instance($crs->id, MUST_EXIST)));
-                $iconalt = format_string($crs->shortname, true, array('context' => context_course::instance($crs->id)));
+                $iconattributes['title'] = format_string($crs->fullname, true, array('context' => course::instance($crs->id, MUST_EXIST)));
+                $iconalt = format_string($crs->shortname, true, array('context' => course::instance($crs->id)));
                 break;
 
             case COMPLETION_CRITERIA_TYPE_ROLE:
@@ -533,7 +537,7 @@ if (!$csv) {
             // Load activity
             $mod = $criterion->get_mod_instance();
             $row[] = $formattedname = format_string($mod->name, true,
-                    array('context' => context_module::instance($criterion->moduleinstance)));
+                    array('context' => module::instance($criterion->moduleinstance)));
             $row[] = $formattedname . ' - ' . get_string('completiondate', 'report_completion');
         }
         else {
@@ -564,9 +568,9 @@ foreach ($progress as $user) {
         print PHP_EOL.'<tr id="user-'.$user->id.'">';
 
         if (completion_can_view_data($user->id, $course)) {
-            $userurl = new moodle_url('/blocks/completionstatus/details.php', array('course' => $course->id, 'user' => $user->id));
+            $userurl = new url('/blocks/completionstatus/details.php', array('course' => $course->id, 'user' => $user->id));
         } else {
-            $userurl = new moodle_url('/user/view.php', array('id' => $user->id, 'course' => $course->id));
+            $userurl = new url('/user/view.php', array('id' => $user->id, 'course' => $course->id));
         }
 
         print '<th scope="row"><a href="' . $userurl->out() . '">' .
@@ -663,7 +667,7 @@ foreach ($progress as $user) {
             if ($allow_marking_criteria === $criterion->id) {
                 $describe = get_string('completion-'.$completiontype, 'completion');
 
-                $toggleurl = new moodle_url(
+                $toggleurl = new url(
                     '/course/togglecompletion.php',
                     array(
                         'user' => $user->id,
@@ -736,8 +740,8 @@ if ($csv) {
 
 print '</table>';
 
-$csvurl = new moodle_url('/report/completion/index.php', array('course' => $course->id, 'format' => 'csv'));
-$excelurl = new moodle_url('/report/completion/index.php', array('course' => $course->id, 'format' => 'excelcsv'));
+$csvurl = new url('/report/completion/index.php', array('course' => $course->id, 'format' => 'csv'));
+$excelurl = new url('/report/completion/index.php', array('course' => $course->id, 'format' => 'excelcsv'));
 
 print '<ul class="export-actions">';
 print '<li><a href="'.$csvurl->out().'">'.get_string('csvdownload','completion').'</a></li>';

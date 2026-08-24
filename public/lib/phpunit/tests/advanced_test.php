@@ -16,6 +16,7 @@
 
 namespace core;
 
+use core\exception\moodle_exception;
 use core\test\phpunit\exception\test_exception;
 
 /**
@@ -331,7 +332,7 @@ final class advanced_test extends \advanced_testcase {
         try {
             $DB->get_record('pokus', array());
             $this->fail('Exception expected when accessing non existent table');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('dml_exception', $e);
         }
         $DB = $this->createMock(get_class($DB));

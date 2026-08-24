@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 
 $id = required_param('courseid', PARAM_INT);
@@ -36,10 +39,10 @@ $course = $DB->get_record('course', $params, '*', MUST_EXIST);
 require_login($course);
 \core_competency\api::require_enabled();
 
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 $urlparams = array('courseid' => $id, 'mod' => $currentmodule);
 
-$url = new moodle_url('/admin/tool/lp/coursecompetencies.php', $urlparams);
+$url = new url('/admin/tool/lp/coursecompetencies.php', $urlparams);
 
 list($title, $subtitle) = \tool_lp\page_helper::setup_for_course($url, $course);
 if ($currentmodule > 0) {
@@ -50,7 +53,7 @@ $output = $PAGE->get_renderer('tool_lp');
 $page = new \tool_lp\output\course_competencies_page($course->id, $currentmodule);
 
 echo $output->header();
-$baseurl = new moodle_url('/admin/tool/lp/coursecompetencies.php');
+$baseurl = new url('/admin/tool/lp/coursecompetencies.php');
 $nav = new \tool_lp\output\module_navigation($course->id, $currentmodule, $baseurl);
 echo $output->render($nav);
 echo $output->heading($title);

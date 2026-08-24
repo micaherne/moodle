@@ -16,6 +16,9 @@
 
 namespace core_admin\setting\setting;
 
+use core\context\system;
+use core\exception\coding_exception;
+
 /**
  * An admin setting for selecting one or more users who have a capability
  * in the system context
@@ -65,13 +68,13 @@ class users_with_capability extends \core_admin\setting\setting\configmultiselec
         }
         [$sort, $sortparams] = users_order_by_sql('u');
         if (!empty($sortparams)) {
-            throw new \coding_exception('users_order_by_sql returned some query parameters. ' .
+            throw new coding_exception('users_order_by_sql returned some query parameters. ' .
                     'This is unexpected, and a problem because there is no way to pass these ' .
                     'parameters to get_users_by_capability. See MDL-34657.');
         }
         $userfieldsapi = \core_user\fields::for_name();
         $userfields = 'u.id, u.username, ' . $userfieldsapi->get_sql('u', false, '', '', false)->selects;
-        $users = get_users_by_capability(\context_system::instance(), $this->capability, $userfields, $sort);
+        $users = get_users_by_capability(system::instance(), $this->capability, $userfields, $sort);
         $this->choices = [
             '$@NONE@$' => get_string('nobody'),
             '$@ALL@$' => get_string('everyonewhocan', 'admin', get_capability_string($this->capability)),

@@ -16,6 +16,9 @@
 
 namespace quizaccess_seb;
 
+use core\exception\moodle_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/test_helper_trait.php');
@@ -110,7 +113,7 @@ final class helper_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user); // Log user in.
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage('Unsupported redirect detected, script execution terminated');
         \quizaccess_seb\helper::get_seb_config_content($quiz->cmid);
     }
@@ -129,7 +132,7 @@ final class helper_test extends \advanced_testcase {
         $this->getDataGenerator()->enrol_user($user->id, $course->id);
         $this->setUser($user); // Log user in.
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage("No SEB config could be found for quiz with cmid: $quiz->cmid");
         \quizaccess_seb\helper::get_seb_config_content($quiz->cmid);
     }
@@ -149,7 +152,7 @@ final class helper_test extends \advanced_testcase {
         $this->getDataGenerator()->enrol_user($user->id, $course->id);
         $this->setUser($user); // Log user in.
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage("No SEB config could be found for quiz with cmid: $quiz->cmid");
         \quizaccess_seb\helper::get_seb_config_content($quiz->cmid);
     }
@@ -171,7 +174,7 @@ final class helper_test extends \advanced_testcase {
 
         $config = \quizaccess_seb\helper::get_seb_config_content($quiz->cmid);
 
-        $url = new \moodle_url("/mod/quiz/view.php", ['id' => $quiz->cmid]);
+        $url = new url("/mod/quiz/view.php", ['id' => $quiz->cmid]);
 
         $this->assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             . "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"

@@ -16,6 +16,7 @@
 
 namespace core_calendar;
 
+use core_cache\helper;
 use core_calendar\local\event\proxies\coursecat_proxy;
 
 /**
@@ -36,7 +37,7 @@ final class coursecat_proxy_test extends \advanced_testcase {
         $category = $generator->create_category([
                 'name' => $name,
             ]);
-        \cache_helper::purge_by_event('changesincoursecat');
+        helper::purge_by_event('changesincoursecat');
 
         // Fetch the proxy.
         $startreads = $DB->perf_get_reads();

@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\configtext;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -31,7 +34,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2015 Ruslan Kabalin, Lancaster University.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class antivirus_clamav_runningmethod_setting extends admin_setting_configselect {
+class antivirus_clamav_runningmethod_setting extends configselect {
     /**
      * Save a setting
      *
@@ -78,7 +81,7 @@ class antivirus_clamav_runningmethod_setting extends admin_setting_configselect 
  * @copyright  2019 Didier Raboud, Liip AG.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class antivirus_clamav_socket_setting extends admin_setting_configtext {
+class antivirus_clamav_socket_setting extends configtext {
     /**
      * Ping ClamAV socket.
      *

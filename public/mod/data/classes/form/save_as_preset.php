@@ -16,10 +16,11 @@
 
 namespace mod_data\form;
 
-use context;
+use core\context;
+use core\context\module;
 use core\notification;
-use moodle_exception;
-use moodle_url;
+use core\exception\moodle_exception;
+use core\url;
 use core_form\dynamic_form;
 use mod_data\manager;
 use mod_data\preset;
@@ -69,7 +70,7 @@ class save_as_preset extends dynamic_form {
         $course = $DB->get_record('course', array('id' => $data->course), '*', MUST_EXIST);
         $cm = get_coursemodule_from_instance('data', $data->id, $course->id, null, MUST_EXIST);
 
-        return \context_module::instance($cm->id, MUST_EXIST);
+        return module::instance($cm->id, MUST_EXIST);
     }
 
     /**
@@ -163,7 +164,7 @@ class save_as_preset extends dynamic_form {
         $data = $DB->get_record('data', array('id' => $formdata->d), '*', MUST_EXIST);
         $course = $DB->get_record('course', array('id' => $data->course), '*', MUST_EXIST);
         $cm = get_coursemodule_from_instance('data', $data->id, $course->id, null, MUST_EXIST);
-        $context = \context_module::instance($cm->id, MUST_EXIST);
+        $context = module::instance($cm->id, MUST_EXIST);
 
         try {
             $manager = manager::create_from_instance($data);
@@ -194,7 +195,7 @@ class save_as_preset extends dynamic_form {
 
             if ($result) {
                 // Add notification in the session to be shown when the page is reloaded on the JS side.
-                $previewurl = new moodle_url(
+                $previewurl = new url(
                     '/mod/data/preset.php',
                     ['id' => $cm->id, 'fullname' => $preset->get_fullname(), 'action' => 'preview']
                 );
@@ -231,9 +232,9 @@ class save_as_preset extends dynamic_form {
      *
      * @return moodle_url
      */
-    protected function get_page_url_for_dynamic_submission(): moodle_url {
+    protected function get_page_url_for_dynamic_submission(): url {
         $d = $this->optional_param('d', null, PARAM_INT);
 
-        return new moodle_url('/user/field.php', ['d' => $d]);
+        return new url('/user/field.php', ['d' => $d]);
     }
 }

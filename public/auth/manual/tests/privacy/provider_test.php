@@ -28,6 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot.'/auth/manual/auth.php');
 
+use core\context\system;
 use core_privacy\local\request\writer;
 use core_privacy\local\request\transform;
 use auth_manual\privacy\provider;
@@ -61,7 +62,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->authplugin->user_update_password($user, 'MyPrivacytestPassword*');
 
         provider::export_user_preferences($user->id);
-        $writer = writer::with_context(\context_system::instance());
+        $writer = writer::with_context(system::instance());
         $prefs = $writer->get_user_preferences('auth_manual');
         $time = transform::datetime(get_user_preferences('auth_manual_passwordupdatetime', 0, $user->id));
 

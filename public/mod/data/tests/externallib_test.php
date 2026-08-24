@@ -16,8 +16,11 @@
 
 namespace mod_data;
 
+use core\context\module;
+use core\url;
 use core_external\external_api;
 use core_external\external_settings;
+use core_filters\filter_manager;
 use mod_data_external;
 
 /**
@@ -85,7 +88,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $course->groupmodeforce = true;
         $this->course = $this->getDataGenerator()->create_course($course);
         $this->database = $this->getDataGenerator()->create_module('data', array('course' => $this->course->id));
-        $this->context = \context_module::instance($this->database->cmid);
+        $this->context = module::instance($this->database->cmid);
         $this->cm = get_coursemodule_from_instance('data', $this->database->id);
 
         // Create users.
@@ -177,7 +180,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $enrol->enrol_user($instance2, $student->id, $studentrole->id);
 
         // Enable multilang filter to on content and heading.
-        \filter_manager::reset_caches();
+        filter_manager::reset_caches();
         filter_set_global_state('multilang', TEXTFILTER_ON);
         filter_set_applies_to_strings('multilang', true);
         // Set WS filtering.
@@ -324,7 +327,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_data\event\course_module_viewed', $event);
         $this->assertEquals($this->context, $event->get_context());
-        $moodledata = new \moodle_url('/mod/data/view.php', array('id' => $this->cm->id));
+        $moodledata = new url('/mod/data/view.php', array('id' => $this->cm->id));
         $this->assertEquals($moodledata, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());

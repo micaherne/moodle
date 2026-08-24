@@ -16,6 +16,9 @@
 
 namespace tool_monitor;
 
+use core\context\course;
+use core\context\module;
+
 /**
  * Unit tests for the tool_monitor clean events task.
  *
@@ -46,11 +49,11 @@ final class task_clean_events_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $bookgenerator = $this->getDataGenerator()->get_plugin_generator('mod_book');
         $book = $this->getDataGenerator()->create_module('book', array('course' => $course->id));
-        $bookcontext = \context_module::instance($book->cmid);
+        $bookcontext = module::instance($book->cmid);
         $bookchapter = $bookgenerator->create_chapter(array('bookid' => $book->id));
         $course2 = $this->getDataGenerator()->create_course();
         $book2 = $this->getDataGenerator()->create_module('book', array('course' => $course2->id));
-        $book2context = \context_module::instance($book2->cmid);
+        $book2context = module::instance($book2->cmid);
         $book2chapter = $bookgenerator->create_chapter(array('bookid' => $book2->id));
         $monitorgenerator = $this->getDataGenerator()->get_plugin_generator('tool_monitor');
 
@@ -128,7 +131,7 @@ final class task_clean_events_test extends \advanced_testcase {
 
         // Trigger a bunch of other events.
         $eventparams = array(
-            'context' => \context_course::instance($course->id)
+            'context' => course::instance($course->id)
         );
         for ($i = 0; $i < 5; $i++) {
             \mod_quiz\event\course_module_instance_list_viewed::create($eventparams)->trigger();

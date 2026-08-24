@@ -16,7 +16,7 @@
 
 namespace core_block\output;
 
-use moodle_url;
+use core\url;
 
 /**
  * This class represents a target for where a block can go when it is being moved.
@@ -39,7 +39,7 @@ class block_move_target {
      */
     public function __construct(
         /** @var moodle_url Move url */
-        public moodle_url $url,
+        public url $url,
     ) {
     }
 }

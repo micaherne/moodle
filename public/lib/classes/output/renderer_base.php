@@ -21,7 +21,7 @@ use core\exception\moodle_exception;
 use core\exception\coding_exception;
 use core\output\actions\component_action;
 use moodle_page;
-use moodle_url;
+use core\url;
 use stdClass;
 use Mustache\Exception\UnknownTemplateException;
 
@@ -373,7 +373,7 @@ class renderer_base {
         $filepath = ((int) $maxwidth . 'x' . (int) $maxheight) . '/';
 
         // Use $CFG->themerev to prevent browser caching when the file changes.
-        return moodle_url::make_pluginfile_url(
+        return url::make_pluginfile_url(
             context_system::instance()->id,
             'core_admin',
             'logo',
@@ -401,7 +401,7 @@ class renderer_base {
         $filepath = ((int) $maxwidth . 'x' . (int) $maxheight) . '/';
 
         // Use $CFG->themerev to prevent browser caching when the file changes.
-        return moodle_url::make_pluginfile_url(
+        return url::make_pluginfile_url(
             context_system::instance()->id,
             'core_admin',
             'logocompact',

@@ -18,9 +18,9 @@ declare(strict_types = 1);
 
 namespace core_completion;
 
-use cm_info;
-use coding_exception;
-use moodle_exception;
+use core_course\cm_info;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 
 /**
  * Base class for defining an activity module's custom completion rules.

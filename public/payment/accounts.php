@@ -22,6 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\output\action_menu;
+use core\output\action_menu\link_secondary;
+use core\output\html_writer;
+use core\url;
+use core_table\output\html_table;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
@@ -36,7 +43,7 @@ $enabledplugins = \core\plugininfo\paygw::get_enabled_plugins();
 
 echo $OUTPUT->header();
 
-$accounts = \core_payment\helper::get_payment_accounts_to_manage(context_system::instance(), $showarchived);
+$accounts = \core_payment\helper::get_payment_accounts_to_manage(system::instance(), $showarchived);
 $table = new html_table();
 $table->head = [get_string('accountname', 'payment'), get_string('type_paygw_plural', 'plugin'), ''];
 $table->colclasses = ['', '', 'mdl-right'];
@@ -62,17 +69,17 @@ foreach ($accounts as $account) {
     $menu->set_menu_trigger(get_string('edit'));
     $menu->set_boundary('window');
     if ($canmanage) {
-        $menu->add(new action_menu_link_secondary($account->get_edit_url(), null, get_string('edit')));
+        $menu->add(new link_secondary($account->get_edit_url(), null, get_string('edit')));
         if (!$account->get('archived')) {
             $deleteurl = $account->get_edit_url(['delete' => 1, 'sesskey' => sesskey()]);
-            $menu->add(new action_menu_link_secondary($deleteurl, null, get_string('deleteorarchive', 'payment'), [
+            $menu->add(new link_secondary($deleteurl, null, get_string('deleteorarchive', 'payment'), [
                 'data-modal' => 'confirmation',
                 'data-modal-type' => 'delete',
                 'data-modal-content-str' => json_encode(['accountdeleteconfirm', 'payment']),
             ]));
         } else {
             $restoreurl = $account->get_edit_url(['restore' => 1, 'sesskey' => sesskey()]);
-            $menu->add(new action_menu_link_secondary($restoreurl, null, get_string('restoreaccount', 'payment')));
+            $menu->add(new link_secondary($restoreurl, null, get_string('restoreaccount', 'payment')));
         }
     }
 
@@ -81,9 +88,9 @@ foreach ($accounts as $account) {
 
 echo html_writer::div(get_string('paymentaccountsexplained', 'payment'), 'pb-2');
 
-if (has_capability('moodle/site:config', context_system::instance())) {
+if (has_capability('moodle/site:config', system::instance())) {
     // For administrators add a link to "Manage payment gateways" page.
-    $link = html_writer::link(new moodle_url('/admin/settings.php', ['section' => 'managepaymentgateways']),
+    $link = html_writer::link(new url('/admin/settings.php', ['section' => 'managepaymentgateways']),
         get_string('type_paygwmanage', 'plugin'));
     $text = get_string('gotomanageplugins', 'payment', $link);
     echo html_writer::div($text, 'pb-2');
@@ -91,9 +98,9 @@ if (has_capability('moodle/site:config', context_system::instance())) {
 
 echo html_writer::div(html_writer::table($table), 'position-relative');
 
-echo html_writer::div(html_writer::link(new moodle_url($PAGE->url, ['showarchived' => !$showarchived]),
+echo html_writer::div(html_writer::link(new url($PAGE->url, ['showarchived' => !$showarchived]),
     $showarchived ? get_string('hidearchived', 'payment') : get_string('showarchived', 'payment')), 'mdl-right');
 
-echo $OUTPUT->single_button(new moodle_url('/payment/manage_account.php'), get_string('createaccount', 'payment'), 'get');
+echo $OUTPUT->single_button(new url('/payment/manage_account.php'), get_string('createaccount', 'payment'), 'get');
 
 echo $OUTPUT->footer();

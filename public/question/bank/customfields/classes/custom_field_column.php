@@ -16,6 +16,7 @@
 
 namespace qbank_customfields;
 
+use core\exception\coding_exception;
 use core_question\local\bank\column_base;
 use core_question\local\bank\view;
 use qbank_customfields\customfield\question_handler;
@@ -54,7 +55,7 @@ class custom_field_column extends column_base {
         if ($ingoremissing) {
             return null;
         } else {
-            throw new \coding_exception('Custom field ' . $columnname . ' does not exist.');
+            throw new coding_exception('Custom field ' . $columnname . ' does not exist.');
         }
     }
 

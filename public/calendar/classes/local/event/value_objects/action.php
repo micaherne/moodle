@@ -26,6 +26,7 @@ namespace core_calendar\local\event\value_objects;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\url;
 use core_calendar\local\event\entities\action_interface;
 
 /**
@@ -65,7 +66,7 @@ class action implements action_interface {
      */
     public function __construct(
         $name,
-        \moodle_url $url,
+        url $url,
         $itemcount,
         $actionable
     ) {

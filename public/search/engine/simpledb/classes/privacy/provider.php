@@ -25,6 +25,8 @@ namespace search_simpledb\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
+use core\context_helper;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\contextlist;
 use core_privacy\local\request\approved_contextlist;
@@ -129,7 +131,7 @@ class provider implements
 
         $userid = $contextlist->get_user()->id;
 
-        $ctxfields = \context_helper::get_preload_record_columns_sql('ctx');
+        $ctxfields = context_helper::get_preload_record_columns_sql('ctx');
         list($contextsql, $contextparams) = $DB->get_in_or_equal($contextlist->get_contextids(), SQL_PARAMS_NAMED);
         $sql = "SELECT ssi.*, $ctxfields FROM {search_simpledb_index} ssi
                   JOIN {context} ctx ON ctx.id = ssi.contextid
@@ -139,8 +141,8 @@ class provider implements
         $records = $DB->get_recordset_sql($sql, $params);
         foreach ($records as $record) {
 
-            \context_helper::preload_from_record($record);
-            $context = \context::instance_by_id($record->contextid);
+            context_helper::preload_from_record($record);
+            $context = context::instance_by_id($record->contextid);
             $document = (object)[
                 'title' => format_string($record->title, true, ['context' => $context]),
                 'content' => format_text($record->content, $textformat, ['context' => $context]),
@@ -162,7 +164,7 @@ class provider implements
      *
      * @param   context                 $context   The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         global $DB;
 
         $DB->delete_records('search_simpledb_index', ['contextid' => $context->id]);

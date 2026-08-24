@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+
 require_once("../../config.php");
 require_once($CFG->dirroot.'/mod/lti/lib.php');
 require_once($CFG->dirroot.'/mod/lti/locallib.php');
@@ -34,7 +36,7 @@ $toolproxy = $DB->get_record('lti_tool_proxies', array('id' => $id), '*', MUST_E
 require_login(0, false);
 require_sesskey();
 
-$systemcontext = context_system::instance();
+$systemcontext = system::instance();
 require_capability('moodle/site:config', $systemcontext);
 
 lti_register($toolproxy);

@@ -26,10 +26,11 @@ declare(strict_types = 1);
 
 namespace core_grades;
 
-use context;
+use core\context;
+use core\exception\coding_exception;
 use gradingform_controller;
 use gradingform_instance;
-use moodle_exception;
+use core\exception\moodle_exception;
 use stdClass;
 use grade_item as core_gradeitem;
 use grading_manager;
@@ -86,7 +87,7 @@ abstract class component_gradeitem {
 
         $classname = "{$component}\\grades\\{$itemname}_gradeitem";
         if (!class_exists($classname)) {
-            throw new \coding_exception("Unknown gradeitem {$itemname} for component {$classname}");
+            throw new coding_exception("Unknown gradeitem {$itemname} for component {$classname}");
         }
 
         return $classname::load_from_context($context);

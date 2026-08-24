@@ -25,11 +25,11 @@
 namespace core\hub;
 defined('MOODLE_INTERNAL') || die();
 
-use moodle_exception;
+use core\exception\moodle_exception;
 use curl;
 use stdClass;
-use coding_exception;
-use moodle_url;
+use core\exception\coding_exception;
+use core\url;
 
 /**
  * Provides methods to communicate with the hub (sites directory) web services.
@@ -159,7 +159,7 @@ class api {
      */
     public static function get_hub_info() {
         $info = self::call('hub_get_info', [], true);
-        $info['imgurl'] = new moodle_url(HUB_MOODLEORGHUBURL . '/local/hub/webservice/download.php',
+        $info['imgurl'] = new url(HUB_MOODLEORGHUBURL . '/local/hub/webservice/download.php',
             ['filetype' => self::HUB_HUBSCREENSHOT_FILE_TYPE]);
         return $info;
     }

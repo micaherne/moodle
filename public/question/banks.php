@@ -24,6 +24,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
 use core_question\local\bank\question_bank_helper;
 use core_question\local\bank\question_edit_contexts;
 use core_question\output\view_banks;
@@ -35,10 +37,10 @@ global $CFG, $PAGE, $OUTPUT;
 $courseid = required_param('courseid', PARAM_INT);
 $createdefault = optional_param('createdefault', false, PARAM_BOOL);
 $course = get_course($courseid);
-$coursecontext = context_course::instance($course->id);
+$coursecontext = course::instance($course->id);
 
 require_login($course, false);
-$canmanage = has_capability('moodle/course:manageactivities', \context_course::instance($course->id));
+$canmanage = has_capability('moodle/course:manageactivities', course::instance($course->id));
 
 if (empty(question_bank_helper::get_activity_types_with_shareable_questions())) {
     throw new moodle_exception('disabledbanks', 'question');

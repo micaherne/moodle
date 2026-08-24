@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/gradelib.php');
 require_once($CFG->dirroot.'/grade/lib.php');
@@ -33,12 +36,12 @@ $page          = optional_param('page', 0, PARAM_INT);   // Active page.
 $showreport    = optional_param('showreport', 0, PARAM_INT);
 
 $PAGE->set_pagelayout('report');
-$url = new moodle_url('/grade/report/history/index.php', array('id' => $courseid, 'showreport' => 1));
+$url = new url('/grade/report/history/index.php', array('id' => $courseid, 'showreport' => 1));
 $PAGE->set_url($url);
 
 $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
 require_login($course);
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 
 require_capability('gradereport/history:view', $context);
 require_capability('moodle/grade:viewall', $context);
@@ -109,7 +112,7 @@ if ($table->is_downloading()) {
 
 // Print header.
 $actionbar = new \core_grades\output\general_action_bar($context,
-    new moodle_url('/grade/report/history/index.php', ['id' => $courseid]), 'report', 'history');
+    new url('/grade/report/history/index.php', ['id' => $courseid]), 'report', 'history');
 print_grade_page_head($COURSE->id, 'report', 'history', false, false, false, true, null, null,
     null, $actionbar);
 $mform->display();

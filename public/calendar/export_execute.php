@@ -22,6 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\exception\coding_exception;
+use core\url;
+use core\user;
+
 define('NO_MOODLE_COOKIES', true);
 
 require_once('../config.php');
@@ -39,9 +45,9 @@ if (empty($CFG->enablecalendarexport)) {
     die('no export');
 }
 
-$checkuserid = !empty($userid) && $user = \core_user::get_user($userid);
+$checkuserid = !empty($userid) && $user = user::get_user($userid);
 // Allowing for fallback check of old url - MDL-27542.
-$checkusername = !empty($username) && $user = \core_user::get_user_by_username($username);
+$checkusername = !empty($username) && $user = user::get_user_by_username($username);
 if ((!$checkuserid && !$checkusername) || !$user) {
     //No such user
     die('Invalid authentication');
@@ -58,7 +64,7 @@ if (!$authuserid && !$authusername) {
 // Setup up the user including web access logging.
 \core\session\manager::set_user($user);
 
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 // Get the calendar type we are using.
 $calendartype = \core_calendar\type_factory::get_calendar_instance();
@@ -81,7 +87,7 @@ if (!empty($generateurl)) {
     $params['authtoken'] = $authtoken;
     $params['generateurl'] = true;
 
-    $link = new moodle_url('/calendar/export.php', $params);
+    $link = new url('/calendar/export.php', $params);
     redirect($link->out());
     die;
 }
@@ -268,7 +274,7 @@ foreach($events as $event) {
         throw new coding_exception("Negative duration is not supported yet.");
     }
     if ($event->courseid != 0) {
-        $coursecontext = context_course::instance($event->courseid);
+        $coursecontext = course::instance($event->courseid);
         $ev->add_property('categories', format_string($courses[$event->courseid]->shortname, true, array('context' => $coursecontext)));
     }
     $ical->add_component($ev);

@@ -16,6 +16,8 @@
 
 namespace qtype_shortanswer;
 
+use core\context\module;
+
 /**
  * Unit tests for restore_qtype_shortanswer_plugin
  *
@@ -40,7 +42,7 @@ final class restore_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $course1 = $generator->create_course();
         $qbank = $generator->get_plugin_generator('mod_qbank')->create_instance(['course' => $course1->id]);
-        $context = \context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $initialcount = $DB->count_records('question');
 

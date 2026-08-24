@@ -17,7 +17,9 @@
 namespace mod_lti\output;
 
 use core\output\notification;
-use renderer_base;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\url;
 
 /**
  * Course tools page header renderable, containing the data for the page zero state and 'add tool' button.
@@ -26,7 +28,7 @@ use renderer_base;
  * @copyright  2023 Jake Dallimore <jrhdallimore@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class course_tools_page_header implements \templatable {
+class course_tools_page_header implements templatable {
 
     /**
      * Constructor.
@@ -49,7 +51,7 @@ class course_tools_page_header implements \templatable {
         $context = (object) [];
 
         if ($this->canadd) {
-            $context->addlink = (new \moodle_url('/mod/lti/coursetooledit.php', ['course' => $this->courseid]))->out();
+            $context->addlink = (new url('/mod/lti/coursetooledit.php', ['course' => $this->courseid]))->out();
         }
 
         if ($this->toolcount == 0) {

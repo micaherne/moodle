@@ -24,6 +24,9 @@
 
 namespace core\event;
 
+use core\context\system;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -63,7 +66,7 @@ class tag_created extends base {
         $event = self::create(array(
             'objectid' => $tag->id,
             'relateduserid' => $tag->userid,
-            'context' => \context_system::instance(),
+            'context' => system::instance(),
             'other' => array(
                 'name' => $tag->name,
                 'rawname' => $tag->rawname
@@ -100,11 +103,11 @@ class tag_created extends base {
         parent::validate_data();
 
         if (!isset($this->other['name'])) {
-            throw new \coding_exception('The \'name\' value must be set in other.');
+            throw new coding_exception('The \'name\' value must be set in other.');
         }
 
         if (!isset($this->other['rawname'])) {
-            throw new \coding_exception('The \'rawname\' value must be set in other.');
+            throw new coding_exception('The \'rawname\' value must be set in other.');
         }
     }
 

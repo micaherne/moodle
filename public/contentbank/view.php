@@ -22,6 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\plugin_manager;
+use core\url;
 use core_contentbank\content;
 
 require('../config.php');
@@ -43,10 +49,10 @@ if (empty($SESSION->notifications)) {
     $errormsg = optional_param('errormsg', '', PARAM_ALPHANUMEXT);
 }
 
-$returnurl = new \moodle_url('/contentbank/index.php', ['contextid' => $context->id]);
-$plugin = core_plugin_manager::instance()->get_plugin_info($record->contenttype);
+$returnurl = new url('/contentbank/index.php', ['contextid' => $context->id]);
+$plugin = plugin_manager::instance()->get_plugin_info($record->contenttype);
 if (!$plugin || !$plugin->is_enabled()) {
-    throw new \moodle_exception('unsupported', 'core_contentbank', $returnurl);
+    throw new moodle_exception('unsupported', 'core_contentbank', $returnurl);
 }
 
 $title = get_string('contentbank');
@@ -60,7 +66,7 @@ $content = $cb->get_content_from_id($record->id);
 $contenttype = $content->get_content_type_instance();
 
 if (!$content->is_view_allowed()) {
-    $cburl = new \moodle_url('/contentbank/index.php', ['contextid' => $context->id, 'errormsg' => 'notavailable']);
+    $cburl = new url('/contentbank/index.php', ['contextid' => $context->id, 'errormsg' => 'notavailable']);
     redirect($cburl);
 }
 
@@ -68,9 +74,9 @@ if ($context->contextlevel == CONTEXT_COURSECAT) {
     $PAGE->set_primary_active_tab('home');
 }
 
-$PAGE->set_url(new \moodle_url('/contentbank/view.php', ['id' => $id]));
-if ($context->id == \context_system::instance()->id) {
-    $PAGE->set_context(context_course::instance($context->id));
+$PAGE->set_url(new url('/contentbank/view.php', ['id' => $id]));
+if ($context->id == system::instance()->id) {
+    $PAGE->set_context(course::instance($context->id));
 } else {
     $PAGE->set_context($context);
 }
@@ -97,7 +103,7 @@ if (!empty($errormsg) && get_string_manager()->string_exists($errormsg, 'core_co
                 $visibilitymsg = get_string('unlisted', 'core_contentbank');
                 break;
             default:
-                throw new \moodle_exception('contentvisibilitynotfound', 'error', $returnurl, $content->get_visibility());
+                throw new moodle_exception('contentvisibilitynotfound', 'error', $returnurl, $content->get_visibility());
                 break;
         }
         $statusmsg = get_string($statusmsg, 'core_contentbank', $visibilitymsg);

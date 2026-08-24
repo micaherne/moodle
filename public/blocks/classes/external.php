@@ -24,6 +24,12 @@
  * @since      Moodle 3.3
  */
 
+use core\context\course;
+use core\context\system;
+use core\context\user as context_user;
+use core\exception\moodle_exception;
+use core\url;
+use core\user as core_user;
 use core_external\external_api;
 use core_external\external_files;
 use core_external\external_format_value;
@@ -102,7 +108,7 @@ class core_block_external extends external_api {
         global $PAGE, $OUTPUT;
 
         // Set page URL to a fake URL to avoid errors.
-        $PAGE->set_url(new \moodle_url('/webservice/core_block_external/'));
+        $PAGE->set_url(new url('/webservice/core_block_external/'));
 
         // Load the block instances for all the regions.
         $PAGE->blocks->load_blocks($includeinvisible);
@@ -181,7 +187,7 @@ class core_block_external extends external_api {
             ['courseid' => $courseid, 'returncontents' => $returncontents]);
 
         $course = get_course($params['courseid']);
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         self::validate_context($context);
 
         // Specific layout for frontpage course.
@@ -261,7 +267,7 @@ class core_block_external extends external_api {
 
         if ($USER->id != $userid) {
             // We must check if the current user can view other users dashboard.
-            require_capability('moodle/site:config', context_system::instance());
+            require_capability('moodle/site:config', system::instance());
             $user = core_user::get_user($userid, '*', MUST_EXIST);
             core_user::require_active_user($user);
         }

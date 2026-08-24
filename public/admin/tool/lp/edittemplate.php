@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
@@ -44,7 +47,7 @@ require_login(0, false);
 require_capability('moodle/competency:templatemanage', $context);
 
 // We keep the original context in the URLs, so that we remain in the same context.
-$url = new moodle_url("/admin/tool/lp/edittemplate.php", [
+$url = new url("/admin/tool/lp/edittemplate.php", [
     'id' => $id,
     'pagecontextid' => $pagecontextid,
     'return' => $returntype
@@ -70,7 +73,7 @@ $data = $form->get_data();
 if ($data) {
     if (empty($data->id)) {
         $template = \core_competency\api::create_template($data);
-        $returnurl = new moodle_url('/admin/tool/lp/templatecompetencies.php', [
+        $returnurl = new url('/admin/tool/lp/templatecompetencies.php', [
             'templateid' => $template->get('id'),
             'pagecontextid' => $pagecontextid
         ]);

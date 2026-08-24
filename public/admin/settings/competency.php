@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\settingpage\settingpage;
+
 defined('MOODLE_INTERNAL') || die();
 
 // Save processing when the user will not be able to access anything.
@@ -31,7 +35,7 @@ if (has_capability('moodle/site:config', $systemcontext)) {
 
     // Settings page.
     $iscompetencyenabled = get_config('core_competency', 'enabled');
-    $settings = new admin_settingpage('competencysettings', new lang_string('competenciessettings', 'core_competency'),
+    $settings = new settingpage('competencysettings', new lang_string('competenciessettings', 'core_competency'),
     'moodle/site:config', !$iscompetencyenabled);
     if ($iscompetencyenabled) {
         $ADMIN->add($parentname, $settings);
@@ -39,7 +43,7 @@ if (has_capability('moodle/site:config', $systemcontext)) {
 
     // Load the full tree of settings.
     if ($ADMIN->fulltree) {
-        $setting = new admin_setting_configcheckbox('core_competency/pushcourseratingstouserplans',
+        $setting = new configcheckbox('core_competency/pushcourseratingstouserplans',
             new lang_string('pushcourseratingstouserplans', 'core_competency'),
             new lang_string('pushcourseratingstouserplans_desc', 'core_competency'), 1);
         $settings->add($setting);

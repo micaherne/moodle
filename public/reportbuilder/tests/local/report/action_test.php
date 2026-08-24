@@ -19,9 +19,9 @@ declare(strict_types=1);
 namespace core_reportbuilder\local\report;
 
 use advanced_testcase;
-use lang_string;
-use moodle_url;
-use pix_icon;
+use core\lang_string;
+use core\url;
+use core\output\pix_icon;
 use stdClass;
 
 /**
@@ -91,7 +91,7 @@ final class action_test extends advanced_testcase {
     ): void {
 
         $action = new action(
-            new moodle_url('#'),
+            new url('#'),
             new pix_icon('t/edit', $pixiconalt),
             $attributes,
             false,
@@ -111,7 +111,7 @@ final class action_test extends advanced_testcase {
         $actionlink = $action->get_action_link((object) ['id' => 42]);
 
         // This is the action URL we expect.
-        $expectedactionurl = (new moodle_url('/', ['id' => 42, 'action' => 'edit']))->out(false);
+        $expectedactionurl = (new url('/', ['id' => 42, 'action' => 'edit']))->out(false);
         $this->assertEquals($expectedactionurl, $actionlink->url->out(false));
     }
 
@@ -141,7 +141,7 @@ final class action_test extends advanced_testcase {
      */
     private function create_action(array $urlparams = [], array $attributes = []): action {
         return new action(
-            new moodle_url('/', $urlparams),
+            new url('/', $urlparams),
             new pix_icon('t/edit', get_string('edit')),
             $attributes
         );

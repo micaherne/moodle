@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
@@ -33,7 +35,7 @@ $search = optional_param('search', '', PARAM_RAW);
 $title = get_string('templates', 'tool_templatelibrary');
 $pagetitle = get_string('searchtemplates', 'tool_templatelibrary');
 // Set up the page.
-$url = new moodle_url("/admin/tool/templatelibrary/index.php", array('component' => $component, 'search' => $search));
+$url = new url("/admin/tool/templatelibrary/index.php", array('component' => $component, 'search' => $search));
 $PAGE->set_url($url);
 $PAGE->set_title($title);
 $PAGE->set_heading($title);

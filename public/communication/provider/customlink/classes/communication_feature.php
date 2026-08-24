@@ -16,6 +16,8 @@
 
 namespace communication_customlink;
 
+use core_cache\application_cache;
+use core_cache\cache;
 use core_communication\processor;
 
 /**
@@ -33,7 +35,7 @@ class communication_feature implements
     protected const CUSTOMLINK_TABLE = 'communication_customlink';
 
     /** @var \cache_application $cache The application cache for this provider. */
-    protected \cache_application $cache;
+    protected application_cache $cache;
 
     /**
      * Load the communication provider for the communication API.
@@ -53,7 +55,7 @@ class communication_feature implements
     private function __construct(
         private \core_communication\processor $communication,
     ) {
-        $this->cache = \cache::make('communication_customlink', 'customlink');
+        $this->cache = cache::make('communication_customlink', 'customlink');
     }
 
     /**

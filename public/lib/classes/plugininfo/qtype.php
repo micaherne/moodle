@@ -23,6 +23,8 @@
  */
 namespace core\plugininfo;
 
+use core\context\system;
+
 /**
  * Class for question types
  */
@@ -137,7 +139,7 @@ class qtype extends base {
         $section = $this->get_settings_section_name();
 
         $settings = null;
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         if (
             ($hassiteconfig || has_capability('moodle/question:config', $systemcontext)) &&
             file_exists($this->full_path('settings.php'))

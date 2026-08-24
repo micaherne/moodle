@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\url;
+
 require_once(__DIR__.'/../../../../config.php');
 require_once(__DIR__.'/lib.php');
 require_once(__DIR__.'/edit_form.php');
@@ -43,7 +46,7 @@ if (!$controller->is_form_defined() || empty($options['alwaysshowdefinition'])) 
 }
 
 $title = get_string('gradingof', 'gradingform_rubric', $manager->get_area_title());
-$PAGE->set_url(new moodle_url('/grade/grading/form/rubric/preview.php', array('areaid' => $areaid)));
+$PAGE->set_url(new url('/grade/grading/form/rubric/preview.php', array('areaid' => $areaid)));
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 

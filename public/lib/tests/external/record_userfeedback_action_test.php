@@ -16,7 +16,7 @@
 
 namespace core\external;
 
-use context_system;
+use core\context\system;
 
 /**
  * Class record_userfeedback_action_testcase
@@ -50,7 +50,7 @@ final class record_userfeedback_action_test extends \core_external\tests\externa
     public function test_record_userfeedback_action(string $action): void {
         $this->resetAfterTest();
 
-        $context = context_system::instance();
+        $context = system::instance();
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
         $eventsink = $this->redirectEvents();

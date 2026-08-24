@@ -27,6 +27,8 @@
 /**
  * Abstract class representing the required implementation for classes able to process structure classes
  */
+use core\exception\moodle_exception;
+
 abstract class base_processor {
 
     abstract function pre_process_nested_element(base_nested_element $nested);

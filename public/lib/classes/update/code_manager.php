@@ -18,8 +18,8 @@ namespace core\update;
 
 use core_collator;
 use core_component;
-use coding_exception;
-use moodle_exception;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use SplFileInfo;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;

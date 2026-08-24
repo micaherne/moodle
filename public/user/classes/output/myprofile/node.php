@@ -23,6 +23,10 @@
  */
 
 namespace core_user\output\myprofile;
+
+use core\exception\coding_exception;
+use core\output\renderable;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -33,7 +37,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2015 onwards Ankit Agarwal
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class node implements \renderable {
+class node implements renderable {
     /**
      * @var string Name of parent category.
      */
@@ -97,7 +101,7 @@ class node implements \renderable {
         $this->after = $after;
         $this->name = $name;
         $this->title = $title;
-        $this->url = is_null($url) ? null : new \moodle_url($url);
+        $this->url = is_null($url) ? null : new url($url);
         $this->content = $content;
         $this->icon = $icon;
         $this->classes = $classes;
@@ -115,6 +119,6 @@ class node implements \renderable {
         if (in_array($prop, $this->properties)) {
             return $this->$prop;
         }
-        throw new \coding_exception('Property "' . $prop . '" doesn\'t exist');
+        throw new coding_exception('Property "' . $prop . '" doesn\'t exist');
     }
 }

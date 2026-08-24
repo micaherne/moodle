@@ -20,9 +20,9 @@ use core\context;
 use core_table\local\filter\filterset;
 use core\exception\coding_exception;
 use core\output\renderable;
-use html_writer;
-use moodle_url;
-use paging_bar;
+use core\output\html_writer;
+use core\url;
+use core\output\paging_bar;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
@@ -448,7 +448,7 @@ class flexible_table {
      * @param moodle_url|string $url the url with params needed to call up this page
      */
     public function define_baseurl($url) {
-        $this->baseurl = new moodle_url($url);
+        $this->baseurl = new url($url);
     }
 
     /**
@@ -864,9 +864,9 @@ class flexible_table {
 
         $userid = $row->{$this->useridfield};
         if ($COURSE->id == SITEID) {
-            $profileurl = new moodle_url('/user/profile.php', ['id' => $userid]);
+            $profileurl = new url('/user/profile.php', ['id' => $userid]);
         } else {
-            $profileurl = new moodle_url(
+            $profileurl = new url(
                 '/user/view.php',
                 ['id' => $userid, 'course' => $COURSE->id]
             );
@@ -1812,7 +1812,7 @@ class flexible_table {
         if (is_a($this, dynamic::class)) {
             $output = '';
 
-            $perpageurl = new moodle_url($PAGE->url);
+            $perpageurl = new url($PAGE->url);
 
             // Generate "Show all/Show per page" link.
             if ($this->pagesize == TABLE_SHOW_ALL_PAGE_SIZE && $this->totalrows > $this->get_default_per_page()) {

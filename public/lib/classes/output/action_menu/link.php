@@ -21,7 +21,7 @@ use core\output\action_link;
 use core\output\pix_icon;
 use core\output\renderable;
 use core\output\renderer_base;
-use moodle_url;
+use core\url;
 use stdClass;
 
 /**
@@ -54,7 +54,7 @@ class link extends action_link implements renderable {
      * @param bool $primary Whether this is a primary action or not.
      * @param array $attributes Any attribtues associated with the action.
      */
-    public function __construct(moodle_url $url, ?pix_icon $icon, $text, $primary = true, array $attributes = []) {
+    public function __construct(url $url, ?pix_icon $icon, $text, $primary = true, array $attributes = []) {
         parent::__construct($url, $text, null, $attributes, $icon);
         $this->primary = (bool)$primary;
         $this->add_class('menu-action');

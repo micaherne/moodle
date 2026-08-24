@@ -16,6 +16,7 @@
 
 namespace core_privacy\privacy;
 
+use core\context\user;
 use core_privacy\manager;
 
 /**
@@ -79,7 +80,7 @@ final class provider_advanced_test extends \advanced_testcase {
 
         // Delete the user and their context.
         delete_user($user);
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
         $usercontext->delete();
 
         $contextlist = manager::component_class_callback($component, \core_privacy\local\request\core_user_data_provider::class,

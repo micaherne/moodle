@@ -24,6 +24,9 @@
 
 namespace mod_h5pactivity\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -73,7 +76,7 @@ class report_viewed extends \core\event\base {
         parent::validate_data();
 
         if (empty($this->other['instanceid'])) {
-            throw new \coding_exception('The \'instanceid\' value must be set in other.');
+            throw new coding_exception('The \'instanceid\' value must be set in other.');
         }
     }
 
@@ -103,7 +106,7 @@ class report_viewed extends \core\event\base {
             $params['attemptid'] = $this->other['attemptid'];
         }
 
-        return new \moodle_url('/mod/h5pactivity/report.php', $params);
+        return new url('/mod/h5pactivity/report.php', $params);
     }
 
     /**

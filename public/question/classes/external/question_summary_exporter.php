@@ -24,7 +24,7 @@
 namespace core_question\external;
 defined('MOODLE_INTERNAL') || die();
 
-use \renderer_base;
+use core\output\renderer_base;
 
 /**
  * Class for exporting a question summary from an stdClass.
@@ -118,7 +118,7 @@ class question_summary_exporter extends \core\external\exporter {
      * @param  renderer_base $output A renderer.
      * @return array The list of properties.
      */
-    protected function get_other_values(\renderer_base $output) {
+    protected function get_other_values(renderer_base $output) {
         $iconexporter = new question_icon_exporter($this->question, $this->related);
 
         return [

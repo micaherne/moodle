@@ -24,6 +24,8 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -83,13 +85,13 @@ class calendar_event_deleted extends base {
         parent::validate_data();
 
         if (!isset($this->other['repeatid'])) {
-            throw new \coding_exception('The \'repeatid\' value must be set in other.');
+            throw new coding_exception('The \'repeatid\' value must be set in other.');
         }
         if (!isset($this->other['name'])) {
-            throw new \coding_exception('The \'name\' value must be set in other.');
+            throw new coding_exception('The \'name\' value must be set in other.');
         }
         if (!isset($this->other['timestart'])) {
-            throw new \coding_exception('The \'timestart\' value must be set in other.');
+            throw new coding_exception('The \'timestart\' value must be set in other.');
         }
     }
 

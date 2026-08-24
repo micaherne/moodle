@@ -21,6 +21,8 @@
 
 namespace mod_scorm;
 
+use core\output\html_writer;
+
 /*******************************************************************/
 // Default class for Scorm plugins
 //
@@ -121,6 +123,6 @@ class report {
             'data-toggle' => 'action',
             'disabled' => true
         );
-        return \html_writer::empty_tag('input', $deleteselectedparams);
+        return html_writer::empty_tag('input', $deleteselectedparams);
     }
 }

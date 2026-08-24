@@ -16,6 +16,7 @@
 
 namespace qbank_statistics\columns;
 
+use core\output\help_icon;
 use core_question\local\bank\column_base;
 
 /**
@@ -34,8 +35,8 @@ class discrimination_index extends column_base {
         return get_string('discrimination_index', 'qbank_statistics');
     }
 
-    public function help_icon(): ?\help_icon {
-        return new \help_icon('discrimination_index', 'qbank_statistics');
+    public function help_icon(): ?help_icon {
+        return new help_icon('discrimination_index', 'qbank_statistics');
     }
 
     public function get_name(): string {

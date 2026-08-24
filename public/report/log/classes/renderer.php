@@ -21,6 +21,12 @@
  * @copyright  2014 Rajesh Taneja <rajesh.taneja@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context\system;
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\output\single_select;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -122,7 +128,7 @@ class report_log_renderer extends plugin_renderer_base {
             echo html_writer::label(get_string('selctauser'), 'menuuser', false, array('class' => 'accesshide'));
             echo html_writer::select($users, "user", $reportlog->userid, false);
             $a = new stdClass();
-            $a->url = new moodle_url('/report/log/index.php', array('chooselog' => 0,
+            $a->url = new url('/report/log/index.php', array('chooselog' => 0,
                 'group' => $reportlog->get_selected_group(), 'user' => $reportlog->userid,
                 'id' => $selectedcourseid, 'date' => $reportlog->date, 'modid' => $reportlog->modid,
                 'showusers' => 1, 'showcourses' => $reportlog->showcourses));
@@ -193,7 +199,7 @@ class report_log_renderer extends plugin_renderer_base {
         }
 
         $result = '';
-        $sitecontext = context_system::instance();
+        $sitecontext = system::instance();
         $courses = $reportlog->get_course_list();
 
         if (!empty($courses) && $reportlog->showcourses) {
@@ -212,7 +218,7 @@ class report_log_renderer extends plugin_renderer_base {
         // Check if user is admin and this came because of limitation on number of courses to show in dropdown.
         if (has_capability('report/log:view', $sitecontext)) {
             $a = new stdClass();
-            $a->url = new moodle_url(
+            $a->url = new url(
                 '/report/log/index.php',
                 [
                     'chooselog' => 0,

@@ -16,6 +16,8 @@
 
 namespace core_customfield;
 
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use core_customfield_generator;
 use customfield_checkbox;
 use customfield_date;
@@ -145,7 +147,7 @@ final class field_controller_test extends \advanced_testcase {
         try {
             field_controller::create($fieldrecord->id + 1);
             $this->fail('Expected exception');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('Field not found', $e->getMessage());
         }
 
@@ -153,7 +155,7 @@ final class field_controller_test extends \advanced_testcase {
         try {
             field_controller::create(0, (object)['name' => 'a'], $category);
             $this->fail('Expected exception');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertEquals('Coding error detected, it must be fixed by a programmer: Not enough parameters to ' .
                 'initialise field_controller - unknown field type', $e->getMessage());
         }
@@ -162,7 +164,7 @@ final class field_controller_test extends \advanced_testcase {
         try {
             field_controller::create(0, (object)['type' => 'text']);
             $this->fail('Expected exception');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertEquals('Coding error detected, it must be fixed by a programmer: Not enough parameters ' .
                 'to initialise field_controller - unknown category', $e->getMessage());
         }
@@ -171,7 +173,7 @@ final class field_controller_test extends \advanced_testcase {
         try {
             field_controller::create(0, (object)['type' => 'text', 'categoryid' => $category->get('id') + 1], $category);
             $this->fail('Expected exception');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertEquals('Coding error detected, it must be fixed by a programmer: Category of the field ' .
                 'does not match category from the parameter', $e->getMessage());
         }
@@ -180,7 +182,7 @@ final class field_controller_test extends \advanced_testcase {
         try {
             field_controller::create(0, (object)['type' => 'nonexisting'], $category);
             $this->fail('Expected exception');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('Field type nonexisting not found', $e->getMessage());
         }
     }

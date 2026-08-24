@@ -22,6 +22,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
+
 require(__DIR__.'/../../config.php');
 require_once('lib.php');
 require_once('locallib.php');
@@ -34,28 +38,28 @@ $pageid    = optional_param('pageid', 0, PARAM_INT);
 $returnurl = optional_param('returnurl', '', PARAM_LOCALURL);
 
 if (!$subwiki = wiki_get_subwiki($subwikiid)) {
-    throw new \moodle_exception('incorrectsubwikiid', 'wiki');
+    throw new moodle_exception('incorrectsubwikiid', 'wiki');
 }
 
 // Checking wiki instance of that subwiki
 if (!$wiki = wiki_get_wiki($subwiki->wikiid)) {
-    throw new \moodle_exception('incorrectwikiid', 'wiki');
+    throw new moodle_exception('incorrectwikiid', 'wiki');
 }
 
 // Checking course module instance
 if (!$cm = get_coursemodule_from_instance("wiki", $subwiki->wikiid)) {
-    throw new \moodle_exception('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 
 // Checking course instance
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 
 require_login($course, true, $cm);
 
 if (!wiki_user_can_view($subwiki, $wiki)) {
-    throw new \moodle_exception('cannotviewpage', 'wiki');
+    throw new moodle_exception('cannotviewpage', 'wiki');
 }
 require_capability('mod/wiki:managefiles', $context);
 
@@ -64,14 +68,14 @@ if (empty($returnurl)) {
     if (!empty($referer)) {
         $returnurl = $referer;
     } else {
-        $returnurl = new moodle_url('/mod/wiki/files.php', array('subwiki' => $subwiki->id, 'pageid' => $pageid));
+        $returnurl = new url('/mod/wiki/files.php', array('subwiki' => $subwiki->id, 'pageid' => $pageid));
     }
 }
 
 $title = get_string('editfiles', 'wiki');
 
 $struser = get_string('user');
-$url = new moodle_url('/mod/wiki/filesedit.php', array('subwiki'=>$subwiki->id, 'pageid'=>$pageid));
+$url = new url('/mod/wiki/filesedit.php', array('subwiki'=>$subwiki->id, 'pageid'=>$pageid));
 $PAGE->set_url($url);
 $PAGE->set_context($context);
 $PAGE->set_title($title);

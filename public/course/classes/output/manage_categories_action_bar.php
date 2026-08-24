@@ -16,8 +16,12 @@
 
 namespace core_course\output;
 
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\single_button;
+use core\output\url_select;
 use moodle_page;
-use moodle_url;
+use core\url;
 
 /**
  * Class responsible for generating the action bar (tertiary nav) elements in the category management page
@@ -26,7 +30,7 @@ use moodle_url;
  * @copyright  2021 Peter Dias
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class manage_categories_action_bar implements \renderable {
+class manage_categories_action_bar implements renderable {
     /** @var object $course The course we are dealing with. */
     protected $course;
     /** @var moodle_page $page The current page. */
@@ -62,7 +66,7 @@ class manage_categories_action_bar implements \renderable {
      * @param \renderer_base $output
      * @return object|null The content required to render the url_select
      */
-    protected function get_dropdown(\renderer_base $output): ?object {
+    protected function get_dropdown(renderer_base $output): ?object {
         // If a search is being performed then no need to display the dropdown.
         if ($this->searchvalue) {
             return null;
@@ -72,7 +76,7 @@ class manage_categories_action_bar implements \renderable {
         $activeurl = null;
         $content = [];
         foreach ($modes as $mode => $description) {
-            $url = new moodle_url($this->page->url, ['view' => $mode]);
+            $url = new url($this->page->url, ['view' => $mode]);
             $content[$url->out()] = $description;
             if ($this->viewmode == $mode) {
                 $activeurl = $url->out();
@@ -87,7 +91,7 @@ class manage_categories_action_bar implements \renderable {
         }
 
         if ($content) {
-            $urlselect = new \url_select($content, $activeurl, null);
+            $urlselect = new url_select($content, $activeurl, null);
             $urlselect->set_label(get_string('viewing'), ['class' => 'visually-hidden']);
             return $urlselect->export_for_template($output);
         }
@@ -101,7 +105,7 @@ class manage_categories_action_bar implements \renderable {
      * @param \renderer_base $output
      * @return object|null The content required to render the url_select
      */
-    protected function get_category_select(\renderer_base $output): ?object {
+    protected function get_category_select(renderer_base $output): ?object {
         if (!$this->searchvalue && $this->viewmode === 'courses') {
             $categories = \core_course_category::make_categories_list(array('moodle/category:manage', 'moodle/course:create'));
             if (!$categories) {
@@ -109,14 +113,14 @@ class manage_categories_action_bar implements \renderable {
             }
             $currentcat = $this->page->url->param('categoryid');
             foreach ($categories as $id => $cat) {
-                $url = new moodle_url($this->page->url, ['categoryid' => $id]);
+                $url = new url($this->page->url, ['categoryid' => $id]);
                 if ($id == $currentcat) {
                     $currenturl = $url->out();
                 }
                 $options[$url->out()] = $cat;
             }
 
-            $select = new \url_select($options, $currenturl);
+            $select = new url_select($options, $currenturl);
             $select->set_label(get_string('category'), ['class' => 'visually-hidden']);
             $select->class .= ' text-truncate w-100';
             return $select->export_for_template($output);
@@ -138,9 +142,9 @@ class manage_categories_action_bar implements \renderable {
             'query' => $this->searchvalue
         ];
         if (\core_course_category::has_capability_on_any(['moodle/category:manage', 'moodle/course:create'])) {
-            $searchform['action'] = new moodle_url('/course/management.php');
+            $searchform['action'] = new url('/course/management.php');
         } else {
-            $searchform['action'] = new moodle_url('/course/search.php');
+            $searchform['action'] = new url('/course/search.php');
         }
         return $searchform;
     }
@@ -153,7 +157,7 @@ class manage_categories_action_bar implements \renderable {
      *              - urlselect A stdclass representing the standard navigation options to be fed into a urlselect
      *              - renderedcontent Rendered content to be displayed in line with the tertiary nav
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         $data = [
             'urlselect' => $this->get_dropdown($output),
             'categoryselect' => $this->get_category_select($output),
@@ -162,7 +166,7 @@ class manage_categories_action_bar implements \renderable {
         ];
 
         if ($this->searchvalue !== '') {
-            $backbutton = new \single_button(new moodle_url('/course/management.php'), get_string('back'), 'get');
+            $backbutton = new single_button(new url('/course/management.php'), get_string('back'), 'get');
             $data['backbutton'] = $backbutton->export_for_template($output);
         }
         return $data;

@@ -16,6 +16,7 @@
 
 namespace core;
 
+use core\exception\moodle_exception;
 use database_column_info;
 use moodle_database;
 use sql_generator;
@@ -282,7 +283,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->create_table($table);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('ddl_exception', $e);
         }
 
@@ -297,7 +298,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->create_table($table);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('ddl_exception', $e);
         }
 
@@ -328,7 +329,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->create_table($table);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
 
@@ -344,7 +345,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->create_table($table);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
 
@@ -373,7 +374,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->create_table($table);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
 
@@ -389,7 +390,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->create_table($table);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
 
@@ -405,7 +406,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->create_table($table);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
 
@@ -421,7 +422,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->create_table($table);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
 
@@ -437,7 +438,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->create_table($table);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
 
@@ -453,7 +454,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->create_table($table);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
 
@@ -469,7 +470,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->create_table($table);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
 
@@ -485,7 +486,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->create_table($table);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
 
@@ -501,7 +502,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->create_table($table);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
 
@@ -517,7 +518,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->create_table($table);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
 
@@ -533,7 +534,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->create_table($table);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
 
@@ -549,7 +550,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->create_table($table);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
     }
@@ -703,7 +704,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->rename_table($sourcetable, $targettable->getName());
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('ddl_exception', $e);
             $this->assertEquals('Table "test_table1" already exists (can not rename table)', $e->getMessage());
         }
@@ -722,7 +723,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->field_exists('nonexistenttable', 'id');
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('moodle_exception', $e);
         }
 
@@ -740,7 +741,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->field_exists($nonexistenttable, $realfield);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('moodle_exception', $e);
         }
 
@@ -759,13 +760,13 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $this->assertFalse($dbman->field_exists($nonexistenttable, 'id'));
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('moodle_exception', $e);
         }
         try {
             $this->assertFalse($dbman->field_exists('nonexistenttable', $realfield));
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('moodle_exception', $e);
         }
         // Non existing fields (return false).
@@ -791,7 +792,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->add_field($table, $field);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('ddl_exception', $e);
         }
 
@@ -801,7 +802,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->add_field($table, $field);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('ddl_exception', $e);
         }
 
@@ -956,7 +957,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->drop_field($table, $field);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('ddl_dependency_exception', $e);
         }
         $this->assertTrue($dbman->field_exists($table, 'type')); // Continues existing, drop aborted.
@@ -967,7 +968,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->drop_field($table, $field);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('ddl_dependency_exception', $e);
         }
         $this->assertTrue($dbman->field_exists($table, $field)); // Continues existing, drop aborted.
@@ -978,7 +979,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->drop_field($table, $field);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('ddl_field_missing_exception', $e);
         }
 
@@ -1023,7 +1024,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->change_field_type($table, $field);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('ddl_dependency_exception', $e);
         }
         // Column continues being integer 10 not null default 2.
@@ -1068,7 +1069,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->change_field_type($table, $field);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('ddl_change_structure_exception', $e);
         }
         // Column continues being char 30 not null default "test'n drop" now.
@@ -1190,7 +1191,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->change_field_precision($table, $field);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('ddl_change_structure_exception', $e);
         }
         // No changes in field specs at all.
@@ -1236,7 +1237,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->change_field_precision($table, $field);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('ddl_change_structure_exception', $e);
         }
         // No changes in field specs at all.
@@ -1250,7 +1251,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->change_field_precision($table, $field);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('ddl_dependency_exception', $e);
         }
         // No changes in field specs at all.
@@ -1383,7 +1384,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->add_index($table, $index);
             $this->fail('Exception expected for duplicate indexes');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('ddl_exception', $e);
         }
 
@@ -1392,7 +1393,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->add_index($table, $index);
             $this->fail('Exception expected for duplicate indexes');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('ddl_exception', $e);
         }
 
@@ -1406,7 +1407,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $table->add_index('onenumber', XMLDB_INDEX_NOTUNIQUE, array('onenumber'));
             $this->fail('Coding exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
 
@@ -1420,7 +1421,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $table->add_key('onenumber', XMLDB_KEY_FOREIGN, array('onenumber'));
             $this->fail('Coding exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
 
@@ -1622,7 +1623,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->delete_tables_from_xmldb_file('fpsoiudfposui');
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->resetDebugging();
             $this->assertInstanceOf('moodle_exception', $e);
         }
@@ -1630,7 +1631,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->delete_tables_from_xmldb_file(__DIR__ . '/fixtures/invalid.xml');
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->resetDebugging();
             $this->assertInstanceOf('moodle_exception', $e);
         }
@@ -1653,7 +1654,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->install_from_xmldb_file('fpsoiudfposui');
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->resetDebugging();
             $this->assertInstanceOf('moodle_exception', $e);
         }
@@ -1661,7 +1662,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->install_from_xmldb_file(__DIR__ . '/fixtures/invalid.xml');
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->resetDebugging();
             $this->assertInstanceOf('moodle_exception', $e);
         }
@@ -1688,7 +1689,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->create_temp_table($dupetable);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('ddl_exception', $e);
         }
 
@@ -1697,7 +1698,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->create_table($dupetable);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('ddl_exception', $e);
         }
 
@@ -1734,7 +1735,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->drop_table($noetable);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('ddl_table_missing_exception', $e);
         }
 
@@ -2035,7 +2036,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->create_table($table);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
     }
@@ -2094,7 +2095,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->create_table($table);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
     }
@@ -2164,7 +2165,7 @@ final class ddl_test extends \database_driver_testcase {
         try {
             $dbman->create_table($table);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
     }

@@ -3,16 +3,20 @@
 * script for bulk user delete operations
 */
 
+use core\context\system;
+use core\output\single_button;
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
 $confirm = optional_param('confirm', 0, PARAM_BOOL);
 
 admin_externalpage_setup('userbulk');
-require_capability('moodle/user:delete', context_system::instance());
+require_capability('moodle/user:delete', system::instance());
 
 $returnurl = optional_param('returnurl', '', PARAM_LOCALURL);
-$return = new moodle_url($returnurl ?: '/admin/user/user_bulk.php');
+$return = new url($returnurl ?: '/admin/user/user_bulk.php');
 
 if (empty($SESSION->bulk_users)) {
     redirect($return);
@@ -52,7 +56,7 @@ if ($confirm and confirm_sesskey()) {
     $userlist = $DB->get_records_select_menu('user', "id $in", $params, 'fullname', 'id,'.$DB->sql_fullname().' AS fullname');
     $usernames = implode(', ', $userlist);
     echo $OUTPUT->heading(get_string('confirmation', 'admin'));
-    $formcontinue = new single_button(new moodle_url('user_bulk_delete.php',
+    $formcontinue = new single_button(new url('user_bulk_delete.php',
         ['confirm' => 1, 'returnurl' => $returnurl]), get_string('yes'));
     $formcancel = new single_button($return, get_string('no'), 'get');
     echo $OUTPUT->confirm(get_string('deletecheckfull', '', $usernames), $formcontinue, $formcancel);

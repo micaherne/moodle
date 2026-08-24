@@ -22,6 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\html_writer;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -86,7 +89,7 @@ class block_blog_recent extends block_base {
 
         $context = $this->page->context;
 
-        $url = new moodle_url('/blog/index.php');
+        $url = new url('/blog/index.php');
         $filter = array();
         if ($context->contextlevel == CONTEXT_MODULE) {
             $filter['module'] = $context->instanceid;
@@ -110,7 +113,7 @@ class block_blog_recent extends block_base {
 
         if (!empty($entries)) {
             $entrieslist = array();
-            $viewblogurl = new moodle_url('/blog/index.php');
+            $viewblogurl = new url('/blog/index.php');
 
             foreach ($entries as $entryid => $entry) {
                 $viewblogurl->param('entryid', $entryid);

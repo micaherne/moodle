@@ -30,6 +30,8 @@ defined('MOODLE_INTERNAL') || die();
 
 use core\check\check;
 use core\check\result;
+use core\output\action_link;
+use core\url;
 
 /**
  * Verifies sloppy embedding - this should have been removed long ago!!
@@ -54,9 +56,9 @@ class embed extends check {
      *
      * @return \action_link|null
      */
-    public function get_action_link(): ?\action_link {
-        return new \action_link(
-            new \moodle_url('/admin/settings.php?section=sitepolicies#admin-allowobjectembed'),
+    public function get_action_link(): ?action_link {
+        return new action_link(
+            new url('/admin/settings.php?section=sitepolicies#admin-allowobjectembed'),
             get_string('sitepolicies', 'admin'));
     }
 

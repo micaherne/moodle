@@ -27,7 +27,7 @@ namespace core_grades\external;
 
 use core_grades\external\get_enrolled_users_for_selector;
 use core_external\external_api;
-use core_user;
+use core\user;
 
 /**
  * Unit tests for the core_grades\external\get_enrolled_users_for_selector.
@@ -85,7 +85,7 @@ final class get_enrolled_users_for_selector_test extends \core_external\tests\ex
             $expecteduser = $createdusers[$user['id']];
 
             $this->assertEquals(fullname($expecteduser), $user['fullname']);
-            $this->assertEquals(core_user::get_initials($expecteduser), $user['initials']);
+            $this->assertEquals(user::get_initials($expecteduser), $user['initials']);
             $this->assertEquals($expecteduser->firstname, $user['firstname']);
             $this->assertEquals($expecteduser->lastname, $user['lastname']);
 

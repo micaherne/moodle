@@ -16,9 +16,10 @@
 
 namespace core_contentbank;
 
+use core\context\course;
 use stdClass;
-use context_system;
-use context_user;
+use core\context\system;
+use core\context\user;
 use Exception;
 use contenttype_testable\contenttype as contenttype;
 /**
@@ -69,7 +70,7 @@ final class contenttype_test extends \advanced_testcase {
     public function test_get_contenttype_name(): void {
         $this->resetAfterTest();
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $testable = new contenttype($systemcontext);
 
         $this->assertEquals('contenttype_testable', $testable->get_contenttype_name());
@@ -83,7 +84,7 @@ final class contenttype_test extends \advanced_testcase {
     public function test_get_plugin_name(): void {
         $this->resetAfterTest();
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $testable = new contenttype($systemcontext);
 
         $this->assertEquals('testable', $testable->get_plugin_name());
@@ -99,7 +100,7 @@ final class contenttype_test extends \advanced_testcase {
 
         $this->resetAfterTest();
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $testable = new contenttype($systemcontext);
         $record = new stdClass();
         $record->name = 'New content';
@@ -118,7 +119,7 @@ final class contenttype_test extends \advanced_testcase {
     public function test_is_feature_supported(): void {
         $this->resetAfterTest();
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $testable = new contenttype($systemcontext);
 
         $this->assertTrue($testable->is_feature_supported(contenttype::CAN_TEST));
@@ -133,7 +134,7 @@ final class contenttype_test extends \advanced_testcase {
     public function test_no_upload_feature_supported(): void {
         $this->resetAfterTest();
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $testable = new contenttype($systemcontext);
 
         $this->setAdminUser();
@@ -152,7 +153,7 @@ final class contenttype_test extends \advanced_testcase {
         // Create empty content.
         $record = new stdClass();
 
-        $contenttype = new contenttype(context_system::instance());
+        $contenttype = new contenttype(system::instance());
         $content = $contenttype->create_content($record);
 
         $this->assertEquals('contenttype_testable', $content->get_content_type());
@@ -173,7 +174,7 @@ final class contenttype_test extends \advanced_testcase {
         $record->configdata = '';
         $record->contenttype = '';
 
-        $contenttype = new contenttype(context_system::instance());
+        $contenttype = new contenttype(system::instance());
         $content = $contenttype->create_content($record);
 
         $this->assertEquals('contenttype_testable', $content->get_content_type());
@@ -195,7 +196,7 @@ final class contenttype_test extends \advanced_testcase {
         $this->setAdminUser();
 
         $dummy = [
-            'contextid' => context_user::instance($USER->id)->id,
+            'contextid' => user::instance($USER->id)->id,
             'component' => 'user',
             'filearea' => 'draft',
             'itemid' => 1,
@@ -218,7 +219,7 @@ final class contenttype_test extends \advanced_testcase {
             $checkname = $dummyfile->get_filename();
         }
 
-        $contenttype = new contenttype(context_system::instance());
+        $contenttype = new contenttype(system::instance());
         $content = $contenttype->upload_content($dummyfile, $record);
 
         $this->assertEquals('contenttype_testable', $content->get_content_type());
@@ -260,7 +261,7 @@ final class contenttype_test extends \advanced_testcase {
 
         // The testing contenttype thows exception if filename is "error.*".
         $dummy = [
-            'contextid' => context_user::instance($USER->id)->id,
+            'contextid' => user::instance($USER->id)->id,
             'component' => 'user',
             'filearea' => 'draft',
             'itemid' => 1,
@@ -271,7 +272,7 @@ final class contenttype_test extends \advanced_testcase {
         $fs = get_file_storage();
         $dummyfile = $fs->create_file_from_string($dummy, 'Dummy content');
 
-        $contenttype = new contenttype(context_system::instance());
+        $contenttype = new contenttype(system::instance());
         $cbcontents = $DB->count_records('contentbank_content');
 
         // We need to capture the exception to check no content is created.
@@ -295,7 +296,7 @@ final class contenttype_test extends \advanced_testcase {
 
         $this->resetAfterTest();
         $this->setAdminUser();
-        $context = context_system::instance();
+        $context = system::instance();
 
         // Add some content to the content bank.
         $generator = $this->getDataGenerator()->get_plugin_generator('core_contentbank');
@@ -303,7 +304,7 @@ final class contenttype_test extends \advanced_testcase {
         $content = reset($contents);
 
         $dummy = [
-            'contextid' => context_user::instance($USER->id)->id,
+            'contextid' => user::instance($USER->id)->id,
             'component' => 'user',
             'filearea' => 'draft',
             'itemid' => 1,
@@ -314,7 +315,7 @@ final class contenttype_test extends \advanced_testcase {
         $fs = get_file_storage();
         $dummyfile = $fs->create_file_from_string($dummy, 'Dummy content');
 
-        $contenttype = new contenttype(context_system::instance());
+        $contenttype = new contenttype(system::instance());
         $content = $contenttype->replace_content($dummyfile, $content);
 
         $this->assertEquals('contenttype_testable', $content->get_content_type());
@@ -338,7 +339,7 @@ final class contenttype_test extends \advanced_testcase {
 
         $this->resetAfterTest();
         $this->setAdminUser();
-        $context = context_system::instance();
+        $context = system::instance();
 
         // Add some content to the content bank.
         $generator = $this->getDataGenerator()->get_plugin_generator('core_contentbank');
@@ -346,7 +347,7 @@ final class contenttype_test extends \advanced_testcase {
         $content = reset($contents);
 
         $dummy = [
-            'contextid' => context_user::instance($USER->id)->id,
+            'contextid' => user::instance($USER->id)->id,
             'component' => 'user',
             'filearea' => 'draft',
             'itemid' => 1,
@@ -357,7 +358,7 @@ final class contenttype_test extends \advanced_testcase {
         $fs = get_file_storage();
         $dummyfile = $fs->create_file_from_string($dummy, 'Dummy content');
 
-        $contenttype = new contenttype(context_system::instance());
+        $contenttype = new contenttype(system::instance());
 
         $this->expectException(Exception::class);
         $content = $contenttype->replace_content($dummyfile, $content);
@@ -423,7 +424,7 @@ final class contenttype_test extends \advanced_testcase {
      */
     protected function contenttype_setup_scenario_data(string $contenttype = 'contenttype_testable'): void {
         global $DB;
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
 
         // Create users.
         $this->manager1 = $this->getDataGenerator()->create_user();
@@ -481,7 +482,7 @@ final class contenttype_test extends \advanced_testcase {
         // Create course and teacher user.
         $course = $this->getDataGenerator()->create_course();
         $teacher = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $contenttype = new contenttype($coursecontext);
 
         // Add some content to the content bank as teacher.
@@ -506,9 +507,9 @@ final class contenttype_test extends \advanced_testcase {
         global $DB;
 
         $this->resetAfterTest();
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         // Add some content to the content bank.
         $generator = $this->getDataGenerator()->get_plugin_generator('core_contentbank');
@@ -555,7 +556,7 @@ final class contenttype_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $teacher = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
         $manager = $this->getDataGenerator()->create_and_enrol($course, 'manager');
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $contenttype = new contenttype($coursecontext);
 
@@ -632,7 +633,7 @@ final class contenttype_test extends \advanced_testcase {
 
         $this->resetAfterTest();
         $this->setAdminUser();
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
 
         // Add some content to the content bank.
         $filename = 'filltheblanks.h5p';
@@ -662,7 +663,7 @@ final class contenttype_test extends \advanced_testcase {
     public function test_pluginfile(): void {
         $this->resetAfterTest();
         $this->setAdminUser();
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         $contenttype = new contenttype($systemcontext);
         $this->assertIsCallable([$contenttype, 'pluginfile']);
     }

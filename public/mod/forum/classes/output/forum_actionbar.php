@@ -16,11 +16,11 @@
 
 namespace mod_forum\output;
 
-use renderable;
-use renderer_base;
-use templatable;
-use moodle_url;
-use help_icon;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\url;
+use core\output\help_icon;
 use mod_forum\local\entities\forum as forum_entity;
 
 /**
@@ -89,7 +89,7 @@ class forum_actionbar implements renderable, templatable {
      */
     public function export_for_template(renderer_base $output): array {
         global $USER;
-        $actionurl = (new moodle_url('/mod/forum/search.php'))->out(false);
+        $actionurl = (new url('/mod/forum/search.php'))->out(false);
         $helpicon = new help_icon('search', 'core');
         $hiddenfields = [
             (object) ['name' => 'id', 'value' => $this->course->id],

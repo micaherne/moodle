@@ -16,6 +16,8 @@
 
 namespace quizaccess_seb\event;
 
+use core\context\module;
+use core\context\system;
 use mod_quiz\quiz_settings;
 
 defined('MOODLE_INTERNAL') || die();
@@ -83,7 +85,7 @@ final class events_test extends \advanced_testcase {
             . "Expected config key: '$expectedconfigkey'. "
             . "Received config key: 'configkey'. Received browser exam key: 'browserexamkey'.",
             $event->get_description());
-        $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
+        $this->assertEquals(module::instance($quiz->cmid), $event->get_context());
         $this->assertEquals($user->id, $event->userid);
         $this->assertEquals($quiz->id, $event->objectid);
         $this->assertEquals($this->course->id, $event->courseid);
@@ -131,7 +133,7 @@ final class events_test extends \advanced_testcase {
             . "Expected config key: '$expectedconfigkey'. "
             . "Received config key: 'configkey'. Received browser exam key: 'browserexamkey'.",
             $event->get_description());
-        $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
+        $this->assertEquals(module::instance($quiz->cmid), $event->get_context());
         $this->assertEquals($user->id, $event->userid);
         $this->assertEquals($quiz->id, $event->objectid);
         $this->assertEquals($this->course->id, $event->courseid);
@@ -156,7 +158,7 @@ final class events_test extends \advanced_testcase {
 
         $event = \quizaccess_seb\event\template_created::create_strict(
             $template,
-            \context_system::instance());
+            system::instance());
 
         // Create an event sink, trigger event and retrieve event.
         $sink = $this->redirectEvents();
@@ -172,7 +174,7 @@ final class events_test extends \advanced_testcase {
             "The user with id '$user->id' has created a template with id '{$template->get('id')}'.",
             $event->get_description()
         );
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
         $this->assertEquals($user->id, $event->userid);
         $this->assertEquals($template->get('id'), $event->objectid);
     }

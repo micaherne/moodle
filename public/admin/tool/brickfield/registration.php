@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL
  */
 
+use core\context\system;
+use core\output\html_writer;
+use core\url;
 use tool_brickfield\brickfieldconnect;
 use tool_brickfield\form\registration_form;
 use tool_brickfield\manager;
@@ -38,10 +41,10 @@ require_once($CFG->libdir . '/moodlelib.php');
 \tool_brickfield\accessibility::require_accessibility_enabled();
 
 admin_externalpage_setup('tool_brickfield_activation');
-$thisurl = new moodle_url(\tool_brickfield\accessibility::get_plugin_url().'/registration.php');
+$thisurl = new url(\tool_brickfield\accessibility::get_plugin_url().'/registration.php');
 $PAGE->set_url($thisurl);
 
-$context = context_system::instance();
+$context = system::instance();
 $PAGE->set_context($context);
 $PAGE->set_title(get_string('registration', manager::PLUGINNAME));
 $PAGE->set_heading(get_string('registration', manager::PLUGINNAME));

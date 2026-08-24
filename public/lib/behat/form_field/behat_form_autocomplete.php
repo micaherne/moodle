@@ -25,6 +25,9 @@
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
+use core\exception\coding_exception;
+use Facebook\WebDriver\WebDriverKeys;
+
 require_once(__DIR__  . '/behat_form_text.php');
 
 /**
@@ -86,7 +89,7 @@ class behat_form_autocomplete extends behat_form_text {
 
         // Remove any existing text.
         do {
-            behat_base::type_keys($this->session, [behat_keys::BACKSPACE, behat_keys::DELETE]);
+            behat_base::type_keys($this->session, [WebDriverKeys::BACKSPACE, WebDriverKeys::DELETE]);
         } while (strlen($this->field->getValue()) > 0);
         $this->wait_for_pending_js();
 
@@ -105,7 +108,7 @@ class behat_form_autocomplete extends behat_form_text {
             $suggestion->click();
         } else if ($allowscreation) {
             // Press the return key to create a new entry.
-            behat_base::type_keys($this->session, [behat_keys::ENTER]);
+            behat_base::type_keys($this->session, [WebDriverKeys::ENTER]);
         } else {
             throw new \InvalidArgumentException(
                 "Unable to find '{$value}' in the list of options, and unable to create a new option"
@@ -119,7 +122,7 @@ class behat_form_autocomplete extends behat_form_text {
         // In this case, we need to close it before returning.
         if ($this->is_field_expanded()) {
             // Press the escape to close the autocomplete suggestions list.
-            behat_base::type_keys($this->session, [behat_keys::ESCAPE]);
+            behat_base::type_keys($this->session, [WebDriverKeys::ESCAPE]);
             $this->wait_for_pending_js();
         }
     }

@@ -16,8 +16,8 @@
 
 namespace core_my\event;
 
-use context_system;
-use context_user;
+use core\context\system;
+use core\context\user;
 
 /**
  * Unit tests for the dashboard events.
@@ -57,7 +57,7 @@ final class events_test extends \advanced_testcase {
         $user = $this->user;
         // Trigger an event: dashboard viewed.
         $eventparams = array(
-            'context' => $context = \context_user::instance($user->id)
+            'context' => $context = user::instance($user->id)
         );
 
         $event = \core\event\dashboard_viewed::create($eventparams);
@@ -86,7 +86,7 @@ final class events_test extends \advanced_testcase {
         require_once($CFG->dirroot . '/my/lib.php');
 
         $user = $this->user;
-        $usercontext = context_user::instance($this->user->id);
+        $usercontext = user::instance($this->user->id);
 
         // Create at least one dashboard.
         my_copy_page($this->user->id);
@@ -118,7 +118,7 @@ final class events_test extends \advanced_testcase {
         // Reset the dashboard with private parameter is set to MY_PAGE_PUBLIC and pagetype set to 'user-profile'.
         $systempage = $DB->get_record('my_pages', ['userid' => null, 'name' => MY_PAGE_DEFAULT, 'private' => MY_PAGE_PUBLIC]);
         $this->getDataGenerator()->create_block('online_users', [
-            'parentcontextid' => context_system::instance()->id,
+            'parentcontextid' => system::instance()->id,
             'pagetypepattern' => 'user-profile',
             'subpagepattern' => $systempage->id,
         ]);
@@ -155,7 +155,7 @@ final class events_test extends \advanced_testcase {
         global $CFG, $USER, $DB;
         require_once($CFG->dirroot . '/my/lib.php');
 
-        $usercontext = context_user::instance($this->user->id);
+        $usercontext = user::instance($this->user->id);
 
         // Create at least one dashboard.
         my_copy_page($this->user->id);
@@ -187,7 +187,7 @@ final class events_test extends \advanced_testcase {
         // Reset the dashboards with private parameter is set to MY_PAGE_PUBLIC and pagetype set to 'user-profile'.
         $systempage = $DB->get_record('my_pages', ['userid' => null, 'name' => MY_PAGE_DEFAULT, 'private' => MY_PAGE_PUBLIC]);
         $this->getDataGenerator()->create_block('online_users', [
-            'parentcontextid' => context_system::instance()->id,
+            'parentcontextid' => system::instance()->id,
             'pagetypepattern' => 'user-profile',
             'subpagepattern' => $systempage->id,
         ]);

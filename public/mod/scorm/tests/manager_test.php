@@ -16,7 +16,8 @@
 
 namespace mod_scorm;
 
-use context_module;
+use core\context\course;
+use core\context\module;
 
 /**
  * Generator tests class.
@@ -37,7 +38,7 @@ final class manager_test extends \advanced_testcase {
         $manageractivity = $manager->get_instance();
         $this->assertEquals($instances['withattempts']->id, $manageractivity->id);
         $managercontext = $manager->get_context();
-        $context = context_module::instance($instances['withattempts']->cmid);
+        $context = module::instance($instances['withattempts']->cmid);
         $this->assertEquals($context->id, $managercontext->id);
         $cm = get_coursemodule_from_id(
             manager::MODULE,
@@ -74,7 +75,7 @@ final class manager_test extends \advanced_testcase {
         $managercm = $manager->get_coursemodule();
         $this->assertEquals($cm->id, $managercm->id);
         $managercontext = $manager->get_context();
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $this->assertEquals($context->id, $managercontext->id);
     }
 
@@ -427,7 +428,7 @@ final class manager_test extends \advanced_testcase {
             'name' => 'Test role',
             'archetype' => 'student',
         ]);
-        assign_capability('mod/scorm:savetrack', CAP_PROHIBIT, $testrole, \context_course::instance($course->id));
+        assign_capability('mod/scorm:savetrack', CAP_PROHIBIT, $testrole, course::instance($course->id));
 
         $data = [
             's1' => ['role' => 'student', 'groups' => ['g1']],

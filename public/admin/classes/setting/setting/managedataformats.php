@@ -16,7 +16,13 @@
 
 namespace core_admin\setting\setting;
 
+use core\lang_string;
+use core\output\html_writer;
+use core\plugin_manager;
+use core\url;
 use core_admin\admin_search;
+use core_table\output\html_table;
+use core_table\output\html_table_row;
 
 /**
  * Data format plugin management.
@@ -31,7 +37,7 @@ class managedataformats extends \core_admin\setting {
      */
     public function __construct() {
         $this->nosave = true;
-        parent::__construct('managedataformats', new \lang_string('managedataformats'), '', '');
+        parent::__construct('managedataformats', new lang_string('managedataformats'), '', '');
     }
 
     /**
@@ -73,7 +79,7 @@ class managedataformats extends \core_admin\setting {
         if (parent::is_related($query)) {
             return true;
         }
-        $formats = \core_plugin_manager::instance()->get_plugins_of_type('dataformat');
+        $formats = plugin_manager::instance()->get_plugins_of_type('dataformat');
         foreach ($formats as $format) {
             if (strpos($format->component, $query) !== false) {
                 $this->searchmatchtype = admin_search::SEARCH_MATCH_SETTING_SHORT_NAME;
@@ -98,13 +104,13 @@ class managedataformats extends \core_admin\setting {
         global $CFG, $OUTPUT;
         $return = '';
 
-        $formats = \core_plugin_manager::instance()->get_plugins_of_type('dataformat');
+        $formats = plugin_manager::instance()->get_plugins_of_type('dataformat');
 
         $txt = get_strings(['settings', 'name', 'enable', 'disable', 'up', 'down', 'default']);
         $txt->uninstall = get_string('uninstallplugin', 'core_admin');
         $txt->updown = "$txt->up/$txt->down";
 
-        $table = new \html_table();
+        $table = new html_table();
         $table->head  = [$txt->name, $txt->enable, $txt->updown, $txt->uninstall, $txt->settings];
         $table->align = ['left', 'center', 'center', 'center', 'center'];
         $table->attributes['class'] = 'manageformattable table generaltable admintable table-striped table-hover';
@@ -120,7 +126,7 @@ class managedataformats extends \core_admin\setting {
         }
         foreach ($formats as $format) {
             $status = $format->get_status();
-            $url = new \moodle_url(
+            $url = new url(
                 '/admin/dataformats.php',
                 ['sesskey' => sesskey(), 'name' => $format->name]
             );
@@ -131,7 +137,7 @@ class managedataformats extends \core_admin\setting {
                 if ($totalenabled == 1 && $format->is_enabled()) {
                     $hideshow = '';
                 } else {
-                    $hideshow = \html_writer::link(
+                    $hideshow = html_writer::link(
                         $url->out(false, ['action' => 'disable']),
                         $OUTPUT->pix_icon('t/hide', $txt->disable, 'moodle', ['class' => 'iconsmall'])
                     );
@@ -139,7 +145,7 @@ class managedataformats extends \core_admin\setting {
             } else {
                 $class = 'dimmed_text';
                 $strformatname = $format->displayname;
-                $hideshow = \html_writer::link(
+                $hideshow = html_writer::link(
                     $url->out(false, ['action' => 'enable']),
                     $OUTPUT->pix_icon('t/show', $txt->enable, 'moodle', ['class' => 'iconsmall'])
                 );
@@ -147,7 +153,7 @@ class managedataformats extends \core_admin\setting {
 
             $updown = '';
             if ($cnt) {
-                $updown .= \html_writer::link(
+                $updown .= html_writer::link(
                     $url->out(false, ['action' => 'up']),
                     $OUTPUT->pix_icon('t/up', $txt->up, 'moodle', ['class' => 'iconsmall'])
                 ) . '';
@@ -155,7 +161,7 @@ class managedataformats extends \core_admin\setting {
                 $updown .= $spacer;
             }
             if ($cnt < count($formats) - 1) {
-                $updown .= '&nbsp;' . \html_writer::link(
+                $updown .= '&nbsp;' . html_writer::link(
                     $url->out(false, ['action' => 'down']),
                     $OUTPUT->pix_icon('t/down', $txt->down, 'moodle', ['class' => 'iconsmall'])
                 );
@@ -164,34 +170,34 @@ class managedataformats extends \core_admin\setting {
             }
 
             $uninstall = '';
-            if ($status === \core_plugin_manager::PLUGIN_STATUS_MISSING) {
+            if ($status === plugin_manager::PLUGIN_STATUS_MISSING) {
                 $uninstall = get_string('status_missing', 'core_plugin');
-            } else if ($status === \core_plugin_manager::PLUGIN_STATUS_NEW) {
+            } else if ($status === plugin_manager::PLUGIN_STATUS_NEW) {
                 $uninstall = get_string('status_new', 'core_plugin');
             } else if (
-                $uninstallurl = \core_plugin_manager::instance()->get_uninstall_url(
+                $uninstallurl = plugin_manager::instance()->get_uninstall_url(
                     "dataformat_{$format->name}",
                     "manage",
                 )
             ) {
                 if ($totalenabled != 1 || !$format->is_enabled()) {
-                    $uninstall = \html_writer::link($uninstallurl, $txt->uninstall);
+                    $uninstall = html_writer::link($uninstallurl, $txt->uninstall);
                 }
             }
 
             $settings = '';
             if ($format->get_settings_url()) {
-                $settings = \html_writer::link($format->get_settings_url(), $txt->settings);
+                $settings = html_writer::link($format->get_settings_url(), $txt->settings);
             }
 
-            $row = new \html_table_row([$strformatname, $hideshow, $updown, $uninstall, $settings]);
+            $row = new html_table_row([$strformatname, $hideshow, $updown, $uninstall, $settings]);
             if ($class) {
                 $row->attributes['class'] = $class;
             }
             $table->data[] = $row;
             $cnt++;
         }
-        $return .= \html_writer::table($table);
+        $return .= html_writer::table($table);
         return highlight($query, $return);
     }
 }

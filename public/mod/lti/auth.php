@@ -22,6 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->dirroot . '/mod/lti/locallib.php');
 global $_POST, $_SERVER;
@@ -29,7 +35,7 @@ global $_POST, $_SERVER;
 if (!isloggedin() && empty($_POST['repost'])) {
     header_remove("Set-Cookie");
     $PAGE->set_pagelayout('popup');
-    $PAGE->set_context(context_system::instance());
+    $PAGE->set_context(system::instance());
     $output = $PAGE->get_renderer('mod_lti');
     $page = new \mod_lti\output\repost_crosssite_page($_SERVER['REQUEST_URI'], $_POST);
     echo $output->header();
@@ -117,7 +123,7 @@ if ($ok) {
     $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
     if ($id) {
         $cm = get_coursemodule_from_id('lti', $id, 0, false, MUST_EXIST);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         require_login($course, true, $cm);
         require_capability('mod/lti:view', $context);
         $lti = $DB->get_record('lti', array('id' => $cm->instance), '*', MUST_EXIST);
@@ -125,7 +131,7 @@ if ($ok) {
         list($endpoint, $params) = lti_get_launch_data($lti, $nonce, $messagetype, $foruserid);
     } else {
         require_login($course);
-        $context = context_course::instance($courseid);
+        $context = course::instance($courseid);
         require_capability('moodle/course:manageactivities', $context);
         require_capability('mod/lti:addcoursetool', $context);
         // Set the return URL. We send the launch container along to help us avoid frames-within-frames when the user returns.
@@ -134,7 +140,7 @@ if ($ok) {
             'id' => $typeid,
             'sesskey' => sesskey()
         ];
-        $returnurl = new \moodle_url('/mod/lti/contentitem_return.php', $returnurlparams);
+        $returnurl = new url('/mod/lti/contentitem_return.php', $returnurlparams);
         // Prepare the request.
         $title = base64_decode($titleb64);
         $text = base64_decode($textb64);

@@ -26,6 +26,9 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
 
+use core\exception\moodle_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/authlib.php');
@@ -95,7 +98,7 @@ class auth_plugin_shibboleth extends auth_plugin_base {
 
         // Check whether we have got all the essential attributes
         if ( empty($_SERVER[$this->config->user_attribute]) ) {
-            throw new \moodle_exception( 'shib_not_all_attributes_error', 'auth_shibboleth' , '',
+            throw new moodle_exception( 'shib_not_all_attributes_error', 'auth_shibboleth' , '',
                     "'".$this->config->user_attribute."' ('".$_SERVER[$this->config->user_attribute]."'), '".
                 $this->config->field_map_firstname."' ('".$_SERVER[$this->config->field_map_firstname]."'), '".
                 $this->config->field_map_lastname."' ('".$_SERVER[$this->config->field_map_lastname]."') and '".
@@ -194,7 +197,7 @@ class auth_plugin_shibboleth extends auth_plugin_base {
      */
     function change_password_url() {
         if (!empty($this->config->changepasswordurl)) {
-            return new moodle_url($this->config->changepasswordurl);
+            return new url($this->config->changepasswordurl);
         } else {
             return null;
         }
@@ -233,7 +236,7 @@ class auth_plugin_shibboleth extends auth_plugin_base {
             }
 
             // Overwrite redirect in order to send user to Shibboleth logout page and let him return back
-            $redirecturl = new moodle_url($this->config->logout_handler, array('return' => $temp_redirect));
+            $redirecturl = new url($this->config->logout_handler, array('return' => $temp_redirect));
             $redirect = $redirecturl->out();
         }
     }
@@ -258,7 +261,7 @@ class auth_plugin_shibboleth extends auth_plugin_base {
 
         if (!isset($this->config->user_attribute) || empty($this->config->user_attribute)) {
             echo $OUTPUT->notification(get_string("shib_not_set_up_error", "auth_shibboleth",
-                (new moodle_url('/auth/shibboleth/README.txt'))->out()), 'notifyproblem');
+                (new url('/auth/shibboleth/README.txt'))->out()), 'notifyproblem');
             return;
         }
         if ($this->config->convert_data and $this->config->convert_data != '' and !is_readable($this->config->convert_data)) {
@@ -291,7 +294,7 @@ class auth_plugin_shibboleth extends auth_plugin_base {
         $context = \core\context\system::instance();
 
         if ($config->auth_logo) {
-            $iconurl = moodle_url::make_pluginfile_url(
+            $iconurl = url::make_pluginfile_url(
                 $context->id,
                 'auth_shibboleth',
                 'logo',
@@ -303,7 +306,7 @@ class auth_plugin_shibboleth extends auth_plugin_base {
         }
 
         $result[] = [
-            'url' => new moodle_url('/auth/shibboleth/index.php'),
+            'url' => new url('/auth/shibboleth/index.php'),
             'iconurl' => $iconurl,
             'name' => format_string($config->login_name ?? '', options: ['context' => $context]),
         ];

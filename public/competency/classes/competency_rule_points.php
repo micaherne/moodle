@@ -25,8 +25,9 @@
 namespace core_competency;
 defined('MOODLE_INTERNAL') || die();
 
-use coding_exception;
-use lang_string;
+use core\exception\coding_exception;
+use core\exception\invalid_parameter_exception;
+use core\lang_string;
 
 
 /**
@@ -119,7 +120,7 @@ class competency_rule_points extends competency_rule {
 
         try {
             $requiredpoints = validate_param($config->base->points, PARAM_INT);
-        } catch (\invalid_parameter_exception $e) {
+        } catch (invalid_parameter_exception $e) {
             return false;
         }
 
@@ -154,7 +155,7 @@ class competency_rule_points extends competency_rule {
                 validate_param($competency->id, PARAM_INT);
                 $points = validate_param($competency->points, PARAM_INT);
                 validate_param($competency->required, PARAM_BOOL);
-            } catch (\invalid_parameter_exception $e) {
+            } catch (invalid_parameter_exception $e) {
                 return false;
             }
 

@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\user;
+use core\exception\require_login_exception;
+use core\url;
+
 require_once(__DIR__ . '/../../config.php');
 
 require_login(null, false);
@@ -31,8 +35,8 @@ if (isguestuser()) {
 
 $toreviewstr = get_string('competenciestoreview', 'block_lp');
 
-$url = new moodle_url('/blocks/lp/competencies_to_review.php');
-$PAGE->set_context(context_user::instance($USER->id));
+$url = new url('/blocks/lp/competencies_to_review.php');
+$PAGE->set_context(user::instance($USER->id));
 $PAGE->set_url($url);
 $PAGE->set_title($toreviewstr);
 $PAGE->set_pagelayout('standard');

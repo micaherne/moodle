@@ -24,6 +24,12 @@
 
 namespace core_analytics;
 
+use core\context;
+use core\context\system;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core_cache\cache;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -72,7 +78,7 @@ class manager {
      * @return void
      */
     public static function check_can_manage_models() {
-        require_capability('moodle/analytics:managemodels', \context_system::instance());
+        require_capability('moodle/analytics:managemodels', system::instance());
     }
 
     /**
@@ -83,7 +89,7 @@ class manager {
      * @param  bool $return The method returns a bool if true.
      * @return void
      */
-    public static function check_can_list_insights(\context $context, bool $return = false) {
+    public static function check_can_list_insights(context $context, bool $return = false) {
         global $USER;
 
         if ($context->contextlevel === CONTEXT_USER && $context->instanceid == $USER->id) {
@@ -188,12 +194,12 @@ class manager {
         }
 
         if (!class_exists($predictionclass)) {
-            throw new \coding_exception('Invalid predictions processor ' . $predictionclass . '.');
+            throw new coding_exception('Invalid predictions processor ' . $predictionclass . '.');
         }
 
         $interfaces = class_implements($predictionclass);
         if (empty($interfaces['core_analytics\predictor'])) {
-            throw new \coding_exception($predictionclass . ' should implement \core_analytics\predictor.');
+            throw new coding_exception($predictionclass . ' should implement \core_analytics\predictor.');
         }
 
         // Return it from the cached list.
@@ -203,7 +209,7 @@ class manager {
             if ($checkisready) {
                 $isready = $instance->is_ready();
                 if ($isready !== true) {
-                    throw new \moodle_exception('errorprocessornotready', 'analytics', '', $isready);
+                    throw new moodle_exception('errorprocessornotready', 'analytics', '', $isready);
                 }
             }
             self::$predictionprocessors[$checkisready][$predictionclass] = $instance;
@@ -504,7 +510,7 @@ class manager {
      * @param \context $context
      * @return \core_analytics\model[]
      */
-    public static function get_models_with_insights(\context $context) {
+    public static function get_models_with_insights(context $context) {
 
         self::check_can_list_insights($context);
 
@@ -529,9 +535,9 @@ class manager {
      * @param  int|null $newmodelid A new model to add to the list of models with insights in the provided context.
      * @return int[]
      */
-    public static function cached_models_with_insights(\context $context, ?int $newmodelid = null) {
+    public static function cached_models_with_insights(context $context, ?int $newmodelid = null) {
 
-        $cache = \cache::make('core', 'contextwithinsights');
+        $cache = cache::make('core', 'contextwithinsights');
         $modelids = $cache->get($context->id);
         if ($modelids === false) {
             // The cache is empty, but we don't know if it is empty because there are no insights
@@ -541,7 +547,7 @@ class manager {
             $models = \core_analytics\manager::get_models_with_insights($context);
 
             if ($newmodelid && empty($models[$newmodelid])) {
-                throw new \coding_exception('The provided modelid ' . $newmodelid . ' did not generate any insights');
+                throw new coding_exception('The provided modelid ' . $newmodelid . ' did not generate any insights');
             }
 
             $modelids = array_keys($models);
@@ -568,12 +574,12 @@ class manager {
         global $DB;
 
         if (!$predictionobj = $DB->get_record('analytics_predictions', array('id' => $predictionid))) {
-            throw new \moodle_exception('errorpredictionnotfound', 'analytics');
+            throw new moodle_exception('errorpredictionnotfound', 'analytics');
         }
 
-        $context = \context::instance_by_id($predictionobj->contextid, IGNORE_MISSING);
+        $context = context::instance_by_id($predictionobj->contextid, IGNORE_MISSING);
         if (!$context) {
-            throw new \moodle_exception('errorpredictioncontextnotavailable', 'analytics');
+            throw new moodle_exception('errorpredictioncontextnotavailable', 'analytics');
         }
 
         if ($requirelogin) {
@@ -850,34 +856,34 @@ class manager {
 
         foreach ($models as $model) {
             if (!isset($model['target'])) {
-                throw new \coding_exception('Missing target declaration');
+                throw new coding_exception('Missing target declaration');
             }
 
             if (!static::is_valid($model['target'], '\core_analytics\local\target\base')) {
-                throw new \coding_exception('Invalid target classname', $model['target']);
+                throw new coding_exception('Invalid target classname', $model['target']);
             }
 
             if (empty($model['indicators']) || !is_array($model['indicators'])) {
-                throw new \coding_exception('Missing indicators declaration');
+                throw new coding_exception('Missing indicators declaration');
             }
 
             foreach ($model['indicators'] as $indicator) {
                 if (!static::is_valid($indicator, '\core_analytics\local\indicator\base')) {
-                    throw new \coding_exception('Invalid indicator classname', $indicator);
+                    throw new coding_exception('Invalid indicator classname', $indicator);
                 }
             }
 
             if (isset($model['timesplitting'])) {
                 if (substr($model['timesplitting'], 0, 1) !== '\\') {
-                    throw new \coding_exception('Expecting fully qualified time splitting classname', $model['timesplitting']);
+                    throw new coding_exception('Expecting fully qualified time splitting classname', $model['timesplitting']);
                 }
                 if (!static::is_valid($model['timesplitting'], '\core_analytics\local\time_splitting\base')) {
-                    throw new \coding_exception('Invalid time splitting classname', $model['timesplitting']);
+                    throw new coding_exception('Invalid time splitting classname', $model['timesplitting']);
                 }
             }
 
             if (!empty($model['enabled']) && !isset($model['timesplitting'])) {
-                throw new \coding_exception('Cannot enable a model without time splitting method specified');
+                throw new coding_exception('Cannot enable a model without time splitting method specified');
             }
         }
     }
@@ -955,7 +961,7 @@ class manager {
         if (!is_null($contextlevels)) {
             foreach ($contextlevels as $contextlevel) {
                 if ($contextlevel !== CONTEXT_COURSE && $contextlevel !== CONTEXT_COURSECAT) {
-                    throw new \coding_exception('Only CONTEXT_COURSE and CONTEXT_COURSECAT are supported at the moment.');
+                    throw new coding_exception('Only CONTEXT_COURSE and CONTEXT_COURSECAT are supported at the moment.');
                 }
             }
         }
@@ -964,7 +970,7 @@ class manager {
 
         // We have a separate process for each context level for performance reasons (to iterate through mdl_context calling
         // get_context_name() would be too slow).
-        $contextsystem = \context_system::instance();
+        $contextsystem = system::instance();
         if (is_null($contextlevels) || in_array(CONTEXT_COURSECAT, $contextlevels)) {
 
             $sql = "SELECT cc.id, cc.name, ctx.id AS contextid

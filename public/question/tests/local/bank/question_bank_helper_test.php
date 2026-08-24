@@ -16,9 +16,11 @@
 
 namespace core_question;
 
+use core\context;
 use core\context\course;
 use core\context\module;
 use core\exception\coding_exception;
+use core_course\modinfo;
 use core_question\local\bank\formatted_bank;
 use core_question\local\bank\question_bank_helper;
 use stdClass;
@@ -87,7 +89,7 @@ final class question_bank_helper_test extends \advanced_testcase {
         $course4 = self::getDataGenerator()->create_course(['category' => $category2->id]);
 
         $sharedmod1 = $sharedmodgen->create_instance(['course' => $course1]);
-        $sharedmod1context = \context_module::instance($sharedmod1->cmid);
+        $sharedmod1context = module::instance($sharedmod1->cmid);
         $sharedmod1qcat1 = question_get_default_category($sharedmod1context->id);
         $sharedmod1qcat2 = $qgen->create_question_category(['contextid' => $sharedmod1context->id]);
         $sharedmod1qcat2child = $qgen->create_question_category([
@@ -96,13 +98,13 @@ final class question_bank_helper_test extends \advanced_testcase {
             'name' => 'A, B, C',
         ]);
         $privatemod1 = $privatemodgen->create_instance(['course' => $course1]);
-        $privatemod1context = \context_module::instance($privatemod1->cmid);
+        $privatemod1context = module::instance($privatemod1->cmid);
         $privatemod1qcat1 = question_get_default_category($privatemod1context->id);
-        role_assign($roles['editingteacher']->id, $user->id, \context_module::instance($sharedmod1->cmid));
-        role_assign($roles['editingteacher']->id, $user->id, \context_module::instance($privatemod1->cmid));
+        role_assign($roles['editingteacher']->id, $user->id, module::instance($sharedmod1->cmid));
+        role_assign($roles['editingteacher']->id, $user->id, module::instance($privatemod1->cmid));
 
         $sharedmod2 = $sharedmodgen->create_instance(['course' => $course2]);
-        $sharedmod2context = \context_module::instance($sharedmod2->cmid);
+        $sharedmod2context = module::instance($sharedmod2->cmid);
         $sharedmod2qcat1 = question_get_default_category($sharedmod2context->id);
         $sharedmod2qcat2 = $qgen->create_question_category(['contextid' => $sharedmod2context->id]);
         $sharedmod2qcat2child = $qgen->create_question_category([
@@ -110,10 +112,10 @@ final class question_bank_helper_test extends \advanced_testcase {
             'parent' => $sharedmod2qcat2->id,
         ]);
         $privatemod2 = $privatemodgen->create_instance(['course' => $course2]);
-        $privatemod2context = \context_module::instance($privatemod2->cmid);
+        $privatemod2context = module::instance($privatemod2->cmid);
         $privatemod1qcat1 = question_get_default_category($privatemod2context->id);
-        role_assign($roles['editingteacher']->id, $user->id, \context_module::instance($sharedmod2->cmid));
-        role_assign($roles['editingteacher']->id, $user->id, \context_module::instance($privatemod2->cmid));
+        role_assign($roles['editingteacher']->id, $user->id, module::instance($sharedmod2->cmid));
+        role_assign($roles['editingteacher']->id, $user->id, module::instance($privatemod2->cmid));
 
         // User doesn't have the capability on this one.
         $sharedmod3 = $sharedmodgen->create_instance(['course' => $course3]);
@@ -121,7 +123,7 @@ final class question_bank_helper_test extends \advanced_testcase {
 
         // Exclude this course in the results despite having the capability.
         $sharedmod4 = $sharedmodgen->create_instance(['course' => $course4]);
-        role_assign($roles['editingteacher']->id, $user->id, \context_module::instance($sharedmod4->cmid));
+        role_assign($roles['editingteacher']->id, $user->id, module::instance($sharedmod4->cmid));
 
         $sharedbanks = question_bank_helper::get_activity_instances_with_shareable_questions(
             [],
@@ -186,7 +188,7 @@ final class question_bank_helper_test extends \advanced_testcase {
         for ($i = 0; $i < 20; $i++) {
             $sharedmod = $sharedmodgen->create_instance(['course' => $course]);
             if ($i >= 15) {
-                role_assign($editingteacherroleid, $teacher->id, \context_module::instance($sharedmod->cmid));
+                role_assign($editingteacherroleid, $teacher->id, module::instance($sharedmod->cmid));
             }
         }
 
@@ -418,8 +420,8 @@ final class question_bank_helper_test extends \advanced_testcase {
 
         // Trigger bank view on each of them.
         foreach ($banks as $bank) {
-            $cat = question_get_default_category(\context_module::instance($bank->cmid)->id, true);
-            $context = \context::instance_by_id($cat->contextid);
+            $cat = question_get_default_category(module::instance($bank->cmid)->id, true);
+            $context = context::instance_by_id($cat->contextid);
             question_bank_helper::add_bank_context_to_recently_viewed($context);
         }
 
@@ -451,8 +453,8 @@ final class question_bank_helper_test extends \advanced_testcase {
         }
 
         // Now if we view one of those again it should get bumped to the front of the list.
-        $bank3cat = question_get_default_category(\context_module::instance($banks[2]->cmid)->id, true);
-        $bank3context = \context::instance_by_id($bank3cat->contextid);
+        $bank3cat = question_get_default_category(module::instance($banks[2]->cmid)->id, true);
+        $bank3context = context::instance_by_id($bank3cat->contextid);
         question_bank_helper::add_bank_context_to_recently_viewed($bank3context);
 
         $recentlyviewed = question_bank_helper::get_recently_used_open_banks($user->id);
@@ -469,8 +471,8 @@ final class question_bank_helper_test extends \advanced_testcase {
 
         // Now create a quiz and trigger the bank view of it.
         $quiz = self::getDataGenerator()->get_plugin_generator('mod_quiz')->create_instance(['course' => $course1]);
-        $quizcat = question_get_default_category(\context_module::instance($quiz->cmid)->id, true);
-        $quizcontext = \context::instance_by_id($quizcat->contextid);
+        $quizcat = question_get_default_category(module::instance($quiz->cmid)->id, true);
+        $quizcontext = context::instance_by_id($quizcat->contextid);
         question_bank_helper::add_bank_context_to_recently_viewed($quizcontext);
 
         $recentlyviewed = question_bank_helper::get_recently_used_open_banks($user->id);
@@ -529,7 +531,7 @@ final class question_bank_helper_test extends \advanced_testcase {
         $DB->delete_records('qbank', ['id' => $qbank->id]);
         $DB->set_field('course_modules', 'instance', $newqbank->id, ['instance' => $qbank->instance]);
         // Retry the above again.
-        \course_modinfo::purge_course_caches([$course->id]);
+        modinfo::purge_course_caches([$course->id]);
         $qbank = question_bank_helper::get_default_open_instance_system_type($course);
         $this->assertEquals(get_string('systembank', 'question'), $qbank->get_name());
         $modrecord = $DB->get_record('qbank', ['id' => $qbank->instance]);

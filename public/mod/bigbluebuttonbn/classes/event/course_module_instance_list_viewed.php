@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace mod_bigbluebuttonbn\event;
+
+use core\context\course;
 /**
  * The mod_bigbluebuttonbn instance list viewed event class.
  *
@@ -31,7 +33,7 @@ class course_module_instance_list_viewed extends \core\event\course_module_insta
      */
     public static function create_from_course(\stdClass $course) {
         $params = [
-            'context' => \context_course::instance($course->id),
+            'context' => course::instance($course->id),
         ];
         $event = self::create($params);
         $event->add_record_snapshot('course', $course);

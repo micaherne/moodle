@@ -21,6 +21,10 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  * @package mod_feedback
  */
+use core\context\module;
+use core\output\html_writer;
+use core\url;
+
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->dirroot . '/mod/feedback/lib.php');
 
@@ -33,7 +37,7 @@ $feedback = $PAGE->activityrecord;
 
 $feedbackcompletion = new mod_feedback_completion($feedback, $cm, $courseid);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 
 if ($course->id == SITEID) {
     $PAGE->set_pagelayout('incourse');
@@ -75,7 +79,7 @@ $feedbackcompletion->trigger_module_viewed();
 ///////////////////////////////////////////////////////////////////////////
 
 $previewimg = $OUTPUT->pix_icon('t/preview', get_string('preview'));
-$previewlnk = new moodle_url('/mod/feedback/print.php', array('id' => $id));
+$previewlnk = new url('/mod/feedback/print.php', array('id' => $id));
 if ($courseid) {
     $previewlnk->param('courseid', $courseid);
 }
@@ -108,7 +112,7 @@ if (has_capability('mod/feedback:edititems', $context)) {
 if (!$PAGE->has_secondary_navigation()) {
     if (!has_capability('mod/feedback:viewreports', $context) &&
         $feedbackcompletion->can_view_analysis()) {
-        $analysisurl = new moodle_url('/mod/feedback/analysis.php', array('id' => $id));
+        $analysisurl = new url('/mod/feedback/analysis.php', array('id' => $id));
         echo '<div class="mdl-align"><a href="' . $analysisurl->out() . '">';
         echo get_string('completed_feedbacks', 'feedback') . '</a>';
         echo '</div>';
@@ -118,7 +122,7 @@ if (!$PAGE->has_secondary_navigation()) {
         echo $OUTPUT->box_start('generalbox feedback_mapped_courses');
         echo $OUTPUT->heading(get_string("mappedcourses", "feedback"), 3);
         echo '<p>' . get_string('mapcourse_help', 'feedback') . '</p>';
-        $mapurl = new moodle_url('/mod/feedback/mapcourse.php', array('id' => $id));
+        $mapurl = new url('/mod/feedback/mapcourse.php', array('id' => $id));
         echo '<p class="mdl-align">' . html_writer::link($mapurl, get_string('mapcourses', 'feedback')) . '</p>';
         echo $OUTPUT->box_end();
     }

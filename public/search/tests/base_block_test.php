@@ -16,6 +16,14 @@
 
 namespace core_search;
 
+use core\context\block;
+use core\context\course;
+use core\context\coursecat;
+use core\context\module;
+use core\context\system;
+use core\context\user;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/fixtures/testable_core_search.php');
@@ -49,18 +57,18 @@ final class base_block_test extends \advanced_testcase {
         // Create course and activity module.
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $page = $generator->create_module('page', ['course' => $course->id]);
-        $pagecontext = \context_module::instance($page->cmid);
+        $pagecontext = module::instance($page->cmid);
 
         // Create another 2 courses (in same category and in a new category).
-        $cat1context = \context_coursecat::instance($course->category);
+        $cat1context = coursecat::instance($course->category);
         $course2 = $generator->create_course();
-        $course2context = \context_course::instance($course2->id);
+        $course2context = course::instance($course2->id);
         $cat2 = $generator->create_category();
-        $cat2context = \context_coursecat::instance($cat2->id);
+        $cat2context = coursecat::instance($cat2->id);
         $course3 = $generator->create_course(['category' => $cat2->id]);
-        $course3context = \context_course::instance($course3->id);
+        $course3context = course::instance($course3->id);
 
         // Add blocks by hacking table (because it's not a real block type).
 
@@ -71,23 +79,23 @@ final class base_block_test extends \advanced_testcase {
                 'defaultweight' => 0, 'timecreated' => 1, 'timemodified' => 1,
                 'configdata' => $configdata];
         $block1id = $DB->insert_record('block_instances', $instance);
-        $block1context = \context_block::instance($block1id);
+        $block1context = block::instance($block1id);
 
         // 2. Block on activity page.
         $instance->parentcontextid = $pagecontext->id;
         $instance->pagetypepattern = 'mod-page-view';
         $instance->timemodified = 2;
         $block2id = $DB->insert_record('block_instances', $instance);
-        \context_block::instance($block2id);
+        block::instance($block2id);
 
         // 3. Block on site context.
         $sitecourse = get_site();
-        $sitecontext = \context_course::instance($sitecourse->id);
+        $sitecontext = course::instance($sitecourse->id);
         $instance->parentcontextid = $sitecontext->id;
         $instance->pagetypepattern = 'site-index';
         $instance->timemodified = 3;
         $block3id = $DB->insert_record('block_instances', $instance);
-        $block3context = \context_block::instance($block3id);
+        $block3context = block::instance($block3id);
 
         // 4. Block on course page but no data.
         $instance->parentcontextid = $coursecontext->id;
@@ -95,39 +103,39 @@ final class base_block_test extends \advanced_testcase {
         unset($instance->configdata);
         $instance->timemodified = 4;
         $block4id = $DB->insert_record('block_instances', $instance);
-        \context_block::instance($block4id);
+        block::instance($block4id);
 
         // 5. Block on course page but not this block.
         $instance->blockname = 'mockotherblock';
         $instance->configdata = $configdata;
         $instance->timemodified = 5;
         $block5id = $DB->insert_record('block_instances', $instance);
-        \context_block::instance($block5id);
+        block::instance($block5id);
 
         // 6. Block on course page with '*' page type.
         $instance->blockname = 'mockblock';
         $instance->pagetypepattern = '*';
         $instance->timemodified = 6;
         $block6id = $DB->insert_record('block_instances', $instance);
-        \context_block::instance($block6id);
+        block::instance($block6id);
 
         // 7. Block on course page with 'course-*' page type.
         $instance->pagetypepattern = 'course-*';
         $instance->timemodified = 7;
         $block7id = $DB->insert_record('block_instances', $instance);
-        \context_block::instance($block7id);
+        block::instance($block7id);
 
         // 8. Block on course 2.
         $instance->parentcontextid = $course2context->id;
         $instance->timemodified = 8;
         $block8id = $DB->insert_record('block_instances', $instance);
-        \context_block::instance($block8id);
+        block::instance($block8id);
 
         // 9. Block on course 3.
         $instance->parentcontextid = $course3context->id;
         $instance->timemodified = 9;
         $block9id = $DB->insert_record('block_instances', $instance);
-        \context_block::instance($block9id);
+        block::instance($block9id);
 
         // Get all the blocks.
         $area = new \block_mockblock\search\area();
@@ -165,7 +173,7 @@ final class base_block_test extends \advanced_testcase {
 
         // Now use context restrictions. First, the whole site (no change).
         $results = self::recordset_to_indexed_array($area->get_document_recordset(
-                0, \context_system::instance()));
+                0, system::instance()));
         $this->assertEquals([$block1id, $block3id, $block6id, $block7id, $block8id, $block9id],
                 self::records_to_ids($results));
 
@@ -191,7 +199,7 @@ final class base_block_test extends \advanced_testcase {
         $this->assertEquals([$block3id], self::records_to_ids($results));
 
         // User context (no results).
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $results = self::recordset_to_indexed_array($area->get_document_recordset(
                 0, $usercontext));
         $this->assertCount(0, $results);
@@ -253,9 +261,9 @@ final class base_block_test extends \advanced_testcase {
         // Create course and activity module.
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $page = $generator->create_module('page', ['course' => $course->id]);
-        $pagecontext = \context_module::instance($page->cmid);
+        $pagecontext = module::instance($page->cmid);
 
         // Create block on course page.
         $configdata = base64_encode(serialize(new \stdClass()));
@@ -267,20 +275,20 @@ final class base_block_test extends \advanced_testcase {
         // Get document URL.
         $area = new \block_mockblock\search\area();
         $doc = $this->get_doc($course->id, $blockid);
-        $expected = new \moodle_url('/course/view.php', ['id' => $course->id], 'inst' . $blockid);
+        $expected = new url('/course/view.php', ['id' => $course->id], 'inst' . $blockid);
         $this->assertEquals($expected, $area->get_doc_url($doc));
         $this->assertEquals($expected, $area->get_context_url($doc));
 
         // Repeat with block on site page.
         $sitecourse = get_site();
-        $sitecontext = \context_course::instance($sitecourse->id);
+        $sitecontext = course::instance($sitecourse->id);
         $instance->pagetypepattern = 'site-index';
         $instance->parentcontextid = $sitecontext->id;
         $block2id = $DB->insert_record('block_instances', $instance);
 
         // Get document URL.
         $doc2 = $this->get_doc($course->id, $block2id);
-        $expected = new \moodle_url('/', ['redirect' => 0], 'inst' . $block2id);
+        $expected = new url('/', ['redirect' => 0], 'inst' . $block2id);
         $this->assertEquals($expected, $area->get_doc_url($doc2));
         $this->assertEquals($expected, $area->get_context_url($doc2));
 
@@ -296,7 +304,7 @@ final class base_block_test extends \advanced_testcase {
         $doc3 = $this->get_doc($course->id, $block3id);
         $this->assertDebuggingCalledCount(2, [$debugmessage, $debugmessage]);
 
-        $expected = new \moodle_url('/mod/page/view.php', ['id' => $page->cmid], 'inst' . $block3id);
+        $expected = new url('/mod/page/view.php', ['id' => $page->cmid], 'inst' . $block3id);
         $this->assertEquals($expected, $area->get_doc_url($doc3));
         $this->assertDebuggingCalled($debugmessage);
         $this->assertEquals($expected, $area->get_context_url($doc3));
@@ -309,7 +317,7 @@ final class base_block_test extends \advanced_testcase {
 
         // Get document URL.
         $doc = $this->get_doc($course->id, $block4id);
-        $expected = new \moodle_url('/course/view.php', ['id' => $course->id], 'inst' . $block4id);
+        $expected = new url('/course/view.php', ['id' => $course->id], 'inst' . $block4id);
         $this->assertEquals($expected, $area->get_doc_url($doc));
         $this->assertEquals($expected, $area->get_context_url($doc));
 
@@ -319,7 +327,7 @@ final class base_block_test extends \advanced_testcase {
 
         // Get document URL.
         $doc = $this->get_doc($course->id, $block5id);
-        $expected = new \moodle_url('/course/view.php', ['id' => $course->id], 'inst' . $block5id);
+        $expected = new url('/course/view.php', ['id' => $course->id], 'inst' . $block5id);
         $this->assertEquals($expected, $area->get_doc_url($doc));
         $this->assertEquals($expected, $area->get_context_url($doc));
     }
@@ -335,9 +343,9 @@ final class base_block_test extends \advanced_testcase {
         // Create course and activity module.
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $page = $generator->create_module('page', ['course' => $course->id]);
-        $pagecontext = \context_module::instance($page->cmid);
+        $pagecontext = module::instance($page->cmid);
 
         // Create block on course page.
         $configdata = base64_encode(serialize(new \stdClass()));
@@ -390,9 +398,9 @@ final class base_block_test extends \advanced_testcase {
         // Create course and activity module.
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $page = $generator->create_module('page', ['course' => $course->id]);
-        $pagecontext = \context_module::instance($page->cmid);
+        $pagecontext = module::instance($page->cmid);
 
         // Create blocks on course page, with time modified non-sequential.
         $configdata = base64_encode(serialize(new \stdClass()));
@@ -400,18 +408,18 @@ final class base_block_test extends \advanced_testcase {
                 'showinsubcontexts' => 0, 'pagetypepattern' => 'course-view-*', 'defaultweight' => 0,
                 'timecreated' => 1, 'timemodified' => 100, 'configdata' => $configdata];
         $blockid1 = $DB->insert_record('block_instances', $instance);
-        $context1 = \context_block::instance($blockid1);
+        $context1 = block::instance($blockid1);
         $instance->timemodified = 120;
         $blockid2 = $DB->insert_record('block_instances', $instance);
-        $context2 = \context_block::instance($blockid2);
+        $context2 = block::instance($blockid2);
         $instance->timemodified = 110;
         $blockid3 = $DB->insert_record('block_instances', $instance);
-        $context3 = \context_block::instance($blockid3);
+        $context3 = block::instance($blockid3);
 
         // Create another block on the activity page (not included).
         $instance->parentcontextid = $pagecontext->id;
         $blockid4 = $DB->insert_record('block_instances', $instance);
-        \context_block::instance($blockid4);
+        block::instance($blockid4);
 
         // Check list of contexts.
         $area = new \block_mockblock\search\area();

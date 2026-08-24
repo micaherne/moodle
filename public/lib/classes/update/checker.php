@@ -23,7 +23,9 @@
  */
 namespace core\update;
 
-use html_writer, coding_exception, core_component;
+use core\output\html_writer, core\exception\coding_exception, core_component;
+use core\plugin_manager;
+use core_cache\helper;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -127,7 +129,7 @@ class checker {
 
         // We need to reset plugin manager's caches - the currently existing
         // singleton is not aware of eventually available updates we just fetched.
-        \core_plugin_manager::reset_caches();
+        plugin_manager::reset_caches();
     }
 
     /**
@@ -300,7 +302,7 @@ class checker {
         if (defined('CACHE_DISABLE_ALL') and CACHE_DISABLE_ALL) {
             // Very nasty hack to work around cache coherency issues on admin/index.php?cache=0 page,
             // we definitely need to keep caches in sync when writing into DB at all times!
-            \cache_helper::purge_all(true);
+            helper::purge_all(true);
         }
 
         $this->restore_response(true);
@@ -438,7 +440,7 @@ class checker {
         $this->currentrelease = $release;
         $this->currentbranch = moodle_major_version(true);
 
-        $pluginman = \core_plugin_manager::instance();
+        $pluginman = plugin_manager::instance();
         foreach ($pluginman->get_plugins() as $type => $plugins) {
             // Iterate over installed plugins and determine which are non-standard and eligible for update checks. Note that we
             // disregard empty component names here, to ensure we only request valid data from the update site (in the case of an
@@ -646,7 +648,7 @@ class checker {
         }
 
         $notifications = array();
-        $pluginman = \core_plugin_manager::instance();
+        $pluginman = plugin_manager::instance();
         $plugins = $pluginman->get_plugins();
 
         foreach ($changes as $component => $componentchanges) {

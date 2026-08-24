@@ -16,6 +16,7 @@
 
 namespace mod_bigbluebuttonbn\external;
 
+use core\exception\moodle_exception;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
@@ -89,7 +90,7 @@ class meeting_info extends external_api {
         // Check if the BBB server is working.
         $serverversion = bigbluebutton_proxy::get_server_version();
         if ($serverversion === null) {
-            throw new \moodle_exception('general_error_no_answer', 'mod_bigbluebuttonbn',
+            throw new moodle_exception('general_error_no_answer', 'mod_bigbluebuttonbn',
                 bigbluebutton_proxy::get_server_not_available_url($instance),
                 bigbluebutton_proxy::get_server_not_available_message($instance));
         }

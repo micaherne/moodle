@@ -28,6 +28,10 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\test\testing_util;
 use core_privacy\tests\provider_testcase;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\transform;
@@ -108,7 +112,7 @@ final class provider_test extends provider_testcase {
 
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
-        $context = \context_system::instance();
+        $context = system::instance();
 
         /** @var \core_privacy\tests\request\content_writer $writer */
         $writer = writer::with_context($context);
@@ -269,11 +273,11 @@ final class provider_test extends provider_testcase {
         $course = $this->getDataGenerator()->create_course();
         $module = $this->getDataGenerator()->create_module('assign', ['course' => $course]);
         $user = $this->getDataGenerator()->create_user();
-        $guidegenerator = \testing_util::get_data_generator()->get_plugin_generator('gradingform_guide');
+        $guidegenerator = testing_util::get_data_generator()->get_plugin_generator('gradingform_guide');
 
         $this->setUser($user);
 
-        $modulecontext = \context_module::instance($module->cmid);
+        $modulecontext = module::instance($module->cmid);
         $controller = $guidegenerator->get_test_guide($modulecontext);
 
         // In the situation of mod_assign this would be the id from assign_grades.
@@ -307,11 +311,11 @@ final class provider_test extends provider_testcase {
         $course = $this->getDataGenerator()->create_course();
         $module = $this->getDataGenerator()->create_module('assign', ['course' => $course]);
         $user = $this->getDataGenerator()->create_user();
-        $guidegenerator = \testing_util::get_data_generator()->get_plugin_generator('gradingform_guide');
+        $guidegenerator = testing_util::get_data_generator()->get_plugin_generator('gradingform_guide');
 
         $this->setUser($user);
 
-        $modulecontext = \context_module::instance($module->cmid);
+        $modulecontext = module::instance($module->cmid);
         $controller = $guidegenerator->get_test_guide($modulecontext);
 
         // In the situation of mod_assign this would be the id from assign_grades.
@@ -362,11 +366,11 @@ final class provider_test extends provider_testcase {
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
         $user3 = $this->getDataGenerator()->create_user();
-        $guidegenerator = \testing_util::get_data_generator()->get_plugin_generator('gradingform_guide');
+        $guidegenerator = testing_util::get_data_generator()->get_plugin_generator('gradingform_guide');
 
         $this->setUser($user1);
 
-        $modulecontext = \context_module::instance($module->cmid);
+        $modulecontext = module::instance($module->cmid);
         $controller = $guidegenerator->get_test_guide($modulecontext);
 
         // In the situation of mod_assign this would be the id from assign_grades.
@@ -445,7 +449,7 @@ final class provider_test extends provider_testcase {
 
         // Create a course.
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         // Create some assignment instances.
         $params = (object)array(
@@ -455,13 +459,13 @@ final class provider_test extends provider_testcase {
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_assign');
         $instance0 = $generator->create_instance($params);
         $cm0 = get_coursemodule_from_instance('assign', $instance0->id);
-        $this->instancecontext0 = \context_module::instance($cm0->id);
+        $this->instancecontext0 = module::instance($cm0->id);
         $instance1 = $generator->create_instance($params);
         $cm1 = get_coursemodule_from_instance('assign', $instance1->id);
-        $this->instancecontext1 = \context_module::instance($cm1->id);
+        $this->instancecontext1 = module::instance($cm1->id);
         $instance2 = $generator->create_instance($params);
         $cm2 = get_coursemodule_from_instance('assign', $instance2->id);
-        $this->instancecontext2 = \context_module::instance($cm2->id);
+        $this->instancecontext2 = module::instance($cm2->id);
 
         // Create fake grading areas.
         $fakearea1 = (object)array(

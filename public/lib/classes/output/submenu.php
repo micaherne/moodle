@@ -64,7 +64,7 @@ class submenu implements named_templatable, renderable {
      * @param \renderer_base $output
      * @return array
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         $items = [];
 
         foreach ($this->items as $item) {
@@ -95,7 +95,7 @@ class submenu implements named_templatable, renderable {
      * @param \renderer_base $renderer
      * @return string
      */
-    public function get_template_name(\renderer_base $renderer): string {
+    public function get_template_name(renderer_base $renderer): string {
         return 'core/local/submenu/submenu';
     }
 }

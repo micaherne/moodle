@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use \core_badges\badge;
+use core\context\system;
 use core_badges\tests\badges_testcase;
 
 /**
@@ -28,7 +30,7 @@ final class events_test extends badges_testcase {
      * Test badge awarded event.
      */
     public function test_badge_awarded(): void {
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
 
         $sink = $this->redirectEvents();
 
@@ -325,7 +327,7 @@ final class events_test extends badges_testcase {
      */
     public function test_badge_listing_viewed(): void {
         // Trigger an event: badge listing viewed.
-        $context = context_system::instance();
+        $context = system::instance();
         $eventparams = array(
             'context' => $context,
             'other' => array('badgetype' => BADGE_TYPE_SITE)

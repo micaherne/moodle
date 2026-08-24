@@ -24,6 +24,8 @@
  */
 namespace core_course\local\repository;
 
+use core_cache\cache;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -50,7 +52,7 @@ class caching_content_item_readonly_repository implements content_item_readonly_
      * @param \cache $cachestore a cache to use.
      * @param content_item_readonly_repository $contentitemrepository the repository to use as a fallback, after a cache miss.
      */
-    public function __construct(\cache $cachestore, content_item_readonly_repository $contentitemrepository) {
+    public function __construct(cache $cachestore, content_item_readonly_repository $contentitemrepository) {
         $this->cachestore = $cachestore;
         $this->contentitemrepository = $contentitemrepository;
     }

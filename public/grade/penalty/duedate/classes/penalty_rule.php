@@ -16,8 +16,8 @@
 
 namespace gradepenalty_duedate;
 
-use context;
-use context_system;
+use core\context;
+use core\context\system;
 use core\lang_string;
 use core\persistent;
 
@@ -120,7 +120,7 @@ class penalty_rule extends persistent {
         }
 
         // Check if it is system context, create a default rule.
-        if ($contextid == context_system::instance()->id) {
+        if ($contextid == system::instance()->id) {
             $rule = new penalty_rule();
             $rule->set('contextid', $contextid);
             $rule->set('overdueby', 1);
@@ -138,7 +138,7 @@ class penalty_rule extends persistent {
      */
     public static function is_overridden(int $contextid): bool {
         // Exclude system context.
-        if ($contextid == context_system::instance()->id) {
+        if ($contextid == system::instance()->id) {
             return false;
         }
         $rules = self::get_records(['contextid' => $contextid]);
@@ -154,7 +154,7 @@ class penalty_rule extends persistent {
      */
     public static function is_inherited(int $contextid): bool {
         // Exclude system context.
-        if ($contextid == context_system::instance()->id) {
+        if ($contextid == system::instance()->id) {
             return false;
         }
 

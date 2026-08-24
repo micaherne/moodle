@@ -16,6 +16,7 @@
 
 namespace core_communication\task;
 
+use core\context;
 use core\task\scheduled_task;
 use core_communication\api;
 use core_communication\processor;
@@ -47,7 +48,7 @@ class synchronise_providers_task extends scheduled_task {
 
         foreach ($communicationinstances as $communicationinstance) {
             $communication = \core_communication\api::load_by_instance(
-                context: \context::instance_by_id($communicationinstance->contextid),
+                context: context::instance_by_id($communicationinstance->contextid),
                 component: $communicationinstance->component,
                 instancetype: $communicationinstance->instancetype,
                 instanceid: $communicationinstance->instanceid,

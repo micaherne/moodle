@@ -16,7 +16,7 @@
 
 namespace mod_data;
 
-use context_module;
+use core\context\module;
 use mod_data\local\exporter\csv_entries_exporter;
 use mod_data\local\exporter\ods_entries_exporter;
 use mod_data\local\exporter\utils;
@@ -119,7 +119,7 @@ final class entries_export_test extends \advanced_testcase {
         // We select all fields.
         $selectedfields = array_map(fn($field) => $field->field->id, $fields);
         $currentgroup = groups_get_activity_group($cm);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $exportuser = false;
         $exporttime = false;
         $exportapproval = false;
@@ -260,7 +260,7 @@ final class entries_export_test extends \advanced_testcase {
         // We select all fields.
         $selectedfields = array_map(fn($field) => $field->field->id, $fields);
         $currentgroup = groups_get_activity_group($cm);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $exportuser = false;
         $exporttime = false;
         $exportapproval = false;

@@ -26,8 +26,8 @@ use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
 use core_external\external_warnings;
-use moodle_exception;
-use context_module;
+use core\exception\moodle_exception;
+use core\context\module;
 use stdClass;
 
 /**
@@ -95,7 +95,7 @@ class get_user_attempts extends external_api {
 
         [$course, $cm] = get_course_and_cm_from_instance($h5pactivityid, 'h5pactivity');
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         $manager = manager::create_from_coursemodule($cm);

@@ -16,6 +16,15 @@
 
 namespace tool_dataprivacy;
 
+use core\context\block;
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\context\user;
+use core\context_helper;
+use core\output\progress_trace\null_progress_trace;
+use core\output\progress_trace\text_progress_trace;
+
 /**
  * Expired contexts tests.
  *
@@ -79,7 +88,7 @@ final class expired_contexts_test extends \advanced_testcase {
             api::set_contextlevel($record);
         } else {
             list($purposevar, ) = data_registry::var_names_from_context(
-                    \context_helper::get_class_for_level($contextlevel)
+                    context_helper::get_class_for_level($contextlevel)
                 );
             set_config($purposevar, $purpose->get('id'), 'tool_dataprivacy');
         }
@@ -97,7 +106,7 @@ final class expired_contexts_test extends \advanced_testcase {
 
         $this->setUser($user);
         $block = $this->create_user_block('Title', 'Content', FORMAT_PLAIN);
-        $context = \context_block::instance($block->instance->id);
+        $context = block::instance($block->instance->id);
         $this->setUser();
 
         // Flag all expired contexts.
@@ -120,7 +129,7 @@ final class expired_contexts_test extends \advanced_testcase {
 
         $this->setUser($user);
         $block = $this->create_user_block('Title', 'Content', FORMAT_PLAIN);
-        $context = \context_block::instance($block->instance->id);
+        $context = block::instance($block->instance->id);
         $this->setUser();
 
         // Flag all expired contexts.
@@ -143,7 +152,7 @@ final class expired_contexts_test extends \advanced_testcase {
 
         $this->setUser($user);
         $block = $this->create_user_block('Title', 'Content', FORMAT_PLAIN);
-        $context = \context_block::instance($block->instance->id);
+        $context = block::instance($block->instance->id);
         $this->setUser();
 
         // Flag all expired contexts.
@@ -166,7 +175,7 @@ final class expired_contexts_test extends \advanced_testcase {
 
         $this->setUser($user);
         $block = $this->create_user_block('Title', 'Content', FORMAT_PLAIN);
-        $context = \context_block::instance($block->instance->id);
+        $context = block::instance($block->instance->id);
         $this->setUser();
 
         // Flag all expired contexts.
@@ -195,7 +204,7 @@ final class expired_contexts_test extends \advanced_testcase {
 
         $this->setUser($user);
         $block = $this->create_user_block('Title', 'Content', FORMAT_PLAIN);
-        $context = \context_block::instance($block->instance->id);
+        $context = block::instance($block->instance->id);
         $this->setUser();
 
         // Flag all expired contexts.
@@ -215,7 +224,7 @@ final class expired_contexts_test extends \advanced_testcase {
         $this->setup_basics('PT1H', 'PT1H', 'P5Y');
 
         $user = $this->getDataGenerator()->create_user(['lastaccess' => time() - YEARSECS]);
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         // Create an existing expired_context.
         $expiredcontext = new expired_context(0, (object) [
@@ -255,7 +264,7 @@ final class expired_contexts_test extends \advanced_testcase {
 
         $this->setUser($user);
         $block = $this->create_user_block('Title', 'Content', FORMAT_PLAIN);
-        $context = \context_block::instance($block->instance->id);
+        $context = block::instance($block->instance->id);
         $this->setUser();
 
         // Flag all expired contexts.
@@ -276,8 +285,8 @@ final class expired_contexts_test extends \advanced_testcase {
         $purposes = $this->setup_basics('PT1H', 'PT1H', 'PT1H');
 
         $user = $this->getDataGenerator()->create_user(['lastaccess' => time() - YEARSECS]);
-        $usercontext = \context_user::instance($user->id);
-        $systemcontext = \context_system::instance();
+        $usercontext = user::instance($user->id);
+        $systemcontext = system::instance();
 
         $role = $DB->get_record('role', ['shortname' => 'manager']);
 
@@ -317,7 +326,7 @@ final class expired_contexts_test extends \advanced_testcase {
 
         $this->setUser($user);
         $block = $this->create_user_block('Title', 'Content', FORMAT_PLAIN);
-        $context = \context_block::instance($block->instance->id);
+        $context = block::instance($block->instance->id);
         $this->setUser();
 
         // Flag all expired contexts.
@@ -346,7 +355,7 @@ final class expired_contexts_test extends \advanced_testcase {
 
         $this->setUser($user);
         $block = $this->create_user_block('Title', 'Content', FORMAT_PLAIN);
-        $context = \context_block::instance($block->instance->id);
+        $context = block::instance($block->instance->id);
         $this->setUser();
 
         // Ensure that course end dates are not required.
@@ -378,7 +387,7 @@ final class expired_contexts_test extends \advanced_testcase {
 
         $this->setUser($user);
         $block = $this->create_user_block('Title', 'Content', FORMAT_PLAIN);
-        $context = \context_block::instance($block->instance->id);
+        $context = block::instance($block->instance->id);
         $this->setUser();
 
         // Ensure that course end dates are required.
@@ -401,7 +410,7 @@ final class expired_contexts_test extends \advanced_testcase {
         $this->setup_basics('PT1H', 'PT1H', 'PT1H');
 
         $user = $this->getDataGenerator()->create_user(['lastaccess' => time()]);
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         // Create an existing expired_context.
         $expiredcontext = new expired_context(0, (object) [
@@ -412,7 +421,7 @@ final class expired_contexts_test extends \advanced_testcase {
 
         $this->setUser($user);
         $block = $this->create_user_block('Title', 'Content', FORMAT_PLAIN);
-        $context = \context_block::instance($block->instance->id);
+        $context = block::instance($block->instance->id);
         $this->setUser();
 
         // Flag all expired contexts.
@@ -435,11 +444,11 @@ final class expired_contexts_test extends \advanced_testcase {
         $purposes = $this->setup_basics('PT1H', 'PT1H', 'PT1H');
 
         $user = $this->getDataGenerator()->create_user(['lastaccess' => time() - DAYSECS]);
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         $this->setUser($user);
         $block = $this->create_user_block('Title', 'Content', FORMAT_PLAIN);
-        $context = \context_block::instance($block->instance->id);
+        $context = block::instance($block->instance->id);
         $this->setUser();
 
         // Flag all expired contexts.
@@ -475,11 +484,11 @@ final class expired_contexts_test extends \advanced_testcase {
         $this->setup_basics('PT1H', 'PT1H', 'PT1H');
 
         $user = $this->getDataGenerator()->create_user(['lastaccess' => time() - DAYSECS]);
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         $this->setUser($user);
         $block = $this->create_user_block('Title', 'Content', FORMAT_PLAIN);
-        $blockcontext = \context_block::instance($block->instance->id);
+        $blockcontext = block::instance($block->instance->id);
         $this->setUser();
 
         // Create an existing expired_context which has not been approved for the block.
@@ -513,11 +522,11 @@ final class expired_contexts_test extends \advanced_testcase {
         $this->create_and_set_purpose_for_contextlevel('P5Y', CONTEXT_BLOCK);
 
         $user = $this->getDataGenerator()->create_user(['lastaccess' => time() - DAYSECS]);
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         $this->setUser($user);
         $block = $this->create_user_block('Title', 'Content', FORMAT_PLAIN);
-        $blockcontext = \context_block::instance($block->instance->id);
+        $blockcontext = block::instance($block->instance->id);
         $this->setUser();
 
         // Flag all expired contexts.
@@ -681,7 +690,7 @@ final class expired_contexts_test extends \advanced_testcase {
                 'startdate' => time() - (2 * DAYSECS),
                 'enddate' => time() - DAYSECS,
             ]);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         // Flag all expired contexts.
         $manager = new \tool_dataprivacy\expired_contexts_manager();
@@ -721,7 +730,7 @@ final class expired_contexts_test extends \advanced_testcase {
                 'startdate' => time() - (2 * DAYSECS),
                 'enddate' => time() - DAYSECS,
             ]);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         // Flag all expired contexts.
         $manager = new \tool_dataprivacy\expired_contexts_manager();
@@ -771,11 +780,11 @@ final class expired_contexts_test extends \advanced_testcase {
                 'startdate' => time() - (2 * DAYSECS),
                 'enddate' => time() - DAYSECS,
             ]);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $forumcontext = \context_module::instance($cm->id);
+        $forumcontext = module::instance($cm->id);
 
         api::set_context_instance((object) [
                 'contextid' => $forumcontext->id,
@@ -816,8 +825,8 @@ final class expired_contexts_test extends \advanced_testcase {
         $purposes = $this->setup_basics('PT1H', 'PT1H', 'PT1H');
 
         $user = $this->getDataGenerator()->create_user(['lastaccess' => time() - YEARSECS]);
-        $usercontext = \context_user::instance($user->id);
-        $systemcontext = \context_system::instance();
+        $usercontext = user::instance($user->id);
+        $systemcontext = system::instance();
 
         $role = $DB->get_record('role', ['shortname' => 'manager']);
 
@@ -854,7 +863,7 @@ final class expired_contexts_test extends \advanced_testcase {
             ->getMock();
 
         $manager->method('get_privacy_manager')->willReturn($mockprivacymanager);
-        $manager->set_progress(new \null_progress_trace());
+        $manager->set_progress(new null_progress_trace());
         list($processedcourses, $processedusers) = $manager->process_approved_deletions();
 
         $this->assertEquals(0, $processedcourses);
@@ -888,7 +897,7 @@ final class expired_contexts_test extends \advanced_testcase {
             ]);
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $forumcontext = \context_module::instance($cm->id);
+        $forumcontext = module::instance($cm->id);
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_forum');
 
         $student = $this->getDataGenerator()->create_user();
@@ -942,7 +951,7 @@ final class expired_contexts_test extends \advanced_testcase {
             ->getMock();
 
         $manager->method('get_privacy_manager')->willReturn($mockprivacymanager);
-        $manager->set_progress(new \null_progress_trace());
+        $manager->set_progress(new null_progress_trace());
         list($processedcourses, $processedusers) = $manager->process_approved_deletions();
 
         $this->assertEquals(1, $processedcourses);
@@ -976,7 +985,7 @@ final class expired_contexts_test extends \advanced_testcase {
             ]);
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $forumcontext = \context_module::instance($cm->id);
+        $forumcontext = module::instance($cm->id);
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_forum');
 
         $student = $this->getDataGenerator()->create_user();
@@ -1030,7 +1039,7 @@ final class expired_contexts_test extends \advanced_testcase {
             ->getMock();
 
         $manager->method('get_privacy_manager')->willReturn($mockprivacymanager);
-        $manager->set_progress(new \null_progress_trace());
+        $manager->set_progress(new null_progress_trace());
         list($processedcourses, $processedusers) = $manager->process_approved_deletions();
 
         $this->assertEquals(1, $processedcourses);
@@ -1064,7 +1073,7 @@ final class expired_contexts_test extends \advanced_testcase {
             ]);
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $forumcontext = \context_module::instance($cm->id);
+        $forumcontext = module::instance($cm->id);
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_forum');
 
         $teacher = $this->getDataGenerator()->create_user();
@@ -1119,7 +1128,7 @@ final class expired_contexts_test extends \advanced_testcase {
             ->getMock();
 
         $manager->method('get_privacy_manager')->willReturn($mockprivacymanager);
-        $manager->set_progress(new \null_progress_trace());
+        $manager->set_progress(new null_progress_trace());
         list($processedcourses, $processedusers) = $manager->process_approved_deletions();
 
         $this->assertEquals(1, $processedcourses);
@@ -1160,7 +1169,7 @@ final class expired_contexts_test extends \advanced_testcase {
             ]);
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $forumcontext = \context_module::instance($cm->id);
+        $forumcontext = module::instance($cm->id);
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_forum');
 
         $teacher = $this->getDataGenerator()->create_user();
@@ -1215,7 +1224,7 @@ final class expired_contexts_test extends \advanced_testcase {
             ->getMock();
 
         $manager->method('get_privacy_manager')->willReturn($mockprivacymanager);
-        $manager->set_progress(new \null_progress_trace());
+        $manager->set_progress(new null_progress_trace());
         list($processedcourses, $processedusers) = $manager->process_approved_deletions();
 
         $this->assertEquals(1, $processedcourses);
@@ -1232,7 +1241,7 @@ final class expired_contexts_test extends \advanced_testcase {
         $this->resetAfterTest();
 
         $user = $this->getDataGenerator()->create_user(['lastaccess' => time() - YEARSECS]);
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         // Create an existing expired_context.
         $expiredcontext = new expired_context(0, (object) [
@@ -1253,7 +1262,7 @@ final class expired_contexts_test extends \advanced_testcase {
         $manager = $this->getMockBuilder(\tool_dataprivacy\expired_contexts_manager::class)
             ->onlyMethods(['get_privacy_manager'])
             ->getMock();
-        $manager->set_progress(new \null_progress_trace());
+        $manager->set_progress(new null_progress_trace());
 
         $manager->method('get_privacy_manager')->willReturn($mockprivacymanager);
         list($processedcourses, $processedusers) = $manager->process_approved_deletions();
@@ -1271,7 +1280,7 @@ final class expired_contexts_test extends \advanced_testcase {
         $this->setup_basics('PT1H', 'PT1H', 'PT1H', 'PT1H');
 
         $user = $this->getDataGenerator()->create_user(['lastaccess' => time() - YEARSECS]);
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         // Create an existing expired_context.
         $expiredcontext = new expired_context(0, (object) [
@@ -1292,7 +1301,7 @@ final class expired_contexts_test extends \advanced_testcase {
         $manager = $this->getMockBuilder(\tool_dataprivacy\expired_contexts_manager::class)
             ->onlyMethods(['get_privacy_manager'])
             ->getMock();
-        $manager->set_progress(new \null_progress_trace());
+        $manager->set_progress(new null_progress_trace());
 
         $manager->method('get_privacy_manager')->willReturn($mockprivacymanager);
         list($processedcourses, $processedusers) = $manager->process_approved_deletions();
@@ -1328,7 +1337,7 @@ final class expired_contexts_test extends \advanced_testcase {
         $manager = $this->getMockBuilder(\tool_dataprivacy\expired_contexts_manager::class)
             ->onlyMethods(['get_privacy_manager'])
             ->getMock();
-        $manager->set_progress(new \null_progress_trace());
+        $manager->set_progress(new null_progress_trace());
 
         $manager->method('get_privacy_manager')->willReturn($mockprivacymanager);
         list($processedcourses, $processedusers) = $manager->process_approved_deletions();
@@ -1349,11 +1358,11 @@ final class expired_contexts_test extends \advanced_testcase {
         $this->setup_basics('PT1H', 'PT1H', 'PT1H');
 
         $user = $this->getDataGenerator()->create_user(['lastaccess' => time() - YEARSECS]);
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         $this->setUser($user);
         $block = $this->create_user_block('Title', 'Content', FORMAT_PLAIN);
-        $blockcontext = \context_block::instance($block->instance->id);
+        $blockcontext = block::instance($block->instance->id);
         $this->setUser();
 
         // Create an existing expired_context.
@@ -1388,7 +1397,7 @@ final class expired_contexts_test extends \advanced_testcase {
         $manager = $this->getMockBuilder(\tool_dataprivacy\expired_contexts_manager::class)
             ->onlyMethods(['get_privacy_manager'])
             ->getMock();
-        $manager->set_progress(new \null_progress_trace());
+        $manager->set_progress(new null_progress_trace());
 
         $manager->method('get_privacy_manager')->willReturn($mockprivacymanager);
         list($processedcourses, $processedusers) = $manager->process_approved_deletions();
@@ -1422,7 +1431,7 @@ final class expired_contexts_test extends \advanced_testcase {
                 'startdate' => time() - (2 * YEARSECS),
                 'enddate' => time() - YEARSECS,
             ]);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         // Create an existing expired_context.
         $expiredcontext = new expired_context(0, (object) [
@@ -1443,7 +1452,7 @@ final class expired_contexts_test extends \advanced_testcase {
         $manager = $this->getMockBuilder(\tool_dataprivacy\expired_contexts_manager::class)
             ->onlyMethods(['get_privacy_manager'])
             ->getMock();
-        $manager->set_progress(new \null_progress_trace());
+        $manager->set_progress(new null_progress_trace());
 
         $manager->method('get_privacy_manager')->willReturn($mockprivacymanager);
         list($processedcourses, $processedusers) = $manager->process_approved_deletions();
@@ -1464,11 +1473,11 @@ final class expired_contexts_test extends \advanced_testcase {
         $this->setup_basics('PT1H', 'PT1H', 'PT1H');
 
         $user = $this->getDataGenerator()->create_user(['lastaccess' => time() - YEARSECS]);
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         $this->setUser($user);
         $block = $this->create_user_block('Title', 'Content', FORMAT_PLAIN);
-        $context = \context_block::instance($block->instance->id);
+        $context = block::instance($block->instance->id);
         $this->setUser();
 
         // Create an existing expired_context.
@@ -1495,7 +1504,7 @@ final class expired_contexts_test extends \advanced_testcase {
         $manager = $this->getMockBuilder(\tool_dataprivacy\expired_contexts_manager::class)
             ->onlyMethods(['get_privacy_manager'])
             ->getMock();
-        $manager->set_progress(new \null_progress_trace());
+        $manager->set_progress(new null_progress_trace());
 
         $manager->method('get_privacy_manager')->willReturn($mockprivacymanager);
         list($processedcourses, $processedusers) = $manager->process_approved_deletions();
@@ -1516,11 +1525,11 @@ final class expired_contexts_test extends \advanced_testcase {
         $this->setup_basics('PT1H', 'PT1H', 'PT1H');
 
         $user = $this->getDataGenerator()->create_user(['lastaccess' => time() - YEARSECS]);
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         $this->setUser($user);
         $block = $this->create_user_block('Title', 'Content', FORMAT_PLAIN);
-        $context = \context_block::instance($block->instance->id);
+        $context = block::instance($block->instance->id);
         $this->setUser();
 
         // Create an existing expired_context.
@@ -1547,7 +1556,7 @@ final class expired_contexts_test extends \advanced_testcase {
         $manager = $this->getMockBuilder(\tool_dataprivacy\expired_contexts_manager::class)
             ->onlyMethods(['get_privacy_manager'])
             ->getMock();
-        $manager->set_progress(new \null_progress_trace());
+        $manager->set_progress(new null_progress_trace());
 
         $manager->method('get_privacy_manager')->willReturn($mockprivacymanager);
         list($processedcourses, $processedusers) = $manager->process_approved_deletions();
@@ -1568,11 +1577,11 @@ final class expired_contexts_test extends \advanced_testcase {
         $this->setup_basics('PT1H', 'PT1H', 'PT1H');
 
         $user = $this->getDataGenerator()->create_user(['lastaccess' => time() - DAYSECS]);
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         $this->setUser($user);
         $block = $this->create_user_block('Title', 'Content', FORMAT_PLAIN);
-        $blockcontext = \context_block::instance($block->instance->id);
+        $blockcontext = block::instance($block->instance->id);
         $this->setUser();
 
         // Create an expired_context for the user.
@@ -1614,7 +1623,7 @@ final class expired_contexts_test extends \advanced_testcase {
         $manager = $this->getMockBuilder(\tool_dataprivacy\expired_contexts_manager::class)
             ->onlyMethods(['get_privacy_manager'])
             ->getMock();
-        $manager->set_progress(new \null_progress_trace());
+        $manager->set_progress(new null_progress_trace());
 
         $manager->method('get_privacy_manager')->willReturn($mockprivacymanager);
         list($processedcourses, $processedusers) = $manager->process_approved_deletions();
@@ -1636,11 +1645,11 @@ final class expired_contexts_test extends \advanced_testcase {
         $this->create_and_set_purpose_for_contextlevel('P5Y', CONTEXT_BLOCK);
 
         $user = $this->getDataGenerator()->create_user(['lastaccess' => time() - DAYSECS]);
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         $this->setUser($user);
         $block = $this->create_user_block('Title', 'Content', FORMAT_PLAIN);
-        $blockcontext = \context_block::instance($block->instance->id);
+        $blockcontext = block::instance($block->instance->id);
         $this->setUser();
 
         // Create an expired_context for the user.
@@ -1675,7 +1684,7 @@ final class expired_contexts_test extends \advanced_testcase {
         $manager = $this->getMockBuilder(\tool_dataprivacy\expired_contexts_manager::class)
             ->onlyMethods(['get_privacy_manager'])
             ->getMock();
-        $manager->set_progress(new \null_progress_trace());
+        $manager->set_progress(new null_progress_trace());
 
         $manager->method('get_privacy_manager')->willReturn($mockprivacymanager);
         list($processedcourses, $processedusers) = $manager->process_approved_deletions();
@@ -1700,7 +1709,7 @@ final class expired_contexts_test extends \advanced_testcase {
                 'startdate' => time() - (2 * YEARSECS),
                 'enddate' => time() - YEARSECS,
             ]);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
 
         // Create an existing expired_context.
@@ -1722,7 +1731,7 @@ final class expired_contexts_test extends \advanced_testcase {
         $manager = $this->getMockBuilder(\tool_dataprivacy\expired_contexts_manager::class)
             ->onlyMethods(['get_privacy_manager'])
             ->getMock();
-        $manager->set_progress(new \null_progress_trace());
+        $manager->set_progress(new null_progress_trace());
         $manager->method('get_privacy_manager')->willReturn($mockprivacymanager);
 
         // Changing the retention period to a longer period will remove the expired_context record.
@@ -1751,7 +1760,7 @@ final class expired_contexts_test extends \advanced_testcase {
                 'startdate' => time() - (2 * YEARSECS),
                 'enddate' => time() - YEARSECS,
             ]);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
 
         // Create an existing expired_context.
@@ -1773,7 +1782,7 @@ final class expired_contexts_test extends \advanced_testcase {
         $manager = $this->getMockBuilder(\tool_dataprivacy\expired_contexts_manager::class)
             ->onlyMethods(['get_privacy_manager'])
             ->getMock();
-        $manager->set_progress(new \null_progress_trace());
+        $manager->set_progress(new null_progress_trace());
 
         $manager->method('get_privacy_manager')->willReturn($mockprivacymanager);
         list($processedcourses, $processedusers) = $manager->process_approved_deletions();
@@ -1800,10 +1809,10 @@ final class expired_contexts_test extends \advanced_testcase {
                 'startdate' => time() - (2 * YEARSECS),
                 'enddate' => time() - YEARSECS,
             ]);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $forumcontext = \context_module::instance($cm->id);
+        $forumcontext = module::instance($cm->id);
 
         // Create an existing expired_context for the course.
         $expiredcoursecontext = new expired_context(0, (object) [
@@ -1831,7 +1840,7 @@ final class expired_contexts_test extends \advanced_testcase {
         $manager = $this->getMockBuilder(\tool_dataprivacy\expired_contexts_manager::class)
             ->onlyMethods(['get_privacy_manager'])
             ->getMock();
-        $manager->set_progress(new \null_progress_trace());
+        $manager->set_progress(new null_progress_trace());
 
         $manager->method('get_privacy_manager')->willReturn($mockprivacymanager);
         list($processedcourses, $processedusers) = $manager->process_approved_deletions();
@@ -1858,10 +1867,10 @@ final class expired_contexts_test extends \advanced_testcase {
                 'startdate' => time() - (2 * YEARSECS),
                 'enddate' => time() - YEARSECS,
             ]);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $forumcontext = \context_module::instance($cm->id);
+        $forumcontext = module::instance($cm->id);
 
         // Create an existing expired_context for the course.
         $expiredcoursecontext = new expired_context(0, (object) [
@@ -1902,7 +1911,7 @@ final class expired_contexts_test extends \advanced_testcase {
         $manager = $this->getMockBuilder(\tool_dataprivacy\expired_contexts_manager::class)
             ->onlyMethods(['get_privacy_manager'])
             ->getMock();
-        $manager->set_progress(new \null_progress_trace());
+        $manager->set_progress(new null_progress_trace());
 
         $manager->method('get_privacy_manager')->willReturn($mockprivacymanager);
 
@@ -1939,7 +1948,7 @@ final class expired_contexts_test extends \advanced_testcase {
         $purpose = new expired_context(0, (object) [
             'status' => $status,
 
-            'contextid' => \context_system::instance()->id,
+            'contextid' => system::instance()->id,
         ]);
 
         $this->assertEquals($expected, $purpose->can_process_deletion());
@@ -1977,7 +1986,7 @@ final class expired_contexts_test extends \advanced_testcase {
     public function test_is_complete($status, $expected): void {
         $purpose = new expired_context(0, (object) [
             'status' => $status,
-            'contextid' => \context_system::instance()->id,
+            'contextid' => system::instance()->id,
         ]);
 
         $this->assertEquals($expected, $purpose->is_complete());
@@ -2063,11 +2072,11 @@ final class expired_contexts_test extends \advanced_testcase {
                 'startdate' => time() - (2 * YEARSECS),
                 'enddate' => time() - YEARSECS,
             ]);
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Flag all expired contexts.
         $manager = new \tool_dataprivacy\expired_contexts_manager();
-        $manager->set_progress(new \null_progress_trace());
+        $manager->set_progress(new null_progress_trace());
         list($flaggedcourses, $flaggedusers) = $manager->flag_expired_contexts();
 
         $this->assertEquals(1, $flaggedcourses);
@@ -2111,7 +2120,7 @@ final class expired_contexts_test extends \advanced_testcase {
         $rc = new \ReflectionClass(\tool_dataprivacy\expired_contexts_manager::class);
         $rcm = $rc->getMethod('get_progress');
 
-        $this->assertInstanceOf(\text_progress_trace::class, $rcm->invoke($manager));
+        $this->assertInstanceOf(text_progress_trace::class, $rcm->invoke($manager));
     }
 
     /**
@@ -2119,7 +2128,7 @@ final class expired_contexts_test extends \advanced_testcase {
      */
     public function test_progress_tracer_set(): void {
         $manager = new \tool_dataprivacy\expired_contexts_manager();
-        $mytrace = new \null_progress_trace();
+        $mytrace = new null_progress_trace();
         $manager->set_progress($mytrace);
 
         $rc = new \ReflectionClass(\tool_dataprivacy\expired_contexts_manager::class);
@@ -2173,7 +2182,7 @@ final class expired_contexts_test extends \advanced_testcase {
      */
     protected function construct_user_page(\stdClass $user) {
         $page = new \moodle_page();
-        $page->set_context(\context_user::instance($user->id));
+        $page->set_context(user::instance($user->id));
         $page->set_pagelayout('mydashboard');
         $page->set_pagetype('my-index');
         $page->blocks->load_blocks();
@@ -2201,9 +2210,9 @@ final class expired_contexts_test extends \advanced_testcase {
         $this->setup_basics('PT1H', 'PT1H', 'P1D');
         $user = $this->getDataGenerator()->create_user(['lastaccess' => time() - YEARSECS]);
 
-        $this->assertFalse(expired_contexts_manager::is_context_expired(\context_system::instance()));
+        $this->assertFalse(expired_contexts_manager::is_context_expired(system::instance()));
         $this->assertFalse(
-                expired_contexts_manager::is_context_expired_or_unprotected_for_user(\context_system::instance(), $user));
+                expired_contexts_manager::is_context_expired_or_unprotected_for_user(system::instance(), $user));
     }
 
     /**
@@ -2221,7 +2230,7 @@ final class expired_contexts_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_user(['lastaccess' => time() - YEARSECS]);
         $this->setUser($user);
         $block = $this->create_user_block('Title', 'Content', FORMAT_PLAIN);
-        $blockcontext = \context_block::instance($block->instance->id);
+        $blockcontext = block::instance($block->instance->id);
         $this->setUser();
 
         // Protected flags have no bearing on expiry of user subcontexts.
@@ -2243,11 +2252,11 @@ final class expired_contexts_test extends \advanced_testcase {
         $purposes = $this->setup_basics('PT1H', 'PT1H', 'P1D');
 
         $frontcourse = get_site();
-        $frontcoursecontext = \context_course::instance($frontcourse->id);
+        $frontcoursecontext = course::instance($frontcourse->id);
 
         $sitenews = $this->getDataGenerator()->create_module('forum', ['course' => $frontcourse->id]);
         $cm = get_coursemodule_from_instance('forum', $sitenews->id);
-        $sitenewscontext = \context_module::instance($cm->id);
+        $sitenewscontext = module::instance($cm->id);
 
         $user = $this->getDataGenerator()->create_user(['lastaccess' => time() - YEARSECS]);
 
@@ -2278,7 +2287,7 @@ final class expired_contexts_test extends \advanced_testcase {
 
         $user = $this->getDataGenerator()->create_user(['lastaccess' => time() - YEARSECS]);
         $course = $this->getDataGenerator()->create_course(['startdate' => time() - YEARSECS, 'enddate' => time()]);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $this->getDataGenerator()->enrol_user($user->id, $course->id, 'student');
 
@@ -2301,7 +2310,7 @@ final class expired_contexts_test extends \advanced_testcase {
 
         $user = $this->getDataGenerator()->create_user(['lastaccess' => time() - YEARSECS]);
         $course = $this->getDataGenerator()->create_course(['startdate' => time() - YEARSECS, 'enddate' => time() - WEEKSECS]);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $this->getDataGenerator()->enrol_user($user->id, $course->id, 'student');
 
@@ -2334,9 +2343,9 @@ final class expired_contexts_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course(['startdate' => time() - YEARSECS, 'enddate' => time() + WEEKSECS]);
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
 
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $forumcontext = \context_module::instance($cm->id);
+        $forumcontext = module::instance($cm->id);
 
         $this->getDataGenerator()->enrol_user($user->id, $course->id, 'student');
 
@@ -2362,8 +2371,8 @@ final class expired_contexts_test extends \advanced_testcase {
 
         $user = $this->getDataGenerator()->create_user(['lastaccess' => time() - YEARSECS]);
         $course = $this->getDataGenerator()->create_course(['startdate' => time() - YEARSECS, 'enddate' => time() - WEEKSECS]);
-        $coursecontext = \context_course::instance($course->id);
-        $systemcontext = \context_system::instance();
+        $coursecontext = course::instance($course->id);
+        $systemcontext = system::instance();
 
         $role = $DB->get_record('role', ['shortname' => 'manager']);
         $override = new purpose_override(0, (object) [
@@ -2397,8 +2406,8 @@ final class expired_contexts_test extends \advanced_testcase {
 
         $user = $this->getDataGenerator()->create_user(['lastaccess' => time() - YEARSECS]);
         $course = $this->getDataGenerator()->create_course(['startdate' => time() - YEARSECS, 'enddate' => time() - WEEKSECS]);
-        $coursecontext = \context_course::instance($course->id);
-        $systemcontext = \context_system::instance();
+        $coursecontext = course::instance($course->id);
+        $systemcontext = system::instance();
 
         $role = $DB->get_record('role', ['shortname' => 'manager']);
         $override = new purpose_override(0, (object) [
@@ -2446,8 +2455,8 @@ final class expired_contexts_test extends \advanced_testcase {
 
         $user = $this->getDataGenerator()->create_user(['lastaccess' => time() - YEARSECS]);
         $course = $this->getDataGenerator()->create_course(['startdate' => time() - YEARSECS, 'enddate' => time() - WEEKSECS]);
-        $coursecontext = \context_course::instance($course->id);
-        $systemcontext = \context_system::instance();
+        $coursecontext = course::instance($course->id);
+        $systemcontext = system::instance();
 
         $role = $DB->get_record('role', ['shortname' => 'manager']);
         $override = new purpose_override(0, (object) [
@@ -2475,8 +2484,8 @@ final class expired_contexts_test extends \advanced_testcase {
 
         $user = $this->getDataGenerator()->create_user(['lastaccess' => time() - YEARSECS]);
         $course = $this->getDataGenerator()->create_course(['startdate' => time() - YEARSECS, 'enddate' => time() - WEEKSECS]);
-        $coursecontext = \context_course::instance($course->id);
-        $systemcontext = \context_system::instance();
+        $coursecontext = course::instance($course->id);
+        $systemcontext = system::instance();
 
         $role = $DB->get_record('role', ['shortname' => 'student']);
         $override = new purpose_override(0, (object) [
@@ -2504,8 +2513,8 @@ final class expired_contexts_test extends \advanced_testcase {
 
         $user = $this->getDataGenerator()->create_user(['lastaccess' => time() - YEARSECS]);
         $course = $this->getDataGenerator()->create_course(['startdate' => time() - YEARSECS, 'enddate' => time() - WEEKSECS]);
-        $coursecontext = \context_course::instance($course->id);
-        $systemcontext = \context_system::instance();
+        $coursecontext = course::instance($course->id);
+        $systemcontext = system::instance();
 
         $role = $DB->get_record('role', ['shortname' => 'manager']);
         $override = new purpose_override(0, (object) [
@@ -2537,8 +2546,8 @@ final class expired_contexts_test extends \advanced_testcase {
 
         $user = $this->getDataGenerator()->create_user(['lastaccess' => time() - YEARSECS]);
         $course = $this->getDataGenerator()->create_course(['startdate' => time() - YEARSECS, 'enddate' => time() - WEEKSECS]);
-        $coursecontext = \context_course::instance($course->id);
-        $systemcontext = \context_system::instance();
+        $coursecontext = course::instance($course->id);
+        $systemcontext = system::instance();
 
         $role = $DB->get_record('role', ['shortname' => 'manager']);
         $override = new purpose_override(0, (object) [
@@ -2568,8 +2577,8 @@ final class expired_contexts_test extends \advanced_testcase {
         $purposes = $this->setup_basics('PT1S', 'PT1S', 'PT1S');
 
         $course = $this->getDataGenerator()->create_course(['startdate' => time() - YEARSECS, 'enddate' => time() - DAYSECS]);
-        $coursecontext = \context_course::instance($course->id);
-        $systemcontext = \context_system::instance();
+        $coursecontext = course::instance($course->id);
+        $systemcontext = system::instance();
 
         $roles = $DB->get_records_menu('role', [], 'id', 'shortname, id');
         $override = new purpose_override(0, (object) [
@@ -2623,8 +2632,8 @@ final class expired_contexts_test extends \advanced_testcase {
         $purposes = $this->setup_basics('P5Y', 'P5Y', 'P5Y');
 
         $course = $this->getDataGenerator()->create_course(['startdate' => time() - YEARSECS, 'enddate' => time() - DAYSECS]);
-        $coursecontext = \context_course::instance($course->id);
-        $systemcontext = \context_system::instance();
+        $coursecontext = course::instance($course->id);
+        $systemcontext = system::instance();
 
         $roles = $DB->get_records_menu('role', [], 'id', 'shortname, id');
         $override = new purpose_override(0, (object) [

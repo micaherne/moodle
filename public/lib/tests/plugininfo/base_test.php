@@ -18,6 +18,8 @@ declare(strict_types=1);
 
 namespace core\plugininfo;
 
+use core\exception\coding_exception;
+use core\plugin_manager;
 use testable_core_plugin_manager;
 use testable_plugininfo_base;
 
@@ -76,7 +78,7 @@ final class base_test extends \advanced_testcase {
 
         $pluginman->add_fake_plugin_info($plugininfo);
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage('Incorrect syntax in plugin supported declaration in example');
         $plugininfo->load_disk_version();
     }
@@ -142,7 +144,7 @@ final class base_test extends \advanced_testcase {
 
         $pluginman->add_fake_plugin_info($plugininfo);
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage('Incorrect syntax in plugin incompatible declaration in example');
         $plugininfo->load_disk_version();
     }
@@ -296,7 +298,7 @@ final class base_test extends \advanced_testcase {
         string $plugin,
     ): void {
         [$plugintype, $pluginname] = explode('_', $plugin, 2);
-        $classname = \core_plugin_manager::resolve_plugininfo_class($plugintype);
+        $classname = plugin_manager::resolve_plugininfo_class($plugintype);
 
         $this->assertFalse($classname::plugintype_supports_ordering());
 

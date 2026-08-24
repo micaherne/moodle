@@ -25,6 +25,10 @@
 
 namespace mod_glossary\event;
 
+use core\context\course;
+use core\context\module;
+use core\url;
+
 /**
  * Unit tests for glossary events.
  *
@@ -52,7 +56,7 @@ final class events_test extends \advanced_testcase {
 
         $entry = $glossarygenerator->create_content($glossary);
 
-        $context = \context_module::instance($glossary->cmid);
+        $context = module::instance($glossary->cmid);
         $cm = get_coursemodule_from_instance('glossary', $glossary->id, $course->id);
         $cmt = new \stdClass();
         $cmt->component = 'mod_glossary';
@@ -74,7 +78,7 @@ final class events_test extends \advanced_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_glossary\event\comment_created', $event);
         $this->assertEquals($context, $event->get_context());
-        $url = new \moodle_url('/mod/glossary/view.php', array('id' => $glossary->cmid));
+        $url = new url('/mod/glossary/view.php', array('id' => $glossary->cmid));
         $this->assertEquals($url, $event->get_url());
         $this->assertEventContextNotUsed($event);
     }
@@ -91,7 +95,7 @@ final class events_test extends \advanced_testcase {
 
         $entry = $glossarygenerator->create_content($glossary);
 
-        $context = \context_module::instance($glossary->cmid);
+        $context = module::instance($glossary->cmid);
         $cm = get_coursemodule_from_instance('glossary', $glossary->id, $course->id);
         $cmt = new \stdClass();
         $cmt->component = 'mod_glossary';
@@ -114,7 +118,7 @@ final class events_test extends \advanced_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_glossary\event\comment_deleted', $event);
         $this->assertEquals($context, $event->get_context());
-        $url = new \moodle_url('/mod/glossary/view.php', array('id' => $glossary->cmid));
+        $url = new url('/mod/glossary/view.php', array('id' => $glossary->cmid));
         $this->assertEquals($url, $event->get_url());
         $this->assertEventContextNotUsed($event);
     }
@@ -129,7 +133,7 @@ final class events_test extends \advanced_testcase {
 
         $dbcourse = $DB->get_record('course', array('id' => $course->id));
         $dbglossary = $DB->get_record('glossary', array('id' => $glossary->id));
-        $context = \context_module::instance($glossary->cmid);
+        $context = module::instance($glossary->cmid);
         $mode = 'letter';
 
         $event = \mod_glossary\event\course_module_viewed::create(array(
@@ -153,7 +157,7 @@ final class events_test extends \advanced_testcase {
         $this->assertEquals(CONTEXT_MODULE, $event->contextlevel);
         $this->assertEquals($glossary->cmid, $event->contextinstanceid);
         $this->assertEquals($glossary->id, $event->objectid);
-        $this->assertEquals(new \moodle_url('/mod/glossary/view.php', array('id' => $glossary->cmid, 'mode' => $mode)), $event->get_url());
+        $this->assertEquals(new url('/mod/glossary/view.php', array('id' => $glossary->cmid, 'mode' => $mode)), $event->get_url());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -164,7 +168,7 @@ final class events_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
 
         $event = \mod_glossary\event\course_module_instance_list_viewed::create(array(
-            'context' => \context_course::instance($course->id)
+            'context' => course::instance($course->id)
         ));
 
         // Triggering and capturing the event.
@@ -188,7 +192,7 @@ final class events_test extends \advanced_testcase {
         $this->setAdminUser();
         $course = $this->getDataGenerator()->create_course();
         $glossary = $this->getDataGenerator()->create_module('glossary', array('course' => $course));
-        $context = \context_module::instance($glossary->cmid);
+        $context = module::instance($glossary->cmid);
 
         $glossarygenerator = $this->getDataGenerator()->get_plugin_generator('mod_glossary');
         $entry = $glossarygenerator->create_content($glossary);
@@ -221,7 +225,7 @@ final class events_test extends \advanced_testcase {
         $this->setAdminUser();
         $course = $this->getDataGenerator()->create_course();
         $glossary = $this->getDataGenerator()->create_module('glossary', array('course' => $course));
-        $context = \context_module::instance($glossary->cmid);
+        $context = module::instance($glossary->cmid);
 
         $glossarygenerator = $this->getDataGenerator()->get_plugin_generator('mod_glossary');
         $entry = $glossarygenerator->create_content($glossary);
@@ -255,7 +259,7 @@ final class events_test extends \advanced_testcase {
         $this->setAdminUser();
         $course = $this->getDataGenerator()->create_course();
         $glossary = $this->getDataGenerator()->create_module('glossary', array('course' => $course));
-        $context = \context_module::instance($glossary->cmid);
+        $context = module::instance($glossary->cmid);
         $prevmode = 'view';
         $hook = 'ALL';
 
@@ -297,7 +301,7 @@ final class events_test extends \advanced_testcase {
         $this->setAdminUser();
         $course = $this->getDataGenerator()->create_course();
         $glossary = $this->getDataGenerator()->create_module('glossary', array('course' => $course));
-        $context = \context_module::instance($glossary->cmid);
+        $context = module::instance($glossary->cmid);
 
         // Create category and trigger event.
         $category = new \stdClass();
@@ -384,7 +388,7 @@ final class events_test extends \advanced_testcase {
         $this->setUser($teacher);
         $glossary = $this->getDataGenerator()->create_module('glossary',
                 array('course' => $course, 'defaultapproval' => 0));
-        $context = \context_module::instance($glossary->cmid);
+        $context = module::instance($glossary->cmid);
 
         $this->setUser($student);
         $glossarygenerator = $this->getDataGenerator()->get_plugin_generator('mod_glossary');
@@ -450,7 +454,7 @@ final class events_test extends \advanced_testcase {
         $this->setAdminUser();
         $course = $this->getDataGenerator()->create_course();
         $glossary = $this->getDataGenerator()->create_module('glossary', array('course' => $course));
-        $context = \context_module::instance($glossary->cmid);
+        $context = module::instance($glossary->cmid);
 
         $glossarygenerator = $this->getDataGenerator()->get_plugin_generator('mod_glossary');
         $entry = $glossarygenerator->create_content($glossary);

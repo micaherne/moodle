@@ -29,9 +29,14 @@
 
 namespace quizaccess_seb;
 
-use context_module;
-use context_user;
-use lang_string;
+use core\context;
+use core\context\course;
+use core\context\module;
+use core\context\user;
+use core\exception\coding_exception;
+use core\lang_string;
+use core\output\html_writer;
+use core\url;
 use stdClass;
 use stored_file;
 
@@ -436,7 +441,7 @@ class settings_provider {
         $file = self::get_module_context_sebconfig_file($quizform->get_coursemodule()->id);
 
         if ($file) {
-            $url = \moodle_url::make_pluginfile_url(
+            $url = url::make_pluginfile_url(
                 $file->get_contextid(),
                 $file->get_component(),
                 $file->get_filearea(),
@@ -445,7 +450,7 @@ class settings_provider {
                 $file->get_filename(),
                 true
             );
-            $link = \html_writer::link($url, get_string('downloadsebconfig', 'quizaccess_seb'));
+            $link = html_writer::link($url, get_string('downloadsebconfig', 'quizaccess_seb'));
         }
 
         return $link;
@@ -529,8 +534,8 @@ class settings_provider {
      *
      * @return bool
      */
-    public static function is_conflicting_permissions(\context $context) {
-        if ($context instanceof \context_course) {
+    public static function is_conflicting_permissions(context $context) {
+        if ($context instanceof course) {
             return false;
         }
 
@@ -569,7 +574,7 @@ class settings_provider {
      * @param \context $context Context used with capability checking selection options.
      * @return array
      */
-    public static function get_requiresafeexambrowser_options(\context $context): array {
+    public static function get_requiresafeexambrowser_options(context $context): array {
         $options[self::USE_SEB_NO] = get_string('no');
 
         if (self::can_configure_manually($context) || self::is_conflicting_permissions($context)) {
@@ -698,7 +703,7 @@ class settings_provider {
      */
     public static function get_current_user_draft_file(string $itemid): ?stored_file {
         global $USER;
-        $context = context_user::instance($USER->id);
+        $context = user::instance($USER->id);
         $fs = get_file_storage();
         if (!$files = $fs->get_area_files($context->id, 'user', 'draft', $itemid, 'id DESC', false)) {
             return null;
@@ -714,7 +719,7 @@ class settings_provider {
      */
     public static function get_module_context_sebconfig_file(string $cmid): ?stored_file {
         $fs = new \file_storage();
-        $context = context_module::instance($cmid);
+        $context = module::instance($cmid);
 
         if (!$files = $fs->get_area_files($context->id, 'quizaccess_seb', 'filemanager_sebconfigfile', 0,
             'id DESC', false)) {
@@ -733,7 +738,7 @@ class settings_provider {
      */
     public static function save_filemanager_sebconfigfile_draftarea(string $draftitemid, string $cmid): bool {
         if ($draftitemid) {
-            $context = context_module::instance($cmid);
+            $context = module::instance($cmid);
             file_save_draft_area_files($draftitemid, $context->id, 'quizaccess_seb', 'filemanager_sebconfigfile',
                 0, []);
         }
@@ -764,7 +769,7 @@ class settings_provider {
      * @param \context $context Context to check access in.
      * @return bool
      */
-    public static function can_configure_seb(\context $context): bool {
+    public static function can_configure_seb(context $context): bool {
         return has_capability('quizaccess/seb:manage_seb_requiresafeexambrowser', $context);
     }
 
@@ -774,7 +779,7 @@ class settings_provider {
      * @param \context $context Context to check access in.
      * @return bool
      */
-    public static function can_use_seb_client_config(\context $context): bool {
+    public static function can_use_seb_client_config(context $context): bool {
         return has_capability('quizaccess/seb:manage_seb_usesebclientconfig', $context);
     }
 
@@ -784,7 +789,7 @@ class settings_provider {
      * @param \context $context Context to check access in.
      * @return bool
      */
-    public static function can_use_seb_template(\context $context): bool {
+    public static function can_use_seb_template(context $context): bool {
         return has_capability('quizaccess/seb:manage_seb_templateid', $context);
     }
 
@@ -794,7 +799,7 @@ class settings_provider {
      * @param \context $context Context to check access in.
      * @return bool
      */
-    public static function can_upload_seb_file(\context $context): bool {
+    public static function can_upload_seb_file(context $context): bool {
         return has_capability('quizaccess/seb:manage_filemanager_sebconfigfile', $context);
     }
 
@@ -804,7 +809,7 @@ class settings_provider {
      * @param \context $context Context to check access in.
      * @return bool
      */
-    public static function can_change_seb_showsebdownloadlink(\context $context): bool {
+    public static function can_change_seb_showsebdownloadlink(context $context): bool {
         return has_capability('quizaccess/seb:manage_seb_showsebdownloadlink', $context);
     }
 
@@ -814,7 +819,7 @@ class settings_provider {
      * @param \context $context Context to check access in.
      * @return bool
      */
-    public static function can_change_seb_allowedbrowserexamkeys(\context $context): bool {
+    public static function can_change_seb_allowedbrowserexamkeys(context $context): bool {
         return has_capability('quizaccess/seb:manage_seb_allowedbrowserexamkeys', $context);
     }
 
@@ -824,7 +829,7 @@ class settings_provider {
      * @param \context $context Context to check access in.
      * @return bool
      */
-    public static function can_configure_manually(\context $context): bool {
+    public static function can_configure_manually(context $context): bool {
         if (!has_capability('quizaccess/seb:manage_seb_configuremanually', $context)) {
             return false;
         }
@@ -845,7 +850,7 @@ class settings_provider {
      * @param \context $context Context to check access in.
      * @return bool
      */
-    public static function can_manage_seb_config_setting(string $settingname, \context $context): bool {
+    public static function can_manage_seb_config_setting(string $settingname, context $context): bool {
         $capsttocheck = [];
 
         foreach (self::get_seb_settings_map() as $type => $settings) {
@@ -858,7 +863,7 @@ class settings_provider {
         foreach ($capsttocheck as $capability) {
             // Capability must exist.
             if (!$capinfo = get_capability_info($capability)) {
-                throw new \coding_exception("Capability '{$capability}' was not found! This has to be fixed in code.");
+                throw new coding_exception("Capability '{$capability}' was not found! This has to be fixed in code.");
             }
         }
 
@@ -1050,7 +1055,7 @@ class settings_provider {
      */
     public static function build_setting_capability_name(string $settingname): string {
         if (!key_exists($settingname, self::get_seb_config_elements())) {
-            throw new \coding_exception('Incorrect SEB quiz setting ' . $settingname);
+            throw new coding_exception('Incorrect SEB quiz setting ' . $settingname);
         }
 
         return 'quizaccess/seb:manage_' . $settingname;

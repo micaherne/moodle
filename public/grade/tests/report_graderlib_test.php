@@ -16,6 +16,7 @@
 
 namespace core_grades;
 
+use core\context\course;
 use grade_plugin_return;
 use grade_report_grader;
 use mod_quiz\quiz_settings;
@@ -509,7 +510,7 @@ final class report_graderlib_test extends \advanced_testcase {
 
         // Supposing the user cannot view hidden grades, this shouldn't make any difference (due
         // to a bug, it previously did).
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $managerroleid = $DB->get_field('role', 'id', array('shortname' => 'manager'));
         assign_capability('moodle/grade:viewhidden', CAP_PROHIBIT, $managerroleid, $context->id, true);
         $this->assertFalse(has_capability('moodle/grade:viewhidden', $context));
@@ -575,7 +576,7 @@ final class report_graderlib_test extends \advanced_testcase {
 
     private function create_report($course) {
 
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $gpr = new grade_plugin_return(array('type' => 'report', 'plugin'=>'grader', 'courseid' => $course->id));
         $report = new grade_report_grader($course->id, $gpr, $coursecontext);
 

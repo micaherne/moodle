@@ -23,6 +23,8 @@
  */
 
 namespace core_privacy\output;
+
+use core\output\plugin_renderer_base;
 defined('MOODLE_INTERNAL') || die;
 /**
  * Privacy renderer's for privacy stuff.
@@ -32,7 +34,7 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright  2018 Adrian Greeve <adrian@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class renderer extends \plugin_renderer_base {
+class renderer extends plugin_renderer_base {
 
     /**
      * Render the whole tree.

@@ -27,6 +27,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
 use qbank_tagquestion\form\tags_form;
 
 /**
@@ -53,7 +54,7 @@ function qbank_tagquestion_output_fragment_tags_form($args) {
                   JOIN {question_categories} qc ON qc.id = qbe.questioncategoryid
                  WHERE q.id = :id";
         $category = $DB->get_record_sql($sql, ['id' => $question->id]);
-        $questioncontext = \context::instance_by_id($category->contextid);
+        $questioncontext = context::instance_by_id($category->contextid);
         $contexts = new \core_question\local\bank\question_edit_contexts($editingcontext);
 
         // Load the question tags and filter the course tags by the current course.

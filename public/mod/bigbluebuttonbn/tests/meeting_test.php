@@ -25,6 +25,7 @@
 
 namespace mod_bigbluebuttonbn;
 
+use core\url;
 use mod_bigbluebuttonbn\test\testcase_helper_trait;
 
 /**
@@ -419,7 +420,7 @@ final class meeting_test extends \advanced_testcase {
      */
     protected function join_meeting(string $url) {
         $curl = new \curl();
-        $url = new \moodle_url($url);
+        $url = new url($url);
         $curl->get($url->out_omit_querystring(), $url->params());
     }
 

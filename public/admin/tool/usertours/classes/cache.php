@@ -16,6 +16,9 @@
 
 namespace tool_usertours;
 
+use core\url;
+use core_cache\cache as core_cache_cache;
+
 /**
  * Cache manager.
  *
@@ -45,7 +48,7 @@ class cache {
     public static function get_enabled_tourdata() {
         global $DB;
 
-        $cache = \cache::make('tool_usertours', self::CACHENAME_TOUR);
+        $cache = core_cache_cache::make('tool_usertours', self::CACHENAME_TOUR);
 
         $data = $cache->get(self::CACHEKEY_TOUR);
         if ($data === false) {
@@ -69,14 +72,14 @@ EOF;
      *
      * @param   moodle_url  $targetmatch    The URL to match.
      */
-    public static function get_matching_tourdata(\moodle_url $targetmatch) {
+    public static function get_matching_tourdata(url $targetmatch) {
         $tours = self::get_enabled_tourdata();
 
         // Attempt to determine whether this is the front page.
         // This is a special case because the frontpage uses a shortened page path making it difficult to detect exactly.
-        $isfrontpage = $targetmatch->compare(new \moodle_url('/'), URL_MATCH_BASE);
-        $isdashboard = $targetmatch->compare(new \moodle_url('/my/'), URL_MATCH_BASE);
-        $ismycourses = $targetmatch->compare(new \moodle_url('/my/courses.php'), URL_MATCH_BASE);
+        $isfrontpage = $targetmatch->compare(new url('/'), URL_MATCH_BASE);
+        $isdashboard = $targetmatch->compare(new url('/my/'), URL_MATCH_BASE);
+        $ismycourses = $targetmatch->compare(new url('/my/courses.php'), URL_MATCH_BASE);
 
         $possiblematches = [];
         if ($isfrontpage) {
@@ -110,7 +113,7 @@ EOF;
      * Notify of changes to any tour to clear the tour cache.
      */
     public static function notify_tour_change() {
-        $cache = \cache::make('tool_usertours', self::CACHENAME_TOUR);
+        $cache = core_cache_cache::make('tool_usertours', self::CACHENAME_TOUR);
         $cache->delete(self::CACHEKEY_TOUR);
     }
 
@@ -122,7 +125,7 @@ EOF;
     public static function get_stepdata($tourid) {
         global $DB;
 
-        $cache = \cache::make('tool_usertours', self::CACHENAME_STEP);
+        $cache = core_cache_cache::make('tool_usertours', self::CACHENAME_STEP);
 
         $data = $cache->get($tourid);
         if ($data === false) {
@@ -145,7 +148,7 @@ EOF;
      * @param   int         $tourid         The ID of the tour to clear the step cache for
      */
     public static function notify_step_change($tourid) {
-        $cache = \cache::make('tool_usertours', self::CACHENAME_STEP);
+        $cache = core_cache_cache::make('tool_usertours', self::CACHENAME_STEP);
         $cache->delete($tourid);
     }
 }

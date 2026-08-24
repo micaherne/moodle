@@ -23,6 +23,8 @@
  */
 
 use block_online_users\fetcher;
+use core\output\html_writer;
+use core\url;
 
 /**
  * This block needs to be reworked.
@@ -157,7 +159,7 @@ class block_online_users extends block_base {
                     } else {
                         if ($canshowicon) {  // Only when logged in and messaging active etc.
                             $anchortagcontents = $OUTPUT->pix_icon('t/message', get_string('messageselectadd'));
-                            $anchorurl = new moodle_url('/message/index.php', array('id' => $user->id));
+                            $anchorurl = new url('/message/index.php', array('id' => $user->id));
                             $anchortag = html_writer::link($anchorurl, $anchortagcontents,
                                 array('title' => get_string('messageselectadd')));
 

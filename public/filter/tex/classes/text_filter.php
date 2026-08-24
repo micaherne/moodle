@@ -16,7 +16,7 @@
 
 namespace filter_tex;
 
-use cache;
+use core_cache\cache;
 use core\context\system as context_system;
 use core\exception\coding_exception;
 use core\output\actions\popup_action;

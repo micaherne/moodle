@@ -18,7 +18,7 @@ namespace core\output;
 
 use core\output\actions\confirm_action;
 use core\output\actions\component_action;
-use moodle_url;
+use core\url;
 use stdClass;
 
 /**
@@ -138,7 +138,7 @@ class single_button implements renderable {
      * @param array $attributes Attributes for the HTML button tag
      */
     public function __construct(
-        moodle_url $url,
+        url $url,
         $label,
         $method = 'post',
         string $type = self::BUTTON_SECONDARY,
@@ -229,7 +229,7 @@ class single_button implements renderable {
         }
 
         // Form parameters.
-        $actionurl = new moodle_url($this->url);
+        $actionurl = new url($this->url);
         if ($this->method === 'post') {
             $actionurl->param('sesskey', sesskey());
         }

@@ -14,6 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\module;
+use core\exception\coding_exception;
+use core\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -113,7 +117,7 @@ class mod_assign_generator extends testing_module_generator {
         }
 
         $currentuser = $USER;
-        $user = \core_user::get_user($data['userid']);
+        $user = user::get_user($data['userid']);
         $this->set_user($user);
 
         $submission = (object) [
@@ -121,7 +125,7 @@ class mod_assign_generator extends testing_module_generator {
         ];
 
         [$course, $cm] = get_course_and_cm_from_cmid($data['cmid'], 'assign');
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $assign = new assign($context, $cm, $course);
 
         foreach ($assign->get_submission_plugins() as $plugin) {
@@ -147,10 +151,10 @@ class mod_assign_generator extends testing_module_generator {
      * @param array $data must have keys cmid, userid, extensionduedate.
      */
     public function create_extension(array $data): void {
-        $user = \core_user::get_user($data['userid'], '*', MUST_EXIST);
+        $user = user::get_user($data['userid'], '*', MUST_EXIST);
 
         [$course, $cm] = get_course_and_cm_from_cmid($data['cmid'], 'assign');
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $assign = new assign($context, $cm, $course);
 
         if (!$assign->save_user_extension($user->id, $data['extensionduedate'] ?: null)) {
@@ -207,7 +211,7 @@ class mod_assign_generator extends testing_module_generator {
         $DB->insert_record('assign_overrides', (object) $data);
 
         $cm = get_coursemodule_from_instance('assign', $data['assignid'], 0, false, MUST_EXIST);
-        $assign = new \assign(context_module::instance($cm->id), $cm, null);
+        $assign = new \assign(module::instance($cm->id), $cm, null);
 
         assign_update_events($assign);
     }
@@ -233,7 +237,7 @@ class mod_assign_generator extends testing_module_generator {
         }
 
         [$course, $cm] = get_course_and_cm_from_cmid($data['cmid'], 'assign');
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $assign = new assign($context, $cm, $course);
 
         $DB->insert_record('assign_allocated_marker', [

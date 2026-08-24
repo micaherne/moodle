@@ -22,6 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\html_writer;
 use core\plugininfo\qbank;
 use qbank_exporttoxml\helper;
 

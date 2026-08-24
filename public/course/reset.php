@@ -32,19 +32,24 @@ require_once($CFG->dirroot . '/backup/util/interfaces/checksumable.class.php');
 require_once($CFG->dirroot . '/backup/backup.class.php');
 require_once($CFG->dirroot . '/backup/util/helper/backup_helper.class.php');
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
 use core_course\exception\reset_timeout;
+use core_table\output\html_table;
 
 $id = required_param('id', PARAM_INT);
 
 if (!$course = $DB->get_record('course', ['id' => $id])) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 
 $PAGE->set_url('/course/reset.php', ['id' => $id]);
 $PAGE->set_pagelayout('standard');
 
 require_login($course, preventredirect: true); // This redirects here if a reset is in progress. Don't keep redirecting.
-require_capability('moodle/course:reset', context_course::instance($course->id));
+require_capability('moodle/course:reset', course::instance($course->id));
 
 $strreset       = get_string('reset');
 $strresetcourse = get_string('resetcourse');
@@ -147,7 +152,7 @@ if ($taskid) {
         $resettask,
         heading: get_string('resetcourse'),
         message: get_string('resetcoursetask', 'course'),
-        redirecturl: new moodle_url('/course/view.php', ['id' => $course->id]),
+        redirecturl: new url('/course/view.php', ['id' => $course->id]),
     );
     echo $OUTPUT->render($indicator);
 } else {

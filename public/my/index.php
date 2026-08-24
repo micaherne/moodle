@@ -34,6 +34,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->dirroot . '/my/lib.php');
 
@@ -45,9 +51,9 @@ $reset  = optional_param('reset', null, PARAM_BOOL);
 
 require_login();
 
-$hassiteconfig = has_capability('moodle/site:config', context_system::instance());
+$hassiteconfig = has_capability('moodle/site:config', system::instance());
 if ($hassiteconfig && moodle_needs_upgrading()) {
-    redirect(new moodle_url('/admin/index.php'));
+    redirect(new url('/admin/index.php'));
 }
 
 $strmymoodle = get_string('myhome');
@@ -57,12 +63,12 @@ if (empty($CFG->enabledashboard)) {
     $defaultpage = get_default_home_page();
     if ($defaultpage == HOMEPAGE_MYCOURSES) {
         // If default page is set to "My courses", redirect to it.
-        redirect(new moodle_url('/my/courses.php'));
+        redirect(new url('/my/courses.php'));
     } else if ($defaultpage == HOMEPAGE_SITE) {
-        redirect(new moodle_url('/'));
+        redirect(new url('/'));
     } else if ($defaultpage == HOMEPAGE_USER) {
         // All homepage options disabled - redirect to user preferences page.
-        redirect(new moodle_url('/user/preferences.php'));
+        redirect(new url('/user/preferences.php'));
     } else {
         // Otherwise, raise an exception to inform the dashboard is disabled.
         throw new moodle_exception('error:dashboardisdisabled', 'my');
@@ -72,26 +78,26 @@ if (empty($CFG->enabledashboard)) {
 if (isguestuser()) {  // Force them to see system default, no editing allowed
     // If guests are not allowed my moodle, send them to front page.
     if (empty($CFG->allowguestmymoodle)) {
-        redirect(new moodle_url('/', array('redirect' => 0)));
+        redirect(new url('/', array('redirect' => 0)));
     }
 
     $userid = null;
     $USER->editing = $edit = 0;  // Just in case
-    $context = context_system::instance();
+    $context = system::instance();
     $PAGE->set_blocks_editing_capability('moodle/my:configsyspages');  // unlikely :)
     $strguest = get_string('guest');
     $pagetitle = "$strmymoodle ($strguest)";
 
 } else {        // We are trying to view or edit our own My Moodle page
     $userid = $USER->id;  // Owner of the page
-    $context = context_user::instance($USER->id);
+    $context = user::instance($USER->id);
     $PAGE->set_blocks_editing_capability('moodle/my:manageblocks');
     $pagetitle = $strmymoodle;
 }
 
 // Get the My Moodle page info.  Should always return something unless the database is broken.
 if (!$currentpage = my_get_page($userid, MY_PAGE_PRIVATE)) {
-    throw new \moodle_exception('mymoodlesetup');
+    throw new moodle_exception('mymoodlesetup');
 }
 
 // Start setting up the page
@@ -117,7 +123,7 @@ if (!isguestuser()) {   // Skip default home page for guests
             $frontpagenode->force_open();
             $frontpagenode->add(
                 get_string('makethismyhome'),
-                new moodle_url('/my/', ['setdefaulthome' => 1, 'sesskey' => sesskey()]),
+                new url('/my/', ['setdefaulthome' => 1, 'sesskey' => sesskey()]),
                 navigation_node::TYPE_SETTING,
             );
         }
@@ -130,9 +136,9 @@ if (empty($CFG->forcedefaultmymoodle) && $PAGE->user_allowed_editing()) {
         if (!is_null($userid)) {
             require_sesskey();
             if (!$currentpage = my_reset_page($userid, MY_PAGE_PRIVATE)) {
-                throw new \moodle_exception('reseterror', 'my');
+                throw new moodle_exception('reseterror', 'my');
             }
-            redirect(new moodle_url('/my'));
+            redirect(new url('/my'));
         }
     } else if ($edit !== null) {             // Editing state was specified
         $USER->editing = $edit;       // Change editing state
@@ -147,9 +153,9 @@ if (empty($CFG->forcedefaultmymoodle) && $PAGE->user_allowed_editing()) {
             // For the page to display properly with the user context header the page blocks need to
             // be copied over to the user context.
             if (!$currentpage = my_copy_page($USER->id, MY_PAGE_PRIVATE)) {
-                throw new \moodle_exception('mymoodlesetup');
+                throw new moodle_exception('mymoodlesetup');
             }
-            $context = context_user::instance($USER->id);
+            $context = user::instance($USER->id);
             $PAGE->set_context($context);
             $PAGE->set_subpage($currentpage->id);
             // It's a system page and they are not allowed to edit system pages
@@ -171,7 +177,7 @@ if (empty($CFG->forcedefaultmymoodle) && $PAGE->user_allowed_editing()) {
     } else {
         $editstring = get_string('updatemymoodleoff');
         $resetbutton = $OUTPUT->single_button(
-            new moodle_url('/my/index.php', ['edit' => 1, 'reset' => 1]),
+            new url('/my/index.php', ['edit' => 1, 'reset' => 1]),
             get_string('resetpage', 'my'),
             options: [
                 'data-modal' => 'confirmation',
@@ -180,7 +186,7 @@ if (empty($CFG->forcedefaultmymoodle) && $PAGE->user_allowed_editing()) {
         );
     }
 
-    $url = new moodle_url("$CFG->wwwroot/my/index.php", $params);
+    $url = new url("$CFG->wwwroot/my/index.php", $params);
     $button = '';
     if (!$PAGE->theme->haseditswitch) {
         $button = $OUTPUT->single_button($url, $editstring);

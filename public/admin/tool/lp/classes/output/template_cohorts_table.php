@@ -27,9 +27,12 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/tablelib.php');
 
-use html_writer;
-use moodle_url;
-use table_sql;
+use core\exception\required_capability_exception;
+use core\output\actions\confirm_action;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\url;
+use core_table\sql_table;
 use core_competency\template;
 
 /**
@@ -42,7 +45,7 @@ use core_competency\template;
  * @copyright  2015 Frédéric Massart - FMCorz.net
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class template_cohorts_table extends table_sql {
+class template_cohorts_table extends sql_table {
 
     /** @var context The context. */
     protected $context;
@@ -61,7 +64,7 @@ class template_cohorts_table extends table_sql {
 
          // This object should not be used without the right permissions.
         if (!$template->can_read()) {
-            throw new \required_capability_exception($template->get_context(), 'moodle/competency:templateview',
+            throw new required_capability_exception($template->get_context(), 'moodle/competency:templateview',
                 'nopermissions', '');
         }
 
@@ -85,10 +88,10 @@ class template_cohorts_table extends table_sql {
     protected function col_actions($row) {
         global $OUTPUT;
 
-        $action = new \confirm_action(get_string('areyousure'));
-        $url = new moodle_url($this->baseurl);
+        $action = new confirm_action(get_string('areyousure'));
+        $url = new url($this->baseurl);
         $url->params(array('removecohort' => $row->id, 'sesskey' => sesskey()));
-        $actionlink = $OUTPUT->action_link($url, '', $action, null, new \pix_icon('t/delete',
+        $actionlink = $OUTPUT->action_link($url, '', $action, null, new pix_icon('t/delete',
             get_string('stopsyncingcohort', 'tool_lp')));
 
         return $actionlink;

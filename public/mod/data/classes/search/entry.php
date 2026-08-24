@@ -24,6 +24,9 @@
 
 namespace mod_data\search;
 
+use core\context;
+use core\context\module;
+use core\url;
 use mod_data\manager;
 
 defined('MOODLE_INTERNAL') || die();
@@ -52,7 +55,7 @@ class entry extends \core_search\base_mod {
      * @param \context|null $context Optional context to restrict scope of returned results
      * @return moodle_recordset|null Recordset (or null if no results)
      */
-    public function get_document_recordset($modifiedfrom = 0, ?\context $context = null) {
+    public function get_document_recordset($modifiedfrom = 0, ?context $context = null) {
         global $DB;
 
         list ($contextjoin, $contextparams) = $this->get_context_restriction_sql(
@@ -80,7 +83,7 @@ class entry extends \core_search\base_mod {
     public function get_document($entry, $options = array()) {
         try {
             $cm = $this->get_cm('data', $entry->dataid, $entry->course);
-            $context = \context_module::instance($cm->id);
+            $context = module::instance($cm->id);
         } catch (\dml_missing_record_exception $ex) {
             // Notify it as we run here as admin, we should see everything.
             debugging('Error retrieving mod_data ' . $entry->id . ' document, not all required data is available: ' .
@@ -157,7 +160,7 @@ class entry extends \core_search\base_mod {
         }
 
         $cm = $this->get_cm('data', $entry->dataid, $entry->course);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $canmanageentries = has_capability('mod/data:manageentries', $context);
 
@@ -195,7 +198,7 @@ class entry extends \core_search\base_mod {
      */
     public function get_doc_url(\core_search\document $doc) {
         $entry = $this->get_entry($doc->get('itemid'));
-        return new \moodle_url('/mod/data/view.php', array( 'd' => $entry->dataid, 'rid' => $entry->id ));
+        return new url('/mod/data/view.php', array( 'd' => $entry->dataid, 'rid' => $entry->id ));
     }
 
     /**
@@ -206,7 +209,7 @@ class entry extends \core_search\base_mod {
      */
     public function get_context_url(\core_search\document $doc) {
         $entry = $this->get_entry($doc->get('itemid'));
-        return new \moodle_url('/mod/data/view.php', array('d' => $entry->dataid));
+        return new url('/mod/data/view.php', array('d' => $entry->dataid));
     }
 
     /**
@@ -237,7 +240,7 @@ class entry extends \core_search\base_mod {
         }
 
         $cm = $this->get_cm('data', $entry->dataid, $doc->get('courseid'));
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         // Get all content fields which have files in them.
         $contentssql = "

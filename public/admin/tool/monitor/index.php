@@ -22,6 +22,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\context\user;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->dirroot.'/'.$CFG->admin.'/tool/monitor/lib.php');
@@ -37,7 +45,7 @@ $choose = false;
 // Validate course id.
 if (empty($courseid)) {
     require_login(null, false);
-    $context = context_system::instance();
+    $context = system::instance();
     // check system level capability.
     if (!has_capability('tool/monitor:subscribe', $context)) {
         // If not system level then check to see if they have access to any course level rules.
@@ -46,14 +54,14 @@ if (empty($courseid)) {
             $choose = true;
         } else {
             // return error.
-            throw new \moodle_exception('rulenopermission', 'tool_monitor');
+            throw new moodle_exception('rulenopermission', 'tool_monitor');
         }
     }
 } else {
     // They might want to see rules for this course.
     $course = get_course($courseid);
     require_login($course);
-    $context = context_course::instance($course->id);
+    $context = course::instance($course->id);
     // Check for caps.
     require_capability('tool/monitor:subscribe', $context);
 }
@@ -64,10 +72,10 @@ if (!get_config('tool_monitor', 'enablemonitor')) {
 }
 
 // Use the user context here so that the header shows user information.
-$PAGE->set_context(context_user::instance($USER->id));
+$PAGE->set_context(user::instance($USER->id));
 
 // Set up the page.
-$indexurl = new moodle_url('/admin/tool/monitor/index.php', array('courseid' => $courseid));
+$indexurl = new url('/admin/tool/monitor/index.php', array('courseid' => $courseid));
 $PAGE->set_url($indexurl);
 $PAGE->set_pagelayout('report');
 $PAGE->set_title(get_string('managesubscriptions', 'tool_monitor'));
@@ -90,14 +98,14 @@ if (!empty($action)) {
         case 'unsubscribe' :
             // If the subscription does not exist, then redirect back as the subscription must have already been deleted.
             if (!$subscription = $DB->record_exists('tool_monitor_subscriptions', array('id' => $subscriptionid))) {
-                redirect(new moodle_url('/admin/tool/monitor/index.php', array('courseid' => $courseid)));
+                redirect(new url('/admin/tool/monitor/index.php', array('courseid' => $courseid)));
             }
 
             // Set the URLs.
-            $confirmurl = new moodle_url('/admin/tool/monitor/index.php', array('subscriptionid' => $subscriptionid,
+            $confirmurl = new url('/admin/tool/monitor/index.php', array('subscriptionid' => $subscriptionid,
                 'courseid' => $courseid, 'action' => 'unsubscribe', 'confirm' => true,
                 'sesskey' => sesskey()));
-            $cancelurl = new moodle_url('/admin/tool/monitor/index.php', array('subscriptionid' => $subscriptionid,
+            $cancelurl = new url('/admin/tool/monitor/index.php', array('subscriptionid' => $subscriptionid,
                 'courseid' => $courseid, 'sesskey' => sesskey()));
             if ($confirm) {
                 \tool_monitor\subscription_manager::delete_subscription($subscriptionid);
@@ -151,7 +159,7 @@ if (empty($totalrules)) {
     echo html_writer::start_div();
     echo html_writer::tag('span', get_string('norules', 'tool_monitor'));
     if ($canmanagerules) {
-        $manageurl = new moodle_url("/admin/tool/monitor/managerules.php", array('courseid' => $courseid));
+        $manageurl = new url("/admin/tool/monitor/managerules.php", array('courseid' => $courseid));
         $a = html_writer::link($manageurl, get_string('managerules', 'tool_monitor'));
         $link = "&nbsp;";
         $link .= html_writer::tag('span', get_string('manageruleslink', 'tool_monitor', $a));
@@ -159,7 +167,7 @@ if (empty($totalrules)) {
     }
     echo html_writer::end_div();
 } else if ($canmanagerules) {
-    $manageurl = new moodle_url("/admin/tool/monitor/managerules.php", array('courseid' => $courseid));
+    $manageurl = new url("/admin/tool/monitor/managerules.php", array('courseid' => $courseid));
     echo $renderer->render_rules_link($manageurl);
 }
 echo $OUTPUT->footer();

@@ -27,6 +27,10 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->dirroot . '/mod/wiki/lib.php');
 require_once($CFG->dirroot . '/mod/wiki/locallib.php');
@@ -40,26 +44,26 @@ $toversion = optional_param('toversion', 0, PARAM_INT); // max version to be del
 $fromversion = optional_param('fromversion', 0, PARAM_INT); // min version to be deleted
 
 if (!$page = wiki_get_page($pageid)) {
-    throw new \moodle_exception('incorrectpageid', 'wiki');
+    throw new moodle_exception('incorrectpageid', 'wiki');
 }
 if (!$subwiki = wiki_get_subwiki($page->subwikiid)) {
-    throw new \moodle_exception('incorrectsubwikiid', 'wiki');
+    throw new moodle_exception('incorrectsubwikiid', 'wiki');
 }
 if (!$cm = get_coursemodule_from_instance("wiki", $subwiki->wikiid)) {
-    throw new \moodle_exception('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 if (!$wiki = wiki_get_wiki($subwiki->wikiid)) {
-    throw new \moodle_exception('incorrectwikiid', 'wiki');
+    throw new moodle_exception('incorrectwikiid', 'wiki');
 }
 
 require_login($course, true, $cm);
 
 if (!wiki_user_can_view($subwiki, $wiki)) {
-    throw new \moodle_exception('cannotviewpage', 'wiki');
+    throw new moodle_exception('cannotviewpage', 'wiki');
 }
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 require_capability('mod/wiki:managewiki', $context);
 
 //Delete page if a page ID to delete was supplied
@@ -68,7 +72,7 @@ if (!empty($delete) && confirm_sesskey()) {
         // Validate that we are deleting from the same subwiki.
         $deletepage = wiki_get_page($delete);
         if (!$deletepage || $deletepage->subwikiid != $page->subwikiid) {
-            throw new \moodle_exception('incorrectsubwikiid', 'wiki');
+            throw new moodle_exception('incorrectsubwikiid', 'wiki');
         }
     }
     wiki_delete_pages($context, $delete, $page->subwikiid);
@@ -76,7 +80,7 @@ if (!empty($delete) && confirm_sesskey()) {
     //current pageid is invalid after deletion.
     if ($pageid == $delete) {
         $params = array('swid' => $page->subwikiid, 'title' => $page->title);
-        $url = new moodle_url('/mod/wiki/create.php', $params);
+        $url = new url('/mod/wiki/create.php', $params);
         redirect($url);
     }
 }
@@ -90,7 +94,7 @@ if (!empty($toversion) && !empty($fromversion) && confirm_sesskey()) {
     $totalversionstodelete += 1; //added 1 as toversion should be included
 
     if (($totalversionstodelete >= $versioncount) || ($versioncount <= 1)) {
-        throw new \moodle_exception('incorrectdeleteversions', 'wiki');
+        throw new moodle_exception('incorrectdeleteversions', 'wiki');
     } else {
         $versions = array();
         for ($i = $fromversion; $i <= $toversion; $i++) {

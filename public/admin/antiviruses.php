@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\plugin_manager;
+
 require_once('../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/tablelib.php');
@@ -31,7 +34,7 @@ $antivirus  = required_param('antivirus', PARAM_PLUGIN);
 $confirm = optional_param('confirm', 0, PARAM_BOOL);
 
 $PAGE->set_url('/admin/antiviruses.php', array('action' => $action, 'antivirus' => $antivirus));
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 require_admin();
 
@@ -58,14 +61,14 @@ $needsupdate = false;
 switch ($action) {
     case 'disable':
         // Remove from enabled list.
-        $class = \core_plugin_manager::resolve_plugininfo_class('antivirus');
+        $class = plugin_manager::resolve_plugininfo_class('antivirus');
         $class::enable_plugin($antivirus, false);
         break;
 
     case 'enable':
         // Add to enabled list.
         if (!in_array($antivirus, $activeantiviruses)) {
-            $class = \core_plugin_manager::resolve_plugininfo_class('antivirus');
+            $class = plugin_manager::resolve_plugininfo_class('antivirus');
             $class::enable_plugin($antivirus, true);
         }
         break;
@@ -106,7 +109,7 @@ if ($needsupdate) {
     $new = implode(',', $activeantiviruses);
     add_to_config_log('antiviruses', $CFG->antiviruses, $new, 'core');
     set_config('antiviruses', $new);
-    core_plugin_manager::reset_caches();
+    plugin_manager::reset_caches();
 }
 
 

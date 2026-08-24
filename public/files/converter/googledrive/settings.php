@@ -22,6 +22,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\html_writer;
+use core\url;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\heading;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
@@ -33,13 +38,13 @@ if ($hassiteconfig) {
         $options[$issuer->get('id')] = s($issuer->get('name'));
     }
 
-    $settings->add(new admin_setting_configselect('fileconverter_googledrive/issuerid',
+    $settings->add(new configselect('fileconverter_googledrive/issuerid',
                                                   get_string('issuer', 'fileconverter_googledrive'),
                                                   get_string('issuer_help', 'fileconverter_googledrive'),
                                                   '',
                                                   $options));
 
-    $url = new moodle_url('/files/converter/googledrive/test.php');
+    $url = new url('/files/converter/googledrive/test.php');
     $link = html_writer::link($url, get_string('test_converter', 'fileconverter_googledrive'));
-    $settings->add(new admin_setting_heading('test_converter', '', $link));
+    $settings->add(new heading('test_converter', '', $link));
 }

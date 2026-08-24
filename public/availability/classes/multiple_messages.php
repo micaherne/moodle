@@ -43,6 +43,8 @@
  * @copyright 2015 Andrew Nicols <andrew@nicols.co.uk>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\output\renderable;
+
 class core_availability_multiple_messages implements renderable {
     /** @var bool True if this object represents the root of the tree */
     public $root;

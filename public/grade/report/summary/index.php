@@ -26,16 +26,18 @@ require_once(__DIR__ . '/../../../config.php');
 require_once("{$CFG->libdir}/adminlib.php");
 require_once($CFG->dirroot.'/grade/lib.php');
 
+use core\context\course;
+use core\exception\moodle_exception;
 use core_reportbuilder\system_report_factory;
 use gradereport_summary\local\systemreports\summary;
 
 $courseid = required_param('id', PARAM_INT);
 
 if (!$course = $DB->get_record('course', ['id' => $courseid])) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 require_login($course);
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 
 $PAGE->set_url('/grade/report/summary/index.php', ['id' => $courseid]);
 $PAGE->set_context($context);
@@ -57,7 +59,7 @@ print_grade_page_head($courseid, 'report', 'summary');
 if ($taskindicator->has_task_record()) {
     echo $OUTPUT->render($taskindicator);
 } else {
-    $report = system_report_factory::create(summary::class, context_course::instance($courseid));
+    $report = system_report_factory::create(summary::class, course::instance($courseid));
     echo $report->output();
 }
 

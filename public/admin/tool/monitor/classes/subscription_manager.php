@@ -24,6 +24,11 @@
 
 namespace tool_monitor;
 
+use core\context\course;
+use core\context\system;
+use core\exception\coding_exception;
+use core_cache\cache;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -69,10 +74,10 @@ class subscription_manager {
         if ($subscription->id) {
             if (!empty($subscription->courseid)) {
                 $courseid = $subscription->courseid;
-                $context = \context_course::instance($subscription->courseid);
+                $context = course::instance($subscription->courseid);
             } else {
                 $courseid = 0;
-                $context = \context_system::instance();
+                $context = system::instance();
             }
 
             $params = array(
@@ -84,7 +89,7 @@ class subscription_manager {
             $event->trigger();
 
             // Let's invalidate the cache.
-            $cache = \cache::make('tool_monitor', 'eventsubscriptions');
+            $cache = cache::make('tool_monitor', 'eventsubscriptions');
             $cache->delete($courseid);
         }
 
@@ -108,7 +113,7 @@ class subscription_manager {
             $subscription = self::get_subscription($subscriptionorid);
         }
         if ($checkuser && $subscription->userid != $USER->id) {
-            throw new \coding_exception('Invalid subscription supplied');
+            throw new coding_exception('Invalid subscription supplied');
         }
 
         // Store the subscription before we delete it.
@@ -119,12 +124,12 @@ class subscription_manager {
         // If successful trigger a subscription_deleted event.
         if ($success) {
             if (!empty($subscription->courseid) &&
-                    ($coursecontext = \context_course::instance($subscription->courseid, IGNORE_MISSING))) {
+                    ($coursecontext = course::instance($subscription->courseid, IGNORE_MISSING))) {
                 $courseid = $subscription->courseid;
                 $context = $coursecontext;
             } else {
                 $courseid = 0;
-                $context = \context_system::instance();
+                $context = system::instance();
             }
 
             $params = array(
@@ -137,7 +142,7 @@ class subscription_manager {
             $event->trigger();
 
             // Let's invalidate the cache.
-            $cache = \cache::make('tool_monitor', 'eventsubscriptions');
+            $cache = cache::make('tool_monitor', 'eventsubscriptions');
             $cache->delete($courseid);
         }
 
@@ -195,11 +200,11 @@ class subscription_manager {
                     $context = $coursecontext;
                     $courseid = $subscription->courseid;
                 } else if (!empty($subscription->courseid) && ($context =
-                        \context_course::instance($subscription->courseid, IGNORE_MISSING))) {
+                        course::instance($subscription->courseid, IGNORE_MISSING))) {
                     $courseid = $subscription->courseid;
                 } else {
                     $courseid = 0;
-                    $context = \context_system::instance();
+                    $context = system::instance();
                 }
 
                 $params = array(
@@ -212,7 +217,7 @@ class subscription_manager {
                 $event->trigger();
 
                 // Let's invalidate the cache.
-                $cache = \cache::make('tool_monitor', 'eventsubscriptions');
+                $cache = cache::make('tool_monitor', 'eventsubscriptions');
                 $cache->delete($courseid);
             }
         }
@@ -433,7 +438,7 @@ class subscription_manager {
         global $DB;
 
         // Check if we can return these from cache.
-        $cache = \cache::make('tool_monitor', 'eventsubscriptions');
+        $cache = cache::make('tool_monitor', 'eventsubscriptions');
 
         // The SQL we will be using to fill the cache if it is empty.
         $sql = "SELECT DISTINCT(r.eventname)

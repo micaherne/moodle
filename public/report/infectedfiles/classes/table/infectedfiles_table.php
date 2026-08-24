@@ -24,6 +24,15 @@
  */
 namespace report_infectedfiles\table;
 
+use core\output\actions\confirm_action;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\output\renderable;
+use core\output\single_button;
+use core\url;
+use core\user;
+use core_table\sql_table;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/tablelib.php');
@@ -36,7 +45,7 @@ require_once($CFG->libdir . '/tablelib.php');
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class infectedfiles_table extends \table_sql implements \renderable {
+class infectedfiles_table extends sql_table implements renderable {
 
     /** @var int current page. */
     protected $page;
@@ -50,7 +59,7 @@ class infectedfiles_table extends \table_sql implements \renderable {
      * @param int $perpage number or record per page
      * @throws \coding_exception
      */
-    public function __construct($uniqueid, \moodle_url $url, $page = 0, $perpage = 30) {
+    public function __construct($uniqueid, url $url, $page = 0, $perpage = 30) {
         parent::__construct($uniqueid);
 
         $this->set_attribute('class', 'report_infectedfiles');
@@ -89,7 +98,7 @@ class infectedfiles_table extends \table_sql implements \renderable {
      *
      * @param \moodle_url $url
      */
-    protected function define_table_configs(\moodle_url $url) {
+    protected function define_table_configs(url $url) {
         // Set table url.
         $this->define_baseurl($url);
 
@@ -154,9 +163,9 @@ class infectedfiles_table extends \table_sql implements \renderable {
      */
     protected function col_author($row): string {
         // Get user fullname from ID.
-        $user = \core_user::get_user($row->userid);
-        $url = new \moodle_url('/user/profile.php', ['id' => $row->userid]);
-        return \html_writer::link($url, fullname($user));
+        $user = user::get_user($row->userid);
+        $url = new url('/user/profile.php', ['id' => $row->userid]);
+        return html_writer::link($url, fullname($user));
     }
 
     /**
@@ -187,26 +196,26 @@ class infectedfiles_table extends \table_sql implements \renderable {
             return '';
         }
         $links = '';
-        $managefilepage = new \moodle_url('/report/infectedfiles/index.php');
+        $managefilepage = new url('/report/infectedfiles/index.php');
 
         // Download.
         $downloadparams = ['file' => $fileid, 'action' => 'download', 'sesskey' => sesskey()];
-        $downloadurl = new \moodle_url($managefilepage, $downloadparams);
+        $downloadurl = new url($managefilepage, $downloadparams);
 
-        $downloadconfirm = new \confirm_action(get_string('confirmdownload', 'report_infectedfiles'));
+        $downloadconfirm = new confirm_action(get_string('confirmdownload', 'report_infectedfiles'));
         $links .= $OUTPUT->action_icon(
             $downloadurl,
-            new \pix_icon('t/download', get_string('download')),
+            new pix_icon('t/download', get_string('download')),
             $downloadconfirm
         );
 
         // Delete.
         $deleteparams = ['file' => $fileid, 'action' => 'delete', 'sesskey' => sesskey()];
-        $deleteurl = new \moodle_url($managefilepage, $deleteparams);
-        $deleteconfirm = new \confirm_action(get_string('confirmdelete', 'report_infectedfiles'));
+        $deleteurl = new url($managefilepage, $deleteparams);
+        $deleteconfirm = new confirm_action(get_string('confirmdelete', 'report_infectedfiles'));
         $links .= $OUTPUT->action_icon(
             $deleteurl,
-            new \pix_icon('t/delete', get_string('delete')),
+            new pix_icon('t/delete', get_string('delete')),
             $deleteconfirm
         );
 
@@ -237,7 +246,7 @@ class infectedfiles_table extends \table_sql implements \renderable {
         global $OUTPUT;
         // Output the table, and then display buttons.
         $this->out($pagesize, $useinitialsbar, $downloadhelpbutton);
-        $managefilepage = new \moodle_url('/report/infectedfiles/index.php');
+        $managefilepage = new url('/report/infectedfiles/index.php');
 
         // If there are no rows, dont bother rendering extra buttons.
         if (empty($this->rawdata)) {
@@ -246,8 +255,8 @@ class infectedfiles_table extends \table_sql implements \renderable {
 
         // Delete All.
         $deleteallparams = ['action' => 'deleteall', 'sesskey' => sesskey()];
-        $deleteallurl = new \moodle_url($managefilepage, $deleteallparams);
-        $deletebutton = new \single_button($deleteallurl, get_string('deleteall'), 'post', \single_button::BUTTON_PRIMARY);
+        $deleteallurl = new url($managefilepage, $deleteallparams);
+        $deletebutton = new single_button($deleteallurl, get_string('deleteall'), 'post', single_button::BUTTON_PRIMARY);
         $deletebutton->add_confirm_action(get_string('confirmdeleteall', 'report_infectedfiles'));
         echo $OUTPUT->render($deletebutton);
 
@@ -255,8 +264,8 @@ class infectedfiles_table extends \table_sql implements \renderable {
 
         // Download All.
         $downloadallparams = ['action' => 'downloadall', 'sesskey' => sesskey()];
-        $downloadallurl = new \moodle_url($managefilepage, $downloadallparams);
-        $downloadbutton = new \single_button($downloadallurl, get_string('downloadall'), 'post', \single_button::BUTTON_PRIMARY);
+        $downloadallurl = new url($managefilepage, $downloadallparams);
+        $downloadbutton = new single_button($downloadallurl, get_string('downloadall'), 'post', single_button::BUTTON_PRIMARY);
         $downloadbutton->add_confirm_action(get_string('confirmdownloadall', 'report_infectedfiles'));
         echo $OUTPUT->render($downloadbutton);
     }

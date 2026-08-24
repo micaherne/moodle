@@ -17,6 +17,7 @@
 namespace core_payment\event;
 
 use core\event\base;
+use core\url;
 use core_payment\account;
 
 /**
@@ -89,6 +90,6 @@ class account_deleted extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/payment/accounts.php');
+        return new url('/payment/accounts.php');
     }
 }

@@ -24,6 +24,8 @@
 
 namespace repository_nextcloud;
 
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -33,7 +35,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2017 Project seminar (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class configuration_exception extends \moodle_exception {
+class configuration_exception extends moodle_exception {
 
     /**
      * This exception is used when the configuration of the plugin can not be processed or database entries are

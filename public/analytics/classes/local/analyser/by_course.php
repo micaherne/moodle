@@ -24,6 +24,8 @@
 
 namespace core_analytics\local\analyser;
 
+use core\context_helper;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -62,7 +64,7 @@ abstract class by_course extends base {
             if ($record->id == SITEID) {
                 return false;
             }
-            $context = \context_helper::preload_from_record($record);
+            $context = context_helper::preload_from_record($record);
             return \core_analytics\course::instance($record, $context);
         });
     }

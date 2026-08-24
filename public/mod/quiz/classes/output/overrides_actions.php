@@ -16,10 +16,11 @@
 
 namespace mod_quiz\output;
 
-use moodle_url;
-use renderable;
-use renderer_base;
-use templatable;
+use core\output\single_button;
+use core\url;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 use core\output\select_menu;
 
 /**
@@ -67,8 +68,8 @@ class overrides_actions implements renderable, templatable {
      * @param \renderer_base $output an instance of the quiz renderer.
      * @return \single_button the button, ready to reander.
      */
-    public function create_add_button(\renderer_base $output): \single_button {
-        $addoverrideurl = new moodle_url('/mod/quiz/overrideedit.php',
+    public function create_add_button(renderer_base $output): single_button {
+        $addoverrideurl = new url('/mod/quiz/overrideedit.php',
                 ['cmid' => $this->cmid, 'action' => 'add' . $this->mode]);
 
         if ($this->mode === 'group') {
@@ -77,7 +78,7 @@ class overrides_actions implements renderable, templatable {
             $label = get_string('addnewuseroverride', 'quiz');
         }
 
-        $addoverridebutton = new \single_button($addoverrideurl, $label, 'get', \single_button::BUTTON_PRIMARY);
+        $addoverridebutton = new single_button($addoverrideurl, $label, 'get', single_button::BUTTON_PRIMARY);
         if (!$this->addenabled) {
             $addoverridebutton->disabled = true;
         }
@@ -90,8 +91,8 @@ class overrides_actions implements renderable, templatable {
         $templatecontext = [];
 
         // Build the navigation drop-down.
-        $useroverridesurl = new moodle_url('/mod/quiz/overrides.php', ['cmid' => $this->cmid, 'mode' => 'user']);
-        $groupoverridesurl = new moodle_url('/mod/quiz/overrides.php', ['cmid' => $this->cmid, 'mode' => 'group']);
+        $useroverridesurl = new url('/mod/quiz/overrides.php', ['cmid' => $this->cmid, 'mode' => 'user']);
+        $groupoverridesurl = new url('/mod/quiz/overrides.php', ['cmid' => $this->cmid, 'mode' => 'group']);
 
         $menu = [
             $useroverridesurl->out(false) => get_string('useroverrides', 'quiz'),

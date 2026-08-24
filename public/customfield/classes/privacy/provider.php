@@ -26,6 +26,8 @@ namespace core_customfield\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
+use core\exception\coding_exception;
 use core_customfield\data_controller;
 use core_customfield\handler;
 use core_privacy\local\metadata\collection;
@@ -291,7 +293,7 @@ class provider implements
      * @param string $area
      * @param \context $context
      */
-    public static function delete_customfields_configuration_for_context(string $component, string $area, \context $context) {
+    public static function delete_customfields_configuration_for_context(string $component, string $area, context $context) {
         global $DB;
         $categoriesids = $DB->get_fieldset_sql("SELECT c.id
             FROM {customfield_category} c
@@ -311,7 +313,7 @@ class provider implements
      * @param string $area
      * @param \context $context
      */
-    public static function delete_customfields_data_for_context(string $component, string $area, \context $context) {
+    public static function delete_customfields_data_for_context(string $component, string $area, context $context) {
         global $DB;
 
         $sql = "SELECT d.id
@@ -345,7 +347,7 @@ class provider implements
     protected static function get_params(string $component, string $area, array $params): array {
         if (!empty($params) && (array_keys($params) === range(0, count($params) - 1))) {
             // Argument $params is not an associative array.
-            throw new \coding_exception('Argument $params must be an associative array!');
+            throw new coding_exception('Argument $params must be an associative array!');
         }
         return $params + ['cfcomponent' => $component, 'cfarea' => $area];
     }
@@ -489,7 +491,7 @@ class provider implements
      * @param array $subcontext
      */
     protected static function export_customfield_data_unknown(\stdClass $record, \stdClass $field, array $subcontext) {
-        $context = \context::instance_by_id($record->contextid);
+        $context = context::instance_by_id($record->contextid);
 
         $record->fieldtype = $field->type;
         $record->fieldshortname = $field->shortname;

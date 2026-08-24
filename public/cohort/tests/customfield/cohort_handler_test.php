@@ -17,9 +17,9 @@
 namespace core_cohort\customfield;
 
 use advanced_testcase;
-use context_system;
-use context_coursecat;
-use moodle_url;
+use core\context\system;
+use core\context\coursecat;
+use core\url;
 use core_customfield\field_controller;
 
 /**
@@ -67,14 +67,14 @@ final class cohort_handler_test extends advanced_testcase {
      * Test configuration context.
      */
     public function test_get_configuration_context(): void {
-        $this->assertInstanceOf(context_system::class, $this->handler->get_configuration_context());
+        $this->assertInstanceOf(system::class, $this->handler->get_configuration_context());
     }
 
     /**
      * Test getting config URL.
      */
     public function test_get_configuration_url(): void {
-        $this->assertInstanceOf(moodle_url::class, $this->handler->get_configuration_url());
+        $this->assertInstanceOf(url::class, $this->handler->get_configuration_url());
         $this->assertEquals('/cohort/customfield.php', $this->handler->get_configuration_url()->out_as_local_url());
     }
 
@@ -90,8 +90,8 @@ final class cohort_handler_test extends advanced_testcase {
         $this->assertFalse($this->handler->can_configure());
 
         $roleid = self::getDataGenerator()->create_role();
-        assign_capability('moodle/cohort:configurecustomfields', CAP_ALLOW, $roleid, context_system::instance()->id, true);
-        role_assign($roleid, $user->id, context_system::instance()->id);
+        assign_capability('moodle/cohort:configurecustomfields', CAP_ALLOW, $roleid, system::instance()->id, true);
+        role_assign($roleid, $user->id, system::instance()->id);
 
         $this->assertTrue($this->handler->can_configure());
     }
@@ -103,15 +103,15 @@ final class cohort_handler_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $category = self::getDataGenerator()->create_category();
-        $catcontext = context_coursecat::instance($category->id);
-        $systemcontext = context_system::instance();
+        $catcontext = coursecat::instance($category->id);
+        $systemcontext = system::instance();
         $cohortsystem = self::getDataGenerator()->create_cohort();
         $cohortcategory = self::getDataGenerator()->create_cohort(['contextid' => $catcontext->id]);
 
-        $this->assertInstanceOf(context_system::class, $this->handler->get_instance_context($cohortsystem->id));
+        $this->assertInstanceOf(system::class, $this->handler->get_instance_context($cohortsystem->id));
         $this->assertSame($systemcontext, $this->handler->get_instance_context($cohortsystem->id));
 
-        $this->assertInstanceOf(context_coursecat::class, $this->handler->get_instance_context($cohortcategory->id));
+        $this->assertInstanceOf(coursecat::class, $this->handler->get_instance_context($cohortcategory->id));
         $this->assertSame($catcontext, $this->handler->get_instance_context($cohortcategory->id));
     }
 
@@ -122,7 +122,7 @@ final class cohort_handler_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $roleid = self::getDataGenerator()->create_role();
-        assign_capability('moodle/cohort:manage', CAP_ALLOW, $roleid, context_system::instance()->id, true);
+        assign_capability('moodle/cohort:manage', CAP_ALLOW, $roleid, system::instance()->id, true);
 
         $field = $this->create_cohort_custom_field();
 
@@ -131,7 +131,7 @@ final class cohort_handler_test extends advanced_testcase {
 
         $this->assertFalse($this->handler->can_edit($field, 0));
 
-        role_assign($roleid, $user->id, context_system::instance()->id);
+        role_assign($roleid, $user->id, system::instance()->id);
         $this->assertTrue($this->handler->can_edit($field, 0));
     }
 
@@ -142,14 +142,14 @@ final class cohort_handler_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $manageroleid = self::getDataGenerator()->create_role();
-        assign_capability('moodle/cohort:manage', CAP_ALLOW, $manageroleid, context_system::instance()->id, true);
+        assign_capability('moodle/cohort:manage', CAP_ALLOW, $manageroleid, system::instance()->id, true);
 
         $viewroleid = self::getDataGenerator()->create_role();
-        assign_capability('moodle/cohort:view', CAP_ALLOW, $viewroleid, context_system::instance()->id, true);
+        assign_capability('moodle/cohort:view', CAP_ALLOW, $viewroleid, system::instance()->id, true);
 
         $viewandmanageroleid = self::getDataGenerator()->create_role();
-        assign_capability('moodle/cohort:manage', CAP_ALLOW, $viewandmanageroleid, context_system::instance()->id, true);
-        assign_capability('moodle/cohort:view', CAP_ALLOW, $viewandmanageroleid, context_system::instance()->id, true);
+        assign_capability('moodle/cohort:manage', CAP_ALLOW, $viewandmanageroleid, system::instance()->id, true);
+        assign_capability('moodle/cohort:view', CAP_ALLOW, $viewandmanageroleid, system::instance()->id, true);
 
         $field = $this->create_cohort_custom_field();
         $cohort = self::getDataGenerator()->create_cohort();
@@ -167,9 +167,9 @@ final class cohort_handler_test extends advanced_testcase {
         self::setUser($user3);
         $this->assertFalse($this->handler->can_view($field, $cohort->id));
 
-        role_assign($manageroleid, $user1->id, context_system::instance()->id);
-        role_assign($viewroleid, $user2->id, context_system::instance()->id);
-        role_assign($viewandmanageroleid, $user3->id, context_system::instance()->id);
+        role_assign($manageroleid, $user1->id, system::instance()->id);
+        role_assign($viewroleid, $user2->id, system::instance()->id);
+        role_assign($viewandmanageroleid, $user3->id, system::instance()->id);
 
         self::setUser($user1);
         $this->assertTrue($this->handler->can_view($field, $cohort->id));

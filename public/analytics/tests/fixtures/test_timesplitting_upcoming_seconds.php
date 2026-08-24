@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -46,7 +48,7 @@ class test_timesplitting_upcoming_seconds extends \core_analytics\local\time_spl
      *
      * @return \lang_string
      */
-    public static function get_name(): \lang_string {
-        return new \lang_string('error');
+    public static function get_name(): lang_string {
+        return new lang_string('error');
     }
 }

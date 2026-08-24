@@ -14,6 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\output\action_menu\link_secondary;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\url;
+
 abstract class feedback_item_base {
 
     /** @var string type of the element, should be overridden by each item type */
@@ -226,8 +231,8 @@ abstract class feedback_item_base {
         $actions = [];
 
         $strupdate = get_string('edit_item', 'feedback');
-        $actions['update'] = new action_menu_link_secondary(
-            new moodle_url('/mod/feedback/edit_item.php', ['id' => $item->id]),
+        $actions['update'] = new link_secondary(
+            new url('/mod/feedback/edit_item.php', ['id' => $item->id]),
             new pix_icon('t/edit', $strupdate, 'moodle', ['class' => 'iconsmall', 'title' => '']),
             $strupdate,
             ['class' => 'editing_update', 'data-action' => 'update']
@@ -241,8 +246,8 @@ abstract class feedback_item_base {
                 $buttontitle = get_string('switch_item_to_required', 'feedback');
                 $buttonimg = 'notrequired';
             }
-            $actions['required'] = new action_menu_link_secondary(
-                new moodle_url(
+            $actions['required'] = new link_secondary(
+                new url(
                     '/mod/feedback/edit.php',
                     ['id' => $cm->id, 'switchitemrequired' => $item->id, 'sesskey' => sesskey()]
                 ),
@@ -253,8 +258,8 @@ abstract class feedback_item_base {
         }
 
         $strdelete = get_string('delete_item', 'feedback');
-        $actions['delete'] = new action_menu_link_secondary(
-            new moodle_url(
+        $actions['delete'] = new link_secondary(
+            new url(
                 '/mod/feedback/edit.php',
                 ['id' => $cm->id, 'deleteitem' => $item->id, 'sesskey' => sesskey()]
             ),
@@ -355,8 +360,8 @@ class feedback_item_pagebreak extends feedback_item_base {
     public function edit_actions($item, $feedback, $cm) {
         $actions = array();
         $strdelete = get_string('delete_pagebreak', 'feedback');
-        $actions['delete'] = new action_menu_link_secondary(
-            new moodle_url('/mod/feedback/edit.php', array('id' => $cm->id, 'deleteitem' => $item->id, 'sesskey' => sesskey())),
+        $actions['delete'] = new link_secondary(
+            new url('/mod/feedback/edit.php', array('id' => $cm->id, 'deleteitem' => $item->id, 'sesskey' => sesskey())),
             new pix_icon('t/delete', $strdelete, 'moodle', array('class' => 'iconsmall', 'title' => '')),
             $strdelete,
             ['class' => 'editing_delete text-danger', 'data-action' => 'delete']

@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\url;
 use mod_quiz\form\edit_override_form;
 use mod_quiz\quiz_settings;
 
@@ -48,7 +50,7 @@ $course = $quizobj->get_course();
 $context = $quizobj->get_context();
 $manager = $quizobj->get_override_manager();
 
-$url = new moodle_url('/mod/quiz/overrideedit.php');
+$url = new url('/mod/quiz/overrideedit.php');
 if ($action) {
     $url->param('action', $action);
 }
@@ -74,7 +76,7 @@ if ($overrideid) {
     $data = clone $override;
 
     if (!$manager->can_view_override($override, $course, $cm)) {
-        throw new \moodle_exception('invalidoverrideid', 'quiz');
+        throw new moodle_exception('invalidoverrideid', 'quiz');
     }
 } else {
     // Creating a new override.
@@ -108,7 +110,7 @@ if ($action === 'duplicate') {
 // True if group-based override.
 $groupmode = !empty($data->groupid) || ($action === 'addgroup' && empty($overrideid));
 
-$overridelisturl = new moodle_url('/mod/quiz/overrides.php', ['cmid' => $cm->id]);
+$overridelisturl = new url('/mod/quiz/overrides.php', ['cmid' => $cm->id]);
 if (!$groupmode) {
     $overridelisturl->param('mode', 'user');
 }

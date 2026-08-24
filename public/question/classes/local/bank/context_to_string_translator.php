@@ -16,6 +16,9 @@
 
 namespace core_question\local\bank;
 
+use core\context_helper;
+use core\exception\coding_exception;
+
 /**
  * Converts contextlevels to strings and back to help with reading/writing contexts to/from import/export files.
  *
@@ -85,8 +88,8 @@ class context_to_string_translator {
                         $contextstring = 'system';
                         break;
                     default:
-                        throw new \coding_exception('Unexpected context level ' .
-                                \context_helper::get_level_name($context->contextlevel) . ' for context ' .
+                        throw new coding_exception('Unexpected context level ' .
+                                context_helper::get_level_name($context->contextlevel) . ' for context ' .
                                 $context->id . ' in generate_context_to_string_array. ' .
                                 'Questions can never exist in this type of context.');
                 }

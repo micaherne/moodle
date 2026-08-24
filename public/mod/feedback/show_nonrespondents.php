@@ -22,6 +22,13 @@
  * @package mod_feedback
  */
 
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\url;
+use core_table\flexible_table;
 use mod_feedback\manager;
 
 require_once("../../config.php");
@@ -50,24 +57,24 @@ if ($message) {
 
 list ($course, $cm) = get_course_and_cm_from_cmid($id, 'feedback');
 if (! $feedback = $DB->get_record("feedback", array("id"=>$cm->instance))) {
-    throw new \moodle_exception('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 
 //this page only can be shown on nonanonymous feedbacks in courses
 //we should never reach this page
 if ($feedback->anonymous != FEEDBACK_ANONYMOUS_NO OR $feedback->course == SITEID) {
-    throw new \moodle_exception('error');
+    throw new moodle_exception('error');
 }
 
-$url = new moodle_url('/mod/feedback/show_nonrespondents.php', array('id'=>$cm->id));
+$url = new url('/mod/feedback/show_nonrespondents.php', array('id'=>$cm->id));
 
 $PAGE->set_url($url);
 $PAGE->set_show_navigation_footer(false);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 
 //we need the coursecontext to allow sending of mass mails
-$coursecontext = context_course::instance($course->id);
+$coursecontext = course::instance($course->id);
 
 require_login($course, true, $cm);
 
@@ -173,7 +180,7 @@ if (!manager::can_see_others_in_groups($cm)) {
 $groupselect = groups_print_activity_menu($cm, $url->out(), true);
 
 // preparing the table for output
-$baseurl = new moodle_url('/mod/feedback/show_nonrespondents.php');
+$baseurl = new url('/mod/feedback/show_nonrespondents.php');
 $baseurl->params(array('id'=>$id, 'showall'=>$showall));
 
 $tablecolumns = array('userpic', 'fullname', 'status');
@@ -281,7 +288,7 @@ if (empty($students)) {
     }
     $table->print_html();
 
-    $allurl = new moodle_url($baseurl);
+    $allurl = new url($baseurl);
 
     if ($showall) {
         $allurl->param('showall', 0);

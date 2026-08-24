@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
@@ -41,7 +43,7 @@ class import_outcomes_form extends moodleform {
         $mform->setType('courseid', PARAM_INT);
 
         $scope = array();
-        if (($PAGE->course->id > 1) && has_capability('moodle/grade:manage', context_system::instance())) {
+        if (($PAGE->course->id > 1) && has_capability('moodle/grade:manage', system::instance())) {
             $mform->addElement('radio', 'scope', get_string('importcustom', 'grades'), null, 'custom');
             $mform->addElement('radio', 'scope', get_string('importstandard', 'grades'), null, 'global');
             $mform->setDefault('scope', 'custom');

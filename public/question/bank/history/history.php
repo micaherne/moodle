@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->dirroot . '/question/editlib.php');
 
@@ -36,7 +38,7 @@ list($thispageurl, $contexts, $cmid, $cm, $module, $pagevars) =
         question_edit_setup('questions', '/question/bank/history/history.php');
 $pagevars['entryid'] = $entryid;
 $pagevars['returnurl'] = $returnurl;
-$url = new moodle_url(
+$url = new url(
     $thispageurl,
     [
         'entryid' => $entryid,
@@ -57,7 +59,7 @@ $PAGE->set_title($streditingquestions);
 $PAGE->set_heading($streditingquestions);
 $context = $contexts->lowest();
 $PAGE->set_context($context);
-$PAGE->navbar->add(get_string('question'), new moodle_url($returnurl));
+$PAGE->navbar->add(get_string('question'), new url($returnurl));
 $PAGE->navbar->add($streditingquestions, $url);
 $PAGE->set_show_navigation_footer(false);
 

@@ -19,11 +19,11 @@ declare(strict_types=1);
 namespace core\content\export\exportable_items;
 
 use advanced_testcase;
-use context;
-use context_system;
+use core\context;
+use core\context\system;
 use core\content\export\zipwriter;
 use core\content\export\exported_item;
-use moodle_url;
+use core\url;
 use stdClass;
 
 /**
@@ -42,7 +42,7 @@ final class exportable_filearea_test extends advanced_testcase {
      */
     public function test_no_files(): void {
         $exportable = new exportable_filearea(
-            context_system::instance(),
+            system::instance(),
             'fake',
             'Some fake filearea',
             'filearea',
@@ -61,14 +61,14 @@ final class exportable_filearea_test extends advanced_testcase {
 
         // Setup for test.
         $user = $this->getDataGenerator()->create_user();
-        $context = context_system::instance();
+        $context = system::instance();
         $component = 'fake';
         $filearea = 'myfirstfilearea';
 
-        $files1 = $this->create_files(context_system::instance(), $component, $filearea, 1);
-        $files2 = $this->create_files(context_system::instance(), $component, $filearea, 2);
-        $files3 = $this->create_files(context_system::instance(), $component, $filearea, 3);
-        $otherfiles2 = $this->create_files(context_system::instance(), $component, "other{$filearea}", 2);
+        $files1 = $this->create_files(system::instance(), $component, $filearea, 1);
+        $files2 = $this->create_files(system::instance(), $component, $filearea, 2);
+        $files3 = $this->create_files(system::instance(), $component, $filearea, 3);
+        $otherfiles2 = $this->create_files(system::instance(), $component, "other{$filearea}", 2);
 
         $exportable = new exportable_filearea(
             $context,
@@ -84,7 +84,7 @@ final class exportable_filearea_test extends advanced_testcase {
         $file2 = reset($files2);
         $item = $this->assert_exportable_matches_file($component, $user, $context, $filearea, '', $files2, false, $exportable);
         $this->assertCount(count($files2), $item->get_all_files());
-        $comparisonurl = new moodle_url('/tokenpluginfile.php/');
+        $comparisonurl = new url('/tokenpluginfile.php/');
         foreach ($item->get_all_files() as $url) {
             $this->assertStringStartsWith($comparisonurl->out(false), $url->filepath);
         }
@@ -98,14 +98,14 @@ final class exportable_filearea_test extends advanced_testcase {
 
         // Setup for test.
         $user = $this->getDataGenerator()->create_user();
-        $context = context_system::instance();
+        $context = system::instance();
         $component = 'fake';
         $filearea = 'myfirstfilearea';
 
-        $files1 = $this->create_files(context_system::instance(), $component, $filearea, 1);
-        $files2 = $this->create_files(context_system::instance(), $component, $filearea, 2);
-        $files3 = $this->create_files(context_system::instance(), $component, $filearea, 3);
-        $otherfiles2 = $this->create_files(context_system::instance(), $component, "other{$filearea}", 2);
+        $files1 = $this->create_files(system::instance(), $component, $filearea, 1);
+        $files2 = $this->create_files(system::instance(), $component, $filearea, 2);
+        $files3 = $this->create_files(system::instance(), $component, $filearea, 3);
+        $otherfiles2 = $this->create_files(system::instance(), $component, "other{$filearea}", 2);
 
         $exportable = new exportable_filearea(
             $context,
@@ -131,14 +131,14 @@ final class exportable_filearea_test extends advanced_testcase {
 
         // Setup for test.
         $user = $this->getDataGenerator()->create_user();
-        $context = context_system::instance();
+        $context = system::instance();
         $component = 'fake';
         $filearea = 'myfirstfilearea';
         $subdir = 'a/path/to/my/subdir';
 
-        $files1 = $this->create_files(context_system::instance(), $component, $filearea, 1);
-        $files2 = $this->create_files(context_system::instance(), $component, $filearea, 2);
-        $files3 = $this->create_files(context_system::instance(), $component, $filearea, 3);
+        $files1 = $this->create_files(system::instance(), $component, $filearea, 1);
+        $files2 = $this->create_files(system::instance(), $component, $filearea, 2);
+        $files3 = $this->create_files(system::instance(), $component, $filearea, 3);
 
         $exportable = new exportable_filearea(
             $context,

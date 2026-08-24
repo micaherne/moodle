@@ -17,6 +17,7 @@
 namespace core_courseformat\external;
 
 use core\context\course as context_course;
+use core\exception\moodle_exception;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
@@ -67,10 +68,10 @@ class log_view_overview_information extends external_api {
 
         $course = get_course($courseid);
         if (!$course) {
-            throw new \moodle_exception('invalidcourseid', 'error', '', $courseid);
+            throw new moodle_exception('invalidcourseid', 'error', '', $courseid);
         }
         if ($course->id == SITEID) {
-            throw new \moodle_exception('The site home course overview page is not supported.');
+            throw new moodle_exception('The site home course overview page is not supported.');
         }
 
         $context = context_course::instance($course->id);

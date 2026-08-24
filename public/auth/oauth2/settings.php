@@ -22,12 +22,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\heading;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
 
     $warning = $OUTPUT->notification(get_string('createaccountswarning', 'auth_oauth2'), 'warning');
-    $settings->add(new admin_setting_heading('auth_oauth2/pluginname', '', $warning));
+    $settings->add(new heading('auth_oauth2/pluginname', '', $warning));
 
     $authplugin = \core\di::get(\core\authentication::class)->get_plugin('oauth2');
     display_auth_lock_options($settings, $authplugin->authtype, $authplugin->userfields,

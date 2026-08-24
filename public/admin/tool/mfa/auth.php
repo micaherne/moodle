@@ -26,13 +26,15 @@ require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->dirroot . '/admin/tool/mfa/lib.php');
 require_once($CFG->libdir.'/adminlib.php');
 
+use core\context\user;
+use core\url;
 use tool_mfa\local\form\login_form;
 use tool_mfa\manager;
 use tool_mfa\plugininfo\factor;
 
 require_login(null, false);
 
-$context = context_user::instance($USER->id);
+$context = user::instance($USER->id);
 $PAGE->set_context($context);
 $PAGE->set_url('/admin/tool/mfa/auth.php');
 $PAGE->set_pagelayout('login');
@@ -49,8 +51,8 @@ if ($logout) {
         echo $OUTPUT->header();
         echo $OUTPUT->confirm(
             get_string('logoutconfirm'),
-            new moodle_url($PAGE->url, ['logout' => 1, 'sesskey' => sesskey()]),
-            new moodle_url('/'),
+            new url($PAGE->url, ['logout' => 1, 'sesskey' => sesskey()]),
+            new url('/'),
         );
         echo $OUTPUT->footer();
         die;
@@ -61,14 +63,14 @@ if ($logout) {
         $wantsurl = $SESSION->wantsurl;
     } else {
         // Else redirect home.
-        $wantsurl = new \moodle_url($CFG->wwwroot);
+        $wantsurl = new url($CFG->wwwroot);
     }
 
     manager::mfa_logout();
     redirect($wantsurl);
 }
 
-$currenturl = new moodle_url('/admin/tool/mfa/auth.php');
+$currenturl = new url('/admin/tool/mfa/auth.php');
 
 // Perform state check.
 manager::resolve_mfa_status();

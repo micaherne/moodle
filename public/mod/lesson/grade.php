@@ -26,6 +26,8 @@
 /**
  * Require config.php
  */
+use core\context\module;
+
 require_once("../../config.php");
 require_once($CFG->dirroot.'/mod/lesson/locallib.php');
 
@@ -39,7 +41,7 @@ require_login($course, false, $cm);
 
 $PAGE->set_url('/mod/lesson/grade.php', array('id'=>$cm->id));
 
-if (has_capability('mod/lesson:viewreports', context_module::instance($cm->id))) {
+if (has_capability('mod/lesson:viewreports', module::instance($cm->id))) {
     redirect('report.php?id='.$cm->id);
 } else {
     redirect('view.php?id='.$cm->id);

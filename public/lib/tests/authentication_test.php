@@ -16,6 +16,8 @@
 
 namespace core;
 
+use core\exception\moodle_exception;
+
 /**
  * Tests for \core\authentication.
  *
@@ -95,7 +97,7 @@ final class authentication_test extends \advanced_testcase {
     public function test_get_plugin_invalid_throws(): void {
         $auth = di::get(authentication::class);
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $auth->get_plugin('nonexistentplugin');
     }
 

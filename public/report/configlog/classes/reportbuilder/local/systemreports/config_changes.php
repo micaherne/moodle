@@ -16,7 +16,7 @@
 
 namespace report_configlog\reportbuilder\local\systemreports;
 
-use context_system;
+use core\context\system;
 use report_configlog\reportbuilder\local\entities\config_change;
 use core_reportbuilder\system_report;
 use core_reportbuilder\local\entities\user;
@@ -63,7 +63,7 @@ class config_changes extends system_report {
      * @return bool
      */
     protected function can_view(): bool {
-        return has_capability('moodle/site:config', context_system::instance());
+        return has_capability('moodle/site:config', system::instance());
     }
 
     /**

@@ -22,7 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
+use core\exception\required_capability_exception;
 use core\report_helper;
+use core\url;
+use core\user;
 
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
@@ -59,7 +63,7 @@ array_filter($othermodels, function($model) use ($context) {
     if (!$model->get_target()->link_insights_report()) {
         try {
             \core_analytics\manager::check_can_manage_models();
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             return false;
         }
     }
@@ -77,7 +81,7 @@ if ($modelid) {
 
 // The URL in navigation only contains the contextid.
 $params = array('contextid' => $contextid);
-$navurl = new \moodle_url('/report/insights/insights.php', $params);
+$navurl = new url('/report/insights/insights.php', $params);
 
 // This is the real page url, we need it to include the modelid so pagination and
 // other stuff works as expected.
@@ -92,7 +96,7 @@ $PAGE->set_pagelayout('report');
 if ($context->contextlevel === CONTEXT_SYSTEM) {
     admin_externalpage_setup('reportinsights', '', $url->params(), $url->out(false), array('pagelayout' => 'report'));
 } else if ($context->contextlevel === CONTEXT_USER) {
-    $user = \core_user::get_user($context->instanceid, '*', MUST_EXIST);
+    $user = user::get_user($context->instanceid, '*', MUST_EXIST);
     $PAGE->navigation->extend_for_user($user);
     $PAGE->add_report_nodes($user->id, array(
         'name' => get_string('insights', 'report_insights'),
@@ -148,11 +152,11 @@ if ($model->get_analyser()::one_sample_per_analysable()) {
     if ($predictionsdata) {
         list($total, $predictions) = $predictionsdata;
         if ($total > 1) {
-            throw new \coding_exception('This model\'s analyser processed more than one sample for a single analysable element.' .
+            throw new coding_exception('This model\'s analyser processed more than one sample for a single analysable element.' .
                 'Therefore, the analyser\'s one_sample_per_analysable() method should return false.');
         }
         $prediction = reset($predictions);
-        $redirecturl = new \moodle_url('/report/insights/prediction.php', ['id' => $prediction->get_prediction_data()->id]);
+        $redirecturl = new url('/report/insights/prediction.php', ['id' => $prediction->get_prediction_data()->id]);
         redirect($redirecturl);
     }
 }

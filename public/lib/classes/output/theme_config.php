@@ -17,8 +17,8 @@
 namespace core\output;
 
 use block_manager;
-use cache;
-use cache_store;
+use core_cache\cache;
+use core_cache\store;
 use core_component;
 use core_cssparser;
 use core_minify;
@@ -32,7 +32,7 @@ use core\output\renderer_factory\renderer_factory_interface as renderer_factory;
 use core\output\renderer_factory\standard_renderer_factory;
 use dml_exception;
 use moodle_page;
-use moodle_url;
+use core\url;
 use stdClass;
 
 // phpcs:disable moodle.NamingConventions.ValidVariableName.VariableNameUnderscore
@@ -688,7 +688,7 @@ class theme_config {
                 $rev .= "_{$themesubrevision}";
             }
 
-            $url = new moodle_url("/theme/styles.php");
+            $url = new url("/theme/styles.php");
             if (!empty($CFG->slasharguments)) {
                 $url->set_slashargument("/{$this->name}/{$rev}/{$type}", 'noparam', true);
             } else {
@@ -699,7 +699,7 @@ class theme_config {
                 ]);
             }
         } else {
-            $url = new moodle_url('/theme/styles_debug.php', [
+            $url = new url('/theme/styles_debug.php', [
                 'theme' => $this->name,
                 'type' => $type,
             ]);
@@ -823,7 +823,7 @@ class theme_config {
 
         if ($rev > -1) {
             $filename = right_to_left() ? 'all-rtl' : 'all';
-            $url = new moodle_url("/theme/styles.php");
+            $url = new url("/theme/styles.php");
             $themesubrevision = theme_get_sub_revision_for_theme($this->name);
 
             // Provide the sub revision to allow us to invalidate cached theme CSS
@@ -858,7 +858,7 @@ class theme_config {
             }
             $urls[] = $url;
         } else {
-            $baseurl = new moodle_url('/theme/styles_debug.php');
+            $baseurl = new url('/theme/styles_debug.php');
 
             $css = $this->get_css_files(true);
             if (!$svg) {
@@ -875,10 +875,10 @@ class theme_config {
             }
             if (core_useragent::is_ie()) {
                 // Lalala, IE does not allow more than 31 linked CSS files from main document.
-                $urls[] = new moodle_url($baseurl, ['theme' => $this->name, 'type' => 'ie', 'subtype' => 'plugins']);
+                $urls[] = new url($baseurl, ['theme' => $this->name, 'type' => 'ie', 'subtype' => 'plugins']);
                 foreach ($css['parents'] as $parent => $sheets) {
                     // We need to serve parents individually otherwise we may easily exceed the style limit IE imposes (4096).
-                    $urls[] = new moodle_url($baseurl, [
+                    $urls[] = new url($baseurl, [
                         'theme' => $this->name,
                         'type' => 'ie',
                         'subtype' => 'parents',
@@ -887,16 +887,16 @@ class theme_config {
                 }
                 if ($this->get_scss_property()) {
                     // No need to define the type as IE here.
-                    $urls[] = new moodle_url($baseurl, ['theme' => $this->name, 'type' => 'scss']);
+                    $urls[] = new url($baseurl, ['theme' => $this->name, 'type' => 'scss']);
                 }
-                $urls[] = new moodle_url($baseurl, ['theme' => $this->name, 'type' => 'ie', 'subtype' => 'theme']);
+                $urls[] = new url($baseurl, ['theme' => $this->name, 'type' => 'ie', 'subtype' => 'theme']);
             } else {
                 foreach ($css['plugins'] as $plugin => $unused) {
-                    $urls[] = new moodle_url($baseurl, ['theme' => $this->name, 'type' => 'plugin', 'subtype' => $plugin]);
+                    $urls[] = new url($baseurl, ['theme' => $this->name, 'type' => 'plugin', 'subtype' => $plugin]);
                 }
                 foreach ($css['parents'] as $parent => $sheets) {
                     foreach ($sheets as $sheet => $unused2) {
-                        $urls[] = new moodle_url($baseurl, [
+                        $urls[] = new url($baseurl, [
                             'theme' => $this->name,
                             'type' => 'parent',
                             'subtype' => $parent,
@@ -907,10 +907,10 @@ class theme_config {
                 foreach ($css['theme'] as $sheet => $filename) {
                     if ($sheet === self::SCSS_KEY) {
                         // This is the theme SCSS file.
-                        $urls[] = new moodle_url($baseurl, ['theme' => $this->name, 'type' => 'scss']);
+                        $urls[] = new url($baseurl, ['theme' => $this->name, 'type' => 'scss']);
                     } else {
                         // Sheet first in order to make long urls easier to read.
-                        $urls[] = new moodle_url($baseurl, ['sheet' => $sheet, 'theme' => $this->name, 'type' => 'theme']);
+                        $urls[] = new url($baseurl, ['sheet' => $sheet, 'theme' => $this->name, 'type' => 'theme']);
                     }
                 }
             }
@@ -1124,7 +1124,7 @@ class theme_config {
             require_once($CFG->dirroot . '/lib/csslib.php');
             // We need some kind of caching here because otherwise the page navigation becomes
             // way too slow in theme designer mode. Feel free to create full cache definition later...
-            $cache = cache::make_from_params(cache_store::MODE_APPLICATION, 'core', 'themedesigner', ['theme' => $this->name]);
+            $cache = cache::make_from_params(store::MODE_APPLICATION, 'core', 'themedesigner', ['theme' => $this->name]);
             if ($files = $cache->get($cachekey)) {
                 if ($files['created'] > time() - THEME_DESIGNER_CACHE_LIFETIME) {
                     unset($files['created']);
@@ -1465,11 +1465,11 @@ class theme_config {
         }
 
         if (!empty($CFG->slasharguments) && $rev > 0) {
-            $url = new moodle_url("/theme/javascript.php");
+            $url = new url("/theme/javascript.php");
             $url->set_slashargument('/' . $this->name . '/' . $rev . '/' . $params['type'], 'noparam', true);
             return $url;
         } else {
-            return new moodle_url('/theme/javascript.php', $params);
+            return new url('/theme/javascript.php', $params);
         }
     }
 
@@ -1703,7 +1703,7 @@ class theme_config {
 
         $params['image'] = $imagename;
 
-        $url = new moodle_url("/theme/image.php");
+        $url = new url("/theme/image.php");
         if (!empty($CFG->slasharguments) && $rev > 0) {
             $path = '/' . $params['theme'] . '/' . $params['component'] . '/' . $params['rev'] . '/' . $params['image'];
             if (!$svg) {
@@ -1749,7 +1749,7 @@ class theme_config {
 
         $params['font'] = $font;
 
-        $url = new moodle_url("/theme/font.php");
+        $url = new url("/theme/font.php");
         if (!empty($CFG->slasharguments) && $rev > 0) {
             $path = '/' . $params['theme'] . '/' . $params['component'] . '/' . $params['rev'] . '/' . $params['font'];
             $url->set_slashargument($path, 'noparam', true);
@@ -1782,7 +1782,7 @@ class theme_config {
         $filepath = $this->settings->$setting;
         $syscontext = context_system::instance();
 
-        $url = moodle_url::make_file_url(
+        $url = url::make_file_url(
             "$CFG->wwwroot/pluginfile.php",
             "/$syscontext->id/$component/$filearea/$itemid" . $filepath,
         );

@@ -24,6 +24,9 @@
  * @author     Yuliya Bozhko <yuliya.bozhko@totaralms.com>
  */
 
+use core\context\course;
+use core\output\html_writer;
+
 defined('MOODLE_INTERNAL') || die();
 require_once('award_criteria_course.php');
 require_once($CFG->libdir . '/completionlib.php');
@@ -148,7 +151,7 @@ class award_criteria_courseset extends award_criteria {
         // In courseset, print out only the ones that were already selected.
         foreach ($this->params as $p) {
             if ($course = $DB->get_record('course', array('id' => $p['course']))) {
-                $coursecontext = context_course::instance($course->id);
+                $coursecontext = course::instance($course->id);
                 $param = array(
                         'id' => $course->id,
                         'checked' => true,

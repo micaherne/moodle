@@ -24,12 +24,13 @@
 
 namespace core_courseformat\output\local\content\section;
 
-use context_course;
+use core\context\course;
 use core\output\named_templatable;
+use core\output\renderer_base;
 use core_courseformat\base as course_format;
 use core_courseformat\output\local\courseformat_named_templatable;
-use renderable;
-use section_info;
+use core\output\renderable;
+use core_course\section_info;
 use stdClass;
 
 /**
@@ -66,7 +67,7 @@ class summary implements named_templatable, renderable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return stdClass data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output): stdClass {
+    public function export_for_template(renderer_base $output): stdClass {
 
         $section = $this->section;
 
@@ -85,7 +86,7 @@ class summary implements named_templatable, renderable {
      */
     public function format_summary_text(): string {
         $section = $this->section;
-        $context = context_course::instance($section->course);
+        $context = course::instance($section->course);
         $summarytext = file_rewrite_pluginfile_urls($section->summary, 'pluginfile.php',
             $context->id, 'course', 'section', $section->id);
 

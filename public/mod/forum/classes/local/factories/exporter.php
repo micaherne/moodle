@@ -39,7 +39,7 @@ use mod_forum\local\exporters\discussion as discussion_exporter;
 use mod_forum\local\exporters\discussion_summaries as discussion_summaries_exporter;
 use mod_forum\local\exporters\post as post_exporter;
 use mod_forum\local\exporters\posts as posts_exporter;
-use context;
+use core\context;
 use rating;
 use stdClass;
 

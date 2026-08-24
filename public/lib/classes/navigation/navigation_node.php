@@ -16,6 +16,7 @@
 
 namespace core\navigation;
 
+use core\context;
 use core\context_helper;
 use core\exception\coding_exception;
 use core\output\action_link;
@@ -1000,7 +1001,7 @@ class navigation_node implements renderable {
      * @param \navigation_node $node Node to add
      * @param \context $context The context to be locked
      */
-    protected function add_context_locking_node(\navigation_node $node, \context $context) {
+    protected function add_context_locking_node(navigation_node $node, context $context) {
         global $CFG;
         // Manage context locking.
         if (!empty($CFG->contextlocking) && has_capability('moodle/site:managecontextlocks', $context)) {

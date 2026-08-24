@@ -16,12 +16,12 @@
 
 namespace filter_activitynames;
 
-use cache;
-use cache_store;
+use core_cache\cache;
+use core_cache\store;
 use core\output\html_writer;
 use core_collator;
-use course_modinfo;
-use filterobject;
+use core_course\modinfo;
+use core_filters\filter_object;
 
 /**
  * This filter provides automatic linking to
@@ -93,7 +93,7 @@ class text_filter extends \core_filters\text_filter {
      */
     protected function get_cached_activity_list($courseid) {
         global $USER;
-        $cached = cache::make_from_params(cache_store::MODE_REQUEST, 'filter', 'activitynames');
+        $cached = cache::make_from_params(store::MODE_REQUEST, 'filter', 'activitynames');
 
         // Return cached activity list.
         if ($cached->get('cachecourseid') == $courseid && $cached->get('cacheuserid') == $USER->id) {
@@ -129,7 +129,7 @@ class text_filter extends \core_filters\text_filter {
                     $cm->visible
                     && $cm->has_view()
                     && $cm->uservisible
-                    && course_modinfo::is_mod_type_visible_on_course($cm->modname)
+                    && modinfo::is_mod_type_visible_on_course($cm->modname)
                 ) {
                     $sortedactivities[] = (object)[
                         'name' => $cm->name,
@@ -156,10 +156,10 @@ class text_filter extends \core_filters\text_filter {
                         ['class' => 'autolink', 'title' => $title,
                         'href' => $cm->url, ]
                     );
-                    $activitylist[$cm->id] = new filterobject($currentname, $hreftagbegin, '</a>', false, true);
+                    $activitylist[$cm->id] = new filter_object($currentname, $hreftagbegin, '</a>', false, true);
                     if ($currentname != $entitisedname) {
                         // If name has some entity (&amp; &quot; &lt; &gt;) add that filter too. MDL-17545.
-                        $activitylist[$cm->id . '-e'] = new filterobject($entitisedname, $hreftagbegin, '</a>', false, true);
+                        $activitylist[$cm->id . '-e'] = new filter_object($entitisedname, $hreftagbegin, '</a>', false, true);
                     }
                 }
             }

@@ -26,6 +26,7 @@ namespace core_comment\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
 use \core_privacy\local\metadata\collection;
 use \core_privacy\local\request\transform;
 use \core_privacy\local\request\userlist;
@@ -69,7 +70,7 @@ class provider implements
      * @param  array  $subcontext The sub-context in which to export this data
      * @param  bool   $onlyforthisuser  Only return the comments this user made.
      */
-    public static function export_comments(\context $context, string $component, string $commentarea, int $itemid,
+    public static function export_comments(context $context, string $component, string $commentarea, int $itemid,
                                            array $subcontext, bool $onlyforthisuser = true) {
         global $USER, $DB;
         $params = [
@@ -125,7 +126,7 @@ class provider implements
      * @param  string $commentarea Comment area to delete.
      * @param  int $itemid The item ID for use with deletion.
      */
-    public static function delete_comments_for_all_users(\context $context, string $component, ?string $commentarea = null,
+    public static function delete_comments_for_all_users(context $context, string $component, ?string $commentarea = null,
             ?int $itemid = null) {
         global $DB;
         $params = [
@@ -152,7 +153,7 @@ class provider implements
      *      and may not use named parameters called contextid, component or commentarea.
      * @param array $params any query params used by $itemidstest.
      */
-    public static function delete_comments_for_all_users_select(\context $context, string $component, string $commentarea,
+    public static function delete_comments_for_all_users_select(context $context, string $component, string $commentarea,
             $itemidstest, $params = []) {
         global $DB;
         $params += ['contextid' => $context->id, 'component' => $component, 'commentarea' => $commentarea];

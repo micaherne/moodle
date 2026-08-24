@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+
 require_once(__DIR__ . '/../../../../../config.php');
 
 defined('BEHAT_SITE_RUNNING') || die();
@@ -31,7 +33,7 @@ require_once($CFG->libdir . '/formslib.php');
 $PAGE->set_url('/lib/form/tests/behat/fixtures/dates_form.php');
 $PAGE->add_body_class('limitedwidth');
 require_login();
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 /**
  * Test form class adding all types of date elements

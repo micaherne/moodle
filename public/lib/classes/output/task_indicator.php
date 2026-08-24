@@ -16,6 +16,7 @@
 
 namespace core\output;
 
+use core\exception\coding_exception;
 use core\plugin_manager;
 use core\task\adhoc_task;
 use core\task\stored_progress_task_trait;
@@ -75,7 +76,7 @@ class task_indicator implements renderable, templatable {
         protected array $extraclasses = [],
     ) {
         if (!class_uses($task::class, stored_progress_task_trait::class)) {
-            throw new \coding_exception('task_indicator can only be used for tasks using stored_progress_task_trait.');
+            throw new coding_exception('task_indicator can only be used for tasks using stored_progress_task_trait.');
         }
         $this->setup_task_data();
     }

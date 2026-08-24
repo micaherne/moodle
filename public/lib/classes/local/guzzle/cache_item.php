@@ -16,6 +16,8 @@
 
 namespace core\local\guzzle;
 
+use core\exception\coding_exception;
+
 /**
  * Class to define an interface for interacting with objects inside a cache.
  *
@@ -161,7 +163,7 @@ class cache_item {
             return $this;
         }
 
-        throw new \coding_exception('Invalid argument passed');
+        throw new coding_exception('Invalid argument passed');
     }
 
     /**

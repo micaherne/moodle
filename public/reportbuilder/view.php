@@ -24,6 +24,8 @@
 
 declare(strict_types=1);
 
+use core\navigation\navigation_node;
+use core\url;
 use core_reportbuilder\event\report_viewed;
 use core_reportbuilder\manager;
 use core_reportbuilder\output\custom_report;
@@ -34,8 +36,8 @@ require_once("{$CFG->libdir}/adminlib.php");
 
 $reportid = required_param('id', PARAM_INT);
 
-admin_externalpage_setup('customreports', null, ['id' => $reportid], new moodle_url('/reportbuilder/view.php'));
-navigation_node::override_active_url(new moodle_url('/reportbuilder/index.php'));
+admin_externalpage_setup('customreports', null, ['id' => $reportid], new url('/reportbuilder/view.php'));
+navigation_node::override_active_url(new url('/reportbuilder/index.php'));
 
 $report = manager::get_report_from_id($reportid);
 permission::require_can_view_report($report->get_report_persistent());

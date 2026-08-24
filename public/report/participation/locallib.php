@@ -22,6 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\output\html_writer;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -184,7 +187,7 @@ function report_participation_print_filter_form($course, $timefrom, $minlog, $ac
 
     $actionoptions = report_participation_get_action_options();
 
-    $context = context_course::instance($course->id);
+    $context = course::instance($course->id);
     $roles = get_roles_used_in_context($context);
     $rolesviewable = get_viewable_roles($context);
 

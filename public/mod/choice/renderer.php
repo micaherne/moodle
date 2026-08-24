@@ -22,6 +22,14 @@
  * @copyright 2010 Rossiani Wijaya
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\output\single_select;
+use core\url;
+use core_table\output\html_table;
+use core_table\output\html_table_cell;
+use core_table\output\html_table_row;
+
 class mod_choice_renderer extends plugin_renderer_base {
 
     /**
@@ -36,7 +44,7 @@ class mod_choice_renderer extends plugin_renderer_base {
         if ($vertical) {
             $layoutclass = 'vertical';
         }
-        $target = new moodle_url('/mod/choice/view.php');
+        $target = new url('/mod/choice/view.php');
         $attributes = array('method'=>'POST', 'action'=>$target, 'class'=> $layoutclass);
         $disabled = empty($options['previewonly']) ? array() : array('disabled' => 'disabled');
 
@@ -95,7 +103,7 @@ class mod_choice_renderer extends plugin_renderer_base {
                 }
 
                 if (!empty($options['allowupdate']) && ($options['allowupdate'])) {
-                    $url = new moodle_url('view.php',
+                    $url = new url('view.php',
                             array('id' => $coursemoduleid, 'action' => 'delchoice', 'sesskey' => sesskey()));
                     $html .= html_writer::link($url, get_string('removemychoice', 'choice'), array('class' => 'ms-1'));
                 }
@@ -138,7 +146,7 @@ class mod_choice_renderer extends plugin_renderer_base {
         $html ='';
 
         $attributes = array('method'=>'POST');
-        $attributes['action'] = new moodle_url($this->page->url);
+        $attributes['action'] = new url($this->page->url);
         $attributes['id'] = 'attemptsform';
 
         if ($choices->viewresponsecapability) {
@@ -281,7 +289,7 @@ class mod_choice_renderer extends plugin_renderer_base {
                             $checkbox = $this->output->render($targetcheckbox);
                         }
                         $userimage = $this->output->user_picture($user, array('courseid' => $choices->courseid, 'link' => false));
-                        $profileurl = new moodle_url('/user/view.php', array('id' => $user->id, 'course' => $choices->courseid));
+                        $profileurl = new url('/user/view.php', array('id' => $user->id, 'course' => $choices->courseid));
                         $profilelink = html_writer::link($profileurl, $userimage . $userfullname);
                         $data .= html_writer::div($checkbox . $profilelink, 'mb-1');
 
@@ -312,7 +320,7 @@ class mod_choice_renderer extends plugin_renderer_base {
             ], true);
             $actiondata .= $this->output->render($selectallcheckbox);
 
-            $actionurl = new moodle_url($this->page->url,
+            $actionurl = new url($this->page->url,
                     ['sesskey' => sesskey(), 'action' => 'delete_confirmation()']);
             $actionoptions = array('delete' => get_string('delete'));
             foreach ($choices->options as $optionid => $option) {

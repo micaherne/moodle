@@ -25,7 +25,7 @@ use core_external\external_warnings;
 use mod_h5pactivity\local\manager;
 use mod_h5pactivity\local\attempt;
 use mod_h5pactivity\local\report\attempts as report_attempts;
-use context_module;
+use core\context\module;
 use stdClass;
 
 /**
@@ -82,7 +82,7 @@ class get_attempts extends external_api {
         // Request and permission validation.
         list ($course, $cm) = get_course_and_cm_from_instance($h5pactivityid, 'h5pactivity');
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         $manager = manager::create_from_coursemodule($cm);

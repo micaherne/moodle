@@ -23,6 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\progress_trace\progress_trace_buffer;
+use core\output\progress_trace\text_progress_trace;
+use core\plugin_manager;
+
 define('CLI_SCRIPT', true);
 
 require(__DIR__ . '/../../config.php');
@@ -98,7 +102,7 @@ if ($options['showsql']) {
     $DB->set_debug(true);
 }
 
-$pluginman = core_plugin_manager::instance();
+$pluginman = plugin_manager::instance();
 $plugininfo = $pluginman->get_plugins();
 
 if ($options['show-all'] || $options['show-missing'] || $options['show-contrib']) {
@@ -112,7 +116,7 @@ if ($options['show-all'] || $options['show-missing'] || $options['show-contrib']
             if ($options['show-all'] || $options['show-contrib']) {
                 cli_writeln($pluginstring);
             } else {
-                if ($plugin->get_status() === core_plugin_manager::PLUGIN_STATUS_MISSING) {
+                if ($plugin->get_status() === plugin_manager::PLUGIN_STATUS_MISSING) {
                     cli_writeln($pluginstring);
                 }
             }
@@ -125,7 +129,7 @@ if ($options['show-all'] || $options['show-missing'] || $options['show-contrib']
 if ($options['purge-missing']) {
     foreach ($plugininfo as $type => $plugins) {
         foreach ($plugins as $name => $plugin) {
-            if ($plugin->get_status() === core_plugin_manager::PLUGIN_STATUS_MISSING) {
+            if ($plugin->get_status() === plugin_manager::PLUGIN_STATUS_MISSING) {
 
                 $pluginstring = $plugin->component . "\t" . $plugin->displayname;
 

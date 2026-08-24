@@ -24,6 +24,13 @@
 
 namespace core_payment;
 
+use core\context;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\plugin_manager;
+use core\url;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\settingpage\settingpage;
 use core_payment\event\account_created;
 use core_payment\event\account_deleted;
 use core_payment\event\account_updated;
@@ -44,7 +51,7 @@ class helper {
     public static function get_supported_currencies(): array {
         $currencies = [];
 
-        $plugins = \core_plugin_manager::instance()->get_enabled_plugins('paygw');
+        $plugins = plugin_manager::instance()->get_enabled_plugins('paygw');
         foreach ($plugins as $plugin) {
             /** @var \paygw_paypal\gateway $classname */
             $classname = '\paygw_' . $plugin . '\gateway';
@@ -183,7 +190,7 @@ class helper {
             }
         }
 
-        throw new \coding_exception("$component does not have an eligible implementation of payment service_provider.");
+        throw new coding_exception("$component does not have an eligible implementation of payment service_provider.");
     }
 
     /**
@@ -208,7 +215,7 @@ class helper {
      * @param int $itemid An identifier that is known to the component
      * @return \moodle_url
      */
-    public static function get_success_url(string $component, string $paymentarea, int $itemid): \moodle_url {
+    public static function get_success_url(string $component, string $paymentarea, int $itemid): url {
         $providerclass = static::get_service_provider_classname($component);
         return component_class_callback($providerclass, 'get_success_url', [$paymentarea, $itemid]);
     }
@@ -232,7 +239,7 @@ class helper {
             $gateway = $account->get_gateways()[$gatewayname] ?? null;
         }
         if (!$gateway) {
-            throw new \moodle_exception('gatewaynotfound', 'payment');
+            throw new moodle_exception('gatewaynotfound', 'payment');
         }
         return $gateway->get_configuration();
     }
@@ -296,8 +303,8 @@ class helper {
      * @param \admin_settingpage $settings The settings object
      * @param string $gateway The gateway name prefixed with paygw_
      */
-    public static function add_common_gateway_settings(\admin_settingpage $settings, string $gateway): void {
-        $settings->add(new \admin_setting_configtext($gateway . '/surcharge', get_string('surcharge', 'core_payment'),
+    public static function add_common_gateway_settings(settingpage $settings, string $gateway): void {
+        $settings->add(new configtext($gateway . '/surcharge', get_string('surcharge', 'core_payment'),
                 get_string('surcharge_desc', 'core_payment'), 0, PARAM_INT));
 
     }
@@ -391,7 +398,7 @@ class helper {
      * @param \context $context
      * @return account[]
      */
-    public static function get_payment_accounts_to_manage(\context $context, bool $showarchived = false): array {
+    public static function get_payment_accounts_to_manage(context $context, bool $showarchived = false): array {
         $records = account::get_records(['contextid' => $context->id] + ($showarchived ? [] : ['archived' => 0]));
         \core_collator::asort_objects_by_method($records, 'get_formatted_name');
         return $records;
@@ -403,7 +410,7 @@ class helper {
      * @param \context $context
      * @return array
      */
-    public static function get_payment_accounts_menu(\context $context): array {
+    public static function get_payment_accounts_menu(context $context): array {
         global $DB;
         [$sql, $params] = $DB->get_in_or_equal($context->get_parent_context_ids(true));
         $accounts = array_filter(account::get_records_select('contextid '.$sql, $params), function($account) {

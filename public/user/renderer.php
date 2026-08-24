@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -55,7 +60,7 @@ class core_user_renderer extends plugin_renderer_base {
             $heading = get_string('allparticipants');
         }
 
-        $content = html_writer::start_tag('form', array('action' => new moodle_url($url)));
+        $content = html_writer::start_tag('form', array('action' => new url($url)));
         $content .= html_writer::start_tag('div');
 
         // Search utility heading.
@@ -135,7 +140,7 @@ class core_user_renderer extends plugin_renderer_base {
             $userpicture = $this->output->user_picture($user, array('size' => $exclusivemode ? 100 : 35));
             $fullname = fullname($user);
             if (\core\user::can_view_profile($user)) {
-                $profilelink = new moodle_url('/user/view.php', array('id' => $user->id));
+                $profilelink = new url('/user/view.php', array('id' => $user->id));
                 $fullname = html_writer::link($profilelink, $fullname);
             }
             $tagfeed->add($userpicture, $fullname);

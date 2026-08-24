@@ -22,9 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/badgeslib.php');
-$context = context_system::instance();
+$context = system::instance();
 $PAGE->set_context($context);
 
 require_login(0, false);
@@ -35,7 +38,7 @@ $action = optional_param('action', '', PARAM_ALPHA);
 $confirm = optional_param('confirm', 1, PARAM_BOOL);
 
 $PAGE->set_pagelayout('admin');
-$url = new moodle_url('/badges/backpacks.php');
+$url = new url('/badges/backpacks.php');
 
 if (empty($CFG->badges_allowexternalbackpack)) {
     redirect($CFG->wwwroot);

@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
@@ -34,7 +36,7 @@ $classname = optional_param('classname', null, PARAM_RAW);
 $renderer = $PAGE->get_renderer('tool_task');
 
 if ($classname) {
-    $pageurl = new moodle_url('/admin/tool/task/adhoctasks.php');
+    $pageurl = new url('/admin/tool/task/adhoctasks.php');
     $PAGE->navbar->add(get_string('adhoctasks', 'tool_task'), $pageurl);
     $PAGE->navbar->add(s($classname), $PAGE->url);
 

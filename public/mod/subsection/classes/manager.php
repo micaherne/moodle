@@ -16,13 +16,14 @@
 
 namespace mod_subsection;
 
-use cm_info;
-use context_module;
+use core\context\course;
+use core_course\cm_info;
+use core\context\module;
 use completion_info;
 use core_courseformat\formatactions;
 use mod_subsection\event\course_module_viewed;
 use moodle_page;
-use section_info;
+use core_course\section_info;
 use stdClass;
 
 /**
@@ -62,7 +63,7 @@ class manager {
         global $CFG;
         $this->cm = $cm;
         $this->instance = $instance;
-        $this->context = context_module::instance($cm->id);
+        $this->context = module::instance($cm->id);
         $this->instance->cmidnumber = $cm->idnumber;
         $this->path = $CFG->dirroot . '/mod/' . self::MODULE;
     }
@@ -125,7 +126,7 @@ class manager {
      *
      * @return context_module
      */
-    public function get_context(): context_module {
+    public function get_context(): module {
         return $this->context;
     }
 
@@ -224,7 +225,7 @@ class manager {
             ],
         );
         $files = $fs->get_area_files(
-            contextid: \context_course::instance($this->cm->course)->id,
+            contextid: course::instance($this->cm->course)->id,
             component: 'course',
             filearea: 'section',
             itemid: $coursesectionid,

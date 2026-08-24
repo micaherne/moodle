@@ -16,6 +16,8 @@
 
 namespace core\output;
 
+use core\exception\coding_exception;
+
 /**
  * Class allowing different systems for mapping and rendering icons.
  *
@@ -75,7 +77,7 @@ abstract class icon_system {
         }
 
         if (!static::is_valid_system($type)) {
-            throw new \coding_exception("Invalid icon system requested '{$type}'");
+            throw new coding_exception("Invalid icon system requested '{$type}'");
         }
 
         if (is_a(self::$instance, $type) && is_a($type, get_class(self::$instance), true)) {

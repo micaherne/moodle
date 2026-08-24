@@ -23,6 +23,10 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->dirroot . '/mod/wiki/lib.php');
 require_once($CFG->dirroot . '/mod/wiki/locallib.php');
@@ -34,7 +38,7 @@ $userid       = optional_param('uid', 0, PARAM_INT); // User ID
 $groupanduser = optional_param('groupanduser', null, PARAM_TEXT);
 
 if (!$page = wiki_get_page($pageid)) {
-    throw new \moodle_exception('incorrectpageid', 'wiki');
+    throw new moodle_exception('incorrectpageid', 'wiki');
 }
 
 if ($groupanduser) {
@@ -46,7 +50,7 @@ if ($groupanduser) {
 if ($wid) {
     // in group mode
     if (!$wiki = wiki_get_wiki($wid)) {
-        throw new \moodle_exception('incorrectwikiid', 'wiki');
+        throw new moodle_exception('incorrectwikiid', 'wiki');
     }
     if (!$subwiki = wiki_get_subwiki_by_group($wiki->id, $currentgroup, $userid)) {
         // create subwiki if doesn't exist
@@ -56,31 +60,31 @@ if ($wid) {
 } else {
     // no group
     if (!$subwiki = wiki_get_subwiki($page->subwikiid)) {
-        throw new \moodle_exception('incorrectsubwikiid', 'wiki');
+        throw new moodle_exception('incorrectsubwikiid', 'wiki');
     }
 
     // Checking wiki instance of that subwiki
     if (!$wiki = wiki_get_wiki($subwiki->wikiid)) {
-        throw new \moodle_exception('incorrectwikiid', 'wiki');
+        throw new moodle_exception('incorrectwikiid', 'wiki');
     }
 }
 
 // Checking course module instance
 if (!$cm = get_coursemodule_from_instance("wiki", $subwiki->wikiid)) {
-    throw new \moodle_exception('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 
 // Checking course instance
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 
-$url = new moodle_url('/mod/wiki/files.php', ['pageid' => $pageid]);
+$url = new url('/mod/wiki/files.php', ['pageid' => $pageid]);
 $PAGE->set_url($url);
 require_course_login($course, true, $cm);
 
 if (!wiki_user_can_view($subwiki, $wiki)) {
-    throw new \moodle_exception('cannotviewfiles', 'wiki');
+    throw new moodle_exception('cannotviewfiles', 'wiki');
 }
 
 $PAGE->set_title(get_string('wikifiles', 'wiki'));
@@ -102,6 +106,6 @@ echo $renderer->wiki_files_tree($context, $subwiki);
 echo $OUTPUT->box_end();
 
 if (has_capability('mod/wiki:managefiles', $context)) {
-    echo $OUTPUT->single_button(new moodle_url('/mod/wiki/filesedit.php', array('subwiki'=>$subwiki->id, 'pageid'=>$pageid)), get_string('editfiles', 'wiki'), 'get');
+    echo $OUTPUT->single_button(new url('/mod/wiki/filesedit.php', array('subwiki'=>$subwiki->id, 'pageid'=>$pageid)), get_string('editfiles', 'wiki'), 'get');
 }
 echo $OUTPUT->footer();

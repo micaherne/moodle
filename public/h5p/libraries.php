@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\context\user;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 
 require_login(null, false);
@@ -30,11 +34,11 @@ $deletelibrary = optional_param('deletelibrary', null, PARAM_INT);
 $confirm = optional_param('confirm', false, PARAM_BOOL);
 $action = optional_param('action', null, PARAM_ALPHANUMEXT);
 
-$context = context_system::instance();
+$context = system::instance();
 require_capability('moodle/h5p:updatelibraries', $context);
 
 $pagetitle = get_string('h5pmanage', 'core_h5p');
-$url = new \moodle_url("/h5p/libraries.php");
+$url = new url("/h5p/libraries.php");
 
 $PAGE->set_context($context);
 $PAGE->set_url($url);
@@ -48,7 +52,7 @@ if ($deletelibrary) {
     if ($confirm) {
         require_sesskey();
         \core_h5p\api::delete_library($h5pfactory, $library);
-        redirect(new moodle_url('/h5p/libraries.php'));
+        redirect(new url('/h5p/libraries.php'));
     }
 
     echo $OUTPUT->header();
@@ -58,8 +62,8 @@ if ($deletelibrary) {
             'name' => format_string($library->title),
             'version' => format_string($library->majorversion . '.' . $library->minorversion . '.' . $library->patchversion),
         ]),
-        new moodle_url($PAGE->url, ['deletelibrary' => $deletelibrary, 'confirm' => 1]),
-        new moodle_url('/h5p/libraries.php')
+        new url($PAGE->url, ['deletelibrary' => $deletelibrary, 'confirm' => 1]),
+        new url('/h5p/libraries.php')
     );
     echo $OUTPUT->footer();
     die();
@@ -85,7 +89,7 @@ if ($data = $form->get_data()) {
     require_sesskey();
 
     // Get the file from the users draft area.
-    $usercontext = context_user::instance($USER->id);
+    $usercontext = user::instance($USER->id);
     $fs = get_file_storage();
     $files = $fs->get_area_files($usercontext->id, 'user', 'draft', $data->h5ppackage, 'id',
         false);

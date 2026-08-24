@@ -25,7 +25,7 @@ use core\url;
 use core\output\core_renderer;
 use core\output\renderer_base;
 use core\lang_string;
-use section_info;
+use core_course\section_info;
 use core\context\module as context_module;
 use core\context\course as context_course;
 use core_courseformat\output\activitybadge;

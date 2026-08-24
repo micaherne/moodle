@@ -16,15 +16,15 @@
 
 namespace core_external;
 
-use coding_exception;
-use context;
-use context_helper;
-use context_system;
+use core\exception\coding_exception;
+use core\context;
+use core\context_helper;
+use core\context\system;
 use core_component;
 use core_php_time_limit;
-use invalid_parameter_exception;
-use invalid_response_exception;
-use moodle_exception;
+use core\exception\invalid_parameter_exception;
+use core\exception\invalid_response_exception;
+use core\exception\moodle_exception;
 
 /**
  * Base class for external api methods.
@@ -504,7 +504,7 @@ class external_api {
             throw new invalid_parameter_exception('Context does not exist');
         }
         if (empty(self::$contextrestriction)) {
-            self::$contextrestriction = context_system::instance();
+            self::$contextrestriction = system::instance();
         }
         $rcontext = self::$contextrestriction;
 

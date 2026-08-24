@@ -24,6 +24,8 @@
 
 namespace core\event;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -77,7 +79,7 @@ class user_list_viewed extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/user/index.php', array('id' => $this->courseid));
+        return new url('/user/index.php', array('id' => $this->courseid));
     }
 
     public static function get_objectid_mapping() {

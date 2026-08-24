@@ -16,8 +16,8 @@
 
 namespace mod_quiz\output\grades;
 
-use html_writer;
-use renderable;
+use core\output\html_writer;
+use core\output\renderable;
 use stdClass;
 
 /**

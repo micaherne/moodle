@@ -16,7 +16,10 @@
 
 namespace qbank_columnsortorder\output;
 
-use renderer_base;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\url;
 
 /**
  * Renderable for resetting customised column settings.
@@ -28,9 +31,9 @@ use renderer_base;
  * @author    Mark Johnson <mark.johnson@catalyst-eu.net>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class reset_columns implements \renderable, \templatable {
+class reset_columns implements renderable, templatable {
     /** @var \moodle_url The current page URL to redirect back to. */
-    protected \moodle_url $returnurl;
+    protected url $returnurl;
 
     /** @var bool True if we are changing global config, false for user preferences. */
     protected bool $global;
@@ -41,13 +44,13 @@ class reset_columns implements \renderable, \templatable {
      * @param \moodle_url $returnurl
      * @param bool $global
      */
-    public function __construct(\moodle_url $returnurl, bool $global = false) {
+    public function __construct(url $returnurl, bool $global = false) {
         $this->returnurl = $returnurl;
         $this->global = $global;
     }
 
     public function export_for_template(renderer_base $output): array {
-        $reseturl = new \moodle_url('/question/bank/columnsortorder/actions.php', [
+        $reseturl = new url('/question/bank/columnsortorder/actions.php', [
             'action' => 'reset',
             'global' => $this->global,
             'sesskey' => sesskey(),

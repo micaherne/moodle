@@ -16,6 +16,8 @@
 
 namespace core_question;
 
+use core\context\system;
+use core\exception\moodle_exception;
 use question_utils;
 
 defined('MOODLE_INTERNAL') || die();
@@ -202,17 +204,17 @@ final class questionutils_test extends \advanced_testcase {
     }
 
     public function test_int_to_roman_too_small(): void {
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         question_utils::int_to_roman(0);
     }
 
     public function test_int_to_roman_too_big(): void {
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         question_utils::int_to_roman(4000);
     }
 
     public function test_int_to_roman_not_int(): void {
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         question_utils::int_to_roman(1.5);
     }
 
@@ -242,7 +244,7 @@ final class questionutils_test extends \advanced_testcase {
         filter_set_applies_to_strings('multilang', 1);
         filter_set_applies_to_strings('mathjaxloader', 1);
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $input = 'Some inline math \\( y = x^2 \\) and multi lang with html tag
         <span lang="en" class="multilang"><b>English</b></span><span lang="fr" class="multilang">Français</span>';
 

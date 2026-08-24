@@ -22,6 +22,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
 use core_external\external_api;
 
 /**
@@ -34,8 +35,8 @@ use core_external\external_api;
  */
 function core_analytics_inplace_editable($itemtype, $itemid, $newvalue) {
     if ($itemtype === 'modelname') {
-        external_api::validate_context(context_system::instance());
-        require_capability('moodle/analytics:managemodels', \context_system::instance());
+        external_api::validate_context(system::instance());
+        require_capability('moodle/analytics:managemodels', system::instance());
 
         $model = new \core_analytics\model($itemid);
         $model->rename(clean_param($newvalue, PARAM_NOTAGS));

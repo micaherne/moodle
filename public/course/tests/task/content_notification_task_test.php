@@ -17,7 +17,9 @@
 namespace core_course\task;
 
 use availability_date\condition;
-use context_user;
+use core\context\module;
+use core\context\user;
+use core\url;
 use core_availability\tree;
 
 /**
@@ -44,7 +46,7 @@ final class content_notification_task_test extends \advanced_testcase {
         $draft = get_file_storage()->create_file_from_pathname([
             'component' => 'user',
             'filearea' => 'draft',
-            'contextid' => context_user::instance($USER->id)->id,
+            'contextid' => user::instance($USER->id)->id,
             'itemid' => file_get_unused_draft_itemid(),
             'filename' => 'gd-logo.png',
             'filepath' => '/',
@@ -72,13 +74,13 @@ final class content_notification_task_test extends \advanced_testcase {
         $moduleinfo->externalurl = '';
         $moduleinfo->update = 1;
         $draftid = 0;
-        file_prepare_draft_area($draftid, \context_module::instance($url->cmid)->id, 'mod_url', 'intro', 0);
+        file_prepare_draft_area($draftid, module::instance($url->cmid)->id, 'mod_url', 'intro', 0);
         $moduleinfo->introeditor = [
             'itemid' => $draftid,
             'text' => '<p>Yo</p>',
             'format' => FORMAT_HTML
         ];
-        $modurl = (new \moodle_url('/mod/url/view.php', ['id' => $url->cmid]))->out(false);
+        $modurl = (new url('/mod/url/view.php', ['id' => $url->cmid]))->out(false);
 
         // Check course content changed notifications.
         $moduleinfo->coursecontentnotification = 1;

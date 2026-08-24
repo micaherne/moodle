@@ -24,6 +24,8 @@
 
 namespace mod_assign\event;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -100,7 +102,7 @@ class identities_revealed extends base {
      */
     protected function validate_data() {
         if (self::$preventcreatecall) {
-            throw new \coding_exception('cannot call identities_revealed::create() directly, use identities_revealed::create_from_assign() instead.');
+            throw new coding_exception('cannot call identities_revealed::create() directly, use identities_revealed::create_from_assign() instead.');
         }
 
         parent::validate_data();

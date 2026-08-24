@@ -16,8 +16,8 @@
 
 namespace qtype_ordering\output;
 
-use templatable;
-use renderable;
+use core\output\templatable;
+use core\output\renderable;
 use question_attempt;
 
 /**

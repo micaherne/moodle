@@ -22,15 +22,20 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\configtext;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
 
-    $settings->add(new admin_setting_configcheckbox('logstore_standard/logguests',
+    $settings->add(new configcheckbox('logstore_standard/logguests',
         new lang_string('logguests', 'core_admin'),
         new lang_string('logguests_help', 'core_admin'), 1));
 
-    $settings->add(new admin_setting_configcheckbox('logstore_standard/jsonformat',
+    $settings->add(new configcheckbox('logstore_standard/jsonformat',
             new lang_string('jsonformat', 'logstore_standard'),
             new lang_string('jsonformat_desc', 'logstore_standard'), 1));
 
@@ -47,11 +52,11 @@ if ($hassiteconfig) {
         10   => new lang_string('numdays', '', 10),
         5    => new lang_string('numdays', '', 5),
         2    => new lang_string('numdays', '', 2));
-    $settings->add(new admin_setting_configselect('logstore_standard/loglifetime',
+    $settings->add(new configselect('logstore_standard/loglifetime',
         new lang_string('loglifetime', 'core_admin'),
         new lang_string('configloglifetime', 'core_admin'), 0, $options));
 
-    $settings->add(new admin_setting_configtext('logstore_standard/buffersize',
+    $settings->add(new configtext('logstore_standard/buffersize',
         get_string('buffersize', 'logstore_standard'),
         '', '50', PARAM_INT));
 }

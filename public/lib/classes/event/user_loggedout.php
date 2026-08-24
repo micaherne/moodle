@@ -23,6 +23,9 @@
  */
 namespace core\event;
 
+use core\context\system;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -45,7 +48,7 @@ class user_loggedout extends base {
      * Initialise required event data properties.
      */
     protected function init() {
-        $this->context = \context_system::instance();
+        $this->context = system::instance();
         $this->data['objecttable'] = 'user';
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_OTHER;
@@ -75,7 +78,7 @@ class user_loggedout extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/user/view.php', array('id' => $this->objectid));
+        return new url('/user/view.php', array('id' => $this->objectid));
     }
 
     public static function get_objectid_mapping() {

@@ -16,6 +16,8 @@
 
 namespace core\task;
 
+use core\context\course;
+
 /**
  * Simple task to automatically set the course visibility to shown when the course start date matches the current day.
  *
@@ -99,7 +101,7 @@ class show_started_courses_task extends scheduled_task {
     private function trigger_event(\stdClass $course): void {
         $params = [
             'objectid' => $course->id,
-            'context' => \context_course::instance($course->id),
+            'context' => course::instance($course->id),
             'other' => [
                 'shortname' => $course->shortname,
                 'fullname' => $course->fullname,

@@ -24,6 +24,11 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\url;
+use core\user;
+use core_cache\cache;
+
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot.'/completion/data_object.php');
 
@@ -180,10 +185,10 @@ class completion_completion extends data_object {
         $course = get_course($data->course);
         $messagesubject = get_string('coursecompleted', 'completion');
         $options = new stdClass();
-        $options->context = context_course::instance($course->id);
+        $options->context = course::instance($course->id);
         $a = [
             'coursename' => format_string(get_course_display_name_for_list($course), true, $options),
-            'courselink' => (string) new moodle_url('/course/view.php', array('id' => $course->id)),
+            'courselink' => (string) new url('/course/view.php', array('id' => $course->id)),
         ];
         $messagebody = get_string('coursecompletedmessage', 'completion', $a);
         $messageplaintext = html_to_text($messagebody);
@@ -192,7 +197,7 @@ class completion_completion extends data_object {
         $eventdata->courseid          = $course->id;
         $eventdata->component         = 'moodle';
         $eventdata->name              = 'coursecompleted';
-        $eventdata->userfrom          = core_user::get_noreply_user();
+        $eventdata->userfrom          = user::get_noreply_user();
         $eventdata->userto            = $data->userid;
         $eventdata->notification      = 1;
         $eventdata->subject           = $messagesubject;

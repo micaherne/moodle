@@ -24,6 +24,8 @@
 
 namespace mod_assign\event;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -101,7 +103,7 @@ class submission_duplicated extends base {
      */
     protected function validate_data() {
         if (self::$preventcreatecall) {
-            throw new \coding_exception('cannot call submission_duplicated::create() directly, use submission_duplicated::create_from_submission() instead.');
+            throw new coding_exception('cannot call submission_duplicated::create() directly, use submission_duplicated::create_from_submission() instead.');
         }
 
         parent::validate_data();

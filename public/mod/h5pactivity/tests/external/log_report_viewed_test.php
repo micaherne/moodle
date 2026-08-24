@@ -16,6 +16,7 @@
 
 namespace mod_h5pactivity\external;
 
+use core\context\module;
 use core_external\external_api;
 use mod_h5pactivity\local\manager;
 
@@ -85,7 +86,7 @@ final class log_report_viewed_test extends \core_external\tests\externallib_test
 
         // Check the event details are correct.
         $this->assertInstanceOf('mod_h5pactivity\event\report_viewed', $event);
-        $this->assertEquals(\context_module::instance($cm->id), $event->get_context());
+        $this->assertEquals(module::instance($cm->id), $event->get_context());
 
         $this->assertEquals($cm->instance, $event->other['instanceid']);
         $this->assertEquals($user->id, $event->other['userid']);

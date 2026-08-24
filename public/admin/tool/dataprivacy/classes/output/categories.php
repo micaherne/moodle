@@ -24,10 +24,11 @@
 namespace tool_dataprivacy\output;
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use renderer_base;
+use core\context\system;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use templatable;
+use core\output\templatable;
 use tool_dataprivacy\external\category_exporter;
 
 /**
@@ -59,7 +60,7 @@ class categories extends crud_element implements renderable, templatable {
     public function export_for_template(renderer_base $output) {
         global $PAGE;
 
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $PAGE->requires->js_call_amd('tool_dataprivacy/categoriesactions', 'init');
         $PAGE->requires->js_call_amd('tool_dataprivacy/add_category', 'getInstance', [$context->id]);
@@ -75,7 +76,7 @@ class categories extends crud_element implements renderable, templatable {
 
         $data->categories = [];
         foreach ($this->categories as $category) {
-            $exporter = new category_exporter($category, ['context' => \context_system::instance()]);
+            $exporter = new category_exporter($category, ['context' => system::instance()]);
             $exportedcategory = $exporter->export($output);
 
             $actionmenu = $this->action_menu('category', $exportedcategory, $category);

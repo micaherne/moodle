@@ -16,6 +16,7 @@
 
 namespace tool_dataprivacy;
 
+use core\exception\moodle_exception;
 use data_privacy_testcase;
 
 defined('MOODLE_INTERNAL') || die();
@@ -159,7 +160,7 @@ final class data_request_test extends data_privacy_testcase {
         $uut = new \tool_dataprivacy\data_request();
         $uut->set('status', $state);
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage(get_string('cannotreset', 'tool_dataprivacy'));
 
         $uut->resubmit_request();

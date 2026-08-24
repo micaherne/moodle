@@ -16,9 +16,9 @@
 
 namespace core_contentbank\output;
 
-use renderable;
-use templatable;
-use renderer_base;
+use core\output\renderable;
+use core\output\templatable;
+use core\output\renderer_base;
 use core_contentbank\content;
 
 /**

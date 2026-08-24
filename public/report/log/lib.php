@@ -24,7 +24,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\module;
+use core\context\user;
+use core\navigation\navigation_node;
+use core\output\pix_icon;
 use core\report_helper;
+use core\url;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -45,7 +51,7 @@ function report_log_extend_navigation_course($navigation, $course, $context) {
             'id' => $course->id,
             'iscoursepage' => ($course->id && ($course->id != $SITE->id)),
         ];
-        $url = new moodle_url('/report/log/index.php', $params);
+        $url = new url('/report/log/index.php', $params);
         $navigation->add(get_string('pluginname', 'report_log'), $url, navigation_node::TYPE_SETTING, null, null, new pix_icon('i/report', ''));
     }
 }
@@ -75,11 +81,11 @@ function report_log_extend_navigation_user($navigation, $user, $course) {
     list($all, $today) = report_log_can_access_user_report($user, $course);
 
     if ($today) {
-        $url = new moodle_url('/report/log/user.php', array('id'=>$user->id, 'course'=>$course->id, 'mode'=>'today'));
+        $url = new url('/report/log/user.php', array('id'=>$user->id, 'course'=>$course->id, 'mode'=>'today'));
         $navigation->add(get_string('todaylogs'), $url);
     }
     if ($all) {
-        $url = new moodle_url('/report/log/user.php', array('id'=>$user->id, 'course'=>$course->id, 'mode'=>'all'));
+        $url = new url('/report/log/user.php', array('id'=>$user->id, 'course'=>$course->id, 'mode'=>'all'));
         $navigation->add(get_string('alllogs'), $url);
     }
 }
@@ -96,8 +102,8 @@ function report_log_extend_navigation_user($navigation, $user, $course) {
 function report_log_can_access_user_report($user, $course) {
     global $USER;
 
-    $coursecontext = context_course::instance($course->id);
-    $personalcontext = context_user::instance($user->id);
+    $coursecontext = course::instance($course->id);
+    $personalcontext = user::instance($user->id);
 
     if ($user->id == $USER->id) {
         if ($course->showreports and (is_viewing($coursecontext, $USER) or is_enrolled($coursecontext, $USER))) {
@@ -135,10 +141,10 @@ function report_log_can_access_user_report($user, $course) {
  */
 function report_log_extend_navigation_module($navigation, $cm) {
     if (
-        has_capability('report/log:view', context_course::instance($cm->course))
-        && report_helper::has_valid_group(context_module::instance($cm->id))
+        has_capability('report/log:view', course::instance($cm->course))
+        && report_helper::has_valid_group(module::instance($cm->id))
     ) {
-        $url = new moodle_url('/report/log/index.php', [
+        $url = new url('/report/log/index.php', [
             'chooselog' => '1',
             'id' => $cm->course,
             'modid' => $cm->id,
@@ -185,7 +191,7 @@ function report_log_myprofile_navigation(core_user\output\myprofile\tree $tree, 
     list($all, $today) = report_log_can_access_user_report($user, $course);
     if ($today) {
         // Today's log.
-        $url = new moodle_url('/report/log/user.php',
+        $url = new url('/report/log/user.php',
             array('id' => $user->id, 'course' => $course->id, 'mode' => 'today'));
         $node = new core_user\output\myprofile\node('reports', 'todayslogs', get_string('todaylogs'), null, $url);
         $tree->add_node($node);
@@ -193,7 +199,7 @@ function report_log_myprofile_navigation(core_user\output\myprofile\tree $tree, 
 
     if ($all) {
         // All logs.
-        $url = new moodle_url('/report/log/user.php',
+        $url = new url('/report/log/user.php',
             array('id' => $user->id, 'course' => $course->id, 'mode' => 'all'));
         $node = new core_user\output\myprofile\node('reports', 'alllogs', get_string('alllogs'), null, $url);
         $tree->add_node($node);

@@ -32,11 +32,16 @@ use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Exception\DriverException;
 use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException;
+use core\exception\coding_exception;
+use core\exception\invalid_parameter_exception;
+use core\plugin_manager;
+use core\url;
 use Facebook\WebDriver\Exception\NoSuchAlertException;
 use Facebook\WebDriver\Exception\NoSuchElementException;
 use Facebook\WebDriver\Exception\StaleElementReferenceException;
 use Facebook\WebDriver\WebDriverAlert;
 use Facebook\WebDriver\WebDriverExpectedCondition;
+use Facebook\WebDriver\WebDriverKeys;
 
 /**
  * Cross component steps definitions.
@@ -191,7 +196,7 @@ class behat_general extends behat_base {
                     $iframename = $iframe->getAttribute('name');
                 } else {
                     if (!$this->running_javascript()) {
-                        throw new \coding_exception('iframe must have a name attribute to use the switchTo command.');
+                        throw new coding_exception('iframe must have a name attribute to use the switchTo command.');
                     }
                     $iframename = uniqid();
                     $this->execute_js_on_node($iframe, "{{ELEMENT}}.name = '{$iframename}';");
@@ -572,19 +577,19 @@ class behat_general extends behat_base {
             case '':
                 break;
             case 'SHIFT':
-                $key = behat_keys::SHIFT;
+                $key = WebDriverKeys::SHIFT;
                 break;
             case 'CTRL':
-                $key = behat_keys::CONTROL;
+                $key = WebDriverKeys::CONTROL;
                 break;
             case 'ALT':
-                $key = behat_keys::ALT;
+                $key = WebDriverKeys::ALT;
                 break;
             case 'META':
-                $key = behat_keys::META;
+                $key = WebDriverKeys::META;
                 break;
             default:
-                throw new \coding_exception("Unknown modifier key '$modifier'}");
+                throw new coding_exception("Unknown modifier key '$modifier'}");
         }
 
         $node = $this->get_node_in_container($selectortype, $element, $nodeselectortype, $nodeelement);
@@ -2070,7 +2075,7 @@ EOF;
         $keylist = array_map(function ($key): string {
             switch ($key) {
                 case "\n":
-                    return behat_keys::ENTER;
+                    return WebDriverKeys::ENTER;
                 default:
                     return $key;
             }
@@ -2128,80 +2133,80 @@ EOF;
                 case '':
                     break;
                 case 'SHIFT':
-                    $keys[] = behat_keys::SHIFT;
+                    $keys[] = WebDriverKeys::SHIFT;
                     break;
                 case 'CTRL':
-                    $keys[] = behat_keys::CONTROL;
+                    $keys[] = WebDriverKeys::CONTROL;
                     break;
                 case 'ALT':
-                    $keys[] = behat_keys::ALT;
+                    $keys[] = WebDriverKeys::ALT;
                     break;
                 case 'META':
-                    $keys[] = behat_keys::META;
+                    $keys[] = WebDriverKeys::META;
                     break;
                 default:
-                    throw new \coding_exception("Unknown modifier key '$modifier'}");
+                    throw new coding_exception("Unknown modifier key '$modifier'}");
             }
         }
 
         $modifier = trim($key);
         switch (strtoupper($key)) {
             case 'UP':
-                $keys[] = behat_keys::ARROW_UP;
+                $keys[] = WebDriverKeys::ARROW_UP;
                 break;
             case 'DOWN':
-                $keys[] = behat_keys::ARROW_DOWN;
+                $keys[] = WebDriverKeys::ARROW_DOWN;
                 break;
             case 'LEFT':
-                $keys[] = behat_keys::ARROW_LEFT;
+                $keys[] = WebDriverKeys::ARROW_LEFT;
                 break;
             case 'RIGHT':
-                $keys[] = behat_keys::ARROW_RIGHT;
+                $keys[] = WebDriverKeys::ARROW_RIGHT;
                 break;
             case 'HOME':
-                $keys[] = behat_keys::HOME;
+                $keys[] = WebDriverKeys::HOME;
                 break;
             case 'END':
-                $keys[] = behat_keys::END;
+                $keys[] = WebDriverKeys::END;
                 break;
             case 'INSERT':
-                $keys[] = behat_keys::INSERT;
+                $keys[] = WebDriverKeys::INSERT;
                 break;
             case 'BACKSPACE':
-                $keys[] = behat_keys::BACKSPACE;
+                $keys[] = WebDriverKeys::BACKSPACE;
                 break;
             case 'DELETE':
-                $keys[] = behat_keys::DELETE;
+                $keys[] = WebDriverKeys::DELETE;
                 break;
             case 'PAGEUP':
             case 'PAGE_UP':
-                $keys[] = behat_keys::PAGE_UP;
+                $keys[] = WebDriverKeys::PAGE_UP;
                 break;
             case 'PAGEDOWN':
             case 'PAGE_DOWN':
-                $keys[] = behat_keys::PAGE_DOWN;
+                $keys[] = WebDriverKeys::PAGE_DOWN;
                 break;
             case 'ESCAPE':
-                $keys[] = behat_keys::ESCAPE;
+                $keys[] = WebDriverKeys::ESCAPE;
                 break;
             case 'ENTER':
-                $keys[] = behat_keys::ENTER;
+                $keys[] = WebDriverKeys::ENTER;
                 break;
             case 'TAB':
-                $keys[] = behat_keys::TAB;
+                $keys[] = WebDriverKeys::TAB;
                 break;
             case 'SPACE':
-                $keys[] = behat_keys::SPACE;
+                $keys[] = WebDriverKeys::SPACE;
                 break;
             case 'MULTIPLY':
-                $keys[] = behat_keys::MULTIPLY;
+                $keys[] = WebDriverKeys::MULTIPLY;
                 break;
             default:
                 // You can enter a single ASCII character (e.g. a letter) to directly type that key.
                 if (strlen($key) === 1) {
                     $keys[] = strtolower($key);
                 } else {
-                    throw new \coding_exception("Unknown key '$key'}");
+                    throw new coding_exception("Unknown key '$key'}");
                 }
         }
 
@@ -2495,7 +2500,7 @@ EOF;
      * @param string|moodle_url $localurl The URL relative to the behat_wwwroot to visit.
      */
     public function i_visit($localurl): void {
-        $localurl = new moodle_url($localurl);
+        $localurl = new url($localurl);
         $this->getSession()->visit($this->locate_path($localurl->out_as_local_url(false)));
     }
 
@@ -2534,7 +2539,7 @@ EOF;
      */
     #[\core\attribute\example('I enable "subsection" "mod" plugin')]
     public function i_enable_plugin($plugin, $plugintype) {
-        $class = core_plugin_manager::resolve_plugininfo_class($plugintype);
+        $class = plugin_manager::resolve_plugininfo_class($plugintype);
         $class::enable_plugin($plugin, true);
     }
 
@@ -2547,7 +2552,7 @@ EOF;
      */
     #[\core\attribute\example('I disable "page" "mod" plugin')]
     public function i_disable_plugin($plugin, $plugintype) {
-        $class = core_plugin_manager::resolve_plugininfo_class($plugintype);
+        $class = plugin_manager::resolve_plugininfo_class($plugintype);
         $class::enable_plugin($plugin, false);
     }
 

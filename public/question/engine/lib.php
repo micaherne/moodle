@@ -24,6 +24,12 @@
  */
 
 
+use core\context;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core_filters\filter_manager;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/filelib.php');
@@ -1144,7 +1150,7 @@ abstract class question_utils {
      */
     public static function format_question_fragment(string $text, context $context): string {
         global $PAGE;
-        $filtermanager = \filter_manager::instance();
+        $filtermanager = filter_manager::instance();
         $filtermanager->setup_page_for_filters($PAGE, $context);
         return $filtermanager->filter_string($text, $context);
     }

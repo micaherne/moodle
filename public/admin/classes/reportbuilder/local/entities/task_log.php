@@ -16,6 +16,7 @@
 
 namespace core_admin\reportbuilder\local\entities;
 
+use core\output\html_writer;
 use core_reportbuilder\local\filters\date;
 use core_reportbuilder\local\filters\duration;
 use core_reportbuilder\local\filters\number;
@@ -23,7 +24,7 @@ use core_reportbuilder\local\filters\select;
 use core_reportbuilder\local\filters\text;
 use core_reportbuilder\local\filters\autocomplete;
 use core_reportbuilder\local\helpers\format;
-use lang_string;
+use core\lang_string;
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\report\column;
 use core_reportbuilder\local\report\filter;
@@ -79,7 +80,7 @@ class task_log extends base {
             }
         }
 
-        $output .= \html_writer::tag('div', "\\{$classname}", [
+        $output .= html_writer::tag('div', "\\{$classname}", [
             'class' => 'small text-muted',
         ]);
         return $output;
@@ -194,8 +195,8 @@ class task_log extends base {
             ->set_is_sortable(true, ["{$tablealias}.dbreads", "{$tablealias}.dbwrites"])
             ->add_callback(static function ($value, stdClass $row): string {
                 $output = '';
-                $output .= \html_writer::div(get_string('task_stats:dbreads', 'admin', $row->dbreads));
-                $output .= \html_writer::div(get_string('task_stats:dbwrites', 'admin', $row->dbwrites));
+                $output .= html_writer::div(get_string('task_stats:dbreads', 'admin', $row->dbreads));
+                $output .= html_writer::div(get_string('task_stats:dbwrites', 'admin', $row->dbwrites));
                 return $output;
             });
 

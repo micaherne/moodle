@@ -16,9 +16,9 @@
 
 namespace mod_quiz\local\reports;
 
-use context_module;
+use core\context\module;
 use mod_quiz\quiz_attempt;
-use moodle_url;
+use core\url;
 use stdClass;
 
 /**
@@ -108,7 +108,7 @@ class attempts_report_options {
         $this->cm     = $cm;
         $this->course = $course;
 
-        $this->usercanseegrades = quiz_report_should_show_grades($quiz, context_module::instance($cm->id));
+        $this->usercanseegrades = quiz_report_should_show_grades($quiz, module::instance($cm->id));
     }
 
     /**
@@ -138,7 +138,7 @@ class attempts_report_options {
      * @return moodle_url the URL.
      */
     public function get_url() {
-        return new moodle_url('/mod/quiz/report.php', $this->get_url_params());
+        return new url('/mod/quiz/report.php', $this->get_url_params());
     }
 
     /**

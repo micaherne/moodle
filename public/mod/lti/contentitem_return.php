@@ -23,6 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->dirroot . '/mod/lti/locallib.php');
 
@@ -31,9 +35,9 @@ $courseid = required_param('course', PARAM_INT);
 
 $jwt = optional_param('JWT', '', PARAM_RAW);
 
-$context = context_course::instance($courseid);
+$context = course::instance($courseid);
 
-$pageurl = new moodle_url('/mod/lti/contentitem_return.php');
+$pageurl = new url('/mod/lti/contentitem_return.php');
 $PAGE->set_url($pageurl);
 $PAGE->set_pagelayout('popup');
 $PAGE->set_context($context);

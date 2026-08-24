@@ -22,12 +22,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+
 require_once("../config.php");
 
 $search = optional_param('search', '', PARAM_TEXT);
 
-$context = context_system::instance();
-$url = new moodle_url('/course/recommendations.php');
+$context = system::instance();
+$url = new url('/course/recommendations.php');
 
 $pageheading = format_string($SITE->fullname, true, ['context' => $context]);
 

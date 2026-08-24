@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\user;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 
 $notificationid = optional_param('notificationid', 0, PARAM_INT);
@@ -29,7 +33,7 @@ $offset = optional_param('offset', 0, PARAM_INT);
 $limit = optional_param('limit', 0, PARAM_INT);
 $userid = $USER->id;
 
-$url = new moodle_url('/message/output/popup/notifications.php');
+$url = new url('/message/output/popup/notifications.php');
 $url->param('id', $notificationid);
 
 $PAGE->set_url($url);
@@ -37,14 +41,14 @@ $PAGE->set_url($url);
 require_login();
 
 if (isguestuser()) {
-    throw new \moodle_exception('guestnoeditmessage', 'message');
+    throw new moodle_exception('guestnoeditmessage', 'message');
 }
 
 if (!$user = $DB->get_record('user', ['id' => $userid])) {
-    throw new \moodle_exception('invaliduserid');
+    throw new moodle_exception('invaliduserid');
 }
 
-$personalcontext = context_user::instance($user->id);
+$personalcontext = user::instance($user->id);
 
 $PAGE->set_context($personalcontext);
 $PAGE->set_pagelayout('admin');

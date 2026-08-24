@@ -16,6 +16,7 @@
 
 namespace core;
 
+use core\exception\coding_exception;
 use core_filetypes;
 
 defined('MOODLE_INTERNAL') || die();
@@ -59,7 +60,7 @@ final class filetypes_test extends \advanced_testcase {
         try {
             core_filetypes::add_type('frog', 'application/x-frog', 'document');
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('already exists', $e->getMessage());
             $this->assertStringContainsString('frog', $e->getMessage());
         }
@@ -68,14 +69,14 @@ final class filetypes_test extends \advanced_testcase {
         try {
             core_filetypes::add_type('.frog', 'application/x-frog', 'document');
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('Invalid extension', $e->getMessage());
             $this->assertStringContainsString('..frog', $e->getMessage());
         }
         try {
             core_filetypes::add_type('', 'application/x-frog', 'document');
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('Invalid extension', $e->getMessage());
         }
 
@@ -85,7 +86,7 @@ final class filetypes_test extends \advanced_testcase {
             core_filetypes::add_type('gecko', 'text/plain', 'document',
                     array(), '', '', true);
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('default icon set', $e->getMessage());
             $this->assertStringContainsString('text/plain', $e->getMessage());
         }
@@ -117,7 +118,7 @@ final class filetypes_test extends \advanced_testcase {
         try {
             core_filetypes::update_type('doc', 'doc', 'application/x-frog', 'document');
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('not found', $e->getMessage());
             $this->assertStringContainsString('doc', $e->getMessage());
         }
@@ -126,14 +127,14 @@ final class filetypes_test extends \advanced_testcase {
         try {
             core_filetypes::update_type('docccc', '.frog', 'application/x-frog', 'document');
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('Invalid extension', $e->getMessage());
             $this->assertStringContainsString('.frog', $e->getMessage());
         }
         try {
             core_filetypes::update_type('docccc', '', 'application/x-frog', 'document');
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('Invalid extension', $e->getMessage());
         }
 
@@ -142,7 +143,7 @@ final class filetypes_test extends \advanced_testcase {
             core_filetypes::update_type('docccc', 'docccc', 'text/plain', 'document',
                     array(), '', '', true);
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('default icon set', $e->getMessage());
             $this->assertStringContainsString('text/plain', $e->getMessage());
         }
@@ -164,7 +165,7 @@ final class filetypes_test extends \advanced_testcase {
         try {
             core_filetypes::delete_type('doc');
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('not found', $e->getMessage());
             $this->assertStringContainsString('doc', $e->getMessage());
         }
@@ -199,7 +200,7 @@ final class filetypes_test extends \advanced_testcase {
         try {
             core_filetypes::revert_type_to_default('frog');
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('not a default type', $e->getMessage());
             $this->assertStringContainsString('frog', $e->getMessage());
         }

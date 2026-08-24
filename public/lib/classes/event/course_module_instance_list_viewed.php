@@ -23,6 +23,9 @@
  */
 
 namespace core\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -56,7 +59,7 @@ abstract class course_module_instance_list_viewed extends base{
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_OTHER;
         if (strstr($this->component, 'mod_') === false) {
-            throw new \coding_exception('The event name or namespace is invalid.');
+            throw new coding_exception('The event name or namespace is invalid.');
         } else {
             $this->modname = str_replace('mod_', '', $this->component);
         }
@@ -87,7 +90,7 @@ abstract class course_module_instance_list_viewed extends base{
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url("/mod/$this->modname/index.php", array('id' => $this->courseid));
+        return new url("/mod/$this->modname/index.php", array('id' => $this->courseid));
     }
 
     /**
@@ -99,7 +102,7 @@ abstract class course_module_instance_list_viewed extends base{
     protected function validate_data() {
         parent::validate_data();
         if ($this->contextlevel != CONTEXT_COURSE) {
-            throw new \coding_exception('Context level must be CONTEXT_COURSE.');
+            throw new coding_exception('Context level must be CONTEXT_COURSE.');
         }
     }
 }

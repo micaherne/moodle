@@ -16,6 +16,8 @@
 
 namespace core_h5p\external;
 
+use core\context\system;
+use core\url;
 use core_h5p\external;
 use core_h5p\local\library\autoloader;
 
@@ -44,7 +46,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
 
         // This is a valid .H5P file.
         $filename = 'find-the-words.h5p';
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         // Create a fake export H5P file with normal pluginfile call.
         $generator = $this->getDataGenerator()->get_plugin_generator('core_h5p');
@@ -55,7 +57,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
             $generator::PLUGINFILE);
 
         // Make the URL to pass to the WS.
-        $url  = \moodle_url::make_pluginfile_url(
+        $url  = url::make_pluginfile_url(
             $syscontext->id,
             \core_h5p\file_storage::COMPONENT,
             \core_h5p\file_storage::EXPORT_FILEAREA,
@@ -118,8 +120,8 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $this->setAdminUser();
 
         // Create a valid url with an h5pfile which doesn't exist in DB.
-        $syscontext = \context_system::instance();
-        $filenotfoundurl  = \moodle_url::make_pluginfile_url(
+        $syscontext = system::instance();
+        $filenotfoundurl  = url::make_pluginfile_url(
             $syscontext->id,
             \core_h5p\file_storage::COMPONENT,
             'unittest',
@@ -148,7 +150,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
 
         // This is a valid .H5P file.
         $filename = 'find-the-words.h5p';
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         // Create a fake export H5P file with webservice call.
         $generator = $this->getDataGenerator()->get_plugin_generator('core_h5p');
@@ -158,7 +160,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
             \core_h5p\file_storage::EXPORT_FILEAREA);
 
         // Make the URL to pass to the WS.
-        $url  = \moodle_url::make_webservice_pluginfile_url(
+        $url  = url::make_webservice_pluginfile_url(
             $syscontext->id,
             \core_h5p\file_storage::COMPONENT,
             \core_h5p\file_storage::EXPORT_FILEAREA,
@@ -190,7 +192,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
 
         // This is a valid .H5P file.
         $filename = 'find-the-words.h5p';
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         // Create a fake export H5P file with tokenfile call.
         $generator = $this->getDataGenerator()->get_plugin_generator('core_h5p');
@@ -201,7 +203,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
             $generator::TOKENPLUGINFILE);
 
         // Make the URL to pass to the WS.
-        $url  = \moodle_url::make_pluginfile_url(
+        $url  = url::make_pluginfile_url(
             $syscontext->id,
             \core_h5p\file_storage::COMPONENT,
             \core_h5p\file_storage::EXPORT_FILEAREA,

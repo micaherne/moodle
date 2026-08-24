@@ -22,12 +22,15 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configselect;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
 
     $settings->add(
-        new admin_setting_configcheckbox(
+        new configcheckbox(
             'grade_report_user_showrank',
             get_string('showrank', 'grades'),
             get_string('showrank_help', 'grades'),
@@ -36,7 +39,7 @@ if ($ADMIN->fulltree) {
     );
 
     $settings->add(
-        new admin_setting_configcheckbox(
+        new configcheckbox(
             'grade_report_user_showpercentage',
             get_string('showpercentage', 'grades'),
             get_string('showpercentage_help', 'grades'),
@@ -45,7 +48,7 @@ if ($ADMIN->fulltree) {
     );
 
     $settings->add(
-        new admin_setting_configcheckbox(
+        new configcheckbox(
             'grade_report_user_showgrade',
             get_string('showgrade', 'grades'),
             get_string('showgrade_help', 'grades'),
@@ -54,7 +57,7 @@ if ($ADMIN->fulltree) {
     );
 
     $settings->add(
-        new admin_setting_configcheckbox(
+        new configcheckbox(
             'grade_report_user_showfeedback',
             get_string('showfeedback', 'grades'),
             get_string('showfeedback_help', 'grades'),
@@ -63,7 +66,7 @@ if ($ADMIN->fulltree) {
     );
 
     $settings->add(
-        new admin_setting_configcheckbox(
+        new configcheckbox(
             'grade_report_user_showrange',
             get_string('showrange', 'grades'),
             get_string('showrange_help', 'grades'),
@@ -72,7 +75,7 @@ if ($ADMIN->fulltree) {
     );
 
     $settings->add(
-        new admin_setting_configcheckbox(
+        new configcheckbox(
         'grade_report_user_showweight',
         get_string('showweight', 'grades'),
         get_string('showweight_help', 'grades'),
@@ -81,7 +84,7 @@ if ($ADMIN->fulltree) {
     );
 
     $settings->add(
-        new admin_setting_configcheckbox(
+        new configcheckbox(
             'grade_report_user_showaverage',
             get_string('showaverage', 'grades'),
             get_string('showaverage_help', 'grades'),
@@ -90,7 +93,7 @@ if ($ADMIN->fulltree) {
     );
 
     $settings->add(
-        new admin_setting_configcheckbox(
+        new configcheckbox(
             'grade_report_user_showlettergrade',
             get_string('showlettergrade', 'grades'),
             get_string('showlettergrade_help', 'grades'),
@@ -99,7 +102,7 @@ if ($ADMIN->fulltree) {
     );
 
     $settings->add(
-        new admin_setting_configselect(
+        new configselect(
             'grade_report_user_rangedecimals',
             get_string('rangedecimals', 'grades'),
             get_string('rangedecimals_help', 'grades'),
@@ -121,7 +124,7 @@ if ($ADMIN->fulltree) {
         2 => get_string('showallhidden', 'grades')
     ];
     $settings->add(
-        new admin_setting_configselect(
+        new configselect(
             'grade_report_user_showhiddenitems',
             get_string('showhiddenitems', 'grades'),
             get_string('showhiddenitems_help', 'grades'),
@@ -131,7 +134,7 @@ if ($ADMIN->fulltree) {
     );
 
     $settings->add(
-        new admin_setting_configselect(
+        new configselect(
             'grade_report_user_showtotalsifcontainhidden',
             get_string('hidetotalifhiddenitems', 'grades'),
             get_string('hidetotalifhiddenitems_help', 'grades'),
@@ -145,7 +148,7 @@ if ($ADMIN->fulltree) {
     );
 
     $settings->add(
-        new admin_setting_configcheckbox(
+        new configcheckbox(
             'grade_report_user_showcontributiontocoursetotal', get_string('showcontributiontocoursetotal', 'grades'),
             get_string('showcontributiontocoursetotal_help', 'grades'),
             1

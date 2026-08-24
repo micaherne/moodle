@@ -22,6 +22,8 @@
  * @package    core
  */
 
+use core\context\system;
+use core\url;
 use core_user\fields;
 
 define('NO_OUTPUT_BUFFERING', true);
@@ -32,10 +34,10 @@ require_once($CFG->dirroot.'/user/profile/lib.php');
 $dataformat = optional_param('dataformat', '', PARAM_ALPHA);
 
 admin_externalpage_setup('userbulk');
-require_capability('moodle/user:update', context_system::instance());
+require_capability('moodle/user:update', system::instance());
 
 $returnurl = optional_param('returnurl', '', PARAM_LOCALURL);
-$return = new moodle_url($returnurl ?: '/admin/user/user_bulk.php');
+$return = new url($returnurl ?: '/admin/user/user_bulk.php');
 
 if (empty($SESSION->bulk_users)) {
     redirect($return);

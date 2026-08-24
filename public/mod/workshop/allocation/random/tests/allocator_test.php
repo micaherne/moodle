@@ -25,6 +25,7 @@
 
 namespace workshopallocation_random;
 
+use core\exception\moodle_exception;
 use workshop;
 use workshop_random_allocator;
 
@@ -133,7 +134,7 @@ final class allocator_test extends \advanced_testcase {
             87 => (object)array('id' => 121, 'authorid' => 3),
         );
         // exercise SUT
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $submissions = $this->allocator->index_submissions_by_authors($submissions);
     }
 

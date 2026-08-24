@@ -23,9 +23,15 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\output\actions\popup_action;
 use core\output\html_writer;
 use core\output\plugin_renderer_base;
+use core\output\renderable;
+use core\output\single_select;
+use core\output\tabobject;
 use core\url;
+use core_table\output\html_table;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -51,7 +57,7 @@ class mod_wiki_renderer extends plugin_renderer_base {
             $selectoptions[$page->id] = format_string($page->title, true, array('context' => $this->page->context));
         }
         $label = get_string('pageindex', 'wiki') . ': ';
-        $select = new single_select(new moodle_url('/mod/wiki/view.php'), 'pageid', $selectoptions);
+        $select = new single_select(new url('/mod/wiki/view.php'), 'pageid', $selectoptions);
         $select->label = $label;
         return $this->output->container($this->output->render($select), 'wiki_index');
     }
@@ -59,7 +65,7 @@ class mod_wiki_renderer extends plugin_renderer_base {
     public function search_result($records, $subwiki) {
         global $CFG;
         $table = new html_table();
-        $context = context_module::instance($this->page->cm->id);
+        $context = module::instance($this->page->cm->id);
         $strsearchresults = get_string('searchresult', 'wiki');
         $totalcount = count($records);
         $html = $this->output->heading("$strsearchresults $totalcount", 3);
@@ -87,9 +93,9 @@ class mod_wiki_renderer extends plugin_renderer_base {
         $strdatetime = get_string('strftimedatetime', 'langconfig');
 
         $olduser = $old->user;
-        $versionlink = new moodle_url('/mod/wiki/viewversion.php', array('pageid' => $pageid, 'versionid' => $old->id));
-        $restorelink = new moodle_url('/mod/wiki/restoreversion.php', array('pageid' => $pageid, 'versionid' => $old->id));
-        $userlink = new moodle_url('/user/view.php', array('id' => $olduser->id));
+        $versionlink = new url('/mod/wiki/viewversion.php', array('pageid' => $pageid, 'versionid' => $old->id));
+        $restorelink = new url('/mod/wiki/restoreversion.php', array('pageid' => $pageid, 'versionid' => $old->id));
+        $userlink = new url('/user/view.php', array('id' => $olduser->id));
         // view version link
         $oldversionview = ' ';
         $oldversionview .= html_writer::link($versionlink->out(false), get_string('view', 'wiki'), array('class' => 'wiki_diffview'));
@@ -115,9 +121,9 @@ class mod_wiki_renderer extends plugin_renderer_base {
         $oldheading .= $this->output->container_end();
 
         $newuser = $new->user;
-        $versionlink = new moodle_url('/mod/wiki/viewversion.php', array('pageid' => $pageid, 'versionid' => $new->id));
-        $restorelink = new moodle_url('/mod/wiki/restoreversion.php', array('pageid' => $pageid, 'versionid' => $new->id));
-        $userlink = new moodle_url('/user/view.php', array('id' => $newuser->id));
+        $versionlink = new url('/mod/wiki/viewversion.php', array('pageid' => $pageid, 'versionid' => $new->id));
+        $restorelink = new url('/mod/wiki/restoreversion.php', array('pageid' => $pageid, 'versionid' => $new->id));
+        $userlink = new url('/user/view.php', array('id' => $newuser->id));
 
         $newversionview = ' ';
         $newversionview .= html_writer::link($versionlink->out(false), get_string('view', 'wiki'), array('class' => 'wiki_diffview'));
@@ -241,7 +247,7 @@ class mod_wiki_renderer extends plugin_renderer_base {
 
     public function tabs($page, $tabitems, $options) {
         $tabs = array();
-        $context = context_module::instance($this->page->cm->id);
+        $context = module::instance($this->page->cm->id);
 
         $pageid = null;
         if (!empty($page)) {
@@ -279,7 +285,7 @@ class mod_wiki_renderer extends plugin_renderer_base {
             if ($tab == 'admin' && !has_capability('mod/wiki:managewiki', $context)) {
                 continue;
             }
-            $link = new moodle_url('/mod/wiki/'. $tab. '.php', array('pageid' => $pageid));
+            $link = new url('/mod/wiki/'. $tab. '.php', array('pageid' => $pageid));
             if ($linked == $tab) {
                 $tabs[] = new tabobject($tab, $link, get_string($tab, 'wiki'), '', true);
             } else {
@@ -292,7 +298,7 @@ class mod_wiki_renderer extends plugin_renderer_base {
 
     public function prettyview_link($page) {
         $html = '';
-        $link = new moodle_url('/mod/wiki/prettyview.php', array('pageid' => $page->id));
+        $link = new url('/mod/wiki/prettyview.php', array('pageid' => $page->id));
         $html .= $this->output->container_start('wiki_right');
         $html .= $this->output->action_link($link, get_string('prettyprint', 'wiki'), new popup_action('click', $link), array('class' => 'printicon'));
         $html .= $this->output->container_end();
@@ -306,24 +312,24 @@ class mod_wiki_renderer extends plugin_renderer_base {
 
         switch ($pagetype) {
         case 'files':
-            $baseurl = new moodle_url('/mod/wiki/files.php',
+            $baseurl = new url('/mod/wiki/files.php',
                     array('wid' => $wiki->id, 'title' => $page->title, 'pageid' => $page->id));
             break;
         case 'search':
             $search = optional_param('searchstring', null, PARAM_TEXT);
             $searchcontent = optional_param('searchwikicontent', 0, PARAM_INT);
-            $baseurl = new moodle_url('/mod/wiki/search.php',
+            $baseurl = new url('/mod/wiki/search.php',
                     array('cmid' => $cm->id, 'courseid' => $cm->course,
                         'searchstring' => $search, 'searchwikicontent' => $searchcontent));
             break;
         case 'view':
         default:
-            $baseurl = new moodle_url('/mod/wiki/view.php',
+            $baseurl = new url('/mod/wiki/view.php',
                     array('wid' => $wiki->id, 'title' => $page->title));
             break;
         }
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         // @TODO: A plenty of duplicated code below this lines.
         // Create private functions.
         switch (groups_get_activity_groupmode($cm)) {
@@ -469,7 +475,7 @@ class mod_wiki_renderer extends plugin_renderer_base {
         foreach ($items as $key => $item) {
             $selectoptions[$key + 1] = $item;
         }
-        $select = new single_select(new moodle_url('/mod/wiki/map.php', array('pageid' => $pageid)), 'option', $selectoptions, $currentselect, null);
+        $select = new single_select(new url('/mod/wiki/map.php', array('pageid' => $pageid)), 'option', $selectoptions, $currentselect, null);
         $select->label = get_string('mapmenu', 'wiki') . ': ';
         return $this->output->container($this->output->render($select), 'midpad');
     }
@@ -500,7 +506,7 @@ class mod_wiki_renderer extends plugin_renderer_base {
         foreach ($items as $key => $item) {
             $selectoptions[$key + 1] = $item;
         }
-        $select = new single_select(new moodle_url('/mod/wiki/admin.php', array('pageid' => $pageid)), 'option', $selectoptions, $currentselect, null);
+        $select = new single_select(new url('/mod/wiki/admin.php', array('pageid' => $pageid)), 'option', $selectoptions, $currentselect, null);
         $select->label = get_string('adminmenu', 'wiki') . ': ';
         return $this->output->container($this->output->render($select), 'midpad');
     }

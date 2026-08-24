@@ -16,6 +16,7 @@
 
 namespace core_badges\external;
 
+use core\exception\moodle_exception;
 use core_badges_generator;
 use core_badges\badge;
 
@@ -73,7 +74,7 @@ final class disable_badges_test extends \core_external\tests\externallib_testcas
 
         $data = $this->prepare_test_data();
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage(get_string('badgesdisabled', 'core_badges'));
         $result = disable_badges::execute([
             $data['sitebadge']->id,

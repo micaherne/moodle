@@ -16,6 +16,7 @@
 
 namespace quiz_statistics;
 
+use core\exception\coding_exception;
 use question_attempt;
 use question_bank;
 use question_finder;
@@ -215,7 +216,7 @@ final class stats_from_steps_walkthrough_test extends \mod_quiz\tests\attempt_wa
                 return;
             }
         }
-        throw new \coding_exception("Expected response '{$expected['actualresponse']}' not found.");
+        throw new coding_exception("Expected response '{$expected['actualresponse']}' not found.");
     }
 
     /**
@@ -231,7 +232,7 @@ final class stats_from_steps_walkthrough_test extends \mod_quiz\tests\attempt_wa
         $possibleresponses = $qtypeobj->get_possible_responses($question);
         $possibleresponsesubpartids = array_keys($possibleresponses);
         if (!isset($possibleresponsesubpartids[$subpart - 1])) {
-            throw new \coding_exception("Subpart '{$subpart}' not found.");
+            throw new coding_exception("Subpart '{$subpart}' not found.");
         }
         $subpartid = $possibleresponsesubpartids[$subpart - 1];
 

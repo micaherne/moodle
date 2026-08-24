@@ -23,6 +23,7 @@ use core_admin\setting\setting\configtextarea;
 use core_admin\setting\setting\heading;
 use core\exception\moodle_exception;
 use core\output\html_writer;
+use core_admin\setting\settingpage\settingpage;
 
 /**
  * Remove EXIF data from supported image files using PHP GD, or ExifTool if it is configured.
@@ -392,7 +393,7 @@ class exifremover_service extends service implements file_redactor_service_inter
      *
      * @param \admin_settingpage $settings The admin settings page to which settings are added.
      */
-    public static function add_settings(\admin_settingpage $settings): void {
+    public static function add_settings(settingpage $settings): void {
         global $OUTPUT;
 
         // Enabled for a fresh install, disabled for an upgrade.

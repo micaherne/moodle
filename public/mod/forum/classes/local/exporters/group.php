@@ -27,7 +27,7 @@ namespace mod_forum\local\exporters;
 defined('MOODLE_INTERNAL') || die();
 
 use core\external\exporter;
-use renderer_base;
+use core\output\renderer_base;
 use stdClass;
 
 require_once($CFG->dirroot . '/mod/forum/lib.php');

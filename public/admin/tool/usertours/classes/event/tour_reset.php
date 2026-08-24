@@ -16,6 +16,8 @@
 
 namespace tool_usertours\event;
 
+use core\exception\coding_exception;
+
 /**
  * The tool_usertours tour_reset event.
  *
@@ -59,7 +61,7 @@ class tour_reset extends \core\event\base {
         parent::validate_data();
 
         if (!isset($this->other['pageurl'])) {
-            throw new \coding_exception('The \'pageurl\' value must be set in other.');
+            throw new coding_exception('The \'pageurl\' value must be set in other.');
         }
     }
 

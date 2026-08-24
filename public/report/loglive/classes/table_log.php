@@ -22,6 +22,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\context_helper;
+use core\output\action_link;
+use core\output\actions\popup_action;
+use core\output\html_writer;
+use core\url;
+use core_table\sql_table;
+
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->libdir . '/tablelib.php');
 
@@ -33,7 +42,7 @@ require_once($CFG->libdir . '/tablelib.php');
  * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class report_loglive_table_log extends table_sql {
+class report_loglive_table_log extends sql_table {
 
     /** @var array list of user fullnames shown in report */
     protected $userfullnames = array();
@@ -140,10 +149,10 @@ class report_loglive_table_log extends table_sql {
             if ($event->courseid) {
                 $params['course'] = $event->courseid;
             }
-            $a->realusername = html_writer::link(new moodle_url("/user/view.php", $params),
+            $a->realusername = html_writer::link(new url("/user/view.php", $params),
                 $this->userfullnames[$logextra['realuserid']]);
             $params['id'] = $event->userid;
-            $a->asusername = html_writer::link(new moodle_url("/user/view.php", $params),
+            $a->asusername = html_writer::link(new url("/user/view.php", $params),
                 $this->userfullnames[$event->userid]);
             $username = get_string('eventloggedas', 'report_loglive', $a);
         } else if (!empty($event->userid) && !empty($this->userfullnames[$event->userid])) {
@@ -151,7 +160,7 @@ class report_loglive_table_log extends table_sql {
             if ($event->courseid) {
                 $params['course'] = $event->courseid;
             }
-            $username = html_writer::link(new moodle_url("/user/view.php", $params), $this->userfullnames[$event->userid]);
+            $username = html_writer::link(new url("/user/view.php", $params), $this->userfullnames[$event->userid]);
         } else {
             $username = '-';
         }
@@ -171,7 +180,7 @@ class report_loglive_table_log extends table_sql {
             if ($event->courseid) {
                 $params['course'] = $event->courseid;
             }
-            return html_writer::link(new moodle_url("/user/view.php", $params), $this->userfullnames[$event->relateduserid]);
+            return html_writer::link(new url("/user/view.php", $params), $this->userfullnames[$event->relateduserid]);
         } else {
             return '-';
         }
@@ -274,7 +283,7 @@ class report_loglive_table_log extends table_sql {
         // Get extra event data for origin and realuserid.
         $logextra = $event->get_logextra();
 
-        $url = new moodle_url("/iplookup/index.php?popup=1&ip={$logextra['ip']}&user=$event->userid");
+        $url = new url("/iplookup/index.php?popup=1&ip={$logextra['ip']}&user=$event->userid");
         return $this->action_link($url, $logextra['ip'], 'ip');
     }
 
@@ -287,7 +296,7 @@ class report_loglive_table_log extends table_sql {
      *
      * @return string html to use.
      */
-    protected function action_link(moodle_url $url, $text, $name = 'popup') {
+    protected function action_link(url $url, $text, $name = 'popup') {
         global $OUTPUT;
         $link = new action_link($url, $text, new popup_action('click', $url, $name, array('height' => 550, 'width' => 700)));
         return $OUTPUT->render($link);
@@ -419,9 +428,9 @@ class report_loglive_table_log extends table_sql {
 
             $courses = $DB->get_records_sql($sql, $courseparams);
             foreach ($courses as $courseid => $course) {
-                $url = new moodle_url("/course/view.php", array('id' => $courseid));
+                $url = new url("/course/view.php", array('id' => $courseid));
                 context_helper::preload_from_record($course);
-                $context = context_course::instance($courseid, IGNORE_MISSING);
+                $context = course::instance($courseid, IGNORE_MISSING);
                 // Method format_string() takes care of missing contexts.
                 $this->courseshortnames[$courseid] = html_writer::link($url, format_string($course->shortname, true,
                         array('context' => $context)));

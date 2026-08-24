@@ -16,6 +16,8 @@
 
 namespace tool_langimport;
 
+use core\exception\coding_exception;
+
 /**
  * Tests for \tool_langimport\locale class.
  *
@@ -93,7 +95,7 @@ final class locale_test extends \advanced_testcase {
 
         // Test an invalid parameter.
         $locale = new locale();
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $locale->check_locale_availability('');
     }
 }

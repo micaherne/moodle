@@ -24,10 +24,11 @@
 namespace tool_dataprivacy\external;
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\user as context_user;
 use core\external\persistent_exporter;
-use core_user;
+use core\user;
 use core_user\external\user_summary_exporter;
-use renderer_base;
+use core\output\renderer_base;
 use tool_dataprivacy\api;
 use tool_dataprivacy\data_request;
 use tool_dataprivacy\local\helper;
@@ -134,13 +135,13 @@ class data_request_exporter extends persistent_exporter {
         $values = [];
 
         $foruserid = $this->persistent->get('userid');
-        $user = core_user::get_user($foruserid, '*', MUST_EXIST);
+        $user = user::get_user($foruserid, '*', MUST_EXIST);
         $userexporter = new user_summary_exporter($user);
         $values['foruser'] = $userexporter->export($output);
 
         $requestedbyid = $this->persistent->get('requestedby');
         if ($requestedbyid != $foruserid) {
-            $user = core_user::get_user($requestedbyid, '*', MUST_EXIST);
+            $user = user::get_user($requestedbyid, '*', MUST_EXIST);
             $userexporter = new user_summary_exporter($user);
             $values['requestedbyuser'] = $userexporter->export($output);
         } else {
@@ -149,7 +150,7 @@ class data_request_exporter extends persistent_exporter {
 
         if (!empty($this->persistent->get('dpo'))) {
             $dpoid = $this->persistent->get('dpo');
-            $user = core_user::get_user($dpoid, '*', MUST_EXIST);
+            $user = user::get_user($dpoid, '*', MUST_EXIST);
             $userexporter = new user_summary_exporter($user);
             $values['dpouser'] = $userexporter->export($output);
         }
@@ -206,7 +207,7 @@ class data_request_exporter extends persistent_exporter {
         }
 
         if ($this->persistent->get('status') == api::DATAREQUEST_STATUS_DOWNLOAD_READY) {
-            $usercontext = \context_user::instance($foruserid, IGNORE_MISSING);
+            $usercontext = context_user::instance($foruserid, IGNORE_MISSING);
             // If user has permission to view download link, show relevant action item.
             if ($usercontext && api::can_download_data_request_for_user($foruserid, $requestedbyid)) {
                 $downloadlink = api::get_download_link($usercontext, $this->persistent->get('id'))->url;

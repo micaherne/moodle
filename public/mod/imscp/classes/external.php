@@ -24,6 +24,7 @@
  * @since      Moodle 3.0
  */
 
+use core\context\module;
 use core_course\external\helper_for_get_mods_by_courses;
 use core_external\external_api;
 use core_external\external_function_parameters;
@@ -80,7 +81,7 @@ class mod_imscp_external extends external_api {
         $imscp = $DB->get_record('imscp', array('id' => $params['imscpid']), '*', MUST_EXIST);
         list($course, $cm) = get_course_and_cm_from_instance($imscp, 'imscp');
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         require_capability('mod/imscp:view', $context);
@@ -159,7 +160,7 @@ class mod_imscp_external extends external_api {
                 $imscpdetails = helper_for_get_mods_by_courses::standard_coursemodule_element_values(
                         $imscp, 'mod_imscp', 'moodle/course:manageactivities', 'mod/imscp:view');
 
-                if (has_capability('moodle/course:manageactivities', context_module::instance($imscp->coursemodule))) {
+                if (has_capability('moodle/course:manageactivities', module::instance($imscp->coursemodule))) {
                     $imscpdetails['revision']      = $imscp->revision;
                     $imscpdetails['keepold']       = $imscp->keepold;
                     $imscpdetails['structure']     = $imscp->structure;

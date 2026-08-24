@@ -17,7 +17,7 @@
 namespace core;
 
 use stdClass, IteratorAggregate, ArrayIterator;
-use coding_exception, moodle_url;
+use core\exception\coding_exception, core\url;
 
 /**
  * Basic moodle context abstraction class.
@@ -128,7 +128,7 @@ abstract class context extends stdClass implements IteratorAggregate {
     public static function get_short_name(): string {
         // NOTE: it would be more correct to make this abstract,
         // unfortunately there are tests that attempt to mock context classes.
-        throw new \coding_exception('get_short_name() method must be overridden in custom context levels');
+        throw new coding_exception('get_short_name() method must be overridden in custom context levels');
     }
 
     /**

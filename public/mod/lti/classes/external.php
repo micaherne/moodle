@@ -24,6 +24,9 @@
  * @since      Moodle 3.0
  */
 
+use core\context\module;
+use core\context\system;
+use core\exception\moodle_exception;
 use core_course\external\helper_for_get_mods_by_courses;
 use core_external\external_api;
 use core_external\external_function_parameters;
@@ -152,7 +155,7 @@ class mod_lti_external extends external_api {
                                             ));
         $orphanedonly = $params['orphanedonly'];
 
-        $context = context_system::instance();
+        $context = system::instance();
 
         self::validate_context($context);
         require_capability('moodle/site:config', $context);
@@ -208,7 +211,7 @@ class mod_lti_external extends external_api {
         $lti = $DB->get_record('lti', array('id' => $params['toolid']), '*', MUST_EXIST);
         list($course, $cm) = get_course_and_cm_from_instance($lti, 'lti');
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         require_capability('mod/lti:view', $context);
@@ -303,7 +306,7 @@ class mod_lti_external extends external_api {
 
             foreach ($ltis as $lti) {
 
-                $context = context_module::instance($lti->coursemodule);
+                $context = module::instance($lti->coursemodule);
 
                 // Entry to return.
                 $module = helper_for_get_mods_by_courses::standard_coursemodule_element_values(
@@ -421,7 +424,7 @@ class mod_lti_external extends external_api {
         $lti = $DB->get_record('lti', array('id' => $params['ltiid']), '*', MUST_EXIST);
         list($course, $cm) = get_course_and_cm_from_instance($lti, 'lti');
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
         require_capability('mod/lti:view', $context);
 
@@ -496,7 +499,7 @@ class mod_lti_external extends external_api {
         $capabilityoffered = $params['capabilityoffered'];
         $serviceoffered = $params['serviceoffered'];
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         require_capability('moodle/site:config', $context);
 
@@ -571,7 +574,7 @@ class mod_lti_external extends external_api {
                                             ));
         $id = $params['id'];
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         require_capability('moodle/site:config', $context);
 
@@ -621,7 +624,7 @@ class mod_lti_external extends external_api {
                                             ));
         $id = $params['id'];
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         require_capability('moodle/site:config', $context);
 
@@ -680,7 +683,7 @@ class mod_lti_external extends external_api {
         $toolproxyid = $params['toolproxyid'];
 
         $types = array();
-        $context = context_system::instance();
+        $context = system::instance();
 
         self::validate_context($context);
         require_capability('moodle/site:config', $context);
@@ -743,7 +746,7 @@ class mod_lti_external extends external_api {
         $key = $params['key'];
         $secret = $params['secret'];
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         require_capability('moodle/site:config', $context);
 
@@ -834,7 +837,7 @@ class mod_lti_external extends external_api {
         $description = $params['description'];
         $state = $params['state'];
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         require_capability('moodle/site:config', $context);
 
@@ -905,7 +908,7 @@ class mod_lti_external extends external_api {
                                             ));
         $id = $params['id'];
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         require_capability('moodle/site:config', $context);
 
@@ -968,7 +971,7 @@ class mod_lti_external extends external_api {
                                             ));
         $url = $params['url'];
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         require_capability('moodle/site:config', $context);
 

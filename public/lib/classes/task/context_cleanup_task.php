@@ -24,6 +24,8 @@
 
 namespace core\task;
 
+use core\context_helper;
+
 /**
  * Simple task to delete old context records.
  */
@@ -44,9 +46,9 @@ class context_cleanup_task extends scheduled_task {
      */
     public function execute() {
         // Context maintenance stuff.
-        \context_helper::cleanup_instances();
+        context_helper::cleanup_instances();
         mtrace(' Cleaned up context instances');
-        \context_helper::build_all_paths(false);
+        context_helper::build_all_paths(false);
         // If you suspect that the context paths are somehow corrupt
         // replace the line below with: context_helper::build_all_paths(true).
     }

@@ -23,6 +23,9 @@
  * @author    Petr Skoda <petr.skoda@totaralms.com>
  */
 
+use core\output\html_writer;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once(__DIR__ . '/lib.php');
@@ -67,7 +70,7 @@ function report_usersessions_format_ip($ip) {
         // For now ipv6 is not supported yet.
         return $ip;
     }
-    $url = new moodle_url('/iplookup/index.php', array('ip' => $ip));
+    $url = new url('/iplookup/index.php', array('ip' => $ip));
     return html_writer::link($url, $ip);
 }
 

@@ -1752,7 +1752,7 @@ final class cache_test extends \advanced_testcase {
         $hashgame = helper::hash_key('game', $definition);
         $data = 'British Bulldog';
         if ($ttl) {
-            $data = new \cache_ttl_wrapper($data, 600);
+            $data = new ttl_wrapper($data, 600);
         }
         $storeb->set($hashgame, new \core_cache\version_wrapper($data, 3));
 

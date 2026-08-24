@@ -16,6 +16,7 @@
 
 namespace mod_assign;
 
+use core\context\module;
 use mod_assign_testable_assign;
 
 defined('MOODLE_INTERNAL') || die();
@@ -51,7 +52,7 @@ final class portfolio_caller_test extends \advanced_testcase {
 
         $activityrecord = $assigngenerator->create_instance(array('course' => $course->id));
         $cm = get_coursemodule_from_instance('assign', $activityrecord->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $assign = new mod_assign_testable_assign($context, $cm, $course);
 
         $submission = $assign->get_user_submission($user->id, true);
@@ -101,7 +102,7 @@ final class portfolio_caller_test extends \advanced_testcase {
 
         $activityrecord = $assigngenerator->create_instance(array('course' => $course->id));
         $cm = get_coursemodule_from_instance('assign', $activityrecord->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $assign = new mod_assign_testable_assign($context, $cm, $course);
 
         $submission = $assign->get_user_submission($user->id, true);
@@ -150,7 +151,7 @@ final class portfolio_caller_test extends \advanced_testcase {
 
         $activityrecord = $assigngenerator->create_instance(array('course' => $course->id));
         $cm = get_coursemodule_from_instance('assign', $activityrecord->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $assign = new mod_assign_testable_assign($context, $cm, $course);
 
         $submission = $assign->get_group_submission($user->id, $groupid, true);
@@ -207,7 +208,7 @@ final class portfolio_caller_test extends \advanced_testcase {
 
         $activityrecord = $assigngenerator->create_instance(array('course' => $course->id));
         $cm = get_coursemodule_from_instance('assign', $activityrecord->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $assign = new mod_assign_testable_assign($context, $cm, $course);
 
         $submission = $assign->get_group_submission($user->id, $groupid,true);

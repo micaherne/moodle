@@ -26,6 +26,8 @@
 
 namespace tool_analytics\external;
 
+use core\exception\required_capability_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -73,7 +75,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
 
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         $this->assertCount(2, \tool_analytics\external::potential_contexts());
     }
 }

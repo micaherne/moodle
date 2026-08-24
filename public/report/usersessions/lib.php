@@ -23,6 +23,9 @@
  * @author    Petr Skoda <petr.skoda@totaralms.com>
  */
 
+use core\context\user;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -44,10 +47,10 @@ function report_usersessions_extend_navigation_user($navigation, $user, $course)
         return;
     }
 
-    $context = context_user::instance($USER->id);
+    $context = user::instance($USER->id);
     if (has_capability('report/usersessions:manageownsessions', $context)) {
         $navigation->add(get_string('navigationlink', 'report_usersessions'),
-            new moodle_url('/report/usersessions/user.php'), $navigation::TYPE_SETTING);
+            new url('/report/usersessions/user.php'), $navigation::TYPE_SETTING);
     }
 }
 
@@ -73,10 +76,10 @@ function report_usersessions_myprofile_navigation(core_user\output\myprofile\tre
         return;
     }
 
-    $context = context_user::instance($USER->id);
+    $context = user::instance($USER->id);
     if (has_capability('report/usersessions:manageownsessions', $context)) {
         $node = new core_user\output\myprofile\node('reports', 'usersessions',
-                get_string('navigationlink', 'report_usersessions'), null, new moodle_url('/report/usersessions/user.php'));
+                get_string('navigationlink', 'report_usersessions'), null, new url('/report/usersessions/user.php'));
         $tree->add_node($node);
     }
     return true;

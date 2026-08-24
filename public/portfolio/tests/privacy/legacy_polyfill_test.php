@@ -16,6 +16,9 @@
 
 namespace core_portfolio\privacy;
 
+use core\context;
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -32,7 +35,7 @@ final class legacy_polyfill_test extends \advanced_testcase {
      */
     public function test_export_portfolio_user_data(): void {
         $userid = 476;
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $mock = $this->createMock(test_portfolio_legacy_polyfill_mock_wrapper::class);
         $mock->expects($this->once())
@@ -55,7 +58,7 @@ final class legacy_polyfill_test extends \advanced_testcase {
      * Test the _delete_portfolio_for_context shim.
      */
     public function test_delete_portfolio_for_context(): void {
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $mock = $this->createMock(test_portfolio_legacy_polyfill_mock_wrapper::class);
         $mock->expects($this->once())
@@ -71,7 +74,7 @@ final class legacy_polyfill_test extends \advanced_testcase {
      */
     public function test_delete_portfolio_for_user(): void {
         $userid = 696;
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $mock = $this->createMock(test_portfolio_legacy_polyfill_mock_wrapper::class);
         $mock->expects($this->once())
@@ -109,7 +112,7 @@ class test_legacy_polyfill_portfolio_provider implements
      * @param array $subcontext
      * @param array $linkarray
      */
-    protected static function _export_portfolio_user_data($userid, \context $context, array $subcontext, array $linkarray) {
+    protected static function _export_portfolio_user_data($userid, context $context, array $subcontext, array $linkarray) {
         static::$mock->get_return_value(__FUNCTION__, func_get_args());
     }
 
@@ -118,7 +121,7 @@ class test_legacy_polyfill_portfolio_provider implements
      *
      * @param context $context
      */
-    protected static function _delete_portfolio_for_context(\context $context) {
+    protected static function _delete_portfolio_for_context(context $context) {
         static::$mock->get_return_value(__FUNCTION__, func_get_args());
     }
 
@@ -128,7 +131,7 @@ class test_legacy_polyfill_portfolio_provider implements
      * @param int $userid
      * @param context $context
      */
-    protected static function _delete_portfolio_for_user($userid, \context $context) {
+    protected static function _delete_portfolio_for_user($userid, context $context) {
         static::$mock->get_return_value(__FUNCTION__, func_get_args());
     }
 

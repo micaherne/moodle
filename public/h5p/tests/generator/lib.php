@@ -14,6 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\system;
+use core\context\user;
+use core\exception\coding_exception;
+use core\exception\invalid_response_exception;
+use core\url;
 use core_h5p\local\library\autoloader;
 use core_h5p\core;
 use core_h5p\player;
@@ -459,12 +464,12 @@ class core_h5p_generator extends \component_generator_base {
         }
 
         if ($filearea === 'draft') {
-            $usercontext = \context_user::instance($USER->id);
+            $usercontext = user::instance($USER->id);
             $context = $usercontext->id;
             $component = 'user';
             $itemid = 0;
         } else {
-            $systemcontext = context_system::instance();
+            $systemcontext = system::instance();
             $context = $systemcontext->id;
             $component = \core_h5p\file_storage::COMPONENT;
             $itemid = $contentid;
@@ -521,7 +526,7 @@ class core_h5p_generator extends \component_generator_base {
 
         // Make the URL to pass to the player.
         if ($typeurl == self::WSPLUGINFILE) {
-            $url = \moodle_url::make_webservice_pluginfile_url(
+            $url = url::make_webservice_pluginfile_url(
                 $filerecord['contextid'],
                 $filerecord['component'],
                 $filerecord['filearea'],
@@ -534,7 +539,7 @@ class core_h5p_generator extends \component_generator_base {
             if ($typeurl == self::TOKENPLUGINFILE) {
                 $includetoken = true;
             }
-            $url = \moodle_url::make_pluginfile_url(
+            $url = url::make_pluginfile_url(
                 $filerecord['contextid'],
                 $filerecord['component'],
                 $filerecord['filearea'],
@@ -572,7 +577,7 @@ class core_h5p_generator extends \component_generator_base {
 
         // Create the url depending the request was made through typeurl.
         if ($typeurl == self::WSPLUGINFILE) {
-            $url  = \moodle_url::make_webservice_pluginfile_url(
+            $url  = url::make_webservice_pluginfile_url(
                 $fileh5p->get_contextid(),
                 $fileh5p->get_component(),
                 $fileh5p->get_filearea(),
@@ -585,7 +590,7 @@ class core_h5p_generator extends \component_generator_base {
             if ($typeurl == self::TOKENPLUGINFILE) {
                 $includetoken = true;
             }
-            $url = \moodle_url::make_pluginfile_url(
+            $url = url::make_pluginfile_url(
                 $fileh5p->get_contextid(),
                 $fileh5p->get_component(),
                 $fileh5p->get_filearea(),

@@ -16,6 +16,8 @@
 
 namespace core_mnet;
 
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -44,7 +46,7 @@ final class peer_test extends \advanced_testcase {
     public function test_bootstrap_blocked_url(): void {
         set_config('curlsecurityblockedhosts', '10.255.255.1');
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage(get_string('curlsecurityurlblocked', 'admin'));
 
         $peer = new \mnet_peer();

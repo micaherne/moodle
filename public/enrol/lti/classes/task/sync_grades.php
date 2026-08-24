@@ -24,6 +24,8 @@
 
 namespace enrol_lti\task;
 
+use core\context;
+
 /**
  * Task for synchronising grades for the enrolment LTI.
  *
@@ -101,7 +103,7 @@ class sync_grades extends \core\task\scheduled_task {
                         }
 
                         // Need a valid context to continue.
-                        if (!$context = \context::instance_by_id($tool->contextid, IGNORE_MISSING)) {
+                        if (!$context = context::instance_by_id($tool->contextid, IGNORE_MISSING)) {
                             mtrace("Failed - Invalid contextid '$tool->contextid' for the tool '$tool->id'.");
                             continue;
                         }

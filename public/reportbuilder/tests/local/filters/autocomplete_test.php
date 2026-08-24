@@ -19,6 +19,7 @@ declare(strict_types=1);
 namespace core_reportbuilder\local\filters;
 
 use advanced_testcase;
+use core\lang_string;
 use core_reportbuilder\local\report\filter;
 
 /**
@@ -77,7 +78,7 @@ final class autocomplete_test extends advanced_testcase {
         $filter = (new filter(
             autocomplete::class,
             'test',
-            new \lang_string('course'),
+            new lang_string('course'),
             'testentity',
             'shortname'
         ))->set_options([

@@ -21,6 +21,11 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\action_menu;
+use core\output\action_menu\link_secondary;
+use core\output\single_button;
+use core\url;
+
 require('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->dirroot.'/user/profile/lib.php');
@@ -82,8 +87,8 @@ switch ($action) {
         $PAGE->navbar->add($strheading);
         echo $OUTPUT->header();
         echo $OUTPUT->heading($strheading);
-        $formcontinue = new single_button(new moodle_url($redirect, $optionsyes), get_string('yes'), 'post');
-        $formcancel = new single_button(new moodle_url($redirect), get_string('no'), 'get');
+        $formcontinue = new single_button(new url($redirect, $optionsyes), get_string('yes'), 'post');
+        $formcancel = new single_button(new url($redirect), get_string('no'), 'get');
         echo $OUTPUT->confirm(get_string('profileconfirmfielddeletion', 'admin', $datacount), $formcontinue, $formcancel);
         echo $OUTPUT->footer();
         die;
@@ -134,10 +139,10 @@ foreach ($categories as $category) {
     }
 
     // Add new field menu.
-    $menu = new \action_menu();
+    $menu = new action_menu();
     $menu->set_menu_trigger($strcreatefield);
     foreach ($options as $type => $fieldname) {
-        $action = new \action_menu_link_secondary(new \moodle_url('#'), null, $fieldname,
+        $action = new link_secondary(new url('#'), null, $fieldname,
             ['data-action' => 'createfield', 'data-categoryid' => $category->id, 'data-datatype' => $type,
                 'data-datatypename' => $fieldname]);
         $menu->add($action);
@@ -160,7 +165,7 @@ foreach ($categories as $category) {
 echo $OUTPUT->render_from_template('core_user/edit_profile_fields', [
     'categories' => $outputcategories,
     'sesskey' => sesskey(),
-    'baseurl' => (new moodle_url('/user/profile/index.php'))->out(false)
+    'baseurl' => (new url('/user/profile/index.php'))->out(false)
 ]);
 
 echo $OUTPUT->footer();

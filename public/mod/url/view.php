@@ -23,6 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\output\html_writer;
+use core\url;
+
 require('../../config.php');
 require_once("$CFG->dirroot/mod/url/lib.php");
 require_once("$CFG->dirroot/mod/url/locallib.php");
@@ -45,7 +49,7 @@ if ($u) {  // Two ways to specify the module
 $course = $DB->get_record('course', array('id'=>$cm->course), '*', MUST_EXIST);
 
 require_course_login($course, true, $cm);
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 require_capability('mod/url:view', $context);
 
 // Completion and trigger events.
@@ -59,7 +63,7 @@ $exturl = trim($url->externalurl);
 if (empty($exturl) or $exturl === 'http://') {
     $PAGE->activityheader->set_description(url_get_intro($url, $cm));
     url_print_header($url, $cm, $course);
-    notice(get_string('invalidstoredurl', 'url'), new moodle_url('/course/view.php', array('id'=>$cm->course)));
+    notice(get_string('invalidstoredurl', 'url'), new url('/course/view.php', array('id'=>$cm->course)));
     die;
 }
 unset($exturl);
@@ -90,10 +94,10 @@ if ($redirect && !$forceview) {
         // Otherwise teacher is redirected to the external URL without any possibility to edit activity or course settings.
         $editurl = null;
         if (has_capability('moodle/course:manageactivities', $context)) {
-            $editurl = new moodle_url('/course/modedit.php', array('update' => $cm->id));
+            $editurl = new url('/course/modedit.php', array('update' => $cm->id));
             $edittext = get_string('editthisactivity');
         } else if (has_capability('moodle/course:update', $context->get_course_context())) {
-            $editurl = new moodle_url('/course/edit.php', array('id' => $course->id));
+            $editurl = new url('/course/edit.php', array('id' => $course->id));
             $edittext = get_string('editcoursesettings');
         }
         if ($editurl) {

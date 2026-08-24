@@ -24,6 +24,8 @@
 
 namespace core_plagiarism\privacy;
 
+use core\context;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -43,5 +45,5 @@ interface plagiarism_user_provider extends
      * @param  array    $userids   The users to delete
      * @param  \context $context   The context to refine the deletion.
      */
-    public static function delete_plagiarism_for_users(array $userids, \context $context);
+    public static function delete_plagiarism_for_users(array $userids, context $context);
 }

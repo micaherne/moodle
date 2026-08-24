@@ -25,7 +25,7 @@ use core\output\renderer_base;
 use core_courseformat\base as course_format;
 use core_courseformat\output\local\content\basecontrolmenu;
 use core\url;
-use section_info;
+use core_course\section_info;
 
 /**
  * Base class to render section controls.

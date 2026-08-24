@@ -19,7 +19,7 @@ declare(strict_types=1);
 namespace core_reportbuilder;
 
 use advanced_testcase;
-use context_system;
+use core\context\system;
 use stdClass;
 use core_reportbuilder\exception\{source_invalid_exception, source_unavailable_exception};
 
@@ -42,7 +42,7 @@ final class system_report_factory_test extends advanced_testcase {
 
         $this->resetAfterTest();
 
-        $systemreport = system_report_factory::create(system_report_available::class, context_system::instance());
+        $systemreport = system_report_factory::create(system_report_available::class, system::instance());
         $this->assertInstanceOf(system_report::class, $systemreport);
     }
 
@@ -55,8 +55,8 @@ final class system_report_factory_test extends advanced_testcase {
 
         $this->resetAfterTest();
 
-        $systemreportone = system_report_factory::create(system_report_available::class, context_system::instance());
-        $systemreporttwo = system_report_factory::create(system_report_available::class, context_system::instance());
+        $systemreportone = system_report_factory::create(system_report_available::class, system::instance());
+        $systemreporttwo = system_report_factory::create(system_report_available::class, system::instance());
 
         // Assert we have the same persistent for each.
         $this->assertEquals($systemreportone->get_report_persistent()->get('id'),
@@ -68,7 +68,7 @@ final class system_report_factory_test extends advanced_testcase {
      */
     public function test_create_invalid(): void {
         $this->expectException(source_invalid_exception::class);
-        system_report_factory::create(stdClass::class, context_system::instance());
+        system_report_factory::create(stdClass::class, system::instance());
     }
 
     /**
@@ -81,6 +81,6 @@ final class system_report_factory_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $this->expectException(source_unavailable_exception::class);
-        system_report_factory::create(system_report_unavailable::class, context_system::instance());
+        system_report_factory::create(system_report_unavailable::class, system::instance());
     }
 }

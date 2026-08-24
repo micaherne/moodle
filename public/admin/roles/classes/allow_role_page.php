@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core_table\output\html_table;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -51,7 +54,7 @@ abstract class core_role_allow_role_page {
      */
     protected function load_required_roles() {
         // Get all roles.
-        $this->roles = role_fix_names(get_all_roles(), context_system::instance(), ROLENAME_ORIGINAL);
+        $this->roles = role_fix_names(get_all_roles(), system::instance(), ROLENAME_ORIGINAL);
     }
 
     /**
@@ -60,7 +63,7 @@ abstract class core_role_allow_role_page {
     public function process_submission() {
         global $DB;
 
-        $context = context_system::instance();
+        $context = system::instance();
         $this->load_current_settings();
 
         // Delete all records, then add back the ones that should be allowed.

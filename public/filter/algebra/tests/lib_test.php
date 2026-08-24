@@ -17,6 +17,7 @@
 namespace filter_algebra;
 
 use advanced_testcase;
+use core_cache\cache;
 
 /**
  * Algebra filter library functions tests.
@@ -44,7 +45,7 @@ final class lib_test extends advanced_testcase {
         ];
         $fs->create_file_from_string($filerecord, 'test content');
 
-        $cache = \cache::make('filter_algebra', 'rendered_images');
+        $cache = cache::make('filter_algebra', 'rendered_images');
         $cache->set('testimage_png', 1);
 
         $this->assertTrue($fs->file_exists($syscontext->id, 'filter_algebra', 'rendered_images', 0, '/', 'testimage.png'));

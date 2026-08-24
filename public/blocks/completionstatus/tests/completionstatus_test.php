@@ -18,7 +18,7 @@ namespace block_completionstatus;
 
 use advanced_testcase;
 use block_completionstatus;
-use context_course;
+use core\context\course;
 
 /**
  * PHPUnit block_completionstatus tests
@@ -48,7 +48,7 @@ final class completionstatus_test extends advanced_testcase {
         // Create a course and prepare the page where the block will be added.
         $course = $this->getDataGenerator()->create_course();
         $page = new \moodle_page();
-        $page->set_context(context_course::instance($course->id));
+        $page->set_context(course::instance($course->id));
         $page->set_pagelayout('course');
 
         $block = new block_completionstatus();

@@ -21,6 +21,15 @@
  * @copyright 2016 Dan Poltawski <dan@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\output\single_button;
+use core\url;
+use core_table\output\html_table;
+use core_table\output\html_table_cell;
+use core_table\output\html_table_row;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
@@ -73,8 +82,8 @@ if ($action) {
                 if ($areaid) {
                     $actionparams['areaid'] = $areaid;
                 }
-                $actionurl = new moodle_url('/admin/searchareas.php', $actionparams);
-                $cancelurl = new moodle_url('/admin/searchareas.php');
+                $actionurl = new url('/admin/searchareas.php', $actionparams);
+                $cancelurl = new url('/admin/searchareas.php');
                 echo $OUTPUT->header();
                 echo $OUTPUT->confirm(get_string('confirm_' . $action, 'search', $a),
                     new single_button($actionurl, get_string('continue'), 'post', single_button::BUTTON_PRIMARY),
@@ -107,7 +116,7 @@ if ($action) {
                 }
 
                 // Redirect back to the main page after taking action.
-                redirect(new moodle_url('/admin/searchareas.php'));
+                redirect(new url('/admin/searchareas.php'));
             }
         }
     } else if (in_array($action, ['enable', 'disable'])) {
@@ -127,7 +136,7 @@ if ($action) {
                 break;
         }
 
-        redirect(new moodle_url('/admin/searchareas.php'));
+        redirect(new url('/admin/searchareas.php'));
     } else {
         // Invalid action.
         throw new moodle_exception('invalidaction');
@@ -140,7 +149,7 @@ if (isset($searchmanager) && $indexingenabled) {
     \core\notification::info(get_string('indexinginfo', 'admin'));
 } else if (isset($searchmanager)) {
     $params = (object) [
-        'url' => (new moodle_url("/admin/settings.php?section=manageglobalsearch#admin-searchindexwhendisabled"))->out(false)
+        'url' => (new url("/admin/settings.php?section=manageglobalsearch#admin-searchindexwhendisabled"))->out(false)
     ];
     \core\notification::error(get_string('indexwhendisabledfullnotice', 'search', $params));
 } else {
@@ -205,7 +214,7 @@ foreach ($searchareas as $area) {
                     get_string('deleteindex', 'search', $accesshide));
             if ($area->supports_get_document_recordset()) {
                 $actions[] = $OUTPUT->pix_icon('i/reload', '') . html_writer::link(
-                        new moodle_url('searchreindex.php', ['areaid' => $areaid]),
+                        new url('searchreindex.php', ['areaid' => $areaid]),
                         get_string('gradualreindex', 'search', $accesshide));
             }
             $columns[] = html_writer::alist($actions, ['class' => 'unstyled list-unstyled']);
@@ -266,5 +275,5 @@ function admin_searcharea_action_url($action, $areaid = false) {
     if ($action === 'disable' || $action === 'enable') {
         $params['sesskey'] = sesskey();
     }
-    return new moodle_url('/admin/searchareas.php', $params);
+    return new url('/admin/searchareas.php', $params);
 }

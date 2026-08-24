@@ -16,6 +16,10 @@
 
 namespace logstore_standard;
 
+use core\context\course;
+use core\context\module;
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/fixtures/event.php');
@@ -86,7 +90,7 @@ final class store_test extends \advanced_testcase {
 
         $this->setUser(0);
         $event1 = \logstore_standard\event\unittest_executed::create(
-            array('context' => \context_module::instance($module1->cmid), 'other' => array('sample' => 5, 'xx' => 10)));
+            array('context' => module::instance($module1->cmid), 'other' => array('sample' => 5, 'xx' => 10)));
         $event1->trigger();
 
         $logs = $DB->get_records('logstore_standard_log', array(), 'id ASC');
@@ -107,12 +111,12 @@ final class store_test extends \advanced_testcase {
         $this->assertEquals($data, $log1);
 
         $this->setAdminUser();
-        \core\session\manager::loginas($user1->id, \context_system::instance());
+        \core\session\manager::loginas($user1->id, system::instance());
         $this->assertEquals(2, $DB->count_records('logstore_standard_log'));
 
         \logstore_standard_restore::hack_executing(1);
         $event2 = \logstore_standard\event\unittest_executed::create(
-            array('context' => \context_module::instance($module2->cmid), 'other' => array('sample' => 6, 'xx' => 9)));
+            array('context' => module::instance($module2->cmid), 'other' => array('sample' => 6, 'xx' => 9)));
         $event2->trigger();
         \logstore_standard_restore::hack_executing(0);
 
@@ -165,30 +169,30 @@ final class store_test extends \advanced_testcase {
         $DB->delete_records('logstore_standard_log');
 
         \logstore_standard\event\unittest_executed::create(
-            array('context' => \context_module::instance($module1->cmid), 'other' => array('sample' => 5, 'xx' => 10)))->trigger();
+            array('context' => module::instance($module1->cmid), 'other' => array('sample' => 5, 'xx' => 10)))->trigger();
         $this->assertEquals(0, $DB->count_records('logstore_standard_log'));
         \logstore_standard\event\unittest_executed::create(
-            array('context' => \context_module::instance($module1->cmid), 'other' => array('sample' => 5, 'xx' => 10)))->trigger();
+            array('context' => module::instance($module1->cmid), 'other' => array('sample' => 5, 'xx' => 10)))->trigger();
         $this->assertEquals(0, $DB->count_records('logstore_standard_log'));
         $store->flush();
         $this->assertEquals(2, $DB->count_records('logstore_standard_log'));
         \logstore_standard\event\unittest_executed::create(
-            array('context' => \context_module::instance($module1->cmid), 'other' => array('sample' => 5, 'xx' => 10)))->trigger();
+            array('context' => module::instance($module1->cmid), 'other' => array('sample' => 5, 'xx' => 10)))->trigger();
         $this->assertEquals(2, $DB->count_records('logstore_standard_log'));
         \logstore_standard\event\unittest_executed::create(
-            array('context' => \context_module::instance($module1->cmid), 'other' => array('sample' => 5, 'xx' => 10)))->trigger();
+            array('context' => module::instance($module1->cmid), 'other' => array('sample' => 5, 'xx' => 10)))->trigger();
         $this->assertEquals(2, $DB->count_records('logstore_standard_log'));
         \logstore_standard\event\unittest_executed::create(
-            array('context' => \context_module::instance($module1->cmid), 'other' => array('sample' => 5, 'xx' => 10)))->trigger();
+            array('context' => module::instance($module1->cmid), 'other' => array('sample' => 5, 'xx' => 10)))->trigger();
         $this->assertEquals(5, $DB->count_records('logstore_standard_log'));
         \logstore_standard\event\unittest_executed::create(
-            array('context' => \context_module::instance($module1->cmid), 'other' => array('sample' => 5, 'xx' => 10)))->trigger();
+            array('context' => module::instance($module1->cmid), 'other' => array('sample' => 5, 'xx' => 10)))->trigger();
         $this->assertEquals(5, $DB->count_records('logstore_standard_log'));
         \logstore_standard\event\unittest_executed::create(
-            array('context' => \context_module::instance($module1->cmid), 'other' => array('sample' => 5, 'xx' => 10)))->trigger();
+            array('context' => module::instance($module1->cmid), 'other' => array('sample' => 5, 'xx' => 10)))->trigger();
         $this->assertEquals(5, $DB->count_records('logstore_standard_log'));
         \logstore_standard\event\unittest_executed::create(
-            array('context' => \context_module::instance($module1->cmid), 'other' => array('sample' => 5, 'xx' => 10)))->trigger();
+            array('context' => module::instance($module1->cmid), 'other' => array('sample' => 5, 'xx' => 10)))->trigger();
         $this->assertEquals(8, $DB->count_records('logstore_standard_log'));
 
         // Test guest logging setting.
@@ -200,22 +204,22 @@ final class store_test extends \advanced_testcase {
 
         $this->setUser(null);
         \logstore_standard\event\unittest_executed::create(
-            array('context' => \context_module::instance($module1->cmid), 'other' => array('sample' => 5, 'xx' => 10)))->trigger();
+            array('context' => module::instance($module1->cmid), 'other' => array('sample' => 5, 'xx' => 10)))->trigger();
         $this->assertEquals(0, $DB->count_records('logstore_standard_log'));
 
         $this->setGuestUser();
         \logstore_standard\event\unittest_executed::create(
-            array('context' => \context_module::instance($module1->cmid), 'other' => array('sample' => 5, 'xx' => 10)))->trigger();
+            array('context' => module::instance($module1->cmid), 'other' => array('sample' => 5, 'xx' => 10)))->trigger();
         $this->assertEquals(0, $DB->count_records('logstore_standard_log'));
 
         $this->setUser($user1);
         \logstore_standard\event\unittest_executed::create(
-            array('context' => \context_module::instance($module1->cmid), 'other' => array('sample' => 5, 'xx' => 10)))->trigger();
+            array('context' => module::instance($module1->cmid), 'other' => array('sample' => 5, 'xx' => 10)))->trigger();
         $this->assertEquals(1, $DB->count_records('logstore_standard_log'));
 
         $this->setUser($user2);
         \logstore_standard\event\unittest_executed::create(
-            array('context' => \context_module::instance($module1->cmid), 'other' => array('sample' => 5, 'xx' => 10)))->trigger();
+            array('context' => module::instance($module1->cmid), 'other' => array('sample' => 5, 'xx' => 10)))->trigger();
         $this->assertEquals(2, $DB->count_records('logstore_standard_log'));
 
         set_config('enabled_stores', '', 'tool_log');
@@ -338,7 +342,7 @@ final class store_test extends \advanced_testcase {
         $this->resetAfterTest();
 
         // Create some records spread over various days; test multiple iterations in cleanup.
-        $ctx = \context_course::instance(1);
+        $ctx = course::instance(1);
         $record = (object) array(
             'edulevel' => 0,
             'contextid' => $ctx->id,
@@ -426,11 +430,11 @@ final class store_test extends \advanced_testcase {
 
         // Create some log data in a course - one with other data, one without.
         \logstore_standard\event\unittest_executed::create([
-                'context' => \context_course::instance($course->id),
+                'context' => course::instance($course->id),
                 'other' => ['sample' => 5, 'xx' => 10]])->trigger();
         $this->waitForSecond();
         \logstore_standard\event\unittest_executed::create([
-                'context' => \context_course::instance($course->id)])->trigger();
+                'context' => course::instance($course->id)])->trigger();
 
         $records = array_values($DB->get_records('logstore_standard_log',
                 ['courseid' => $course->id, 'target' => 'unittest'], 'timecreated'));

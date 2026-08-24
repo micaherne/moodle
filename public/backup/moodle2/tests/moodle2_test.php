@@ -19,6 +19,10 @@ namespace core_backup;
 use backup;
 use backup_controller;
 use backup_setting;
+use core\context\block;
+use core\context\course;
+use core\context\module;
+use core\exception\coding_exception;
 use restore_controller;
 use restore_dbops;
 
@@ -64,7 +68,7 @@ final class moodle2_test extends \advanced_testcase {
         // We need a grade, easiest is to add an assignment.
         $assignrow = $generator->create_module('assign', array(
                 'course' => $course->id));
-        $assign = new \assign(\context_module::instance($assignrow->cmid), false, false);
+        $assign = new \assign(module::instance($assignrow->cmid), false, false);
         $item = $assign->get_grade_item();
 
         // Make a test grouping as well.
@@ -88,7 +92,7 @@ final class moodle2_test extends \advanced_testcase {
         $modinfo = get_fast_modinfo($newcourseid);
         $forums = array_values($modinfo->get_instances_of('forum'));
         $assigns = array_values($modinfo->get_instances_of('assign'));
-        $newassign = new \assign(\context_module::instance($assigns[0]->id), false, false);
+        $newassign = new \assign(module::instance($assigns[0]->id), false, false);
         $newitem = $newassign->get_grade_item();
         $newgroupingid = $DB->get_field('groupings', 'id', array('courseid' => $newcourseid));
 
@@ -287,7 +291,7 @@ final class moodle2_test extends \advanced_testcase {
         // We need a grade, easiest is to add an assignment.
         $assignrow = $generator->create_module('assign', array(
                 'course' => $course->id));
-        $assign = new \assign(\context_module::instance($assignrow->cmid), false, false);
+        $assign = new \assign(module::instance($assignrow->cmid), false, false);
         $item = $assign->get_grade_item();
 
         // Make a test group and grouping as well.
@@ -545,7 +549,7 @@ final class moodle2_test extends \advanced_testcase {
 
         // Find cmid.
         $tasks = $rc->get_plan()->get_tasks();
-        $cmcontext = \context_module::instance($cmid);
+        $cmcontext = module::instance($cmid);
         $newcmid = 0;
         foreach ($tasks as $task) {
             if (is_subclass_of($task, 'restore_activity_task')) {
@@ -557,7 +561,7 @@ final class moodle2_test extends \advanced_testcase {
         }
         $rc->destroy();
         if (!$newcmid) {
-            throw new \coding_exception('Unexpected: failure to find restored cmid');
+            throw new coding_exception('Unexpected: failure to find restored cmid');
         }
         return $newcmid;
     }
@@ -594,7 +598,7 @@ final class moodle2_test extends \advanced_testcase {
         $selfplugin->enrol_user($selfinstance, $user->id, $studentrole->id);
 
         // Give current user capabilities to do backup and restore and assign student role.
-        $categorycontext = \context_course::instance($course->id)->get_parent_context();
+        $categorycontext = course::instance($course->id)->get_parent_context();
 
         $caps = array_merge([
             'moodle/course:view',
@@ -835,7 +839,7 @@ final class moodle2_test extends \advanced_testcase {
 
         // Create course and add HTML block.
         $course = $generator->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $page = new \moodle_page();
         $page->set_context($context);
         $page->set_course($course);
@@ -856,7 +860,7 @@ final class moodle2_test extends \advanced_testcase {
         $newcourseid = $this->backup_and_restore($course);
 
         // Confirm that values were transferred correctly into HTML block on new course.
-        $newcontext = \context_course::instance($newcourseid);
+        $newcontext = course::instance($newcourseid);
         $blockdata = $DB->get_record('block_instances',
                 ['blockname' => 'html', 'parentcontextid' => $newcontext->id]);
         $this->assertEquals(12345, $blockdata->timecreated);
@@ -876,7 +880,7 @@ final class moodle2_test extends \advanced_testcase {
         $after = time();
 
         // The fields not specified should default to current time.
-        $newcontext = \context_course::instance($newcourseid);
+        $newcontext = course::instance($newcourseid);
         $blockdata = $DB->get_record('block_instances',
                 ['blockname' => 'html', 'parentcontextid' => $newcontext->id]);
         $this->assertTrue($before <= $blockdata->timecreated && $after >= $blockdata->timecreated);
@@ -902,7 +906,7 @@ final class moodle2_test extends \advanced_testcase {
         $forum = $generator->create_module('forum', ['course' => $course->id]);
 
         // Add a block.
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $page = new \moodle_page();
         $page->set_context($context);
         $page->set_course($course);
@@ -918,7 +922,7 @@ final class moodle2_test extends \advanced_testcase {
         $newcourseid = $this->backup_and_restore($course);
 
         // Now the course should be requested for index (all search areas).
-        $newcontext = \context_course::instance($newcourseid);
+        $newcontext = course::instance($newcourseid);
         $requests = array_values($DB->get_records('search_index_requests'));
         $this->assertCount(1, $requests);
         $this->assertEquals($newcontext->id, $requests[0]->contextid);
@@ -955,12 +959,12 @@ final class moodle2_test extends \advanced_testcase {
                 $biggest = $forum;
             }
         }
-        $restoredforumcontext = \context_module::instance($biggest->id);
+        $restoredforumcontext = module::instance($biggest->id);
 
         // Get the HTML blocks now on the old course.
         $blockdata = array_values($DB->get_records('block_instances',
                 ['blockname' => 'html', 'parentcontextid' => $context->id], 'id DESC'));
-        $restoredblockcontext = \context_block::instance($blockdata[0]->id);
+        $restoredblockcontext = block::instance($blockdata[0]->id);
 
         // Check that we have requested index update on both the module and the block.
         $requests = array_values($DB->get_records('search_index_requests', null, 'id'));
@@ -1117,14 +1121,14 @@ final class moodle2_test extends \advanced_testcase {
 
         // Add a quiz with question categories.
         $quiz = $generator->create_module('quiz', ['course' => $course->id]);
-        $quizcontext = \context_module::instance($quiz->cmid);
+        $quizcontext = module::instance($quiz->cmid);
         $questiongenerator->create_question_category(['contextid' => $quizcontext->id]);
         $quizquestioncats = $DB->get_records('question_categories', ['contextid' => $quizcontext->id]);
         $this->assertCount(3, $quizquestioncats);
 
         // Add a question bank with question categories.
         $qbank = $this->getDataGenerator()->create_module('qbank', ['course' => $course->id]);
-        $qbankcontext = \context_module::instance($qbank->cmid);
+        $qbankcontext = module::instance($qbank->cmid);
         $questiongenerator->create_question_category(['contextid' => $qbankcontext->id]);
         $qbankquestioncats = $DB->get_records('question_categories', ['contextid' => $qbankcontext->id]);
         $this->assertCount(3, $qbankquestioncats);
@@ -1137,7 +1141,7 @@ final class moodle2_test extends \advanced_testcase {
         $targetquizzes = $modinfo->get_instances_of('quiz');
         $this->assertCount(1, $targetquizzes);
         $targetquiz = reset($targetquizzes);
-        $targetquizcontext = \context_module::instance($targetquiz->id);
+        $targetquizcontext = module::instance($targetquiz->id);
         $targetquizcats = array_values(
             $DB->get_records('question_categories', ['contextid' => $targetquizcontext->id], 'parent', 'id, name, parent')
         );
@@ -1149,7 +1153,7 @@ final class moodle2_test extends \advanced_testcase {
 
         $targetqbanks = $modinfo->get_instances_of('qbank');
         $this->assertCount(1, $targetqbanks);
-        $targetqbankcontext = \context_module::instance(reset($targetqbanks)->id);
+        $targetqbankcontext = module::instance(reset($targetqbanks)->id);
         $targetqbankcats = array_values(
             $DB->get_records('question_categories', ['contextid' => $targetqbankcontext->id], 'parent', 'id, name, parent')
         );
@@ -1173,7 +1177,7 @@ final class moodle2_test extends \advanced_testcase {
 
         // Create course and add content bank content.
         $course = $generator->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $filepath = $CFG->dirroot . '/h5p/tests/fixtures/filltheblanks.h5p';
         $contents = $cbgenerator->generate_contentbank_data('contenttype_h5p', 2, $USER->id, $context, true, $filepath);
         $this->assertEquals(2, $DB->count_records('contentbank_content'));
@@ -1182,7 +1186,7 @@ final class moodle2_test extends \advanced_testcase {
         $newcourseid = $this->backup_and_restore($course);
 
         // Confirm that values were transferred correctly into content bank on new course.
-        $newcontext = \context_course::instance($newcourseid);
+        $newcontext = course::instance($newcourseid);
 
         $this->assertEquals(4, $DB->count_records('contentbank_content'));
         $this->assertEquals(2, $DB->count_records('contentbank_content', ['contextid' => $newcontext->id]));
@@ -1226,7 +1230,7 @@ final class moodle2_test extends \advanced_testcase {
 
         // Add also a xAPI state to the H5P activity.
         $filerecord = [
-            'contextid' => \context_module::instance($activity->cmid)->id,
+            'contextid' => module::instance($activity->cmid)->id,
             'component' => 'mod_h5pactivity',
             'filearea' => 'package',
             'itemid' => 0,
@@ -1254,7 +1258,7 @@ final class moodle2_test extends \advanced_testcase {
 
         $newactivity = $DB->get_record('h5pactivity', ['course' => $newcourseid]);
         $cm = get_coursemodule_from_instance('h5pactivity', $newactivity->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $this->assertEquals(1, $DB->count_records('xapi_states', ['itemid' => $context->id]));
     }
 }

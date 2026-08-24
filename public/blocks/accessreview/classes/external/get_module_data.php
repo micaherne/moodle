@@ -16,6 +16,7 @@
 
 namespace block_accessreview\external;
 
+use core\context\course;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
@@ -56,7 +57,7 @@ class get_module_data extends external_api {
             'courseid' => $courseid,
         ]);
 
-        $context = \context_course::instance($courseid);
+        $context = course::instance($courseid);
         self::validate_context($context);
 
         require_capability('block/accessreview:view', $context);

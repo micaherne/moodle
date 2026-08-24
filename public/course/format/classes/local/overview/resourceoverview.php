@@ -17,7 +17,7 @@
 namespace core_courseformat\local\overview;
 
 use core\url;
-use action_link;
+use core\output\action_link;
 use core\output\local\properties\button;
 use core\output\local\properties\text_align;
 

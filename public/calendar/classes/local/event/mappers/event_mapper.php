@@ -26,6 +26,7 @@ namespace core_calendar\local\event\mappers;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\exception\coding_exception;
 use core_calendar\event;
 use core_calendar\local\event\entities\action_event_interface;
 use core_calendar\local\event\entities\event_interface;
@@ -56,7 +57,7 @@ class event_mapper implements event_mapper_interface {
         $coalesce = function($property) use ($legacyevent) {
             try {
                 return $legacyevent->$property;
-            } catch (\coding_exception $e) {
+            } catch (coding_exception $e) {
                 // The magic setter throews an exception if the
                 // property doesn't exist.
                 return null;

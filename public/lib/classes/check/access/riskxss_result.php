@@ -32,6 +32,7 @@ namespace core\check\access;
 defined('MOODLE_INTERNAL') || die();
 
 use core\check\result;
+use core\output\html_writer;
 
 /**
  * Lists all users with XSS risk
@@ -101,10 +102,10 @@ class riskxss_result extends \core\check\result {
         $users = $DB->get_records_sql("SELECT DISTINCT $userfields $this->sqlfrom", $this->params);
         foreach ($users as $uid => $user) {
             $url = "$CFG->wwwroot/user/view.php?id=$user->id";
-            $link = \html_writer::link($url, fullname($user, true) . ' (' . s($user->email) . ')');
-            $users[$uid] = \html_writer::tag('li' , $link);
+            $link = html_writer::link($url, fullname($user, true) . ' (' . s($user->email) . ')');
+            $users[$uid] = html_writer::tag('li' , $link);
         }
-        $users = \html_writer::tag('ul', implode('', $users));
+        $users = html_writer::tag('ul', implode('', $users));
 
         return get_string('check_riskxss_details', 'report_security', $users);
     }

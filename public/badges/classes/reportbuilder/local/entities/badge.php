@@ -22,8 +22,8 @@ use core_badges\reportbuilder\local\filters\criteria;
 use core\{context, context_helper};
 use core\context\system;
 use core\lang_string;
-use html_writer;
-use moodle_url;
+use core\output\html_writer;
+use core\url;
 use stdClass;
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\filters\{date, select, text};
@@ -100,7 +100,7 @@ class badge extends base {
                     return '';
                 }
 
-                $url = new moodle_url('/badges/overview.php', ['id' => $row->id]);
+                $url = new url('/badges/overview.php', ['id' => $row->id]);
                 return html_writer::link($url, $row->name);
             });
 
@@ -129,8 +129,8 @@ class badge extends base {
                     $context = context::instance_by_id($badge->ctxid);
                 }
 
-                $badgeimage = moodle_url::make_pluginfile_url($context->id, 'badges', 'badgeimage', $badge->id, '/', 'f2');
-                $url = new moodle_url('/badges/overview.php', ['id' => $badge->id]);
+                $badgeimage = url::make_pluginfile_url($context->id, 'badges', 'badgeimage', $badge->id, '/', 'f2');
+                $url = new url('/badges/overview.php', ['id' => $badge->id]);
                 return html_writer::img($badgeimage, $badge->imagecaption) . ' ' . html_writer::link($url, $badge->name);
             });
 
@@ -190,7 +190,7 @@ class badge extends base {
                     $context = context::instance_by_id($badge->ctxid);
                 }
 
-                $badgeimage = moodle_url::make_pluginfile_url($context->id, 'badges', 'badgeimage', $badge->id, '/', 'f2');
+                $badgeimage = url::make_pluginfile_url($context->id, 'badges', 'badgeimage', $badge->id, '/', 'f2');
                 return html_writer::img($badgeimage, $badge->imagecaption);
             });
 

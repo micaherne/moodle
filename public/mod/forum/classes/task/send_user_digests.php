@@ -26,7 +26,12 @@ namespace mod_forum\task;
 
 defined('MOODLE_INTERNAL') || die();
 
-use html_writer;
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+use core\user;
 require_once($CFG->dirroot . '/mod/forum/lib.php');
 
 /**
@@ -141,7 +146,7 @@ class send_user_digests extends \core\task\adhoc_task {
     public function execute() {
         $starttime = time();
 
-        $this->recipient = \core_user::get_user($this->get_userid());
+        $this->recipient = user::get_user($this->get_userid());
         $this->log_start("Sending forum digests for {$this->recipient->username} ({$this->recipient->id})");
 
         if (empty($this->recipient->mailformat) || $this->recipient->mailformat != 1) {
@@ -168,8 +173,8 @@ class send_user_digests extends \core\task\adhoc_task {
             $forum = $this->forums[$discussion->forum];
             $course = $this->courses[$forum->course];
             $cm = get_fast_modinfo($course)->instances['forum'][$forum->id];
-            $modcontext = \context_module::instance($cm->id);
-            $coursecontext = \context_course::instance($course->id);
+            $modcontext = module::instance($cm->id);
+            $coursecontext = course::instance($course->id);
 
             if (empty($this->posts[$discussion->id])) {
                 // Somehow there are no posts.
@@ -254,7 +259,7 @@ class send_user_digests extends \core\task\adhoc_task {
                 }
             } else {
                 $this->log_finish("Issue sending digest. Skipping.");
-                throw new \moodle_exception("Issue sending digest. Skipping.");
+                throw new moodle_exception("Issue sending digest. Skipping.");
             }
         } else {
             $this->log_finish("No messages found to send.");
@@ -399,7 +404,7 @@ class send_user_digests extends \core\task\adhoc_task {
         // And the content of the header in body.
         $headerdata = (object) [
             'sitename' => format_string($site->fullname, true),
-            'userprefs' => (new \moodle_url('/user/forum.php', [
+            'userprefs' => (new url('/user/forum.php', [
                     'id' => $this->recipient->id,
                     'course' => $site->id,
                 ]))->out(false),
@@ -432,7 +437,7 @@ class send_user_digests extends \core\task\adhoc_task {
         global $CFG;
 
         $shortname = format_string($course->shortname, true, [
-                'context' => \context_course::instance($course->id),
+                'context' => course::instance($course->id),
             ]);
 
         $strforums = get_string('forums', 'forum');
@@ -443,7 +448,7 @@ class send_user_digests extends \core\task\adhoc_task {
             $this->discussiontext  .= " -> " . format_string($discussion->name, true);
         }
         $this->discussiontext .= "\n";
-        $this->discussiontext .= new \moodle_url('/mod/forum/discuss.php', [
+        $this->discussiontext .= new url('/mod/forum/discuss.php', [
                 'd' => $discussion->id,
             ]);
         $this->discussiontext .= "\n";
@@ -575,7 +580,7 @@ class send_user_digests extends \core\task\adhoc_task {
      */
     protected function send_mail() {
         // Headers to help prevent auto-responders.
-        $userfrom = \core_user::get_noreply_user();
+        $userfrom = user::get_noreply_user();
         $userfrom->customheaders = array(
             "Precedence: Bulk",
             'X-Auto-Response-Suppress: All',

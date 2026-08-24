@@ -21,6 +21,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\context\module;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/../../editlib.php');
 require_once($CFG->libdir . '/filelib.php');
@@ -40,7 +48,7 @@ $mdlscrollto = optional_param('mdlscrollto', 0, PARAM_INT);
 
 \core_question\local\bank\helper::require_plugin_enabled('qbank_editquestion');
 
-$url = new moodle_url('/question/bank/editquestion/question.php');
+$url = new url('/question/bank/editquestion/question.php');
 if ($id !== 0) {
     $url->param('id', $id);
 }
@@ -73,7 +81,7 @@ if ($mdlscrollto) {
 }
 $PAGE->set_url($url);
 
-$questionbankurl = new moodle_url('/question/edit.php', ['cmid' => $cmid]);
+$questionbankurl = new url('/question/edit.php', ['cmid' => $cmid]);
 
 navigation_node::override_active_url($questionbankurl);
 
@@ -81,7 +89,7 @@ if ($originalreturnurl) {
     if (strpos($originalreturnurl, '/') !== 0) {
         throw new coding_exception("returnurl must be a local URL starting with '/'. $originalreturnurl was given.");
     }
-    $returnurl = new moodle_url($originalreturnurl);
+    $returnurl = new url($originalreturnurl);
 } else {
     $returnurl = $questionbankurl;
 }
@@ -91,7 +99,7 @@ if ($mdlscrollto) {
 
 list($module, $cm) = get_module_from_cmid($cmid);
 require_login($cm->course, false, $cm);
-$thiscontext = context_module::instance($cmid);
+$thiscontext = module::instance($cmid);
 
 $contexts = new core_question\local\bank\question_edit_contexts($thiscontext);
 $PAGE->set_pagelayout('admin');
@@ -121,7 +129,7 @@ if ($id) {
 } else if ($categoryid) {
     // Category, but no qtype. They probably came from the addquestion.php
     // script without choosing a question type. Send them back.
-    $addurl = new moodle_url('/question/bank/editquestion/addquestion.php', $url->params());
+    $addurl = new url('/question/bank/editquestion/addquestion.php', $url->params());
     $addurl->param('validationerror', 1);
     redirect($addurl);
 
@@ -295,7 +303,7 @@ if ($mform->is_cancelled()) {
     if (isset($fromform->coursetags)) {
         // If we have and course context level tags then set those now.
         core_tag_tag::set_item_tags('core_question', 'question', $question->id,
-                context_course::instance($fromform->courseid), $fromform->coursetags, 0);
+                course::instance($fromform->courseid), $fromform->coursetags, 0);
     }
 
     // Update custom fields if there are any of them in the form.
@@ -345,7 +353,7 @@ if ($mform->is_cancelled()) {
         }
         $nexturlparams['id'] = $question->id;
         $nexturlparams['wizardnow'] = $fromform->wizard;
-        $nexturl = new moodle_url($url, $nexturlparams);
+        $nexturl = new url($url, $nexturlparams);
         if ($cmid) {
             $nexturl->param('cmid', $cmid);
         } else {

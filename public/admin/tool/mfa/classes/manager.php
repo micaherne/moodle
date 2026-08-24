@@ -16,6 +16,11 @@
 
 namespace tool_mfa;
 
+use core\context\user;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+use core_table\output\html_table;
 use dml_exception;
 use tool_mfa\plugininfo\factor;
 
@@ -107,7 +112,7 @@ class manager {
         }
         $html = $OUTPUT->heading(get_string('debugmode:heading', 'tool_mfa'), 3);
 
-        $table = new \html_table();
+        $table = new html_table();
         $table->head = [
             get_string('weight', 'tool_mfa'),
             get_string('factor', 'tool_mfa'),
@@ -191,7 +196,7 @@ class manager {
             $OUTPUT->get_state_badge($finalstate),
         ];
 
-        $html .= \html_writer::table($table);
+        $html .= html_writer::table($table);
         echo $html;
     }
 
@@ -238,7 +243,7 @@ class manager {
             // If URL isn't set, we need to redir to auth.php.
             // This ensures URL and required info is correctly set.
             // Then we arrive back here.
-            redirect(new \moodle_url('/admin/tool/mfa/auth.php'));
+            redirect(new url('/admin/tool/mfa/auth.php'));
         }
 
         $renderer = $PAGE->get_renderer('tool_mfa');
@@ -336,7 +341,7 @@ class manager {
                     $wantsurl = $SESSION->wantsurl;
                 }
                 unset($SESSION->wantsurl);
-                redirect(new \moodle_url($wantsurl));
+                redirect(new url($wantsurl));
             } else {
                 // Don't touch anything, let user be on their way.
                 return;
@@ -346,7 +351,7 @@ class manager {
         } else if ($shouldreload) {
             // Set a session variable to track whether user is where they want to be.
             $SESSION->tool_mfa_has_been_redirected = true;
-            $authurl = new \moodle_url('/admin/tool/mfa/auth.php');
+            $authurl = new url('/admin/tool/mfa/auth.php');
             redirect($authurl);
         }
     }
@@ -424,8 +429,8 @@ class manager {
                 $pref = 'tool_mfa_reset_' . $factor->name;
                 $factorpref = get_user_preferences($pref, false);
                 if ($factorpref) {
-                    $url = new \moodle_url('/admin/tool/mfa/user_preferences.php');
-                    $link = \html_writer::link($url, get_string('preferenceslink', 'tool_mfa'));
+                    $url = new url('/admin/tool/mfa/user_preferences.php');
+                    $link = html_writer::link($url, get_string('preferenceslink', 'tool_mfa'));
                     $data = ['factor' => $factor->get_display_name(), 'url' => $link];
                     \core\notification::warning(get_string('factorreset', 'tool_mfa', $data));
                     unset_user_preference($pref);
@@ -436,8 +441,8 @@ class manager {
             // TODO: Delete this in a few months, the reset all preference is no longer set.
             $allfactor = get_user_preferences('tool_mfa_reset_all', false);
             if ($allfactor) {
-                $url = new \moodle_url('/admin/tool/mfa/user_preferences.php');
-                $link = \html_writer::link($url, get_string('preferenceslink', 'tool_mfa'));
+                $url = new url('/admin/tool/mfa/user_preferences.php');
+                $link = html_writer::link($url, get_string('preferenceslink', 'tool_mfa'));
                 \core\notification::warning(get_string('factorresetall', 'tool_mfa', $link));
                 unset_user_preference('tool_mfa_reset_all');
             }
@@ -469,7 +474,7 @@ class manager {
      * @param bool|null $preventredirect
      * @return int
      */
-    public static function should_require_mfa(string|\moodle_url $url, bool|null $preventredirect): int {
+    public static function should_require_mfa(string|url $url, bool|null $preventredirect): int {
         global $CFG, $USER, $SESSION;
 
         // If no cookies then no session so cannot do MFA.
@@ -480,7 +485,7 @@ class manager {
 
         // Ensure we have a moodle_url object if a string is provided.
         if (is_string($url)) {
-            $url = new \moodle_url($url);
+            $url = new url($url);
         }
 
         // Admin not setup.
@@ -499,7 +504,7 @@ class manager {
         }
 
         // Check for pluginfile.php urls.
-        $pluginfileurl = new \moodle_url('/pluginfile.php');
+        $pluginfileurl = new url('/pluginfile.php');
         if ($url->compare($pluginfileurl)) {
             // Get the slash arguments.
             $args = explode('/', ltrim($url->get_slashargument(), '/'));
@@ -538,7 +543,7 @@ class manager {
                 return self::NO_REDIRECT;
             }
             // An upgrade isn't complete if there are settings that must be saved.
-            $upgradesettings = new \moodle_url('/admin/upgradesettings.php');
+            $upgradesettings = new url('/admin/upgradesettings.php');
             if ($url->compare($upgradesettings, URL_MATCH_BASE)) {
                 return self::NO_REDIRECT;
             }
@@ -569,8 +574,8 @@ class manager {
         }
 
         // Site policies from tool_policy.
-        $policyviewurl = new \moodle_url('/admin/tool/policy/view.php');
-        $policyindexurl = new \moodle_url('/admin/tool/policy/index.php');
+        $policyviewurl = new url('/admin/tool/policy/view.php');
+        $policyindexurl = new url('/admin/tool/policy/index.php');
         if ($policyviewurl->compare($url, URL_MATCH_BASE) || $policyindexurl->compare($url, URL_MATCH_BASE)) {
             return self::NO_REDIRECT;
         }
@@ -590,7 +595,7 @@ class manager {
         }
 
         // Circular checks.
-        $authurl = new \moodle_url('/admin/tool/mfa/auth.php');
+        $authurl = new url('/admin/tool/mfa/auth.php');
         $authlocal = $authurl->out_as_local_url();
         if (isset($SESSION->mfa_redir_referer)
             && $SESSION->mfa_redir_referer != $authlocal) {
@@ -640,12 +645,12 @@ class manager {
     public static function get_no_redirect_urls(): array {
         $factors = factor::get_factors();
         $urls = [
-            new \moodle_url('/login/logout.php'),
-            new \moodle_url('/admin/tool/mfa/guide.php'),
+            new url('/login/logout.php'),
+            new url('/admin/tool/mfa/guide.php'),
             // Allow email self-registration confirmation to complete so that
             // auth_email can restore wantsurl from the auth_email_wantsurl user
             // preference before MFA intercepts on the next request.
-            new \moodle_url('/login/confirm.php'),
+            new url('/login/confirm.php'),
         ];
         foreach ($factors as $factor) {
             $urls = array_merge($urls, $factor->get_no_redirect_urls());
@@ -655,7 +660,7 @@ class manager {
         if ($exclusions = get_config('tool_mfa', 'redir_exclusions')) {
             $exclusions = preg_split('/\n|\r/', $exclusions, -1, PREG_SPLIT_NO_EMPTY);
             foreach ($exclusions as $exclusion) {
-                $urls[] = new \moodle_url(trim($exclusion));
+                $urls[] = new url(trim($exclusion));
             }
         }
 
@@ -715,9 +720,9 @@ class manager {
                 $cleanurl = $PAGE->url;
             } else {
                 // Use $FULLME instead.
-                $cleanurl = new \moodle_url($FULLME);
+                $cleanurl = new url($FULLME);
             }
-            $authurl = new \moodle_url('/admin/tool/mfa/auth.php');
+            $authurl = new url('/admin/tool/mfa/auth.php');
 
             $redir = self::should_require_mfa($cleanurl, $preventredirect);
 
@@ -732,7 +737,7 @@ class manager {
                 if (empty($SESSION->wantsurl)) {
                     !empty($setwantsurltome)
                         ? $SESSION->wantsurl = qualified_me()
-                        : $SESSION->wantsurl = new \moodle_url('/');
+                        : $SESSION->wantsurl = new url('/');
 
                     $SESSION->tool_mfa_setwantsurl = true;
                 }
@@ -744,10 +749,10 @@ class manager {
                 self::resolve_mfa_status(true);
             } else if ($redir == self::REDIRECT_EXCEPTION) {
                 if (!empty($SESSION->mfa_redir_referer)) {
-                    throw new \moodle_exception('redirecterrordetected', 'tool_mfa',
+                    throw new moodle_exception('redirecterrordetected', 'tool_mfa',
                         $SESSION->mfa_redir_referer, $SESSION->mfa_redir_referer);
                 } else {
-                    throw new \moodle_exception('redirecterrordetected', 'error');
+                    throw new moodle_exception('redirecterrordetected', 'error');
                 }
             }
         }
@@ -798,7 +803,7 @@ class manager {
         }
 
         // Check if user can interact with MFA.
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         if (!has_capability('tool/mfa:mfaaccess', $usercontext)) {
             return false;
         }

@@ -23,6 +23,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\configcolourpicker;
+use core_admin\setting\setting\configexecutable;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\configtextarea;
+use core_admin\setting\setting\heading;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
@@ -30,11 +37,11 @@ if ($ADMIN->fulltree) {
     require_once($CFG->dirroot.'/filter/tex/lib.php');
 
     $items = array();
-    $items[] = new admin_setting_heading('filter_tex/latexheading', get_string('latexsettings', 'filter_tex'), '');
-    $items[] = new admin_setting_configtextarea('filter_tex/latexpreamble', get_string('latexpreamble','filter_tex'),
+    $items[] = new heading('filter_tex/latexheading', get_string('latexsettings', 'filter_tex'), '');
+    $items[] = new configtextarea('filter_tex/latexpreamble', get_string('latexpreamble','filter_tex'),
                    '', "\\usepackage[latin1]{inputenc}\n\\usepackage{amsmath}\n\\usepackage{amsfonts}\n\\RequirePackage{amsmath,amssymb,latexsym}\n");
-    $items[] = new admin_setting_configcolourpicker('filter_tex/latexbackground', get_string('backgroundcolour', 'admin'), '', '#FFFFFF');
-    $items[] = new admin_setting_configtext('filter_tex/density', get_string('density', 'admin'), '', '120', PARAM_INT);
+    $items[] = new configcolourpicker('filter_tex/latexbackground', get_string('backgroundcolour', 'admin'), '', '#FFFFFF');
+    $items[] = new configtext('filter_tex/density', get_string('density', 'admin'), '', '120', PARAM_INT);
 
     $default_filter_tex_pathlatex   = '';
     $default_filter_tex_pathdvips   = '';
@@ -73,15 +80,15 @@ if ($ADMIN->fulltree) {
         set_config('pathdvisvgm', trim($pathdvisvgm, " '\""), 'filter_tex');
     }
 
-    $items[] = new admin_setting_configexecutable('filter_tex/pathlatex', get_string('pathlatex', 'filter_tex'), '', $default_filter_tex_pathlatex);
-    $items[] = new admin_setting_configexecutable('filter_tex/pathdvips', get_string('pathdvips', 'filter_tex'), '', $default_filter_tex_pathdvips);
-    $items[] = new admin_setting_configexecutable('filter_tex/pathconvert', get_string('pathconvert', 'filter_tex'), '', $default_filter_tex_pathconvert);
-    $items[] = new admin_setting_configexecutable('filter_tex/pathdvisvgm', get_string('pathdvisvgm', 'filter_tex'), '', $default_filter_tex_pathdvisvgm);
+    $items[] = new configexecutable('filter_tex/pathlatex', get_string('pathlatex', 'filter_tex'), '', $default_filter_tex_pathlatex);
+    $items[] = new configexecutable('filter_tex/pathdvips', get_string('pathdvips', 'filter_tex'), '', $default_filter_tex_pathdvips);
+    $items[] = new configexecutable('filter_tex/pathconvert', get_string('pathconvert', 'filter_tex'), '', $default_filter_tex_pathconvert);
+    $items[] = new configexecutable('filter_tex/pathdvisvgm', get_string('pathdvisvgm', 'filter_tex'), '', $default_filter_tex_pathdvisvgm);
 
     // The update callback checks whether required paths actually point to executables.
     // If they don't, we force the setting to PNG as the default fallback format.
     $formats = ['png' => 'PNG', 'gif' => 'GIF', 'svg' => 'SVG'];
-    $items[] = new admin_setting_configselect(
+    $items[] = new configselect(
         'filter_tex/convertformat',
         get_string('convertformat', 'filter_tex'),
         get_string('configconvertformat', 'filter_tex'),

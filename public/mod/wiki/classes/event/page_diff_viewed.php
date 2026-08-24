@@ -23,6 +23,9 @@
  */
 
 namespace mod_wiki\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -77,7 +80,7 @@ class page_diff_viewed extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/wiki/diff.php', array(
+        return new url('/mod/wiki/diff.php', array(
             'pageid' => $this->objectid,
             'comparewith' => $this->other['comparewith'],
             'compare' => $this->other['compare']
@@ -93,10 +96,10 @@ class page_diff_viewed extends \core\event\base {
     protected function validate_data() {
         parent::validate_data();
         if (!isset($this->other['comparewith'])) {
-            throw new \coding_exception('The \'comparewith\' value must be set in other.');
+            throw new coding_exception('The \'comparewith\' value must be set in other.');
         }
         if (!isset($this->other['compare'])) {
-            throw new \coding_exception('The \'compare\' value must be set in other.');
+            throw new coding_exception('The \'compare\' value must be set in other.');
         }
     }
 

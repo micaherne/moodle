@@ -22,6 +22,9 @@
  * @copyright  2013 Sam Hemelryk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core_cache\definition;
+use core_cache\store;
+
 abstract class cachestore_tests extends advanced_testcase {
     /**
      * Returns the class name for the store.
@@ -48,8 +51,8 @@ abstract class cachestore_tests extends advanced_testcase {
         $class = $this->get_class_name();
 
         $modes = $class::get_supported_modes();
-        if ($modes & cache_store::MODE_APPLICATION) {
-            $definition = cache_definition::load_adhoc(cache_store::MODE_APPLICATION, $class, 'phpunit_test');
+        if ($modes & store::MODE_APPLICATION) {
+            $definition = definition::load_adhoc(store::MODE_APPLICATION, $class, 'phpunit_test');
             $instance = new $class($class . '_test', $class::unit_test_configuration());
 
             if (!$instance->is_ready()) {
@@ -59,8 +62,8 @@ abstract class cachestore_tests extends advanced_testcase {
                 $this->run_tests($instance);
             }
         }
-        if ($modes & cache_store::MODE_SESSION) {
-            $definition = cache_definition::load_adhoc(cache_store::MODE_SESSION, $class, 'phpunit_test');
+        if ($modes & store::MODE_SESSION) {
+            $definition = definition::load_adhoc(store::MODE_SESSION, $class, 'phpunit_test');
             $instance = new $class($class . '_test', $class::unit_test_configuration());
 
             if (!$instance->is_ready()) {
@@ -70,8 +73,8 @@ abstract class cachestore_tests extends advanced_testcase {
                 $this->run_tests($instance);
             }
         }
-        if ($modes & cache_store::MODE_REQUEST) {
-            $definition = cache_definition::load_adhoc(cache_store::MODE_REQUEST, $class, 'phpunit_test');
+        if ($modes & store::MODE_REQUEST) {
+            $definition = definition::load_adhoc(store::MODE_REQUEST, $class, 'phpunit_test');
             $instance = new $class($class . '_test', $class::unit_test_configuration());
 
             if (!$instance->is_ready()) {
@@ -86,7 +89,7 @@ abstract class cachestore_tests extends advanced_testcase {
     /**
      * Test the store for basic functionality.
      */
-    public function run_tests(cache_store $instance) {
+    public function run_tests(store $instance) {
         $object = new stdClass();
         $object->data = 1;
 
@@ -132,7 +135,7 @@ abstract class cachestore_tests extends advanced_testcase {
 
         // Test with an object.
         $this->assertTrue($instance->set('obj', $object));
-        if ($instance::get_supported_features() & cache_store::DEREFERENCES_OBJECTS) {
+        if ($instance::get_supported_features() & store::DEREFERENCES_OBJECTS) {
             $this->assertNotSame($object, $instance->get('obj'), 'Objects must be dereferenced when returned.');
         }
         $this->assertEquals($object, $instance->get('obj'));

@@ -27,6 +27,7 @@ use backup_step_exception;
 use backup_subplugin_element;
 use base_step;
 use base_step_exception;
+use core\exception\moodle_exception;
 use restore_path_element;
 use restore_plugin;
 use restore_step_exception;
@@ -161,7 +162,7 @@ final class step_test extends \advanced_testcase {
         @remove_dir(dirname($file));
         // Recreate test dir
         if (!check_dir_exists(dirname($file), true, true)) {
-            throw new \moodle_exception('error_creating_temp_dir', 'error', dirname($file));
+            throw new moodle_exception('error_creating_temp_dir', 'error', dirname($file));
         }
 
         // We need one (non interactive) controller for instatiating plan

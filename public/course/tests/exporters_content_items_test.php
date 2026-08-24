@@ -26,6 +26,7 @@ namespace core_course;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\course;
 use core_course\local\exporters\course_content_items_exporter;
 use core_course\local\repository\content_item_readonly_repository;
 
@@ -49,7 +50,7 @@ final class exporters_content_items_test extends \advanced_testcase {
         $cir = new content_item_readonly_repository();
         $contentitems = $cir->find_all_for_course($course, $user);
 
-        $ciexporter = new course_content_items_exporter($contentitems, ['context' => \context_course::instance($course->id)]);
+        $ciexporter = new course_content_items_exporter($contentitems, ['context' => course::instance($course->id)]);
         $renderer = $PAGE->get_renderer('core');
         $exportedcontentitems = $ciexporter->export($renderer);
 

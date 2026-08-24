@@ -23,7 +23,8 @@
  */
 namespace core\plugininfo;
 
-use moodle_url, part_of_admin_tree, admin_settingpage, core_plugin_manager;
+use core\exception\moodle_exception;
+use core\url, core_admin\setting\tree\part_of_admin_tree, core_admin\setting\settingpage\settingpage, core\plugin_manager;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -38,7 +39,7 @@ class format extends base {
     public static function get_enabled_plugins() {
         global $DB;
 
-        $plugins = core_plugin_manager::instance()->get_installed_plugins('format');
+        $plugins = plugin_manager::instance()->get_installed_plugins('format');
         if (!$plugins) {
             return array();
         }
@@ -75,7 +76,7 @@ class format extends base {
         if ($oldvalue == false && $disabled) {
             if (get_config('moodlecourse', 'format') === $pluginname) {
                 // The default course format can't be disabled.
-                throw new \moodle_exception('cannotdisableformat', 'error');
+                throw new moodle_exception('cannotdisableformat', 'error');
             }
             set_config('disabled', $disabled, $plugin);
             $haschanged = true;
@@ -86,7 +87,7 @@ class format extends base {
 
         if ($haschanged) {
             add_to_config_log('disabled', $oldvalue, $disabled, $plugin);
-            \core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
         }
 
         return $haschanged;
@@ -134,7 +135,7 @@ class format extends base {
 
         $section = $this->get_settings_section_name();
 
-        $settings = new admin_settingpage($section, $this->displayname, 'moodle/site:config', $this->is_enabled() === false);
+        $settings = new settingpage($section, $this->displayname, 'moodle/site:config', $this->is_enabled() === false);
         include($this->full_path('settings.php')); // This may also set $settings to null.
 
         if ($settings) {
@@ -155,7 +156,7 @@ class format extends base {
      * @return moodle_url
      */
     public static function get_manage_url() {
-        return new moodle_url('/admin/settings.php', array('section'=>'manageformats'));
+        return new url('/admin/settings.php', array('section'=>'manageformats'));
     }
 
     public function get_uninstall_extra_warning() {

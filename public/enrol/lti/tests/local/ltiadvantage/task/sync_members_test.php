@@ -16,6 +16,12 @@
 
 namespace enrol_lti\local\ltiadvantage\task;
 
+use core\context;
+use core\context\course;
+use core\context\system;
+use core\context\user as context_user;
+use core\output\user_picture;
+use core\user as core_user;
 use enrol_lti\helper;
 use enrol_lti\local\ltiadvantage\entity\user;
 use enrol_lti\local\ltiadvantage\repository\resource_link_repository;
@@ -43,16 +49,16 @@ final class sync_members_test extends \lti_advantage_testcase {
      */
     protected function verify_user_profile_image(int $userid, bool $match = true): void {
         global $CFG;
-        $user = \core_user::get_user($userid);
+        $user = core_user::get_user($userid);
         $this->setUser($user);
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = context_user::instance($user->id);
         $expected = $CFG->wwwroot . '/pluginfile.php/' . $usercontext->id . '/user/icon/boost/f2?rev='. $user->picture;
 
         $page = new \moodle_page();
         $page->set_url('/user/profile.php');
-        $page->set_context(\context_system::instance());
+        $page->set_context(system::instance());
         $renderer = $page->get_renderer('core');
-        $userpicture = new \user_picture($user);
+        $userpicture = new user_picture($user);
         if ($match) {
             $this->assertEquals($expected, $userpicture->get_url($page, $renderer)->out(false));
         } else {
@@ -208,7 +214,7 @@ final class sync_members_test extends \lti_advantage_testcase {
     protected function verify_course_enrolments(\stdClass $course, array $ltiusers) {
         global $CFG;
         require_once($CFG->libdir . '/enrollib.php');
-        $enrolledusers = get_enrolled_users(\context_course::instance($course->id));
+        $enrolledusers = get_enrolled_users(course::instance($course->id));
         $this->assertCount(count($ltiusers), $enrolledusers);
         $enrolleduserids = array_map(function($stringid) {
             return (int) $stringid;
@@ -393,7 +399,7 @@ final class sync_members_test extends \lti_advantage_testcase {
         // Since user data wasn't included in the response, the users will have been synced using fallbacks,
         // so verify these.
         foreach ($ltiusers as $ltiuser) {
-            $user = \core_user::get_user($ltiuser->get_localid());
+            $user = core_user::get_user($ltiuser->get_localid());
             // Firstname falls back to sourceid.
             $this->assertEquals($ltiuser->get_sourceid(), $user->firstname);
 
@@ -418,7 +424,7 @@ final class sync_members_test extends \lti_advantage_testcase {
         $this->assertCount(5, $ltiusers);
         $this->verify_course_enrolments($course, $ltiusers);
         foreach ($ltiusers as $ltiuser) {
-            $user = \core_user::get_user($ltiuser->get_localid());
+            $user = core_user::get_user($ltiuser->get_localid());
             $mockmemberindex = array_search($ltiuser->get_sourceid(), array_column($mockmembers, 'user_id'));
             $mockmember = $mockmembers[$mockmemberindex];
             $this->assertEquals($mockmember['given_name'], $user->firstname);
@@ -634,7 +640,7 @@ final class sync_members_test extends \lti_advantage_testcase {
         $DB->update_record('enrol', $enrol);
 
         // Delete the activity being shared by resource2, leaving resource 2 disabled as a result.
-        $modcontext = \context::instance_by_id($resource2->contextid);
+        $modcontext = context::instance_by_id($resource2->contextid);
         \core_courseformat\formatactions::cm($course->id)->delete($modcontext->instanceid);
 
         // Only the enabled resource 3 should sync members.
@@ -698,7 +704,7 @@ final class sync_members_test extends \lti_advantage_testcase {
         $authenticateduser->auth = 'manual';
         $authenticateduser->password = '1234abcD*';
         \core\user::update_user($authenticateduser);
-        $authenticateduser = \core_user::get_user($authenticateduser->id);
+        $authenticateduser = core_user::get_user($authenticateduser->id);
 
         // Mock the launch for the specified user.
         $mocklaunchuser = self::get_mock_launch_users_with_ids([$authenticateduser->id])[0];
@@ -715,7 +721,7 @@ final class sync_members_test extends \lti_advantage_testcase {
         );
         $task->execute();
 
-        $updateduser = \core_user::get_user($authenticateduser->id);
+        $updateduser = core_user::get_user($authenticateduser->id);
         $this->assertEquals($authenticateduser->firstname, $updateduser->firstname);
         $this->assertEquals($authenticateduser->lastname, $updateduser->lastname);
         $this->assertEquals($authenticateduser->email, $updateduser->email);

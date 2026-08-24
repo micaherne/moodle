@@ -27,6 +27,9 @@ require_once(__DIR__ . '/../../../../lib/behat/behat_base.php');
 
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Gherkin\Node\TableNode;
+use core\plugin_manager;
+use core\url;
+use core\user;
 use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\local\config;
 use mod_bigbluebuttonbn\test\subplugins_test_helper_trait;
@@ -100,8 +103,8 @@ XPATH
      * @param array $params
      * @return moodle_url
      */
-    public static function get_mocked_server_url(string $endpoint = '', array $params = []): moodle_url {
-        return new moodle_url(TEST_MOD_BIGBLUEBUTTONBN_MOCK_SERVER . '/' . $endpoint, $params);
+    public static function get_mocked_server_url(string $endpoint = '', array $params = []): url {
+        return new url(TEST_MOD_BIGBLUEBUTTONBN_MOCK_SERVER . '/' . $endpoint, $params);
     }
 
     /**
@@ -127,7 +130,7 @@ XPATH
      * @return moodle_url the corresponding URL.
      * @throws Exception with a meaningful error message if the specified page cannot be found.
      */
-    protected function resolve_page_url(string $page): moodle_url {
+    protected function resolve_page_url(string $page): url {
         throw new Exception("Unrecognised page type '{$page}'.");
     }
 
@@ -143,11 +146,11 @@ XPATH
      * @return moodle_url the corresponding URL.
      * @throws Exception with a meaningful error message if the specified page cannot be found.
      */
-    protected function resolve_page_instance_url(string $type, string $identifier): moodle_url {
+    protected function resolve_page_instance_url(string $type, string $identifier): url {
         switch ($type) {
             case 'Index':
                 $this->get_course_id($identifier);
-                return new moodle_url('/mod/bigbluebuttonbn/index.php', [
+                return new url('/mod/bigbluebuttonbn/index.php', [
                     'id' => $this->get_course_id($identifier),
                 ]);
             case 'BigblueButtonBN Guest':
@@ -205,7 +208,7 @@ XPATH
      */
     public function trigger_meeting_event(string $username, TableNode $data): void {
         global $DB;
-        $user = core_user::get_user_by_username($username);
+        $user = user::get_user_by_username($username);
         $rows = $data->getHash();
         foreach ($rows as $elementdata) {
             $instanceid = $DB->get_field('bigbluebuttonbn', 'id', [
@@ -298,7 +301,7 @@ XPATH
         $init = $mockedcomponent->getMethod('init');
         $init->invoke(null);
         // I enable the plugin.
-        $manager = core_plugin_manager::resolve_plugininfo_class(\mod_bigbluebuttonbn\extension::BBB_EXTENSION_PLUGIN_NAME);
+        $manager = plugin_manager::resolve_plugininfo_class(\mod_bigbluebuttonbn\extension::BBB_EXTENSION_PLUGIN_NAME);
         $manager::enable_plugin($subplugin, true);
     }
 }

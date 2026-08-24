@@ -28,7 +28,7 @@ declare(strict_types=1);
 namespace mod_assign;
 
 use advanced_testcase;
-use cm_info;
+use core_course\cm_info;
 use core\activity_dates;
 
 /**

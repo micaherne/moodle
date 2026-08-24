@@ -24,10 +24,12 @@
  *            Martin Dougiamas <http://dougiamas.com>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\exception\moodle_exception;
+
 require_once(__DIR__ . '/../config.php');
 
 if (empty($CFG->enableportfolios)) {
-    throw new \moodle_exception('disabled', 'portfolio');
+    throw new moodle_exception('disabled', 'portfolio');
 }
 
 require_once($CFG->libdir . '/portfoliolib.php');

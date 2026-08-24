@@ -24,6 +24,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\user;
+use core\exception\moodle_exception;
+use core\url;
+
 define('AJAX_SCRIPT', true);
 
 require_once(__DIR__ . '/../config.php');
@@ -211,7 +215,7 @@ switch ($action) {
                 $record->filepath = trim($record->filepath, '/');
                 $record->filepath = '/'.$record->filepath.'/';
             }
-            $usercontext = context_user::instance($USER->id);
+            $usercontext = user::instance($USER->id);
             $now = time();
             $record->contextid = $usercontext->id;
             $record->timecreated = $now;
@@ -264,17 +268,17 @@ switch ($action) {
                     $event['newfile'] = new stdClass;
                     $event['newfile']->filepath = $saveas_path;
                     $event['newfile']->filename = $unused_filename;
-                    $event['newfile']->url = moodle_url::make_draftfile_url($itemid, $saveas_path, $unused_filename)->out();
+                    $event['newfile']->url = url::make_draftfile_url($itemid, $saveas_path, $unused_filename)->out();
 
                     $event['existingfile'] = new stdClass;
                     $event['existingfile']->filepath = $saveas_path;
                     $event['existingfile']->filename = $saveas_filename;
-                    $event['existingfile']->url      = moodle_url::make_draftfile_url($itemid, $saveas_path, $saveas_filename)->out();
+                    $event['existingfile']->url      = url::make_draftfile_url($itemid, $saveas_path, $saveas_filename)->out();
                 } else {
 
                     $storedfile = $fs->create_file_from_reference($record, $repo_id, $reference);
                     $event = array(
-                        'url'=>moodle_url::make_draftfile_url($storedfile->get_itemid(), $storedfile->get_filepath(), $storedfile->get_filename())->out(),
+                        'url'=>url::make_draftfile_url($storedfile->get_itemid(), $storedfile->get_filepath(), $storedfile->get_filename())->out(),
                         'id'=>$storedfile->get_itemid(),
                         'file'=>$storedfile->get_filename(),
                         'icon' => $OUTPUT->image_url(file_file_icon($storedfile))->out(),

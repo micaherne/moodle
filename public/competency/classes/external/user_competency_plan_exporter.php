@@ -24,8 +24,8 @@
 namespace core_competency\external;
 defined('MOODLE_INTERNAL') || die();
 
-use context_system;
-use renderer_base;
+use core\context\system;
+use core\output\renderer_base;
 use stdClass;
 
 /**
@@ -72,7 +72,7 @@ class user_competency_plan_exporter extends \core\external\persistent_exporter {
      */
     protected function get_format_parameters_for_gradename() {
         return [
-            'context' => context_system::instance(), // The system context is cached, so we can get it right away.
+            'context' => system::instance(), // The system context is cached, so we can get it right away.
         ];
     }
 

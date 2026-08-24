@@ -23,6 +23,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\context_helper;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\single_select;
+use core\url;
+use core_table\output\html_table;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once(__DIR__.'/lib.php');
@@ -41,11 +50,11 @@ function report_stats_mode_menu($course, $mode, $time, $url) {
     $options = array();
     $options[STATS_MODE_GENERAL] = get_string('statsmodegeneral');
     $options[STATS_MODE_DETAILED] = get_string('statsmodedetailed');
-    if (has_capability('report/stats:view', context_system::instance())) {
+    if (has_capability('report/stats:view', system::instance())) {
         $options[STATS_MODE_RANKED] = get_string('reports');
     }
     $popupurl = $url."?course=$course->id&time=$time";
-    $select = new single_select(new moodle_url($popupurl), 'mode', $options, $mode, null);
+    $select = new single_select(new url($popupurl), 'mode', $options, $mode, null);
     $select->set_label(get_string('reports'), array('class' => 'accesshide'));
     $select->formid = 'switchmode';
     return $OUTPUT->render($select);
@@ -101,7 +110,7 @@ function report_stats_report($course, $report, $mode, $user, $roleid, $time) {
 
     foreach ($courses as $c) {
         context_helper::preload_from_record($c);
-        $context = context_course::instance($c->id);
+        $context = course::instance($c->id);
 
         if (has_capability('report/stats:view', $context)) {
             if (isset($c->visible) && $c->visible <= 0) {
@@ -119,7 +128,7 @@ function report_stats_report($course, $report, $mode, $user, $roleid, $time) {
     $reportoptions = stats_get_report_options($course->id, $mode);
     $timeoptions = report_stats_timeoptions($mode);
     if (empty($timeoptions)) {
-        throw new \moodle_exception('nostatstodisplay', '', $CFG->wwwroot.'/course/view.php?id='.$course->id);
+        throw new moodle_exception('nostatstodisplay', '', $CFG->wwwroot.'/course/view.php?id='.$course->id);
     }
 
     $users = array();
@@ -148,7 +157,7 @@ function report_stats_report($course, $report, $mode, $user, $roleid, $time) {
         $sql .= " ORDER BY {$sort}";
 
         if (!$us = $DB->get_records_sql($sql, array_merge($param->params, $moreparams))) {
-            throw new \moodle_exception('nousers');
+            throw new moodle_exception('nousers');
         }
         foreach ($us as $u) {
             $users[$u->id] = fullname($u, true);
@@ -188,7 +197,7 @@ function report_stats_report($course, $report, $mode, $user, $roleid, $time) {
     //  - If the mode is not detailed OR a valid user has been selected.
     if (!empty($report) && !empty($time) && ($mode !== STATS_MODE_DETAILED || !empty($userid))) {
         if ($report == STATS_REPORT_LOGINS && $course->id != SITEID) {
-            throw new \moodle_exception('reportnotavailable');
+            throw new moodle_exception('reportnotavailable');
         }
 
         $param = stats_get_parameters($time, $report, $course->id, $mode, $roleid);
@@ -223,7 +232,7 @@ function report_stats_report($course, $report, $mode, $user, $roleid, $time) {
 
             $rolename = '';
             $userdisplayname = '';
-            $coursecontext = context_course::instance($course->id);
+            $coursecontext = course::instance($course->id);
 
             if (!empty($roleid) && $role = $DB->get_record('role', ['id' => $roleid])) {
                 $rolename = ' ' . role_get_name($role, $coursecontext);
@@ -271,7 +280,7 @@ function report_stats_report($course, $report, $mode, $user, $roleid, $time) {
                         $a[] = $stat->line2;
                     }
                     if (empty($CFG->loglifetime) || ($stat->timeend-(60*60*24)) >= (time()-60*60*24*$CFG->loglifetime)) {
-                        if (has_capability('report/log:view', context_course::instance($course->id))) {
+                        if (has_capability('report/log:view', course::instance($course->id))) {
                             $a[] = '<a href="'.$CFG->wwwroot.'/report/log/index.php?id='.
                                 $course->id.'&amp;chooselog=1&amp;showusers=1&amp;showcourses=1&amp;user='
                                 .$userid.'&amp;date='.usergetmidnight($stat->timeend-(60*60*24)).'">'
@@ -287,7 +296,7 @@ function report_stats_report($course, $report, $mode, $user, $roleid, $time) {
                 $roles = array();
                 $times = array();
                 $missedlines = array();
-                $coursecontext = context_course::instance($course->id);
+                $coursecontext = course::instance($course->id);
                 $rolenames = get_viewable_roles($coursecontext);
                 foreach ($stats as $stat) {
                     if (!empty($stat->zerofixed)) {
@@ -326,7 +335,7 @@ function report_stats_report($course, $report, $mode, $user, $roleid, $time) {
                     krsort($rolesdata);
                     $row = array_merge(array($times[$time]),$rolesdata);
                     if (empty($CFG->loglifetime) || ($stat->timeend-(60*60*24)) >= (time()-60*60*24*$CFG->loglifetime)) {
-                        if (has_capability('report/log:view', context_course::instance($course->id))) {
+                        if (has_capability('report/log:view', course::instance($course->id))) {
                             $row[] = '<a href="'.$CFG->wwwroot.'/report/log/index.php?id='
                                 .$course->id.'&amp;chooselog=1&amp;showusers=1&amp;showcourses=1&amp;user='.$userid
                                 .'&amp;date='.usergetmidnight($time-(60*60*24)).'">'
@@ -366,7 +375,7 @@ function report_stats_print_chart($courseid, $report, $time, $mode, $userid = 0,
     global $DB, $CFG, $OUTPUT;
 
     $course = $DB->get_record("course", array("id" => $courseid), '*', MUST_EXIST);
-    $coursecontext = context_course::instance($course->id);
+    $coursecontext = course::instance($course->id);
 
     stats_check_uptodate($course->id);
 

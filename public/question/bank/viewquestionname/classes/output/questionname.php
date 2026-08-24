@@ -19,7 +19,8 @@ namespace qbank_viewquestionname\output;
 use core\output\action_link;
 use core\output\inplace_editable;
 use core\output\named_templatable;
-use renderable;
+use core\output\renderable;
+use core\output\renderer_base;
 
 /**
  * Question in place editing api call.
@@ -60,7 +61,7 @@ class questionname extends inplace_editable implements named_templatable, render
         );
     }
 
-    public function get_template_name(\renderer_base $renderer): string {
+    public function get_template_name(renderer_base $renderer): string {
         return 'core/inplace_editable';
     }
 }

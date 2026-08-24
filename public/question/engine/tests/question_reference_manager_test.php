@@ -17,7 +17,7 @@
 namespace core_question;
 
 use advanced_testcase;
-use context_system;
+use core\context\system;
 use core_question\local\bank\question_version_status;
 use core_question_generator;
 
@@ -38,7 +38,7 @@ final class question_reference_manager_test extends advanced_testcase {
 
         /** @var core_question_generator $questiongenerator */
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
 
         // Create three questions, each with three versions.
         // In each case, the third version is draft.

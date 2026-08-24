@@ -25,6 +25,9 @@
 
 namespace mod_assign\privacy;
 
+use core\context\module;
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -51,7 +54,7 @@ final class submission_legacy_polyfill_test extends \advanced_testcase {
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_assign');
         $instance = $generator->create_instance($params);
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         return new \assign($context, $cm, $params['course']);
     }
 
@@ -91,7 +94,7 @@ final class submission_legacy_polyfill_test extends \advanced_testcase {
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
         $assign = $this->create_instance(['course' => $course]);
-        $context = \context_system::instance();
+        $context = system::instance();
         $subplugin = new \assign_submission_comments($assign, 'comment');
         $requestdata = new \mod_assign\privacy\assign_plugin_request_data($context, $assign);
         $mock = $this->createMock(test_assignsubmission_legacy_polyfill_mock_wrapper::class);
@@ -109,7 +112,7 @@ final class submission_legacy_polyfill_test extends \advanced_testcase {
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
         $assign = $this->create_instance(['course' => $course]);
-        $context = \context_system::instance();
+        $context = system::instance();
         $subplugin = new \assign_submission_comments($assign, 'comment');
         $requestdata = new \mod_assign\privacy\assign_plugin_request_data($context, $assign);
         $mock = $this->createMock(test_assignsubmission_legacy_polyfill_mock_wrapper::class);
@@ -127,7 +130,7 @@ final class submission_legacy_polyfill_test extends \advanced_testcase {
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
         $assign = $this->create_instance(['course' => $course]);
-        $context = \context_system::instance();
+        $context = system::instance();
         $subplugin = new \assign_submission_comments($assign, 'comment');
         $requestdata = new \mod_assign\privacy\assign_plugin_request_data($context, $assign);
         $mock = $this->createMock(test_assignsubmission_legacy_polyfill_mock_wrapper::class);

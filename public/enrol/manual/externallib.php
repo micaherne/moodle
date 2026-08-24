@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\user;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
@@ -85,14 +88,14 @@ class enrol_manual_external extends external_api {
 
         foreach ($params['enrolments'] as $enrolment) {
             // Ensure the current user is allowed to run this function in the enrolment context.
-            $context = context_course::instance($enrolment['courseid'], IGNORE_MISSING);
+            $context = course::instance($enrolment['courseid'], IGNORE_MISSING);
             self::validate_context($context);
 
             // Check that the user has the permission to manual enrol.
             require_capability('enrol/manual:enrol', $context);
 
-            $user = core_user::get_user($enrolment['userid'], strictness: MUST_EXIST);
-            core_user::require_active_user($user);
+            $user = user::get_user($enrolment['userid'], strictness: MUST_EXIST);
+            user::require_active_user($user);
 
             // Throw an exception if user is not able to assign the role.
             $roles = get_assignable_roles($context);
@@ -192,15 +195,15 @@ class enrol_manual_external extends external_api {
         }
 
         foreach ($params['enrolments'] as $enrolment) {
-            $context = context_course::instance($enrolment['courseid']);
+            $context = course::instance($enrolment['courseid']);
             self::validate_context($context);
             require_capability('enrol/manual:unenrol', $context);
             $instance = $DB->get_record('enrol', array('courseid' => $enrolment['courseid'], 'enrol' => 'manual'));
             if (!$instance) {
                 throw new moodle_exception('wsnoinstance', 'enrol_manual', '', $enrolment);
             }
-            $user = core_user::get_user($enrolment['userid'], strictness: MUST_EXIST);
-            core_user::require_active_user($user);
+            $user = user::get_user($enrolment['userid'], strictness: MUST_EXIST);
+            user::require_active_user($user);
             if (!$enrol->allow_unenrol($instance)) {
                 throw new moodle_exception('wscannotunenrol', 'enrol_manual', '', $enrolment);
             }

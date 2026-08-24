@@ -16,6 +16,9 @@
 
 namespace core_admin\setting\setting;
 
+use core\context\system;
+use core\output\theme_config;
+
 /**
  * Used to validate theme presets code and ensuring they compile well.
  *
@@ -69,8 +72,8 @@ class configthemepreset extends \core_admin\setting\setting\configselect {
         }
 
         $fs = get_file_storage();
-        $theme = \theme_config::load($this->themename);
-        $context = \context_system::instance();
+        $theme = theme_config::load($this->themename);
+        $context = system::instance();
 
         // If the preset has not changed there is no need to validate it.
         if ($theme->settings->preset == $data) {

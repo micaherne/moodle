@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
@@ -33,13 +38,13 @@ $classformode = array(
     'view' => 'core_role_allow_view_page'
 );
 if (!isset($classformode[$mode])) {
-    throw new \moodle_exception('invalidmode', '', '', $mode);
+    throw new moodle_exception('invalidmode', '', '', $mode);
 }
 
-$baseurl = new moodle_url('/admin/roles/allow.php', array('mode'=>$mode));
+$baseurl = new url('/admin/roles/allow.php', array('mode'=>$mode));
 admin_externalpage_setup('defineroles', '', array(), $baseurl);
 
-$syscontext = context_system::instance();
+$syscontext = system::instance();
 require_capability('moodle/role:manage', $syscontext);
 
 $controller = new $classformode[$mode]();

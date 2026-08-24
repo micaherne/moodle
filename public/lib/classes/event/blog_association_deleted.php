@@ -22,6 +22,10 @@
  */
 namespace core\event;
 
+use core\context\system;
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -44,7 +48,7 @@ class blog_association_deleted extends base {
      * Set basic properties for the event.
      */
     protected function init() {
-        $this->context = \context_system::instance();
+        $this->context = system::instance();
         $this->data['objecttable'] = 'blog_association';
         $this->data['crud'] = 'd';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
@@ -74,7 +78,7 @@ class blog_association_deleted extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/blog/index.php', array('entryid' => $this->other['blogid']));
+        return new url('/blog/index.php', array('entryid' => $this->other['blogid']));
     }
 
     /**
@@ -87,11 +91,11 @@ class blog_association_deleted extends base {
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
 
         if (!isset($this->other['blogid'])) {
-            throw new \coding_exception('The \'blogid\' value must be set in other.');
+            throw new coding_exception('The \'blogid\' value must be set in other.');
         }
     }
 

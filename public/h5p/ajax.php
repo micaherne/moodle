@@ -22,6 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
 use core_h5p\factory;
 use core_h5p\framework;
 use core_h5p\local\library\autoloader;

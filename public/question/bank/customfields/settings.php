@@ -23,6 +23,9 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = ['qbank/customfields:configurecustomfields'];
@@ -31,7 +34,7 @@ if ($hassiteconfig || has_any_capability($capabilities, core\context\system::ins
     // Settings for question custom fields.
     $settings = null;
     $ADMIN->add('qbanksettings',
-            new admin_externalpage('qbank_customfields',
+            new externalpage('qbank_customfields',
                     new lang_string('pluginname', 'qbank_customfields'),
                     $CFG->wwwroot . '/question/bank/customfields/customfield.php',
                     ['qbank/customfields:configurecustomfields']

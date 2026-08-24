@@ -27,6 +27,8 @@ declare(strict_types=1);
 namespace mod_assign;
 
 use core\activity_dates;
+use core\context\module;
+use core_cache\cache;
 
 /**
  * Class for fetching the important dates in mod_assign for a given module instance and a user.
@@ -52,7 +54,7 @@ class dates extends activity_dates {
         $this->timedue = null;
 
         $course = get_course($this->cm->course);
-        $context = \context_module::instance($this->cm->id);
+        $context = module::instance($this->cm->id);
         $assign = new \assign($context, $this->cm, $course);
 
         $timeopen = $this->cm->customdata['allowsubmissionsfromdate'] ?? null;
@@ -61,7 +63,7 @@ class dates extends activity_dates {
         $activitygroup = groups_get_activity_group($this->cm, true);
         if ($activitygroup) {
             if ($assign->can_view_grades()) {
-                $groupoverride = \cache::make('mod_assign', 'overrides')->get("{$this->cm->instance}_g_{$activitygroup}");
+                $groupoverride = cache::make('mod_assign', 'overrides')->get("{$this->cm->instance}_g_{$activitygroup}");
                 if (!empty($groupoverride->allowsubmissionsfromdate)) {
                     $timeopen = $groupoverride->allowsubmissionsfromdate;
                 }

@@ -97,7 +97,7 @@ final class activity_header_test extends \advanced_testcase {
 
         $PAGE->activityheader->set_attrs([
             'hidecompletion' => true,
-            'additionalnavitems' => new \url_select([]),
+            'additionalnavitems' => new url_select([]),
             'hideoverflow' => true,
             'title' => 'My title',
             'description' => 'My description',
@@ -170,7 +170,7 @@ final class activity_header_test extends \advanced_testcase {
      * @return void
      */
     public function test_is_title_allowed(array $themeoptions, array $layoutoptions, bool $allowed): void {
-        $themeconfig = $this->getMockBuilder(\theme_config::class)
+        $themeconfig = $this->getMockBuilder(theme_config::class)
             ->disableOriginalConstructor()
             ->getMock();
         $themeconfig->activityheaderconfig = $themeoptions;

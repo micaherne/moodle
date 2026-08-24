@@ -16,7 +16,7 @@
 
 namespace customfield_select;
 
-use coding_exception;
+use core\exception\coding_exception;
 
 /**
  * Class field

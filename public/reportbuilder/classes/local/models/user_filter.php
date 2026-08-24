@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\local\models;
 
-use lang_string;
+use core\lang_string;
 use core\persistent;
 
 /**

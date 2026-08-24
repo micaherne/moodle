@@ -23,17 +23,21 @@
  */
 // Require_login is not needed here.
 // phpcs:disable moodle.Files.RequireLogin.Missing
+use core\context\system;
+use core\output\html_writer;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 
 // No require_login, unauthenticated page.
-$PAGE->set_context(\context_system::instance());
-$PAGE->set_url(new moodle_url('/admin/tool/mfa/guide.php'));
+$PAGE->set_context(system::instance());
+$PAGE->set_url(new url('/admin/tool/mfa/guide.php'));
 $PAGE->set_title(get_string('guidance', 'tool_mfa'));
 $PAGE->set_pagelayout('secure');
 
 // If guidance page isn't enabled, just redir back to home.
 if (!get_config('tool_mfa', 'guidance')) {
-    redirect(new moodle_url('/'));
+    redirect(new url('/'));
 }
 
 // Navigation. Target user preferences as previous node if authed.
@@ -41,25 +45,25 @@ if (isloggedin() && (isset($SESSION->tool_mfa_authenticated) && $SESSION->tool_m
     if ($node = $PAGE->settingsnav->find('usercurrentsettings', null)) {
         $PAGE->navbar->add($node->get_content(), $node->action());
     }
-    $PAGE->navbar->add(get_string('preferences:header', 'tool_mfa'), new \moodle_url('/admin/tool/mfa/user_preferences.php'));
+    $PAGE->navbar->add(get_string('preferences:header', 'tool_mfa'), new url('/admin/tool/mfa/user_preferences.php'));
 } else {
     // Otherwise just point to site home.
     if ($node = $PAGE->settingsnav->find('home', null)) {
         $PAGE->navbar->add($node->get_content(), $node->action());
     }
 }
-$PAGE->navbar->add(get_string('guidance', 'tool_mfa'), new \moodle_url('/admin/tool/mfa/guide.php'));
+$PAGE->navbar->add(get_string('guidance', 'tool_mfa'), new url('/admin/tool/mfa/guide.php'));
 
 echo $OUTPUT->header();
 $html = get_config('tool_mfa', 'guidancecontent');
 
 // We need to go through and replace file markups with a matching filename.
 $fs = get_file_storage();
-$context = context_system::instance();
+$context = system::instance();
 $files = $fs->get_area_files($context->id, 'tool_mfa', 'guidance', 0, 'filepath, filename', false);
 foreach ($files as $file) {
     $filename = $file->get_filename();
-    $url = moodle_url::make_pluginfile_url(
+    $url = url::make_pluginfile_url(
         $file->get_contextid(),
         $file->get_component(),
         $file->get_filearea(),

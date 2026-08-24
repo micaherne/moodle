@@ -16,8 +16,8 @@
 namespace mod_bigbluebuttonbn;
 
 use advanced_testcase;
-use context_course;
-use context_module;
+use core\context\course;
+use core\context\module;
 use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\test\testcase_helper_trait;
 
@@ -70,10 +70,10 @@ final class search_test extends advanced_testcase {
         $rs->close();
 
         // Test specific context and course context.
-        $rs = $this->bbbactivtyarea->get_document_recordset(0, context_module::instance($bbactivity1->cmid));
+        $rs = $this->bbbactivtyarea->get_document_recordset(0, module::instance($bbactivity1->cmid));
         $this->assertEquals(1, iterator_count($rs));
         $rs->close();
-        $rs = $this->bbbactivtyarea->get_document_recordset(0, context_course::instance($course->id));
+        $rs = $this->bbbactivtyarea->get_document_recordset(0, course::instance($course->id));
         $documents = iterator_to_array($rs);
         $this->assertEquals(2, count($documents));
         $rs->close();

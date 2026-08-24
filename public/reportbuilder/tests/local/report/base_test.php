@@ -19,12 +19,13 @@ declare(strict_types=1);
 namespace core_reportbuilder\local\report;
 
 use advanced_testcase;
-use coding_exception;
-use context_system;
+use core\context\course;
+use core\exception\coding_exception;
+use core\context\system;
 use core_reportbuilder\local\helpers\database;
 use core_reportbuilder\system_report_available;
 use core_reportbuilder\system_report_factory;
-use lang_string;
+use core\lang_string;
 use ReflectionClass;
 
 /**
@@ -52,7 +53,7 @@ final class base_test extends advanced_testcase {
     public function test_set_main_table(): void {
         $this->resetAfterTest();
 
-        $systemreport = system_report_factory::create(system_report_available::class, context_system::instance());
+        $systemreport = system_report_factory::create(system_report_available::class, system::instance());
         $systemreport->set_main_table('user', 'u');
 
         $this->assertEquals('{user}', $systemreport->get_main_table_sql());
@@ -69,7 +70,7 @@ final class base_test extends advanced_testcase {
     public function test_set_main_table_sql(): void {
         $this->resetAfterTest();
 
-        $systemreport = system_report_factory::create(system_report_available::class, context_system::instance());
+        $systemreport = system_report_factory::create(system_report_available::class, system::instance());
 
         $tablesql = '(SELECT id, username FROM {user} UNION SELECT 100, \'fred\')';
         $systemreport->set_main_table_sql($tablesql, 'u');
@@ -88,7 +89,7 @@ final class base_test extends advanced_testcase {
     public function test_add_base_condition_simple(): void {
         $this->resetAfterTest();
 
-        $systemreport = system_report_factory::create(system_report_available::class, context_system::instance());
+        $systemreport = system_report_factory::create(system_report_available::class, system::instance());
         $systemreport->add_base_condition_simple('username', 'admin');
         [$where, $params] = $systemreport->get_base_condition();
         $this->assertStringMatchesFormat('username = :%a', $where);
@@ -101,7 +102,7 @@ final class base_test extends advanced_testcase {
     public function test_add_base_condition_simple_null(): void {
         $this->resetAfterTest();
 
-        $systemreport = system_report_factory::create(system_report_available::class, context_system::instance());
+        $systemreport = system_report_factory::create(system_report_available::class, system::instance());
         $systemreport->add_base_condition_simple('username', null);
         [$where, $params] = $systemreport->get_base_condition();
         $this->assertEquals('username IS NULL', $where);
@@ -116,7 +117,7 @@ final class base_test extends advanced_testcase {
 
         $parameter = database::generate_param_name();
 
-        $systemreport = system_report_factory::create(system_report_available::class, context_system::instance());
+        $systemreport = system_report_factory::create(system_report_available::class, system::instance());
         $systemreport->add_base_condition_sql("username = :{$parameter}", [$parameter => 'admin']);
 
         [$where, $params] = $systemreport->get_base_condition();
@@ -132,7 +133,7 @@ final class base_test extends advanced_testcase {
 
         [$paramusername, $paramemail] = database::generate_param_names(2);
 
-        $systemreport = system_report_factory::create(system_report_available::class, context_system::instance());
+        $systemreport = system_report_factory::create(system_report_available::class, system::instance());
         $systemreport->add_base_condition_sql("username = :{$paramusername}", [$paramusername => 'admin']);
         $systemreport->add_base_condition_sql("email = :{$paramemail}", [$paramemail => 'admin@example.com']);
 
@@ -147,7 +148,7 @@ final class base_test extends advanced_testcase {
     public function test_add_base_condition_sql_empty_clause(): void {
         $this->resetAfterTest();
 
-        $systemreport = system_report_factory::create(system_report_available::class, context_system::instance());
+        $systemreport = system_report_factory::create(system_report_available::class, system::instance());
         $systemreport->add_base_condition_sql('username IS NOT NULL');
         $systemreport->add_base_condition_sql('');
 
@@ -162,7 +163,7 @@ final class base_test extends advanced_testcase {
     public function test_add_base_condition_sql_invalid_parameter(): void {
         $this->resetAfterTest();
 
-        $systemreport = system_report_factory::create(system_report_available::class, context_system::instance());
+        $systemreport = system_report_factory::create(system_report_available::class, system::instance());
 
         $this->expectException(coding_exception::class);
         $this->expectExceptionMessage('Invalid parameter names');
@@ -175,7 +176,7 @@ final class base_test extends advanced_testcase {
     public function test_get_base_condition_default(): void {
         $this->resetAfterTest();
 
-        $systemreport = system_report_factory::create(system_report_available::class, context_system::instance());
+        $systemreport = system_report_factory::create(system_report_available::class, system::instance());
 
         [$where, $params] = $systemreport->get_base_condition();
         $this->assertEmpty($where);
@@ -188,7 +189,7 @@ final class base_test extends advanced_testcase {
     public function test_get_filter_instances(): void {
         $this->resetAfterTest();
 
-        $systemreport = system_report_factory::create(system_report_available::class, context_system::instance(),
+        $systemreport = system_report_factory::create(system_report_available::class, system::instance(),
             '', '', 0, ['withfilters' => true]);
         $filters = $systemreport->get_filter_instances();
         $this->assertCount(1, $filters);
@@ -201,7 +202,7 @@ final class base_test extends advanced_testcase {
     public function test_set_downloadable(): void {
         $this->resetAfterTest();
 
-        $systemreport = system_report_factory::create(system_report_available::class, context_system::instance());
+        $systemreport = system_report_factory::create(system_report_available::class, system::instance());
         $systemreport->set_downloadable(true, 'testfilename');
         $this->assertTrue($systemreport->is_downloadable());
         $this->assertEquals('testfilename', $systemreport->get_downloadfilename());
@@ -217,11 +218,11 @@ final class base_test extends advanced_testcase {
     public function test_get_context(): void {
         $this->resetAfterTest();
 
-        $systemreport = system_report_factory::create(system_report_available::class, context_system::instance());
-        $this->assertEquals(context_system::instance(), $systemreport->get_context());
+        $systemreport = system_report_factory::create(system_report_available::class, system::instance());
+        $this->assertEquals(system::instance(), $systemreport->get_context());
 
         $course = $this->getDataGenerator()->create_course();
-        $contextcourse = \context_course::instance($course->id);
+        $contextcourse = course::instance($course->id);
         $systemreport2 = system_report_factory::create(system_report_available::class, $contextcourse);
         $this->assertEquals($contextcourse, $systemreport2->get_context());
     }
@@ -232,7 +233,7 @@ final class base_test extends advanced_testcase {
     public function test_annotate_entity(): void {
         $this->resetAfterTest();
 
-        $systemreport = system_report_factory::create(system_report_available::class, context_system::instance());
+        $systemreport = system_report_factory::create(system_report_available::class, system::instance());
 
         $method = (new ReflectionClass($systemreport))->getMethod('annotate_entity');
 
@@ -246,7 +247,7 @@ final class base_test extends advanced_testcase {
     public function test_annotate_entity_invalid(): void {
         $this->resetAfterTest();
 
-        $systemreport = system_report_factory::create(system_report_available::class, context_system::instance());
+        $systemreport = system_report_factory::create(system_report_available::class, system::instance());
 
         $method = (new ReflectionClass($systemreport))->getMethod('annotate_entity');
 
@@ -261,7 +262,7 @@ final class base_test extends advanced_testcase {
     public function test_annotate_entity_duplicate(): void {
         $this->resetAfterTest();
 
-        $systemreport = system_report_factory::create(system_report_available::class, context_system::instance());
+        $systemreport = system_report_factory::create(system_report_available::class, system::instance());
 
         $method = (new ReflectionClass($systemreport))->getMethod('annotate_entity');
 
@@ -279,7 +280,7 @@ final class base_test extends advanced_testcase {
     public function test_get_column(): void {
         $this->resetAfterTest();
 
-        $systemreport = system_report_factory::create(system_report_available::class, context_system::instance());
+        $systemreport = system_report_factory::create(system_report_available::class, system::instance());
         $column = $systemreport->get_column('user:username');
         $this->assertInstanceOf(column::class, $column);
 
@@ -293,7 +294,7 @@ final class base_test extends advanced_testcase {
     public function test_get_filter(): void {
         $this->resetAfterTest();
 
-        $systemreport = system_report_factory::create(system_report_available::class, context_system::instance(),
+        $systemreport = system_report_factory::create(system_report_available::class, system::instance(),
             '', '', 0, ['withfilters' => true]);
         $filter = $systemreport->get_filter('user:username');
         $this->assertInstanceOf(filter::class, $filter);
@@ -308,7 +309,7 @@ final class base_test extends advanced_testcase {
     public function test_get_report_persistent(): void {
         $this->resetAfterTest();
 
-        $systemreport = system_report_factory::create(system_report_available::class, context_system::instance());
+        $systemreport = system_report_factory::create(system_report_available::class, system::instance());
         $persistent = $systemreport->get_report_persistent();
         $this->assertEquals(system_report_available::class, $persistent->get('source'));
     }

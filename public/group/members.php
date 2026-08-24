@@ -22,6 +22,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @package   core_group
  */
+use core\context\course;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once(__DIR__ . '/lib.php');
 require_once($CFG->dirroot . '/user/selector/lib.php');
@@ -38,7 +42,7 @@ $PAGE->set_url('/group/members.php', array('group'=>$groupid));
 $PAGE->set_pagelayout('admin');
 
 require_login($course);
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 require_capability('moodle/course:managegroups', $context);
 
 $returnurl = $CFG->wwwroot.'/group/index.php?id='.$course->id.'&group='.$group->id;
@@ -55,7 +59,7 @@ if (optional_param('add', false, PARAM_BOOL) && confirm_sesskey()) {
     if (!empty($userstoadd)) {
         foreach ($userstoadd as $user) {
             if (!groups_add_member($groupid, $user->id)) {
-                throw new \moodle_exception('erroraddremoveuser', 'group', $returnurl);
+                throw new moodle_exception('erroraddremoveuser', 'group', $returnurl);
             }
             $groupmembersselector->invalidate_selected_users();
             $potentialmembersselector->invalidate_selected_users();
@@ -68,11 +72,11 @@ if (optional_param('remove', false, PARAM_BOOL) && confirm_sesskey()) {
     if (!empty($userstoremove)) {
         foreach ($userstoremove as $user) {
             if (!groups_remove_member_allowed($groupid, $user->id)) {
-                throw new \moodle_exception('errorremovenotpermitted', 'group', $returnurl,
+                throw new moodle_exception('errorremovenotpermitted', 'group', $returnurl,
                         $user->fullname);
             }
             if (!groups_remove_member($groupid, $user->id)) {
-                throw new \moodle_exception('erroraddremoveuser', 'group', $returnurl);
+                throw new moodle_exception('erroraddremoveuser', 'group', $returnurl);
             }
             $groupmembersselector->invalidate_selected_users();
             $potentialmembersselector->invalidate_selected_users();
@@ -89,8 +93,8 @@ $strusergroupmembership = get_string('usergroupmembership', 'group');
 $groupname = format_string($group->name);
 
 $PAGE->requires->js('/group/clientlib.js');
-$PAGE->navbar->add($strparticipants, new moodle_url('/user/index.php', array('id'=>$course->id)));
-$PAGE->navbar->add($strgroups, new moodle_url('/group/index.php', array('id'=>$course->id)));
+$PAGE->navbar->add($strparticipants, new url('/user/index.php', array('id'=>$course->id)));
+$PAGE->navbar->add($strgroups, new url('/group/index.php', array('id'=>$course->id)));
 $PAGE->navbar->add($stradduserstogroup);
 
 /// Print header

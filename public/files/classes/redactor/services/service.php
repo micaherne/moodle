@@ -16,6 +16,7 @@
 
 namespace core_files\redactor\services;
 
+use core_admin\setting\settingpage\settingpage;
 use stored_file;
 /**
  * The interface of the redaction service outlines the necessary methods for each redaction blueprint.
@@ -37,5 +38,5 @@ abstract class service {
      *
      * @param \admin_settingpage $settings The admin settings page to which settings are added.
      */
-    abstract public static function add_settings(\admin_settingpage $settings): void;
+    abstract public static function add_settings(settingpage $settings): void;
 }

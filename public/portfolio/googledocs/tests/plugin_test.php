@@ -16,6 +16,7 @@
 
 namespace portfolio_googledocs;
 
+use core\plugin_manager;
 use portfolio_admin_form;
 
 defined('MOODLE_INTERNAL') || die();
@@ -47,7 +48,7 @@ final class plugin_test extends \advanced_testcase {
     protected function enable_plugin($name = 'Instance name', $data = null) {
         $data = $data ?: new \stdClass();
         $instance = portfolio_static_function($this->pluginname, 'create_instance', $this->pluginname, $name, $data);
-        \core_plugin_manager::reset_caches();
+        plugin_manager::reset_caches();
         return $instance;
     }
 

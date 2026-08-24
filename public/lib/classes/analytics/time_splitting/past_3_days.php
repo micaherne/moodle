@@ -24,6 +24,8 @@
 
 namespace core\analytics\time_splitting;
 
+use core\lang_string;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -40,8 +42,8 @@ class past_3_days extends \core_analytics\local\time_splitting\past_periodic {
      *
      * @return \lang_string
      */
-    public static function get_name(): \lang_string {
-        return new \lang_string('timesplitting:past3days');
+    public static function get_name(): lang_string {
+        return new lang_string('timesplitting:past3days');
     }
 
     /**

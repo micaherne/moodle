@@ -27,8 +27,8 @@ declare(strict_types=1);
 namespace core_reportbuilder\local\entities;
 
 use advanced_testcase;
-use coding_exception;
-use lang_string;
+use core\exception\coding_exception;
+use core\lang_string;
 use core_reportbuilder\local\filters\text;
 use core_reportbuilder\local\report\column;
 use core_reportbuilder\local\report\filter;

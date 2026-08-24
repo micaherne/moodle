@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace mod_bigbluebuttonbn\output;
 
+use core\output\html_writer;
 use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\recording;
 
@@ -48,7 +49,7 @@ class recording_description_editable extends recording_editable {
      */
     public function get_recording_value(recording $recording): string {
         $metadescription = $recording->get('description');
-        return \html_writer::span($metadescription);
+        return html_writer::span($metadescription);
     }
 
     /**

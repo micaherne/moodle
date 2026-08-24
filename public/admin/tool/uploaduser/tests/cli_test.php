@@ -16,6 +16,8 @@
 
 namespace tool_uploaduser;
 
+use core\user;
+
 /**
  * Tests for CLI tool_uploaduser.
  *
@@ -109,7 +111,7 @@ final class cli_test extends \advanced_testcase {
         $this->assertEquals('Users created: 2', $stats[0]);
 
         // Users have default values applied.
-        $user1 = \core_user::get_user_by_username('jonest');
+        $user1 = user::get_user_by_username('jonest');
         $this->assertEquals('Brighton', $user1->city);
         $this->assertEquals('Purchasing', $user1->department);
     }
@@ -141,7 +143,7 @@ final class cli_test extends \advanced_testcase {
         $this->assertEquals('Users created: 2', $stats[0]);
 
         // Created users have data in the profile fields.
-        $user1 = \core_user::get_user_by_username('reznort');
+        $user1 = user::get_user_by_username('reznort');
         $profilefields1 = profile_user_record($user1->id);
         $this->assertObjectHasProperty('superfield', $profilefields1);
         $this->assertEquals('Loves cats', $profilefields1->superfield);
@@ -237,9 +239,9 @@ final class cli_test extends \advanced_testcase {
         $enrols = array_values(enrol_get_course_users($course->id));
         $this->assertEqualsCanonicalizing(['jonest'], [$enrols[0]->username]);
         // User reznor is not created.
-        $this->assertFalse(\core_user::get_user_by_username('reznor'));
+        $this->assertFalse(user::get_user_by_username('reznor'));
         // User jonest is not updated.
-        $this->assertEquals('OLDNAME', \core_user::get_user_by_username('jonest')->firstname);
+        $this->assertEquals('OLDNAME', user::get_user_by_username('jonest')->firstname);
     }
 
     /**
@@ -280,8 +282,8 @@ final class cli_test extends \advanced_testcase {
         $enrols = array_values(enrol_get_course_users($course->id));
         $this->assertEqualsCanonicalizing(['jonest'], [$enrols[0]->username]);
         // User reznor is not created.
-        $this->assertFalse(\core_user::get_user_by_username('reznor'));
+        $this->assertFalse(user::get_user_by_username('reznor'));
         // User jonest is updated, new first name is Tom.
-        $this->assertEquals('Tom', \core_user::get_user_by_username('jonest')->firstname);
+        $this->assertEquals('Tom', user::get_user_by_username('jonest')->firstname);
     }
 }

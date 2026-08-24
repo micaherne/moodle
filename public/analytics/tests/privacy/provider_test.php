@@ -16,6 +16,8 @@
 
 namespace core_analytics\privacy;
 
+use core\context\course;
+use core\context\system;
 use core_privacy\local\request\approved_userlist;
 use core_analytics\tests\mlbackend_helper_trait;
 
@@ -157,7 +159,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->model2->train();
         $this->model2->predict();
 
-        list($total, $predictions) = $this->model2->get_predictions(\context_course::instance($this->c1->id));
+        list($total, $predictions) = $this->model2->get_predictions(course::instance($this->c1->id));
 
         $this->setUser($this->u3);
         $prediction = reset($predictions);
@@ -173,9 +175,9 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         global $CFG;
 
         $component = 'core_analytics';
-        $course1context = \context_course::instance($this->c1->id);
-        $course2context = \context_course::instance($this->c2->id);
-        $systemcontext = \context_system::instance();
+        $course1context = course::instance($this->c1->id);
+        $course2context = course::instance($this->c2->id);
+        $systemcontext = system::instance();
         $expected = [$this->u1->id, $this->u2->id, $this->u3->id, $this->u4->id, $this->u5->id, $this->u6->id,
             $this->u7->id, $this->u8->id, $this->u9->id, $this->u10->id];
 
@@ -218,7 +220,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         // We have 1 prediction action.
         $this->assertEquals(1, $DB->count_records('analytics_prediction_actions'));
 
-        $coursecontext = \context_course::instance($this->c1->id);
+        $coursecontext = course::instance($this->c1->id);
 
         // Delete the course that was used for prediction.
         provider::delete_data_for_all_users_in_context($coursecontext);
@@ -271,9 +273,9 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         global $DB;
 
         $component = 'core_analytics';
-        $course1context = \context_course::instance($this->c1->id);
-        $course2context = \context_course::instance($this->c2->id);
-        $systemcontext = \context_system::instance();
+        $course1context = course::instance($this->c1->id);
+        $course2context = course::instance($this->c2->id);
+        $systemcontext = system::instance();
 
         // Ensure all records exist in expected contexts.
         $expectedcontexts = [$course1context->id, $course2context->id, $systemcontext->id];
@@ -439,7 +441,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
     public function test_export_data(): void {
         global $DB;
 
-        $system = \context_system::instance();
+        $system = system::instance();
         list($total, $predictions) = $this->model1->get_predictions($system);
         foreach ($predictions as $key => $prediction) {
             if ($prediction->get_prediction_data()->sampleid !== $this->u3->id) {

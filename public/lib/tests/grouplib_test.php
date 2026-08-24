@@ -16,6 +16,8 @@
 
 namespace core;
 
+use core\context\course;
+use core\context\system;
 use core_group\visibility;
 
 /**
@@ -180,7 +182,7 @@ final class grouplib_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
 
         $course = $generator->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $student1 = $generator->create_user();
         $student2 = $generator->create_user();
         $plugin = enrol_get_plugin('manual');
@@ -372,7 +374,7 @@ final class grouplib_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
 
         $course = $generator->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $student1 = $generator->create_user();
         $student2 = $generator->create_user();
         $plugin = enrol_get_plugin('manual');
@@ -407,7 +409,7 @@ final class grouplib_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
 
         $course = $generator->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $student1 = $generator->create_user();
         $student2 = $generator->create_user();
         $plugin = enrol_get_plugin('manual');
@@ -440,7 +442,7 @@ final class grouplib_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
 
         $course = $generator->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $student1 = $generator->create_user();
         $student2 = $generator->create_user();
         $plugin = enrol_get_plugin('manual');
@@ -461,7 +463,7 @@ final class grouplib_test extends \advanced_testcase {
         groups_add_member($group->id, $student1->id);
 
         // Test with members at any group and with an invalid $context.
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $this->expectException('coding_exception');
         list($sql, $params) = groups_get_members_ids_sql(USERSWITHOUTGROUP, $syscontext);
     }
@@ -755,7 +757,7 @@ final class grouplib_test extends \advanced_testcase {
         // Create a course category, course and groups.
         $cat = $generator->create_category(array('parent' => 0));
         $course = $generator->create_course(array('category' => $cat->id));
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $group1 = $generator->create_group(array('courseid' => $course->id, 'name' => 'Group 1'));
         $group2 = $generator->create_group(array('courseid' => $course->id, 'name' => 'Group 2'));
         $group3 = $generator->create_group(array('courseid' => $course->id, 'name' => 'Group 3'));
@@ -1395,7 +1397,7 @@ final class grouplib_test extends \advanced_testcase {
         // Create a course category, course and groups.
         $cat = $generator->create_category(array('parent' => 0));
         $course = $generator->create_course(array('category' => $cat->id));
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $group1 = $generator->create_group(array('courseid' => $course->id, 'name' => 'Group 1'));
         $group2 = $generator->create_group(array('courseid' => $course->id, 'name' => 'Group 2'));
         $group3 = $generator->create_group(array('courseid' => $course->id, 'name' => 'Group 3'));
@@ -2144,7 +2146,7 @@ final class grouplib_test extends \advanced_testcase {
         $generator->create_group_member(['groupid' => $groups['own']->id, 'userid' => $users[5]->id]);
         $generator->create_group_member(['groupid' => $groups['none']->id, 'userid' => $users[5]->id]);
 
-        $generator->role_assign('editingteacher', $users[5]->id, \context_system::instance());
+        $generator->role_assign('editingteacher', $users[5]->id, system::instance());
 
         // User can see all groups they are in, except group with visibility::NONE.
         $this->setUser($users[1]);

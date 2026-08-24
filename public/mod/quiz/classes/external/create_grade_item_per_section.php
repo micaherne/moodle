@@ -16,7 +16,7 @@
 
 namespace mod_quiz\external;
 
-use coding_exception;
+use core\exception\coding_exception;
 use core_external\external_api;
 use core_external\external_description;
 use core_external\external_function_parameters;
@@ -25,7 +25,7 @@ use core_external\external_single_structure;
 use core_external\external_value;
 use mod_quiz\quiz_attempt;
 use mod_quiz\quiz_settings;
-use moodle_exception;
+use core\exception\moodle_exception;
 use stdClass;
 
 /**

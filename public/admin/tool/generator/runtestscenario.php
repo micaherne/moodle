@@ -22,6 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
 use tool_generator\local\testscenario\runner;
 use tool_generator\form\featureimport;
 use tool_generator\output\parsingresult;
@@ -36,7 +37,7 @@ core_php_time_limit::raise(300);
 
 admin_externalpage_setup('toolgenerator_runtestscenario');
 
-$currenturl = new moodle_url('/admin/tool/generator/runtestscenario.php');
+$currenturl = new url('/admin/tool/generator/runtestscenario.php');
 $runner = new runner();
 
 /** @var core_renderer $output*/

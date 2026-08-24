@@ -26,6 +26,12 @@
  * @package course
  */
 
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\single_button;
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->libdir.'/completionlib.php');
 
@@ -39,16 +45,16 @@ $user = optional_param('user', 0, PARAM_INT);
 $rolec = optional_param('rolec', 0, PARAM_INT);
 
 if (!$cmid && !$courseid) {
-    throw new \moodle_exception('invalidarguments');
+    throw new moodle_exception('invalidarguments');
 }
 
 // Process self completion
 if ($courseid) {
-    $PAGE->set_url(new moodle_url('/course/togglecompletion.php', array('course'=>$courseid)));
+    $PAGE->set_url(new url('/course/togglecompletion.php', array('course'=>$courseid)));
 
     // Check user is logged in
     $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
-    $context = context_course::instance($course->id);
+    $context = course::instance($course->id);
     require_login($course);
 
     $completion = new completion_info($course);
@@ -93,12 +99,12 @@ if ($courseid) {
             $completion = $completion->get_completion($USER->id, COMPLETION_CRITERIA_TYPE_SELF);
 
             if (!$completion) {
-                throw new \moodle_exception('noselfcompletioncriteria', 'completion');
+                throw new moodle_exception('noselfcompletioncriteria', 'completion');
             }
 
             // Check if the user has already marked themselves as complete
             if ($completion->is_complete()) {
-                throw new \moodle_exception('useralreadymarkedcomplete', 'completion');
+                throw new moodle_exception('useralreadymarkedcomplete', 'completion');
             }
 
             $completion->mark_complete();
@@ -112,8 +118,8 @@ if ($courseid) {
         $PAGE->set_heading($course->fullname);
         $PAGE->navbar->add($strconfirm);
         echo $OUTPUT->header();
-        $buttoncontinue = new single_button(new moodle_url('/course/togglecompletion.php', array('course'=>$courseid, 'confirm'=>1, 'sesskey'=>sesskey())), get_string('yes'), 'post');
-        $buttoncancel   = new single_button(new moodle_url('/course/view.php', array('id'=>$courseid)), get_string('no'), 'get');
+        $buttoncontinue = new single_button(new url('/course/togglecompletion.php', array('course'=>$courseid, 'confirm'=>1, 'sesskey'=>sesskey())), get_string('yes'), 'post');
+        $buttoncancel   = new single_button(new url('/course/view.php', array('id'=>$courseid)), get_string('no'), 'get');
         echo $OUTPUT->confirm($strconfirm, $buttoncontinue, $buttoncancel);
         echo $OUTPUT->footer();
         exit;
@@ -129,7 +135,7 @@ switch($targetstate) {
     case COMPLETION_INCOMPLETE:
         break;
     default:
-        throw new \moodle_exception('unsupportedstate');
+        throw new moodle_exception('unsupportedstate');
 }
 
 // Get course-modules entry
@@ -138,10 +144,10 @@ $course = $DB->get_record('course', array('id'=>$cm->course), '*', MUST_EXIST);
 
 // Check user is logged in
 require_login($course, false, $cm);
-require_capability('moodle/course:togglecompletion', context_module::instance($cmid));
+require_capability('moodle/course:togglecompletion', module::instance($cmid));
 
 if (isguestuser() or !confirm_sesskey()) {
-    throw new \moodle_exception('error');
+    throw new moodle_exception('error');
 }
 
 // Set up completion object and check it is enabled.

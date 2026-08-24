@@ -238,7 +238,7 @@ class preferences {
 
         $cleanvalue = user::clean_preference($value, $preference);
         if ($cleanvalue !== $value) {
-            throw new \invalid_parameter_exception("Invalid value for preference '$preference': '{$value}'");
+            throw new invalid_parameter_exception("Invalid value for preference '$preference': '{$value}'");
         }
         $value = $cleanvalue;
         set_user_preference($preference, $value, $user->id);

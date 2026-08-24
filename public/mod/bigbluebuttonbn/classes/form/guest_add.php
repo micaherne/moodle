@@ -15,13 +15,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace mod_bigbluebuttonbn\form;
 
-use context;
+use core\context;
+use core\output\html_writer;
+use core_external\restricted_context_exception;
 use core_form\dynamic_form;
 use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\local\exceptions\bigbluebutton_exception;
 use mod_bigbluebuttonbn\task\send_guest_emails;
-use moodle_exception;
-use moodle_url;
+use core\exception\moodle_exception;
+use core\url;
 use MoodleQuickForm;
 
 /**
@@ -94,7 +96,7 @@ class guest_add extends dynamic_form {
             }
         }
         if (!empty($emailserrors)) {
-            $errors['emails'] = \html_writer::alist($emailserrors);
+            $errors['emails'] = html_writer::alist($emailserrors);
         }
         return $errors;
     }
@@ -194,7 +196,7 @@ class guest_add extends dynamic_form {
         $context = $this->get_context_for_dynamic_submission();
         $instance = instance::get_from_cmid($context->instanceid);
         if (!$instance->is_moderator()) {
-            throw new \restricted_context_exception();
+            throw new restricted_context_exception();
         }
     }
 
@@ -213,8 +215,8 @@ class guest_add extends dynamic_form {
      *
      * @return moodle_url
      */
-    protected function get_page_url_for_dynamic_submission(): moodle_url {
+    protected function get_page_url_for_dynamic_submission(): url {
         $context = $this->get_context_for_dynamic_submission();
-        return new moodle_url('/mod/bigbluebuttonbn/view.php', ['id' => $context->instanceid]);
+        return new url('/mod/bigbluebuttonbn/view.php', ['id' => $context->instanceid]);
     }
 }

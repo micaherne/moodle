@@ -17,7 +17,7 @@
 namespace core\output;
 
 use core\exception\coding_exception;
-use moodle_url;
+use core\url;
 use stdClass;
 
 /**
@@ -247,7 +247,7 @@ class url_select implements renderable, templatable {
         $data->title = $this->tooltip;
         $data->id = !empty($attributes['id']) ? $attributes['id'] : html_writer::random_id('url_select');
         $data->sesskey = sesskey();
-        $data->action = (new moodle_url('/course/jumpto.php'))->out(false);
+        $data->action = (new url('/course/jumpto.php'))->out(false);
 
         // Remove attributes passed as property directly.
         unset($attributes['class']);

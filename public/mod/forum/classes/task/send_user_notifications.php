@@ -24,6 +24,14 @@
 
 namespace mod_forum\task;
 
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\user_picture;
+use core\url;
+use core\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -108,7 +116,7 @@ class send_user_notifications extends \core\task\adhoc_task {
         // Raise the time limit for each discussion.
         \core_php_time_limit::raise(120);
 
-        $this->recipient = \core_user::get_user($this->get_userid());
+        $this->recipient = user::get_user($this->get_userid());
 
         // Create the generic messageinboundgenerator.
         $this->inboundmanager = new \core\message\inbound\address_manager();
@@ -124,7 +132,7 @@ class send_user_notifications extends \core\task\adhoc_task {
         $sentcount = 0;
         $this->log_start("Sending messages to {$this->recipient->username} ({$this->recipient->id})");
         foreach ($this->courses as $course) {
-            $coursecontext = \context_course::instance($course->id);
+            $coursecontext = course::instance($course->id);
             if (!$course->visible and !has_capability('moodle/course:viewhiddencourses', $coursecontext)) {
                 // The course is hidden and the user does not have access to it.
                 // Permissions may have changed since it was queued.
@@ -134,7 +142,7 @@ class send_user_notifications extends \core\task\adhoc_task {
                 $forum = $this->forums[$forumid];
 
                 $cm = get_fast_modinfo($course)->instances['forum'][$forumid];
-                $modcontext = \context_module::instance($cm->id);
+                $modcontext = module::instance($cm->id);
 
                 foreach (array_values($this->forumdiscussions[$forumid]) as $discussionid) {
                     $discussion = $this->discussions[$discussionid];
@@ -188,7 +196,7 @@ class send_user_notifications extends \core\task\adhoc_task {
             // All messages errored. So fail.
             // Checking if the task failed because of empty email address so that it doesn't get rescheduled.
             if (!empty($this->recipient->email)) {
-                throw new \moodle_exception('Error sending posts.');
+                throw new moodle_exception('Error sending posts.');
             } else {
                 mtrace("Failed to send emails for the user with ID ".
                     $this->recipient->id ." due to an empty email address. Skipping re-queuing of the task.");
@@ -312,7 +320,7 @@ class send_user_notifications extends \core\task\adhoc_task {
         $cleanforumname = str_replace('"', "'", strip_tags(format_string($forum->name)));
 
         $shortname = format_string($course->shortname, true, [
-                'context' => \context_course::instance($course->id),
+                'context' => course::instance($course->id),
             ]);
 
         // Generate a reply-to address from using the Inbound Message handler.
@@ -365,7 +373,7 @@ class send_user_notifications extends \core\task\adhoc_task {
                         'footer' => "\n\n" . get_string('replytopostbyemail', 'mod_forum'),
                     ],
                     'fullmessagehtml' => [
-                        'footer' => \html_writer::tag('p', get_string('replytopostbyemail', 'mod_forum')),
+                        'footer' => html_writer::tag('p', get_string('replytopostbyemail', 'mod_forum')),
                     ]
                 ]);
         }
@@ -376,11 +384,11 @@ class send_user_notifications extends \core\task\adhoc_task {
                 'message' => $post->message,
             ]);
 
-        $contexturl = new \moodle_url('/mod/forum/discuss.php', ['d' => $discussion->id], "p{$post->id}");
+        $contexturl = new url('/mod/forum/discuss.php', ['d' => $discussion->id], "p{$post->id}");
         $eventdata->contexturl = $contexturl->out();
         $eventdata->contexturlname = $discussion->name;
         // User image.
-        $userpicture = new \user_picture($author);
+        $userpicture = new user_picture($author);
         $userpicture->size = 1; // Use f1 size.
         $userpicture->includetoken = $this->recipient->id; // Generate an out-of-session token for the user receiving the message.
         $eventdata->customdata = [
@@ -459,7 +467,7 @@ class send_user_notifications extends \core\task\adhoc_task {
      */
     protected function get_message_headers($course, $forum, $discussion, $post, $a, $message) {
         $cleanforumname = str_replace('"', "'", strip_tags(format_string($forum->name)));
-        $viewurl = new \moodle_url('/mod/forum/view.php', ['f' => $forum->id]);
+        $viewurl = new url('/mod/forum/view.php', ['f' => $forum->id]);
 
         $headers = [
             // Headers to make emails easier to track.

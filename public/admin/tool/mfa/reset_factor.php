@@ -23,6 +23,9 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+use core\user;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 admin_externalpage_setup('tool_mfa_resetfactor');
@@ -34,9 +37,9 @@ $factors = \tool_mfa\plugininfo\factor::get_factors();
 $form = new \tool_mfa\local\form\reset_factor(null, ['factors' => $factors, 'bulk' => $bulk]);
 if ($bulk) {
     $form->set_data(['returnurl' => $returnurl]);
-    $return = new moodle_url($returnurl ?: '/admin/user/user_bulk.php');
+    $return = new url($returnurl ?: '/admin/user/user_bulk.php');
 } else {
-    $return = new moodle_url('/admin/category.php', ['category' => 'toolmfafolder']);
+    $return = new url('/admin/category.php', ['category' => 'toolmfafolder']);
 }
 
 if ($form->is_cancelled()) {
@@ -57,7 +60,7 @@ if ($form->is_cancelled()) {
 
     foreach ($users as $user) {
         if (!$user instanceof stdClass) {
-            $user = \core_user::get_user($user);
+            $user = user::get_user($user);
         }
 
         // Add a user preference, to display a notification to the user that their factor was reset.

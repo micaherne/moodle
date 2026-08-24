@@ -16,7 +16,14 @@
 
 namespace mod_quiz\local;
 
-use context_course;
+use core\context\course;
+use core\context\module;
+use core\exception\coding_exception;
+use core\exception\invalid_parameter_exception;
+use core\exception\required_capability_exception;
+use core\lang_string;
+use core\user;
+use core_course\cm_info;
 use core_group\hook\after_group_membership_added;
 use core_group\hook\after_group_membership_removed;
 use mod_quiz\event\group_override_created;
@@ -51,7 +58,7 @@ class override_manager {
         /** @var \stdClass The quiz linked to this manager instance **/
         protected readonly \stdClass $quiz,
         /** @var \context_module The context being operated in **/
-        public readonly \context_module $context
+        public readonly module $context
     ) {
         global $CFG;
         // Required for quiz_* methods.
@@ -59,7 +66,7 @@ class override_manager {
 
         // Sanity check that the context matches the quiz.
         if (empty($quiz->cmid) || $quiz->cmid != $context->instanceid) {
-            throw new \coding_exception("Given context does not match the quiz object");
+            throw new coding_exception("Given context does not match the quiz object");
         }
     }
 
@@ -105,47 +112,47 @@ class override_manager {
         }
 
         if (!$hasoverridevalues) {
-            $errors['general'][] = new \lang_string('nooverridedata', 'quiz');
+            $errors['general'][] = new lang_string('nooverridedata', 'quiz');
         }
 
         // Ensure quiz is a valid quiz.
         if (empty($formdata->quiz) || empty(get_coursemodule_from_instance('quiz', $formdata->quiz))) {
-            $errors['quiz'][] = new \lang_string('overrideinvalidquiz', 'quiz');
+            $errors['quiz'][] = new lang_string('overrideinvalidquiz', 'quiz');
         }
 
         // Ensure either userid or groupid is set.
         if (empty($formdata->userid) && empty($formdata->groupid)) {
-            $errors['general'][] = new \lang_string('overridemustsetuserorgroup', 'quiz');
+            $errors['general'][] = new lang_string('overridemustsetuserorgroup', 'quiz');
         }
 
         // Ensure not both userid and groupid are set.
         if (!empty($formdata->userid) && !empty($formdata->groupid)) {
-            $errors['general'][] = new \lang_string('overridecannotsetbothgroupanduser', 'quiz');
+            $errors['general'][] = new lang_string('overridecannotsetbothgroupanduser', 'quiz');
         }
 
         // If group is set, ensure it is a real group.
         if (!empty($formdata->groupid) && empty(groups_get_group($formdata->groupid))) {
-            $errors['groupid'][] = new \lang_string('overrideinvalidgroup', 'quiz');
+            $errors['groupid'][] = new lang_string('overrideinvalidgroup', 'quiz');
         }
 
         // If user is set, ensure it is a valid user.
-        if (!empty($formdata->userid) && !\core_user::is_real_user($formdata->userid, true)) {
-            $errors['userid'][] = new \lang_string('overrideinvaliduser', 'quiz');
+        if (!empty($formdata->userid) && !user::is_real_user($formdata->userid, true)) {
+            $errors['userid'][] = new lang_string('overrideinvaliduser', 'quiz');
         }
 
         // Ensure timeclose is later than timeopen, if both are set.
         if (!empty($formdata->timeclose) && !empty($formdata->timeopen) && $formdata->timeclose <= $formdata->timeopen) {
-            $errors['timeclose'][] = new \lang_string('closebeforeopen', 'quiz');
+            $errors['timeclose'][] = new lang_string('closebeforeopen', 'quiz');
         }
 
         // Ensure attempts is a integer greater than or equal to 0 (0 is unlimited attempts).
         if (isset($formdata->attempts) && ((int) $formdata->attempts < 0)) {
-            $errors['attempts'][] = new \lang_string('overrideinvalidattempts', 'quiz');
+            $errors['attempts'][] = new lang_string('overrideinvalidattempts', 'quiz');
         }
 
         // Ensure timelimit is greather than zero.
         if (!empty($formdata->timelimit) && $formdata->timelimit <= 0) {
-            $errors['timelimit'][] = new \lang_string('overrideinvalidtimelimit', 'quiz');
+            $errors['timelimit'][] = new lang_string('overrideinvalidtimelimit', 'quiz');
         }
 
         // Ensure other records do not exist with the same group or user.
@@ -161,7 +168,7 @@ class override_manager {
 
             // If count is not zero, it means existing records exist already for this user/group.
             if (!empty($records)) {
-                $errors['general'][] = new \lang_string('overridemultiplerecordsexist', 'quiz');
+                $errors['general'][] = new lang_string('overridemultiplerecordsexist', 'quiz');
             }
         }
 
@@ -203,17 +210,17 @@ class override_manager {
 
         // Existing record must exist.
         if (empty($existingrecord)) {
-            $errors['general'][] = new \lang_string('overrideinvalidexistingid', 'quiz');
+            $errors['general'][] = new lang_string('overrideinvalidexistingid', 'quiz');
         }
 
         // Group value must match existing record if it is set in the formdata.
         if (!empty($existingrecord) && !empty($formdata->groupid) && $existingrecord->groupid != $formdata->groupid) {
-            $errors['groupid'][] = new \lang_string('overridecannotchange', 'quiz');
+            $errors['groupid'][] = new lang_string('overridecannotchange', 'quiz');
         }
 
         // User value must match existing record if it is set in the formdata.
         if (!empty($existingrecord) && !empty($formdata->userid) && $existingrecord->userid != $formdata->userid) {
-            $errors['userid'][] = new \lang_string('overridecannotchange', 'quiz');
+            $errors['userid'][] = new lang_string('overridecannotchange', 'quiz');
         }
 
         return $errors;
@@ -266,7 +273,7 @@ class override_manager {
         $errors = $this->validate_data($datatoset);
         if (!empty($errors)) {
             $errorstr = implode(',', $errors);
-            throw new \invalid_parameter_exception($errorstr);
+            throw new invalid_parameter_exception($errorstr);
         }
 
         // Insert or update.
@@ -349,7 +356,7 @@ class override_manager {
         // Ensure all the given ids exist, so the user is aware if they give a dodgy id.
         $missingids = array_diff($ids, array_keys($records));
         if (!empty($missingids)) {
-            throw new \invalid_parameter_exception(get_string('overridemissingdelete', 'quiz', implode(',', $missingids)));
+            throw new invalid_parameter_exception(get_string('overridemissingdelete', 'quiz', implode(',', $missingids)));
         }
 
         $this->delete_overrides($records, $shouldlog);
@@ -384,15 +391,15 @@ class override_manager {
 
         foreach ($overrides as $override) {
             if (empty($override->id)) {
-                throw new \coding_exception("All overrides must specify an ID");
+                throw new coding_exception("All overrides must specify an ID");
             }
 
             if (empty($override->quiz)) {
-                throw new \coding_exception("All overrides must specify a quiz ID");
+                throw new coding_exception("All overrides must specify a quiz ID");
             }
 
             if ($override->quiz != $this->quiz->id) {
-                throw new \coding_exception("All overrides must belong to the quiz linked to this manager");
+                throw new coding_exception("All overrides must belong to the quiz linked to this manager");
             }
 
             // Sanity check that user xor group is specified.
@@ -438,7 +445,7 @@ class override_manager {
         $xorset = $groupset ^ $userset;
 
         if (!$xorset) {
-            throw new \coding_exception("Either userid or groupid must be specified, but not both.");
+            throw new coding_exception("Either userid or groupid must be specified, but not both.");
         }
     }
 
@@ -485,7 +492,7 @@ class override_manager {
         // If user can manage, they can also view.
         // It would not make sense to be able to create and edit overrides without being able to view them.
         if (!has_any_capability(['mod/quiz:viewoverrides', 'mod/quiz:manageoverrides'], $this->context)) {
-            throw new \required_capability_exception($this->context, 'mod/quiz:viewoverrides', 'nopermissions', '');
+            throw new required_capability_exception($this->context, 'mod/quiz:viewoverrides', 'nopermissions', '');
         }
     }
 
@@ -497,7 +504,7 @@ class override_manager {
      * @param \cm_info $cm
      * @return bool
      */
-    public function can_view_override(\stdClass $override, \stdClass $course, \cm_info $cm): bool {
+    public function can_view_override(\stdClass $override, \stdClass $course, cm_info $cm): bool {
         if ($override->groupid) {
             return groups_group_visible($override->groupid, $course, $cm);
         } else {
@@ -705,7 +712,7 @@ class override_manager {
 
         // Clear the cache for all users in the course for each quiz that had an orphaned group override.
         $quizids = array_unique(array_column($records, 'quiz'));
-        $userids = array_keys(get_enrolled_users(context_course::instance($courseid), '', 0, 'u.id'));
+        $userids = array_keys(get_enrolled_users(course::instance($courseid), '', 0, 'u.id'));
         foreach ($quizids as $quizid) {
             quiz_overrides_cache_manager::purge_for_users($quizid, $userids);
         }

@@ -24,6 +24,8 @@
 
 namespace core_admin\local\settings;
 
+use core_admin\setting\setting\configmultiselect;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/adminlib.php');
@@ -33,7 +35,7 @@ require_once($CFG->libdir . '/adminlib.php');
  * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @copyright 2020 The Open University
  */
-class autocomplete extends \admin_setting_configmultiselect {
+class autocomplete extends configmultiselect {
     /** @var bool Should we allow typing new entries to the field? */
     protected $tags = false;
     /** @var string Name of an AMD module to send/process ajax requests. */

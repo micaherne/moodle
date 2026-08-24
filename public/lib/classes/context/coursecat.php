@@ -18,7 +18,7 @@ namespace core\context;
 
 use core\context;
 use stdClass;
-use coding_exception, moodle_url;
+use core\exception\coding_exception, core\url;
 
 /**
  * Course category context class
@@ -97,7 +97,7 @@ class coursecat extends context {
      * @return moodle_url
      */
     public function get_url() {
-        return new moodle_url('/course/index.php', array('categoryid' => $this->_instanceid));
+        return new url('/course/index.php', array('categoryid' => $this->_instanceid));
     }
 
     /**

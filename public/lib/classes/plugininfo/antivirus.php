@@ -16,6 +16,8 @@
 
 namespace core\plugininfo;
 
+use core\plugin_manager;
+
 /**
  * Defines classes used for plugin info.
  *
@@ -68,7 +70,7 @@ class antivirus extends base {
             add_to_config_log('antiviruses', $CFG->antiviruses, $new, 'core');
             set_config('antiviruses', $new);
             // Reset caches.
-            \core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
         }
 
         return $haschanged;

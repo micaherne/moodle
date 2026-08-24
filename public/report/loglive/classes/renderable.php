@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\output\renderable;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -104,9 +108,9 @@ class report_loglive_renderable implements renderable {
 
         // Use page url if empty.
         if (empty($url)) {
-            $url = new moodle_url($PAGE->url);
+            $url = new url($PAGE->url);
         } else {
-            $url = new moodle_url($url);
+            $url = new url($url);
         }
         $this->url = $url;
 
@@ -186,7 +190,7 @@ class report_loglive_renderable implements renderable {
         $filter = new \stdClass();
         if (!empty($this->course)) {
             $filter->courseid = $this->course->id;
-            $context = context_course::instance($filter->courseid);
+            $context = course::instance($filter->courseid);
             if (!has_capability('moodle/site:viewanonymousevents', $context)) {
                 $filter->anonymous = 0;
             }

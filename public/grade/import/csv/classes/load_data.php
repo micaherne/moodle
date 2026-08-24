@@ -22,6 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -507,7 +510,7 @@ class gradeimport_csv_load_data {
                     $maperrors[$j] = true;
                 } else {
                     // Collision.
-                    throw new \moodle_exception('cannotmapfield', '', '', $j);
+                    throw new moodle_exception('cannotmapfield', '', '', $j);
                 }
             }
         }
@@ -607,7 +610,7 @@ class gradeimport_csv_load_data {
                             $timemodified = $gradegrade->get_dategraded();
                             if (!empty($timemodified) && ($exportedtime < $timemodified)) {
                                 // The item was graded after we exported it, we return here not to override it.
-                                $user = core_user::get_user($this->studentid);
+                                $user = user::get_user($this->studentid);
                                 $this->cleanup_import(get_string('gradealreadyupdated', 'grades', fullname($user)));
                                 return $this->status;
                             }

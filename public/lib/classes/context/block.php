@@ -18,7 +18,7 @@ namespace core\context;
 
 use core\context;
 use stdClass;
-use coding_exception, moodle_url;
+use core\exception\coding_exception, core\url;
 
 /**
  * Block context class

@@ -25,6 +25,9 @@
 
 namespace core;
 
+use core\context\module;
+use core\context\system;
+use core\context\user;
 use file_exception;
 use file_reference_exception;
 use file_storage;
@@ -65,7 +68,7 @@ final class file_storage_test extends \advanced_testcase {
         $installedfiles = $DB->count_records('files', array());
 
         $content = 'abcd';
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $filerecord = array(
             'contextid' => $syscontext->id,
             'component' => 'core',
@@ -138,7 +141,7 @@ final class file_storage_test extends \advanced_testcase {
         $installedfiles = $DB->count_records('files', array());
 
         $filepath = $CFG->dirroot.'/lib/filestorage/tests/fixtures/testimage.jpg';
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $filerecord = array(
             'contextid' => $syscontext->id,
             'component' => 'core',
@@ -217,7 +220,7 @@ final class file_storage_test extends \advanced_testcase {
         $this->resetAfterTest(false);
 
         $filepath = $CFG->dirroot.'/lib/filestorage/tests/fixtures/testimage.jpg';
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $filerecord = array(
             'contextid' => $syscontext->id,
             'component' => 'core',
@@ -276,7 +279,7 @@ final class file_storage_test extends \advanced_testcase {
      */
     public function test_get_file_preview_nonimage(): void {
         $this->resetAfterTest(true);
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $filerecord = array(
             'contextid' => $syscontext->id,
             'component' => 'core',
@@ -306,7 +309,7 @@ final class file_storage_test extends \advanced_testcase {
 
         $this->resetAfterTest();
         $fs = get_file_storage();
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $component = 'core';
         $filearea  = 'unittest';
         $itemid    = 0;
@@ -355,8 +358,8 @@ final class file_storage_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $this->setUser($user);
-        $usercontext = \context_user::instance($user->id);
-        $syscontext = \context_system::instance();
+        $usercontext = user::instance($user->id);
+        $syscontext = system::instance();
 
         $fs = get_file_storage();
 
@@ -441,8 +444,8 @@ final class file_storage_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $this->setUser($user);
-        $usercontext = \context_user::instance($user->id);
-        $syscontext = \context_system::instance();
+        $usercontext = user::instance($user->id);
+        $syscontext = system::instance();
 
         $fs = get_file_storage();
 
@@ -507,7 +510,7 @@ final class file_storage_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $this->setUser($user->id);
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
         // Create a user private file.
         $file1 = new \stdClass;
         $file1->contextid = $usercontext->id;
@@ -795,7 +798,7 @@ final class file_storage_test extends \advanced_testcase {
      */
     public function test_create_directory_component_invalid(): void {
         $fs = get_file_storage();
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         $this->expectException('file_exception');
         $fs->create_directory($syscontext->id, 'bad/component', 'unittest', 0, '/');
@@ -808,7 +811,7 @@ final class file_storage_test extends \advanced_testcase {
      */
     public function test_create_directory_filearea_invalid(): void {
         $fs = get_file_storage();
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         $this->expectException('file_exception');
         $fs->create_directory($syscontext->id, 'core', 'bad-filearea', 0, '/');
@@ -821,7 +824,7 @@ final class file_storage_test extends \advanced_testcase {
      */
     public function test_create_directory_itemid_negative(): void {
         $fs = get_file_storage();
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         $this->expectException('file_exception');
         $fs->create_directory($syscontext->id, 'core', 'unittest', -1, '/');
@@ -834,7 +837,7 @@ final class file_storage_test extends \advanced_testcase {
      */
     public function test_create_directory_itemid_invalid(): void {
         $fs = get_file_storage();
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         $this->expectException('file_exception');
         $fs->create_directory($syscontext->id, 'core', 'unittest', 'notanint', '/');
@@ -847,7 +850,7 @@ final class file_storage_test extends \advanced_testcase {
      */
     public function test_create_directory_filepath_invalid(): void {
         $fs = get_file_storage();
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         $this->expectException('file_exception');
         $fs->create_directory($syscontext->id, 'core', 'unittest', 0, '/not-with-trailing/or-leading-slash');
@@ -1075,7 +1078,7 @@ final class file_storage_test extends \advanced_testcase {
     public function test_create_file_from_url(): void {
         $this->resetAfterTest(true);
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $filerecord = array(
             'contextid' => $syscontext->id,
             'component' => 'core',
@@ -1146,7 +1149,7 @@ final class file_storage_test extends \advanced_testcase {
         // Create a course with a page resource.
         $course = $this->getDataGenerator()->create_course();
         $page1 = $this->getDataGenerator()->create_module('page', array('course'=>$course->id));
-        $page1context = \context_module::instance($page1->cmid);
+        $page1context = module::instance($page1->cmid);
 
         // Add a file to the page.
         $fs = get_file_storage();
@@ -1168,7 +1171,7 @@ final class file_storage_test extends \advanced_testcase {
 
         // Create a new page.
         $page2 = $this->getDataGenerator()->create_module('page', array('course'=>$course->id));
-        $page2context = \context_module::instance($page2->cmid);
+        $page2context = module::instance($page2->cmid);
 
         // Newly created page area is empty.
         $this->assertTrue($fs->is_area_empty($page2context->id, 'mod_page', 'content'));
@@ -1200,7 +1203,7 @@ final class file_storage_test extends \advanced_testcase {
         $this->resetAfterTest(false);
 
         $filepath = $CFG->dirroot.'/lib/filestorage/tests/fixtures/testimage.jpg';
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $filerecord = array(
             'contextid' => $syscontext->id,
             'component' => 'core',
@@ -1233,7 +1236,7 @@ final class file_storage_test extends \advanced_testcase {
         $this->resetAfterTest(false);
 
         $filepath = $CFG->dirroot.'/lib/filestorage/tests/fixtures/testimage.png';
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $filerecord = array(
             'contextid' => $syscontext->id,
             'component' => 'core',
@@ -1291,7 +1294,7 @@ final class file_storage_test extends \advanced_testcase {
     }
 
     private function generate_file_record() {
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $filerecord = new \stdClass();
         $filerecord->contextid = $syscontext->id;
         $filerecord->component = 'core';
@@ -1503,7 +1506,7 @@ final class file_storage_test extends \advanced_testcase {
     public function test_create_file_from_storedfile(): void {
         $this->resetAfterTest(true);
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         $filerecord = new \stdClass();
         $filerecord->contextid = $syscontext->id;
@@ -2062,7 +2065,7 @@ final class file_storage_test extends \advanced_testcase {
 
         $fs = get_file_storage();
         $this->setAdminUser();
-        $contextid = \context_user::instance($USER->id)->id;
+        $contextid = user::instance($USER->id)->id;
         $component = 'user';
         $filearea = 'private';
         $itemid = 0;

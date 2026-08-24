@@ -23,6 +23,9 @@
  */
 
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
 use mod_assign\override_manager;
 
 require_once(dirname(__FILE__) . '/../../config.php');
@@ -56,7 +59,7 @@ if ($overrideid) {
     throw new moodle_exception('invalidcoursemodule');
 }
 
-$url = new moodle_url('/mod/assign/overrideedit.php');
+$url = new url('/mod/assign/overrideedit.php');
 if ($action) {
     $url->param('action', $action);
 }
@@ -71,7 +74,7 @@ $PAGE->set_url($url);
 
 require_login($course, false, $cm);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 $assign = new assign($context, $cm, $course);
 $assigninstance = $assign->get_instance($userid);
 $shouldadduserid = $userid && !empty($course->relativedatesmode);
@@ -131,7 +134,7 @@ if ($shouldadduserid) {
     $data->userid = $userid;
 }
 
-$overridelisturl = new moodle_url('/mod/assign/overrides.php', array('cmid' => $cm->id));
+$overridelisturl = new url('/mod/assign/overrides.php', array('cmid' => $cm->id));
 if (!$groupmode) {
     $overridelisturl->param('mode', 'user');
 }

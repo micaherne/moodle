@@ -22,6 +22,10 @@
  */
 namespace core\event;
 
+use core\context\system;
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -47,7 +51,7 @@ class blog_association_created extends base {
      * Set basic properties for the event.
      */
     protected function init() {
-        $this->context = \context_system::instance();
+        $this->context = system::instance();
         $this->data['objecttable'] = 'blog_association';
         $this->data['crud'] = 'c';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
@@ -77,7 +81,7 @@ class blog_association_created extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/blog/index.php', array('entryid' => $this->other['blogid']));
+        return new url('/blog/index.php', array('entryid' => $this->other['blogid']));
     }
 
     /**
@@ -90,24 +94,24 @@ class blog_association_created extends base {
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
 
         if (empty($this->other['associatetype']) || ($this->other['associatetype'] !== 'course'
                 && $this->other['associatetype'] !== 'coursemodule')) {
-            throw new \coding_exception('The \'associatetype\' value must be set in other and be a valid type.');
+            throw new coding_exception('The \'associatetype\' value must be set in other and be a valid type.');
         }
 
         if (!isset($this->other['blogid'])) {
-            throw new \coding_exception('The \'blogid\' value must be set in other.');
+            throw new coding_exception('The \'blogid\' value must be set in other.');
         }
 
         if (!isset($this->other['associateid'])) {
-            throw new \coding_exception('The \'associateid\' value must be set in other.');
+            throw new coding_exception('The \'associateid\' value must be set in other.');
         }
 
         if (!isset($this->other['subject'])) {
-            throw new \coding_exception('The \'subject\' value must be set in other.');
+            throw new coding_exception('The \'subject\' value must be set in other.');
         }
     }
 

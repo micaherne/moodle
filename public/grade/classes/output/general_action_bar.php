@@ -16,7 +16,9 @@
 
 namespace core_grades\output;
 
-use moodle_url;
+use core\context;
+use core\output\renderer_base;
+use core\url;
 use core\output\select_menu;
 
 /**
@@ -52,7 +54,7 @@ class general_action_bar extends action_bar {
      *                           outcomes, letters).
      * @param string $activeplugin The plugin of the current gradebook page (grader, fullview, ...).
      */
-    public function __construct(\context $context, moodle_url $activeurl, string $activetype, string $activeplugin) {
+    public function __construct(context $context, url $activeurl, string $activetype, string $activeplugin) {
         parent::__construct($context);
         $this->activeurl = $activeurl;
         $this->activetype = $activetype;
@@ -65,7 +67,7 @@ class general_action_bar extends action_bar {
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         $selectmenu = $this->get_action_selector();
 
         if (is_null($selectmenu)) {
@@ -154,7 +156,7 @@ class general_action_bar extends action_bar {
                         $moregroup[$plugin->link->out(false)] = get_string('gradeletters', 'grades');
                         break;
                     case 'import':
-                        $link = new moodle_url('/grade/import/index.php', ['id' => $courseid]);
+                        $link = new url('/grade/import/index.php', ['id' => $courseid]);
                         // If the link to the grade import options is already added to the group, skip and continue to
                         // the next plugin.
                         if (array_key_exists($link->out(false), $moregroup)) {
@@ -163,7 +165,7 @@ class general_action_bar extends action_bar {
                         $moregroup[$link->out(false)] = get_string('import', 'grades');
                         break;
                     case 'export':
-                        $link = new moodle_url('/grade/export/index.php', ['id' => $courseid]);
+                        $link = new url('/grade/export/index.php', ['id' => $courseid]);
                         // If the link to the grade export options is already added to the group, skip and continue to
                         // the next plugin.
                         if (array_key_exists($link->out(false), $moregroup)) {

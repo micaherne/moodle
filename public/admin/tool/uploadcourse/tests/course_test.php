@@ -16,6 +16,10 @@
 
 namespace tool_uploadcourse;
 
+use core\context\course;
+use core\context\coursecat;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use tool_uploadcourse_processor;
 use tool_uploadcourse_course;
 
@@ -74,7 +78,7 @@ final class course_test extends \advanced_testcase {
         $updatemode = tool_uploadcourse_processor::UPDATE_NOTHING;
         $data = array();
         $co = new tool_uploadcourse_course($mode, $updatemode, $data);
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $co->proceed();
     }
 
@@ -85,7 +89,7 @@ final class course_test extends \advanced_testcase {
         $data = array();
         $co = new tool_uploadcourse_course($mode, $updatemode, $data);
         $this->assertFalse($co->prepare());
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $co->proceed();
     }
 
@@ -187,7 +191,7 @@ final class course_test extends \advanced_testcase {
 
         // Create category in which to create the new course.
         $category = $this->getDataGenerator()->create_category();
-        $categorycontext = \context_coursecat::instance($category->id);
+        $categorycontext = coursecat::instance($category->id);
 
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
@@ -536,7 +540,7 @@ final class course_test extends \advanced_testcase {
         $co->proceed();
         $this->assertTrue($DB->record_exists('course', array('shortname' => 'c1')));
         $course = $DB->get_record('course', array('shortname' => 'c1'));
-        $ctx = \context_course::instance($course->id);
+        $ctx = course::instance($course->id);
 
         $this->assertEquals($data['fullname'], $course->fullname);
         $this->assertEquals($data['category'], $course->category);
@@ -643,7 +647,7 @@ final class course_test extends \advanced_testcase {
         $this->assertTrue($co->prepare());
         $co->proceed();
         $course = $DB->get_record('course', array('shortname' => 'c1'));
-        $ctx = \context_course::instance($course->id);
+        $ctx = course::instance($course->id);
 
         $this->assertEquals($data['fullname'], $course->fullname);
         $this->assertEquals($data['category'], $course->category);
@@ -734,7 +738,7 @@ final class course_test extends \advanced_testcase {
         $co->proceed();
         $this->assertTrue($DB->record_exists('course', array('shortname' => 'c1')));
         $course = $DB->get_record('course', array('shortname' => 'c1'));
-        $ctx = \context_course::instance($course->id);
+        $ctx = course::instance($course->id);
 
         $this->assertEquals($defaultdata['fullname'], $course->fullname);
         $this->assertEquals($defaultdata['category'], $course->category);
@@ -793,7 +797,7 @@ final class course_test extends \advanced_testcase {
         $co->proceed();
         $this->assertTrue($DB->record_exists('course', array('shortname' => 'c1')));
         $course = $DB->get_record('course', array('shortname' => 'c1'));
-        $ctx = \context_course::instance($course->id);
+        $ctx = course::instance($course->id);
 
         $this->assertEquals($defaultdata['fullname'], $course->fullname);
         $this->assertEquals($defaultdata['category'], $course->category);
@@ -1097,7 +1101,7 @@ final class course_test extends \advanced_testcase {
         $this->initialise_test();
 
         $c1 = $this->getDataGenerator()->create_course();
-        $c1ctx = \context_course::instance($c1->id);
+        $c1ctx = course::instance($c1->id);
         $studentrole = $DB->get_record('role', array('shortname' => 'student'));
         $teacherrole = $DB->get_record('role', array('shortname' => 'teacher'));
 
@@ -1310,7 +1314,7 @@ final class course_test extends \advanced_testcase {
 
         // Create category in which to create the new course.
         $category = $this->getDataGenerator()->create_category();
-        $categorycontext = \context_coursecat::instance($category->id);
+        $categorycontext = coursecat::instance($category->id);
 
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
@@ -1354,7 +1358,7 @@ final class course_test extends \advanced_testcase {
 
         // Create category in which to create the new course.
         $category = $this->getDataGenerator()->create_category();
-        $categorycontext = \context_coursecat::instance($category->id);
+        $categorycontext = coursecat::instance($category->id);
 
         $course = $this->getDataGenerator()->create_course([
             'category' => $category->id,

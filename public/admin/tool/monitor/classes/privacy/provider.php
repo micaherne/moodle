@@ -24,6 +24,8 @@ namespace tool_monitor\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
+use core\context\user;
 use \core_privacy\local\metadata\collection;
 use \core_privacy\local\request\contextlist;
 use \core_privacy\local\request\approved_contextlist;
@@ -114,7 +116,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_user) {
+        if (!$context instanceof user) {
             return;
         }
 
@@ -135,7 +137,7 @@ class provider implements
     public static function export_user_data(approved_contextlist $contextlist) {
         global $DB;
         // Export rules.
-        $context = \context_user::instance($contextlist->get_user()->id);
+        $context = user::instance($contextlist->get_user()->id);
         $rules = $DB->get_records('tool_monitor_rules', ['userid' => $contextlist->get_user()->id]);
         if ($rules) {
             static::export_monitor_rules($rules, $context);
@@ -152,7 +154,7 @@ class provider implements
      *
      * @param  \context $context The context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         // Only delete data for user contexts.
         if ($context->contextlevel == CONTEXT_USER) {
             static::delete_user_data($context->instanceid);
@@ -211,7 +213,7 @@ class provider implements
      * @param  array $rules The monitor rules.
      * @param  context_user $context The user context
      */
-    protected static function export_monitor_rules(array $rules, \context_user $context) {
+    protected static function export_monitor_rules(array $rules, user $context) {
         foreach ($rules as $rule) {
             $rule = rule_manager::get_rule($rule);
             $ruledata = new \stdClass();
@@ -235,7 +237,7 @@ class provider implements
      * @param  array $subscriptions Subscriptions
      * @param  \context_user $context The user context
      */
-    protected static function export_monitor_subscriptions(array $subscriptions, \context_user $context) {
+    protected static function export_monitor_subscriptions(array $subscriptions, user $context) {
         foreach ($subscriptions as $subscription) {
             $subscriptiondata = new \stdClass();
             $subscriptiondata->instancename = $subscription->get_instance_name();

@@ -18,6 +18,7 @@ namespace core;
 
 use core\attribute\deprecated;
 use core\attribute\deprecated_with_reference;
+use core\exception\coding_exception;
 
 /**
  * Tests for \core\attribute\sdeprecated and \core\deprecation.
@@ -40,7 +41,7 @@ final class deprecation_test extends \advanced_testcase {
         bool $expectexception,
     ): void {
         if ($expectexception) {
-            $this->expectException(\coding_exception::class);
+            $this->expectException(coding_exception::class);
         }
 
         $attribute = new deprecated(
@@ -188,7 +189,7 @@ final class deprecation_test extends \advanced_testcase {
     }
 
     public function test_deprecated_missing_constuctor_parameters(): void {
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage('A deprecated item must provide either a replacement, reason, or an issue number.');
         new deprecated();
     }

@@ -22,10 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+
 require_once('../config.php');
 
 require_login();
-$context = context_system::instance();
+$context = system::instance();
 require_capability('moodle/site:config', $context);
 
 $id = optional_param('id', null, PARAM_INT);
@@ -75,9 +78,9 @@ $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
 if (empty($returnurl)) {
-    $returnurl = new moodle_url('/sms/sms_gateways.php');
+    $returnurl = new url('/sms/sms_gateways.php');
 } else {
-    $returnurl = new moodle_url($returnurl);
+    $returnurl = new url($returnurl);
 }
 $data['returnurl'] = $returnurl;
 

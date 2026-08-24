@@ -25,7 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context_helper;
 use core\url;
+use core_course\cm_info;
 
 /**
  * Represents a course context in the tree navigated by {@link file_browser}.

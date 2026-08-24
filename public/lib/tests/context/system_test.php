@@ -17,6 +17,9 @@
 namespace core\context;
 
 use core\context, core\context_helper;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\url;
 
 /**
  * Unit tests for system context class.
@@ -34,9 +37,9 @@ final class system_test extends \advanced_testcase {
      * @coversNothing
      */
     public function test_legacy_classname(): void {
-        $context = \context_system::instance();
+        $context = system::instance();
         $this->assertInstanceOf(system::class, $context);
-        $this->assertInstanceOf(\context_system::class, $context);
+        $this->assertInstanceOf(system::class, $context);
     }
 
     /**
@@ -98,9 +101,9 @@ final class system_test extends \advanced_testcase {
      */
     public function test_get_url(): void {
         $context = system::instance();
-        $expected = new \moodle_url('/');
+        $expected = new url('/');
         $url = $context->get_url();
-        $this->assertInstanceOf(\moodle_url::class, $url);
+        $this->assertInstanceOf(url::class, $url);
         $this->assertSame($expected->out(), $url->out());
     }
 
@@ -224,8 +227,8 @@ final class system_test extends \advanced_testcase {
 
         try {
             $context->set_locked(true);
-        } catch (\moodle_exception $e) {
-            $this->assertInstanceOf(\coding_exception::class, $e);
+        } catch (moodle_exception $e) {
+            $this->assertInstanceOf(coding_exception::class, $e);
             $this->assertSame('Coding error detected, it must be fixed by a programmer: '
                 . 'It is not possible to lock the system context', $e->getMessage());
         }

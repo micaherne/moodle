@@ -23,6 +23,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\output\single_button;
+use core\url;
+
 require_once('../config.php');
 require_once('lib.php');
 
@@ -36,10 +41,10 @@ $PAGE->set_pagelayout('standard');
 
 // Make sure course is OK and user has access to manage groups
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 require_login($course);
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 require_capability('moodle/course:managegroups', $context);
 $changeidnumber = has_capability('moodle/course:changeidnumber', $context);
 
@@ -48,13 +53,13 @@ $groupidarray = explode(',',$groupids);
 $groupnames = array();
 foreach($groupidarray as $groupid) {
     if (!$group = $DB->get_record('groups', array('id' => $groupid))) {
-        throw new \moodle_exception('invalidgroupid');
+        throw new moodle_exception('invalidgroupid');
     }
     if (!empty($group->idnumber) && !$changeidnumber) {
-        throw new \moodle_exception('grouphasidnumber', '', '', $group->name);
+        throw new moodle_exception('grouphasidnumber', '', '', $group->name);
     }
     if ($courseid != $group->courseid) {
-        throw new \moodle_exception('groupunknown', '', '', $group->courseid);
+        throw new moodle_exception('groupunknown', '', '', $group->courseid);
     }
     $groupnames[] = format_string($group->name);
 }
@@ -62,12 +67,12 @@ foreach($groupidarray as $groupid) {
 $returnurl='index.php?id='.$course->id;
 
 if(count($groupidarray)==0) {
-    throw new \moodle_exception('errorselectsome', 'group', $returnurl);
+    throw new moodle_exception('errorselectsome', 'group', $returnurl);
 }
 
 if ($confirm && data_submitted()) {
     if (!confirm_sesskey() ) {
-        throw new \moodle_exception('confirmsesskeybad', 'error', $returnurl);
+        throw new moodle_exception('confirmsesskeybad', 'error', $returnurl);
     }
 
     foreach($groupidarray as $groupid) {
@@ -90,8 +95,8 @@ if ($confirm && data_submitted()) {
         }
         $message.='</ul>';
     }
-    $formcontinue = new single_button(new moodle_url('delete.php', $optionsyes), get_string('yes'), 'post');
-    $formcancel = new single_button(new moodle_url('index.php', $optionsno), get_string('no'), 'get');
+    $formcontinue = new single_button(new url('delete.php', $optionsyes), get_string('yes'), 'post');
+    $formcancel = new single_button(new url('index.php', $optionsno), get_string('no'), 'get');
     echo $OUTPUT->confirm($message, $formcontinue, $formcancel);
     echo $OUTPUT->footer();
 }

@@ -24,6 +24,8 @@
 
 namespace enrol_ldap\task;
 
+use core\output\progress_trace\text_progress_trace;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -57,7 +59,7 @@ class sync_enrolments extends \core\task\scheduled_task {
         /** @var \enrol_ldap_plugin $enrol */
         $enrol = enrol_get_plugin('ldap');
 
-        $trace = new \text_progress_trace();
+        $trace = new text_progress_trace();
 
         // Update enrolments -- these handlers should autocreate courses if required.
         $enrol->sync_enrolments($trace);

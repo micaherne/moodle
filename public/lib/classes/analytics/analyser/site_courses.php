@@ -24,6 +24,10 @@
 
 namespace core\analytics\analyser;
 
+use core\context\course;
+use core\context\system;
+use core\output\pix_icon;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -70,7 +74,7 @@ class site_courses extends \core_analytics\local\analyser\sitewide {
      * @return \context
      */
     public function sample_access_context($sampleid) {
-        return \context_system::instance();
+        return system::instance();
     }
 
     /**
@@ -92,7 +96,7 @@ class site_courses extends \core_analytics\local\analyser\sitewide {
         $sampleids = array_combine($courseids, $courseids);
 
         $courses = array_map(function($course) {
-            return array('course' => $course, 'context' => \context_course::instance($course->id));
+            return array('course' => $course, 'context' => course::instance($course->id));
         }, $courses);
 
         // No related data attached.
@@ -115,7 +119,7 @@ class site_courses extends \core_analytics\local\analyser\sitewide {
         $sampleids = array_combine($courseids, $courseids);
 
         $courses = array_map(function($course) {
-            return array('course' => $course, 'context' => \context_course::instance($course->id));
+            return array('course' => $course, 'context' => course::instance($course->id));
         }, $courses);
 
         // No related data attached.
@@ -133,7 +137,7 @@ class site_courses extends \core_analytics\local\analyser\sitewide {
     public function sample_description($sampleid, $contextid, $sampledata) {
         $description = format_string(
             get_course_display_name_for_list($sampledata['course']), true, array('context' => $sampledata['context']));
-        $courseimage = new \pix_icon('i/course', get_string('course'));
+        $courseimage = new pix_icon('i/course', get_string('course'));
         return array($description, $courseimage);
     }
 }

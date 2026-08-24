@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\navigation\navigation_node;
+use core\output\pix_icon;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -50,7 +54,7 @@ function tool_recyclebin_extend_navigation_course($navigation, $course, $context
     $url = null;
     $settingnode = null;
 
-    $url = new moodle_url('/admin/tool/recyclebin/index.php', array(
+    $url = new url('/admin/tool/recyclebin/index.php', array(
         'contextid' => $context->id
     ));
 
@@ -108,7 +112,7 @@ function tool_recyclebin_extend_navigation_category_settings($navigation, $conte
     $settingnode = null;
 
     // Add a link to the category recyclebin.
-    $url = new moodle_url('/admin/tool/recyclebin/index.php', array(
+    $url = new url('/admin/tool/recyclebin/index.php', array(
         'contextid' => $context->id
     ));
 

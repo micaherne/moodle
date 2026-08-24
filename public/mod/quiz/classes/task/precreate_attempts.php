@@ -16,6 +16,7 @@
 
 namespace mod_quiz\task;
 
+use core\context\course;
 use core\task\scheduled_task;
 use mod_quiz\quiz_settings;
 use question_engine;
@@ -128,7 +129,7 @@ class precreate_attempts extends scheduled_task {
      */
     public static function precreate_attempts_for_quiz(int $quizid, int $courseid): int {
         global $DB;
-        $coursecontext = \context_course::instance($courseid);
+        $coursecontext = course::instance($courseid);
         $users = get_enrolled_users($coursecontext, 'mod/quiz:attempt');
         $attemptcount = 0;
         $timenow = time();

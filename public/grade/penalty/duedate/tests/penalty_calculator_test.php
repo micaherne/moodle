@@ -16,10 +16,10 @@
 
 namespace gradepenalty_duedate;
 
-use cm_info;
-use context_course;
-use context_module;
-use context_system;
+use core_course\cm_info;
+use core\context\course;
+use core\context\module;
+use core\context\system;
 use core\plugininfo\gradepenalty;
 use core_grades\penalty_manager;
 use grade_item;
@@ -129,7 +129,7 @@ final class penalty_calculator_test extends penalty_testcase {
         $cm = cm_info::create($cm);
 
         // Create a penalty rule at the system context.
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         $systemrule = [
             'contextid' => $systemcontext->id,
             'overdueby' => 1,
@@ -141,7 +141,7 @@ final class penalty_calculator_test extends penalty_testcase {
         $this->assertEquals(10, penalty_calculator::get_penalty_from_rules($cm, DAYSECS, 0));
 
         // Create a penalty rule at the course context.
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $courserule = [
             'contextid' => $coursecontext->id,
             'overdueby' => 1,
@@ -155,7 +155,7 @@ final class penalty_calculator_test extends penalty_testcase {
         // Create a penalty rule at the module context.
         $cm = get_coursemodule_from_instance('assign', $assignment->id, $course->id);
         $cm = cm_info::create($cm);
-        $modulecontext = context_module::instance($cm->id);
+        $modulecontext = module::instance($cm->id);
         $modulerule = [
             'contextid' => $modulecontext->id,
             'overdueby' => 1,

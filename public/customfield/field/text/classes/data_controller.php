@@ -16,6 +16,9 @@
 
 namespace customfield_text;
 
+use core\output\html_writer;
+use core\url;
+
 /**
  * Class data
  *
@@ -93,10 +96,10 @@ class data_controller extends \core_customfield\data_controller {
 
         $link = $this->get_field()->get_configdata_property('link');
         if ($link) {
-            $url = new \moodle_url(str_replace('$$', $this->get_value(), $link));
+            $url = new url(str_replace('$$', $this->get_value(), $link));
             $linktarget = $this->get_field()->get_configdata_property('linktarget');
             $attributes = $linktarget ? ['target' => $linktarget] : [];
-            $value = \html_writer::link($url, $value, $attributes);
+            $value = html_writer::link($url, $value, $attributes);
         }
 
         return $value;

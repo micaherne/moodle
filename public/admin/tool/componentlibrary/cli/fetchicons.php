@@ -23,6 +23,8 @@
  */
 
 
+use core\output\image_icon;
+
 define('CLI_SCRIPT', 1);
 
 require_once(__DIR__ . '/../../../../config.php');

@@ -26,6 +26,8 @@
 // pre 1970 dates and does not handle blank entrys.  Advanced search functionality for this field
 // type can be enabled once these issues are addressed in the core API.
 
+use core\output\html_writer;
+
 class data_field_date extends data_field_base {
 
     var $type = 'date';

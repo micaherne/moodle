@@ -16,6 +16,10 @@
 
 namespace core_calendar;
 
+use core\context\course;
+use core\context\coursecat;
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/helpers.php');
@@ -90,7 +94,7 @@ final class calendar_information_test extends \advanced_testcase {
         $this->assertCount(0, $calendar->categories);
         $this->assertEquals(SITEID, $calendar->courseid);
         $this->assertEquals(SITEID, reset($calendar->courses));
-        $this->assertEquals(\context_system::instance(), $calendar->context);
+        $this->assertEquals(system::instance(), $calendar->context);
     }
 
     /**
@@ -121,7 +125,7 @@ final class calendar_information_test extends \advanced_testcase {
         $this->assertArrayHasKey($categories['A1']->id, array_flip($calendar->categories));
         $this->assertArrayHasKey($categories['A1i']->id, array_flip($calendar->categories));
         $this->assertArrayHasKey($categories['A1ii']->id, array_flip($calendar->categories));
-        $this->assertEquals(\context_coursecat::instance($category->id), $calendar->context);
+        $this->assertEquals(coursecat::instance($category->id), $calendar->context);
     }
 
     /**
@@ -144,7 +148,7 @@ final class calendar_information_test extends \advanced_testcase {
         $category = $categories['A1'];
 
         $roles = $DB->get_records('role', [], '', 'shortname, id');
-        $generator->role_assign($roles['manager']->id, $user->id, \context_coursecat::instance($category->id));
+        $generator->role_assign($roles['manager']->id, $user->id, coursecat::instance($category->id));
 
         $this->setUser($user);
 
@@ -158,7 +162,7 @@ final class calendar_information_test extends \advanced_testcase {
         $this->assertArrayHasKey($categories['A1']->id, array_flip($calendar->categories));
         $this->assertArrayHasKey($categories['A1i']->id, array_flip($calendar->categories));
         $this->assertArrayHasKey($categories['A1ii']->id, array_flip($calendar->categories));
-        $this->assertEquals(\context_system::instance(), $calendar->context);
+        $this->assertEquals(system::instance(), $calendar->context);
     }
 
     /**
@@ -181,7 +185,7 @@ final class calendar_information_test extends \advanced_testcase {
         $category = $categories['A1'];
 
         $roles = $DB->get_records('role', [], '', 'shortname, id');
-        $generator->role_assign($roles['manager']->id, $user->id, \context_coursecat::instance($category->id));
+        $generator->role_assign($roles['manager']->id, $user->id, coursecat::instance($category->id));
 
         $this->setUser($user);
 
@@ -195,7 +199,7 @@ final class calendar_information_test extends \advanced_testcase {
         $this->assertArrayHasKey($categories['A1']->id, array_flip($calendar->categories));
         $this->assertArrayHasKey($categories['A1i']->id, array_flip($calendar->categories));
         $this->assertArrayHasKey($categories['A1ii']->id, array_flip($calendar->categories));
-        $this->assertEquals(\context_coursecat::instance($category->id), $calendar->context);
+        $this->assertEquals(coursecat::instance($category->id), $calendar->context);
     }
 
     /**
@@ -218,7 +222,7 @@ final class calendar_information_test extends \advanced_testcase {
         $category = $categories['A1'];
 
         $roles = $DB->get_records('role', [], '', 'shortname, id');
-        $generator->role_assign($roles['manager']->id, $user->id, \context_coursecat::instance($category->id));
+        $generator->role_assign($roles['manager']->id, $user->id, coursecat::instance($category->id));
 
         $this->setUser($user);
 
@@ -232,7 +236,7 @@ final class calendar_information_test extends \advanced_testcase {
         $this->assertArrayHasKey($categories['A1']->id, array_flip($calendar->categories));
         $this->assertArrayHasKey($categories['A1i']->id, array_flip($calendar->categories));
         $this->assertArrayHasKey($categories['A1ii']->id, array_flip($calendar->categories));
-        $this->assertEquals(\context_coursecat::instance($category->parent), $calendar->context);
+        $this->assertEquals(coursecat::instance($category->parent), $calendar->context);
     }
 
     /**
@@ -256,7 +260,7 @@ final class calendar_information_test extends \advanced_testcase {
         $category = $categories['A1i'];
 
         $roles = $DB->get_records('role', [], '', 'shortname, id');
-        $generator->role_assign($roles['manager']->id, $user->id, \context_coursecat::instance($enrolledcategory->id));
+        $generator->role_assign($roles['manager']->id, $user->id, coursecat::instance($enrolledcategory->id));
 
         $this->setUser($user);
 
@@ -269,7 +273,7 @@ final class calendar_information_test extends \advanced_testcase {
         $this->assertArrayHasKey($categories['A']->id, array_flip($calendar->categories));
         $this->assertArrayHasKey($categories['A1']->id, array_flip($calendar->categories));
         $this->assertArrayHasKey($categories['A1i']->id, array_flip($calendar->categories));
-        $this->assertEquals(\context_coursecat::instance($category->id), $calendar->context);
+        $this->assertEquals(coursecat::instance($category->id), $calendar->context);
     }
 
     /**
@@ -304,7 +308,7 @@ final class calendar_information_test extends \advanced_testcase {
         $this->assertArrayHasKey(SITEID, array_flip($calendar->courses));
         $this->assertArrayHasKey($categories['A']->id, array_flip($calendar->categories));
         $this->assertArrayHasKey($categories['A1']->id, array_flip($calendar->categories));
-        $this->assertEquals(\context_system::instance(), $calendar->context);
+        $this->assertEquals(system::instance(), $calendar->context);
     }
 
     /**
@@ -340,7 +344,7 @@ final class calendar_information_test extends \advanced_testcase {
         $this->assertArrayHasKey(SITEID, array_flip($calendar->courses));
         $this->assertArrayHasKey($categories['A']->id, array_flip($calendar->categories));
         $this->assertArrayHasKey($categories['A1']->id, array_flip($calendar->categories));
-        $this->assertEquals(\context_course::instance($course->id), $calendar->context);
+        $this->assertEquals(course::instance($course->id), $calendar->context);
 
         // Viewing the course calendar while specifying the category too.
         // The category is essentially ignored. No change expected.
@@ -390,7 +394,7 @@ final class calendar_information_test extends \advanced_testcase {
         $this->assertArrayHasKey($categories['A1']->id, array_flip($calendar->categories));
         $this->assertArrayHasKey($categories['A1i']->id, array_flip($calendar->categories));
         $this->assertArrayHasKey($categories['A1ii']->id, array_flip($calendar->categories));
-        $this->assertEquals(\context_coursecat::instance($category->id), $calendar->context);
+        $this->assertEquals(coursecat::instance($category->id), $calendar->context);
     }
 
     /**
@@ -433,7 +437,7 @@ final class calendar_information_test extends \advanced_testcase {
         $this->assertArrayHasKey($categories['A2']->id, array_flip($calendar->categories));
         $this->assertArrayHasKey($categories['A2i']->id, array_flip($calendar->categories));
         $this->assertArrayHasKey($categories['A2ii']->id, array_flip($calendar->categories));
-        $this->assertEquals(\context_coursecat::instance($category->parent), $calendar->context);
+        $this->assertEquals(coursecat::instance($category->parent), $calendar->context);
     }
 
     /**
@@ -472,7 +476,7 @@ final class calendar_information_test extends \advanced_testcase {
         $this->assertArrayHasKey($categories['A2']->id, array_flip($calendar->categories));
         $this->assertArrayHasKey($categories['A2i']->id, array_flip($calendar->categories));
         $this->assertArrayHasKey($categories['A2ii']->id, array_flip($calendar->categories));
-        $this->assertEquals(\context_coursecat::instance($category->id), $calendar->context);
+        $this->assertEquals(coursecat::instance($category->id), $calendar->context);
     }
 
     /**
@@ -510,7 +514,7 @@ final class calendar_information_test extends \advanced_testcase {
         $this->assertArrayHasKey($categories['B1']->id, array_flip($calendar->categories));
         $this->assertArrayHasKey($categories['B1i']->id, array_flip($calendar->categories));
         $this->assertArrayHasKey($categories['B1ii']->id, array_flip($calendar->categories));
-        $this->assertEquals(\context_coursecat::instance($wrongcategory->id), $calendar->context);
+        $this->assertEquals(coursecat::instance($wrongcategory->id), $calendar->context);
     }
 
     /**
@@ -545,7 +549,7 @@ final class calendar_information_test extends \advanced_testcase {
         $this->assertArrayHasKey(SITEID, array_flip($calendar->courses));
         $this->assertArrayHasKey($coursea->id, array_flip($calendar->courses));
         $this->assertArrayHasKey($courseb->id, array_flip($calendar->courses));
-        $this->assertEquals(\context_system::instance(), $calendar->context);
+        $this->assertEquals(system::instance(), $calendar->context);
     }
 
     /**
@@ -581,7 +585,7 @@ final class calendar_information_test extends \advanced_testcase {
         $this->assertEquals($coursea->id, $calendar->courseid);
         $this->assertArrayHasKey($coursea->id, array_flip($calendar->courses));
         $this->assertArrayHasKey(SITEID, array_flip($calendar->courses));
-        $this->assertEquals(\context_course::instance($coursea->id), $calendar->context);
+        $this->assertEquals(course::instance($coursea->id), $calendar->context);
 
         // Viewing the course calendar while specifying the category too.
         // The category is essentially ignored. No change expected.
@@ -628,7 +632,7 @@ final class calendar_information_test extends \advanced_testcase {
         $this->assertArrayHasKey($courseb->id, array_flip($calendar->courses));
         $this->assertArrayNotHasKey($coursea->id, array_flip($calendar->courses));
         $this->assertArrayHasKey(SITEID, array_flip($calendar->courses));
-        $this->assertEquals(\context_course::instance($courseb->id), $calendar->context);
+        $this->assertEquals(course::instance($courseb->id), $calendar->context);
 
         // Viewing the course calendar while specifying the category too.
         // The category is essentially ignored. No change expected.
@@ -673,7 +677,7 @@ final class calendar_information_test extends \advanced_testcase {
         $this->assertArrayHasKey($coursea->id, array_flip($calendar->courses));
         $this->assertArrayHasKey($courseb->id, array_flip($calendar->courses));
         $this->assertArrayHasKey(SITEID, array_flip($calendar->courses));
-        $this->assertEquals(\context_coursecat::instance($category->id), $calendar->context);
+        $this->assertEquals(coursecat::instance($category->id), $calendar->context);
     }
 
     /**
@@ -706,7 +710,7 @@ final class calendar_information_test extends \advanced_testcase {
         $this->assertCount(4, $calendar->categories);
         $this->assertEquals(SITEID, $calendar->courseid);
         $this->assertArrayHasKey(SITEID, array_flip($calendar->courses));
-        $this->assertEquals(\context_coursecat::instance($wrongcategory->id), $calendar->context);
+        $this->assertEquals(coursecat::instance($wrongcategory->id), $calendar->context);
     }
 
     /**
@@ -742,7 +746,7 @@ final class calendar_information_test extends \advanced_testcase {
         $this->assertArrayHasKey($coursea->id, array_flip($calendar->courses));
         $this->assertArrayHasKey($courseb->id, array_flip($calendar->courses));
         $this->assertArrayHasKey(SITEID, array_flip($calendar->courses));
-        $this->assertEquals(\context_system::instance(), $calendar->context);
+        $this->assertEquals(system::instance(), $calendar->context);
     }
 
     /**
@@ -779,7 +783,7 @@ final class calendar_information_test extends \advanced_testcase {
         $this->assertEquals($coursea->id, $calendar->courseid);
         $this->assertArrayHasKey($coursea->id, array_flip($calendar->courses));
         $this->assertArrayHasKey(SITEID, array_flip($calendar->courses));
-        $this->assertEquals(\context_course::instance($coursea->id), $calendar->context);
+        $this->assertEquals(course::instance($coursea->id), $calendar->context);
 
         // Viewing the course calendar while specifying the categorya too.
         // The categorya is essentially ignored. No change expected.
@@ -827,7 +831,7 @@ final class calendar_information_test extends \advanced_testcase {
         $this->assertArrayHasKey($courseb->id, array_flip($calendar->courses));
         $this->assertArrayNotHasKey($coursea->id, array_flip($calendar->courses));
         $this->assertArrayHasKey(SITEID, array_flip($calendar->courses));
-        $this->assertEquals(\context_course::instance($courseb->id), $calendar->context);
+        $this->assertEquals(course::instance($courseb->id), $calendar->context);
 
         // Viewing the other course calendar while specifying the categorya too.
         // The categorya is essentially ignored. No change expected.
@@ -877,7 +881,7 @@ final class calendar_information_test extends \advanced_testcase {
         $this->assertArrayHasKey($categories['A1']->id, array_flip($calendar->categories));
         $this->assertArrayHasKey($categories['A1i']->id, array_flip($calendar->categories));
         $this->assertArrayHasKey($categories['A1ii']->id, array_flip($calendar->categories));
-        $this->assertEquals(\context_coursecat::instance($categorya->id), $calendar->context);
+        $this->assertEquals(coursecat::instance($categorya->id), $calendar->context);
     }
 
     /**
@@ -911,7 +915,7 @@ final class calendar_information_test extends \advanced_testcase {
         $this->assertCount(1, $calendar->categories);
         $this->assertEquals(SITEID, $calendar->courseid);
         $this->assertArrayHasKey(SITEID, array_flip($calendar->courses));
-        $this->assertEquals(\context_coursecat::instance($wrongcategory->id), $calendar->context);
+        $this->assertEquals(coursecat::instance($wrongcategory->id), $calendar->context);
     }
 
     /**
@@ -934,7 +938,7 @@ final class calendar_information_test extends \advanced_testcase {
         $this->assertCount(0, $calendar->categories);
         $this->assertEquals(SITEID, $calendar->courseid);
         $this->assertEquals(SITEID, reset($calendar->courses));
-        $this->assertEquals(\context_system::instance(), $calendar->context);
+        $this->assertEquals(system::instance(), $calendar->context);
     }
 
     /**
@@ -967,7 +971,7 @@ final class calendar_information_test extends \advanced_testcase {
         $this->assertArrayHasKey($course->id, array_flip($calendar->courses));
         $this->assertArrayHasKey($categories['A']->id, array_flip($calendar->categories));
         $this->assertArrayHasKey($categories['A1']->id, array_flip($calendar->categories));
-        $this->assertEquals(\context_system::instance(), $calendar->context);
+        $this->assertEquals(system::instance(), $calendar->context);
     }
 
     /**
@@ -1001,7 +1005,7 @@ final class calendar_information_test extends \advanced_testcase {
         $this->assertArrayHasKey($course->id, array_flip($calendar->courses));
         $this->assertArrayHasKey($categories['A']->id, array_flip($calendar->categories));
         $this->assertArrayHasKey($categories['A1']->id, array_flip($calendar->categories));
-        $this->assertEquals(\context_course::instance($course->id), $calendar->context);
+        $this->assertEquals(course::instance($course->id), $calendar->context);
 
         // Viewing the course calendar while specifying the category too.
         // The category is essentially ignored. No change expected.
@@ -1048,6 +1052,6 @@ final class calendar_information_test extends \advanced_testcase {
         $this->assertArrayHasKey($categories['A1']->id, array_flip($calendar->categories));
         $this->assertArrayHasKey($categories['A1i']->id, array_flip($calendar->categories));
         $this->assertArrayHasKey($categories['A1ii']->id, array_flip($calendar->categories));
-        $this->assertEquals(\context_coursecat::instance($category->id), $calendar->context);
+        $this->assertEquals(coursecat::instance($category->id), $calendar->context);
     }
 }

@@ -1,5 +1,8 @@
 <?php
 
+use core\context\system;
+use core\user;
+
 require_once($CFG->libdir.'/formslib.php');
 
 
@@ -54,9 +57,9 @@ abstract class webservice_test_client_base_form extends moodleform {
         $data = $this->_customdata;
         if ($data['authmethod'] == 'simple') {
             $mform->addElement('text', 'wsusername', 'wsusername');
-            $mform->setType('wsusername', core_user::get_property_type('username'));
+            $mform->setType('wsusername', user::get_property_type('username'));
             $mform->addElement('text', 'wspassword', 'wspassword');
-            $mform->setType('wspassword', core_user::get_property_type('password'));
+            $mform->setType('wspassword', user::get_property_type('password'));
         } else if ($data['authmethod'] == 'token') {
             $mform->addElement('text', 'token', 'token');
             $mform->setType('token', PARAM_RAW_TRIMMED);
@@ -270,7 +273,7 @@ class core_fetch_notifications_testclient_form extends webservice_test_client_ba
         $mform = $this->_form;
         $mform->addElement('text', 'contextid', 'contextid');
         $mform->setType('contextid', PARAM_INT);
-        $mform->setDefault('contextid', context_system::instance()->id);
+        $mform->setDefault('contextid', system::instance()->id);
     }
 }
 

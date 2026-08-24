@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\require_login_exception;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 
 require_login(null, false);
@@ -32,7 +35,7 @@ if (isguestuser()) {
 
 $userid = optional_param('userid', $USER->id, PARAM_INT);
 
-$url = new moodle_url('/admin/tool/lp/user_evidence_list.php', array('userid' => $userid));
+$url = new url('/admin/tool/lp/user_evidence_list.php', array('userid' => $userid));
 list($title, $subtitle) = \tool_lp\page_helper::setup_for_user_evidence($userid, $url);
 
 $output = $PAGE->get_renderer('tool_lp');

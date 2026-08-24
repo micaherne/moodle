@@ -16,6 +16,8 @@
 
 namespace auth_lti\privacy;
 
+use core\context\system;
+use core\context\user;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
@@ -57,7 +59,7 @@ final class provider_test extends provider_testcase {
         $this->assertCount(1, $contextlist);
 
         // Check that a context is returned is the expected.
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
         $this->assertEquals($usercontext->id, $contextlist->get_contextids()[0]);
     }
 
@@ -70,7 +72,7 @@ final class provider_test extends provider_testcase {
         $user = $this->getDataGenerator()->create_user();
         $auth = \core\di::get(\core\authentication::class)->get_plugin('lti');
         $auth->create_user_binding('https://lms.example.com', 'abc123', $user->id);
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         $writer = writer::with_context($usercontext);
         $this->assertFalse($writer->has_any_data());
@@ -94,7 +96,7 @@ final class provider_test extends provider_testcase {
 
         $user1 = $this->getDataGenerator()->create_user();
         $auth->create_user_binding('https://lms.example.com', 'abc123', $user1->id);
-        $user1context = \context_user::instance($user1->id);
+        $user1context = user::instance($user1->id);
 
         $user2 = $this->getDataGenerator()->create_user();
         $auth->create_user_binding('https://lms.example.com', 'def456', $user2->id);
@@ -126,7 +128,7 @@ final class provider_test extends provider_testcase {
 
         $user1 = $this->getDataGenerator()->create_user();
         $auth->create_user_binding('https://lms.example.com', 'abc123', $user1->id);
-        $user1context = \context_user::instance($user1->id);
+        $user1context = user::instance($user1->id);
 
         $user2 = $this->getDataGenerator()->create_user();
         $auth->create_user_binding('https://lms.example.com', 'def456', $user2->id);
@@ -157,7 +159,7 @@ final class provider_test extends provider_testcase {
         $auth = \core\di::get(\core\authentication::class)->get_plugin('lti');
         $component = 'auth_lti';
         $user = $this->getDataGenerator()->create_user();
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         // The list of users should not return anything yet (no linked login yet).
         $userlist = new userlist($usercontext, $component);
@@ -174,7 +176,7 @@ final class provider_test extends provider_testcase {
         $this->assertEquals($expected, $actual);
 
         // The list of users for system context should not return any users.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $userlist = new userlist($systemcontext, $component);
         provider::get_users_in_context($userlist);
         $this->assertCount(0, $userlist);
@@ -189,9 +191,9 @@ final class provider_test extends provider_testcase {
         $auth = \core\di::get(\core\authentication::class)->get_plugin('lti');
         $component = 'auth_lti';
         $user1 = $this->getDataGenerator()->create_user();
-        $usercontext1 = \context_user::instance($user1->id);
+        $usercontext1 = user::instance($user1->id);
         $user2 = $this->getDataGenerator()->create_user();
-        $usercontext2 = \context_user::instance($user2->id);
+        $usercontext2 = user::instance($user2->id);
 
         $auth->create_user_binding('https://lms.example.com', 'abc123', $user1->id);
         $auth->create_user_binding('https://lms.example.com', 'def456', $user2->id);
@@ -228,7 +230,7 @@ final class provider_test extends provider_testcase {
         $this->assertCount(1, $userlist2);
 
         // User data should be only removed in the user context.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         // Add userlist2 to the approved user list in the system context.
         $approvedlist = new approved_userlist($systemcontext, $component, $userlist2->get_userids());
         // Delete user1 data using delete_data_for_user.

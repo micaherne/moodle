@@ -16,6 +16,8 @@
 
 namespace core_badges\output;
 
+use core\context\course;
+
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->libdir . '/badgeslib.php');
@@ -122,7 +124,7 @@ final class manage_badge_action_bar_test extends \advanced_testcase {
         $coursebadgeid = $DB->insert_record('badge', $badge, true);
         $badge = new \core_badges\badge($coursebadgeid);
 
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $page = new \moodle_page();
         $page->set_context($context);
         $actionbar = new manage_badge_action_bar($badge, $page);

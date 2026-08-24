@@ -16,6 +16,7 @@
 
 namespace smsgateway_aws;
 
+use core\exception\coding_exception;
 use core_sms\message;
 
 /**
@@ -71,7 +72,7 @@ final class gateway_test extends \advanced_testcase {
         $updatedmessages = $gw->update_message_statuses([$message, $message2]);
         $this->assertEquals([$message, $message2], $updatedmessages);
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $othergw->update_message_status($message);
     }
 }

@@ -16,6 +16,8 @@
 
 namespace tool_admin_presets\local\action;
 
+use core\exception\moodle_exception;
+use core\plugin_manager;
 use core_adminpresets\manager;
 
 /**
@@ -78,7 +80,7 @@ final class export_test extends \advanced_testcase {
         } catch (\exception $e) {
             // If export action was successfull, redirect should be called so we will encounter an
             // 'unsupported redirect error' moodle_exception.
-            $this->assertInstanceOf(\moodle_exception::class, $e);
+            $this->assertInstanceOf(moodle_exception::class, $e);
         } finally {
             // Check the preset record has been created.
             $presets = $DB->get_records('adminpresets');
@@ -119,7 +121,7 @@ final class export_test extends \advanced_testcase {
             $this->assertEquals('1', $setting->value);
 
             // Check plugins have been created with the expected values.
-            $manager = \core_plugin_manager::instance();
+            $manager = plugin_manager::instance();
             $plugintype = 'enrol';
             $plugins = $manager->get_present_plugins($plugintype);
             $enabledplugins = $manager->get_enabled_plugins($plugintype);

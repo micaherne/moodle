@@ -16,10 +16,11 @@
 
 namespace core_ai\table;
 
+use core\context\system;
 use core_ai\manager;
 use core_table\dynamic as dynamic_table;
-use flexible_table;
-use moodle_url;
+use core_table\flexible_table;
+use core\url;
 use stdClass;
 
 /**
@@ -62,8 +63,8 @@ class aiplacement_action_management_table extends flexible_table implements dyna
     }
 
     #[\Override]
-    public function get_context(): \context_system {
-        return \context_system::instance();
+    public function get_context(): system {
+        return system::instance();
     }
 
     /**
@@ -139,7 +140,7 @@ class aiplacement_action_management_table extends flexible_table implements dyna
         $output = $OUTPUT->render_from_template('core_admin/table/namedesc', $params);
 
         if (!$this->manager->is_action_available($row->action)) {
-            $providerurl = new moodle_url('/admin/settings.php', ['section' => 'aiprovider']);
+            $providerurl = new url('/admin/settings.php', ['section' => 'aiprovider']);
             $output .= $OUTPUT->render_from_template('core_ai/admin_noproviders', [
                 'providerurl' => $providerurl->out(),
             ]);
@@ -230,7 +231,7 @@ class aiplacement_action_management_table extends flexible_table implements dyna
 
     #[\Override]
     public function guess_base_url(): void {
-        $url = new moodle_url('/');
+        $url = new url('/');
         $this->define_baseurl($url);
     }
 

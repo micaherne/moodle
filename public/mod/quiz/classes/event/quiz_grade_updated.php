@@ -24,6 +24,9 @@
 
 namespace mod_quiz\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 /**
  * The mod_quiz quiz grade updated event class.
  *
@@ -56,7 +59,7 @@ class quiz_grade_updated extends \core\event\base {
     }
 
     public function get_url() {
-        return new \moodle_url('/mod/quiz/edit.php', [
+        return new url('/mod/quiz/edit.php', [
             'cmid' => $this->contextinstanceid,
         ]);
     }
@@ -65,19 +68,19 @@ class quiz_grade_updated extends \core\event\base {
         parent::validate_data();
 
         if (!isset($this->objectid)) {
-            throw new \coding_exception('The \'objectid\' value must be set.');
+            throw new coding_exception('The \'objectid\' value must be set.');
         }
 
         if (!isset($this->contextinstanceid)) {
-            throw new \coding_exception('The \'contextinstanceid\' value must be set.');
+            throw new coding_exception('The \'contextinstanceid\' value must be set.');
         }
 
         if (!isset($this->other['oldgrade'])) {
-            throw new \coding_exception('The \'oldgrade\' value must be set in other.');
+            throw new coding_exception('The \'oldgrade\' value must be set in other.');
         }
 
         if (!isset($this->other['newgrade'])) {
-            throw new \coding_exception('The \'newgrade\' value must be set in other.');
+            throw new coding_exception('The \'newgrade\' value must be set in other.');
         }
     }
 

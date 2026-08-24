@@ -35,6 +35,8 @@
 
 declare(strict_types=1);
 
+use core\exception\coding_exception;
+
 /**
  * Lightweight dataset class for phpunit, supports XML, CSV and array datasets.
  *

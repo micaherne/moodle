@@ -25,6 +25,9 @@
 
 namespace forumreport_summary\event;
 
+use core\context\module;
+use core\url;
+
 /**
  * Tests for forum report summary events.
  *
@@ -51,7 +54,7 @@ final class events_test extends \advanced_testcase {
         // Create forum.
         $this->setUser($teacher);
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
-        $context = \context_module::instance($forum->cmid);
+        $context = module::instance($forum->cmid);
 
         // Trigger and capture event.
         $eventparams = [
@@ -75,7 +78,7 @@ final class events_test extends \advanced_testcase {
         $this->assertEquals(CONTEXT_MODULE, $event->contextlevel);
         $this->assertEquals($forum->cmid, $event->contextinstanceid);
         $this->assertEquals($teacher->id, $event->userid);
-        $url = new \moodle_url('/mod/forum/report/summary/index.php',
+        $url = new url('/mod/forum/report/summary/index.php',
                 ['courseid' => $course->id, 'forumid' => $forum->id]);
         $this->assertEquals($url, $event->get_url());
         $this->assertEventContextNotUsed($event);
@@ -100,7 +103,7 @@ final class events_test extends \advanced_testcase {
         // Create forum.
         $this->setUser($teacher);
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
-        $context = \context_module::instance($forum->cmid);
+        $context = module::instance($forum->cmid);
 
         // Trigger and capture event.
         $eventparams = [
@@ -124,7 +127,7 @@ final class events_test extends \advanced_testcase {
         $this->assertEquals(CONTEXT_MODULE, $event->contextlevel);
         $this->assertEquals($forum->cmid, $event->contextinstanceid);
         $this->assertEquals($teacher->id, $event->userid);
-        $url = new \moodle_url('/mod/forum/report/summary/index.php',
+        $url = new url('/mod/forum/report/summary/index.php',
                 ['courseid' => $course->id, 'forumid' => $forum->id]);
         $this->assertEquals($url, $event->get_url());
         $this->assertEventContextNotUsed($event);

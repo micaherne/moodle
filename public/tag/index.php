@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->dirroot . '/lib/weblib.php');
 require_once($CFG->dirroot . '/blog/lib.php');
@@ -29,7 +34,7 @@ require_once($CFG->dirroot . '/blog/lib.php');
 require_login();
 
 if (empty($CFG->usetags)) {
-    throw new \moodle_exception('tagsaredisabled', 'tag');
+    throw new moodle_exception('tagsaredisabled', 'tag');
 }
 
 $tagid       = optional_param('id', 0, PARAM_INT); // tag id
@@ -43,7 +48,7 @@ $rec         = optional_param('rec', 1, PARAM_INT);
 
 $edit        = optional_param('edit', -1, PARAM_BOOL);
 
-$systemcontext   = context_system::instance();
+$systemcontext   = system::instance();
 
 if ($tagname) {
     $tagcollid = optional_param('tc', 0, PARAM_INT);
@@ -52,13 +57,13 @@ if ($tagname) {
         $tags = core_tag_tag::guess_by_name($tagname, '*');
         if (count($tags) > 1) {
             // This tag was found in more than one collection, redirect to search.
-            redirect(new moodle_url('/tag/search.php', array('query' => $tagname)));
+            redirect(new url('/tag/search.php', array('query' => $tagname)));
         } else if (count($tags) == 1) {
             $tag = reset($tags);
         }
     } else {
         if (!$tag = core_tag_tag::get_by_name($tagcollid, $tagname, '*')) {
-            redirect(new moodle_url('/tag/search.php', array('tc' => $tagcollid, 'query' => $tagname)));
+            redirect(new url('/tag/search.php', array('tc' => $tagcollid, 'query' => $tagname)));
         }
     }
 } else if ($tagid) {
@@ -66,7 +71,7 @@ if ($tagname) {
 }
 unset($tagid);
 if (empty($tag)) {
-    redirect(new moodle_url('/tag/search.php'));
+    redirect(new url('/tag/search.php'));
 }
 
 if ($ctx && ($context = context::instance_by_id($ctx, IGNORE_MISSING)) && $context->contextlevel >= CONTEXT_COURSE) {
@@ -88,8 +93,8 @@ $PAGE->set_pagelayout('standard');
 $PAGE->set_blocks_editing_capability('moodle/tag:editblocks');
 
 $buttons = '';
-if (has_capability('moodle/tag:manage', context_system::instance())) {
-    $buttons .= $OUTPUT->single_button(new moodle_url('/tag/manage.php'),
+if (has_capability('moodle/tag:manage', system::instance())) {
+    $buttons .= $OUTPUT->single_button(new url('/tag/manage.php'),
             get_string('managetags', 'tag'), 'GET');
 }
 if ($PAGE->user_allowed_editing()) {

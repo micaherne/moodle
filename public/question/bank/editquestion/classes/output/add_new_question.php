@@ -16,8 +16,11 @@
 
 namespace qbank_editquestion\output;
 
+use core\output\renderable;
+use core\output\templatable;
+use core\url;
 use qbank_editquestion\editquestion_helper;
-use renderer_base;
+use core\output\renderer_base;
 
 /**
  * Create new question button
@@ -27,7 +30,7 @@ use renderer_base;
  * @author    Mark Johnson <mark.johnson@catalyst-eu.net>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class add_new_question implements \renderable, \templatable {
+class add_new_question implements renderable, templatable {
     /** @var int $categoryid The ID of the category the quesiton will be added to. */
     protected int $categoryid;
 
@@ -55,7 +58,7 @@ class add_new_question implements \renderable, \templatable {
         $addquestiondisplay['canadd'] = $this->canadd;
         if ($this->canadd) {
             $this->params['category'] = $this->categoryid;
-            $url = new \moodle_url('/question/bank/editquestion/addquestion.php', $this->params);
+            $url = new url('/question/bank/editquestion/addquestion.php', $this->params);
             $addquestiondisplay['buttonhtml'] = $output->single_button(
                 $url,
                 get_string('createnewquestion', 'question'),

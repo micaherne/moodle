@@ -24,6 +24,9 @@
 
 namespace core_analytics\local\analyser;
 
+use core\context_helper;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -384,7 +387,7 @@ abstract class base {
      * @return string
      */
     public function join_sample_user($sampletablealias) {
-        throw new \coding_exception('This method should be implemented if static::processes_user_data returns true.');
+        throw new coding_exception('This method should be implemented if static::processes_user_data returns true.');
     }
 
     /**
@@ -450,7 +453,7 @@ abstract class base {
         }
 
         $params = ['contextlevel' => $contextlevel, 'modelid' => $this->get_modelid()];
-        $select = $tablealias . '.*, ' . \context_helper::get_preload_record_columns_sql('ctx');
+        $select = $tablealias . '.*, ' . context_helper::get_preload_record_columns_sql('ctx');
 
         // We add the action filter on ON instead of on WHERE because otherwise records are not returned if there are existing
         // records for another action or model.
@@ -505,7 +508,7 @@ abstract class base {
         }
 
         if ($order != 'ASC' && $order != 'DESC') {
-            throw new \coding_exception('The order can only be ASC or DESC');
+            throw new coding_exception('The order can only be ASC or DESC');
         }
 
         $ordersql = ' ORDER BY (CASE WHEN aua.timeanalysed IS NULL THEN 0 ELSE aua.timeanalysed END) ASC';

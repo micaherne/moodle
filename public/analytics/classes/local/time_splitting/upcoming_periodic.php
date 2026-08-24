@@ -24,6 +24,8 @@
 
 namespace core_analytics\local\time_splitting;
 
+use core_cache\cache;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -82,7 +84,7 @@ abstract class upcoming_periodic extends periodic implements after_now {
     protected function get_first_start() {
         global $DB;
 
-        $cache = \cache::make('core', 'modelfirstanalyses');
+        $cache = cache::make('core', 'modelfirstanalyses');
 
         $key = $this->modelid . '_' . $this->analysable->get_id();
         $firstanalysis = $cache->get($key);

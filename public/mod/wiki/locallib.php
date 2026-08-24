@@ -34,7 +34,17 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\context_helper;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\pix_icon;
 use core\url;
+use core\user;
+use core_table\output\html_table;
 
 require_once($CFG->dirroot . '/mod/wiki/lib.php');
 require_once($CFG->dirroot . '/mod/wiki/parser/parser.php');
@@ -217,7 +227,7 @@ function wiki_save_section($wikipage, $sectiontitle, $sectioncontent, $userid) {
 
     $wiki = wiki_get_wiki_from_pageid($wikipage->id);
     $cm = get_coursemodule_from_instance('wiki', $wiki->id);
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     if (has_capability('mod/wiki:editpage', $context)) {
         $version = wiki_get_current_version($wikipage->id);
@@ -242,7 +252,7 @@ function wiki_save_page($wikipage, $newcontent, $userid) {
 
     $wiki = wiki_get_wiki_from_pageid($wikipage->id);
     $cm = get_coursemodule_from_instance('wiki', $wiki->id);
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     if (has_capability('mod/wiki:editpage', $context)) {
         $version = wiki_get_current_version($wikipage->id);
@@ -356,7 +366,7 @@ function wiki_create_page($swid, $title, $format, $userid) {
     global $DB;
     $subwiki = wiki_get_subwiki($swid);
     $cm = get_coursemodule_from_instance('wiki', $subwiki->wikiid);
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
     require_capability('mod/wiki:editpage', $context);
     // if page exists
     if ($page = wiki_get_page_by_title($swid, $title)) {
@@ -619,7 +629,7 @@ function wiki_parse_content($markup, $pagecontent, $options = array()) {
 
     $subwiki = wiki_get_subwiki($options['swid']);
     $cm = get_coursemodule_from_instance("wiki", $subwiki->wikiid);
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     $parser_options = array(
         'link_callback' => '/mod/wiki/locallib.php:wiki_parser_link',
@@ -782,7 +792,7 @@ function wiki_user_can_view($subwiki, $wiki = null) {
         // The whole module is not visible to the current user.
         return false;
     }
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     // Working depending on activity groupmode
     switch (groups_get_activity_groupmode($cm)) {
@@ -874,7 +884,7 @@ function wiki_user_can_edit($subwiki) {
 
     $wiki = wiki_get_wiki($subwiki->wikiid);
     $cm = get_coursemodule_from_instance('wiki', $wiki->id);
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     // Working depending on activity groupmode
     switch (groups_get_activity_groupmode($cm)) {
@@ -1056,7 +1066,7 @@ function wiki_delete_locks($pageid, $userid = null, $section = null, $delete_fro
 
     $wiki = wiki_get_wiki_from_pageid($pageid);
     $cm = get_coursemodule_from_instance('wiki', $wiki->id);
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     $params = array('pageid' => $pageid);
 
@@ -1233,7 +1243,7 @@ function wiki_delete_page_versions($deleteversions, $context = null) {
         if (is_null($context)) {
             $wiki = wiki_get_wiki_from_pageid($id);
             $cm = get_coursemodule_from_instance('wiki', $wiki->id);
-            $context = context_module::instance($cm->id);
+            $context = module::instance($cm->id);
         }
         // Delete all versions, if version specified is 0.
         if (in_array(0, $versions)) {
@@ -1339,7 +1349,7 @@ function wiki_delete_comments_wiki() {
     global $PAGE, $DB;
 
     $cm = $PAGE->cm;
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     $table = 'comments';
     $select = 'contextid = ?';
@@ -1442,7 +1452,7 @@ function wiki_print_edit_form_default_fields($format, $pageid, $version = -1, $u
     echo $OUTPUT->container_end();
 
     $cm = $PAGE->cm;
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     echo $OUTPUT->container_start('container wiki-upload-table');
     wiki_print_upload_table($context, 'wiki_upload', $pageid, $deleteuploads);
@@ -1524,7 +1534,7 @@ function wiki_build_tree($page, $node, &$keys) {
         }
         array_push($keys, $key);
         $l = wiki_parser_link($p);
-        $link = new moodle_url('/mod/wiki/view.php', array('pageid' => $p->id));
+        $link = new url('/mod/wiki/view.php', array('pageid' => $p->id));
         // navigation_node::get_content will format the title for us
         $nodeaux = $node->add($p->title, $link, null, null, null, $icon);
         if ($l['new']) {
@@ -1621,7 +1631,7 @@ function wiki_get_visible_subwikis($wiki, $cm = null, $context = null) {
         $cm = get_coursemodule_from_instance('wiki', $wiki->id);
     }
     if (empty($context)) {
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
     }
 
     if (!has_capability('mod/wiki:viewpage', $context)) {
@@ -1721,8 +1731,8 @@ function wiki_get_subwiki_by_group_and_user_with_validation($wiki, $groupid, $us
         // The subwiki doesn't exist.
         // Validate if user is valid.
         if ($userid != 0) {
-            $user = core_user::get_user($userid, '*', MUST_EXIST);
-            core_user::require_active_user($user);
+            $user = user::get_user($userid, '*', MUST_EXIST);
+            user::require_active_user($user);
         }
 
         // Validate that groupid is valid.
@@ -1787,7 +1797,7 @@ function mod_wiki_get_tagged_pages($tag, $exclusivemode = false, $fromctx = 0, $
         'coursemodulecontextlevel' => CONTEXT_MODULE);
 
     if ($ctx) {
-        $context = $ctx ? context::instance_by_id($ctx) : context_system::instance();
+        $context = $ctx ? context::instance_by_id($ctx) : system::instance();
         $query .= $rec ? ' AND (ctx.id = :contextid OR ctx.path LIKE :path)' : ' AND ctx.id = :contextid';
         $params['contextid'] = $context->id;
         $params['path'] = $context->path.'/%';
@@ -1844,12 +1854,12 @@ function mod_wiki_get_tagged_pages($tag, $exclusivemode = false, $fromctx = 0, $
             context_helper::preload_from_record($item);
             $modinfo = get_fast_modinfo($item->courseid);
             $cm = $modinfo->get_cm($item->cmid);
-            $pageurl = new moodle_url('/mod/wiki/view.php', array('pageid' => $item->id));
-            $pagename = format_string($item->title, true, array('context' => context_module::instance($item->cmid)));
+            $pageurl = new url('/mod/wiki/view.php', array('pageid' => $item->id));
+            $pagename = format_string($item->title, true, array('context' => module::instance($item->cmid)));
             $pagename = html_writer::link($pageurl, $pagename);
             $courseurl = course_get_url($item->courseid, $cm->sectionnum);
             $cmname = html_writer::link($cm->url, $cm->get_formatted_name());
-            $coursename = format_string($item->fullname, true, array('context' => context_course::instance($item->courseid)));
+            $coursename = format_string($item->fullname, true, array('context' => course::instance($item->courseid)));
             $coursename = html_writer::link($courseurl, $coursename);
             $icon = html_writer::link($pageurl, html_writer::empty_tag('img', array('src' => $cm->get_icon_url())));
             $tagfeed->add($icon, $pagename, $cmname.'<br>'.$coursename);

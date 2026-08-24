@@ -17,7 +17,7 @@
 namespace mod_assign\courseformat;
 
 use assign;
-use cm_info;
+use core_course\cm_info;
 use core\url;
 use mod_assign\dates;
 use core_calendar\output\humandate;

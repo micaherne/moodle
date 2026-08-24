@@ -24,6 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\output\user_picture;
+use core\user;
 use core_competency\api;
 use core_competency\plan;
 use core_competency\url;
@@ -60,7 +62,7 @@ function core_competency_comment_add($comment, $params) {
         // Get the sender.
         $user = $USER;
         if ($USER->id != $comment->userid) {
-            $user = core_user::get_user($comment->userid);
+            $user = user::get_user($comment->userid);
         }
         $fullname = fullname($user);
 
@@ -120,7 +122,7 @@ function core_competency_comment_add($comment, $params) {
         $message->component = 'moodle';
         $message->name = 'competencyusercompcomment';
         $message->notification = 1;
-        $message->userfrom = core_user::get_noreply_user();
+        $message->userfrom = user::get_noreply_user();
         $message->subject = get_string('usercommentedonacompetencysubject', 'core_competency', $fullname);
         $message->fullmessage = $fullmessage;
         $message->fullmessageformat = $format;
@@ -132,7 +134,7 @@ function core_competency_comment_add($comment, $params) {
         $message->contexturl = $url->out(false);
         $message->contexturlname = $urlname;
 
-        $userpicture = new \user_picture($user);
+        $userpicture = new user_picture($user);
         $userpicture->size = 1; // Use f1 size.
         // Message each recipient.
         foreach ($recipients as $recipient) {
@@ -162,7 +164,7 @@ function core_competency_comment_add($comment, $params) {
         // Get the sender.
         $user = $USER;
         if ($USER->id != $comment->userid) {
-            $user = core_user::get_user($comment->userid);
+            $user = user::get_user($comment->userid);
         }
 
         $fullname = fullname($user);
@@ -196,7 +198,7 @@ function core_competency_comment_add($comment, $params) {
         $message->component = 'moodle';
         $message->name = 'competencyplancomment';
         $message->notification = 1;
-        $message->userfrom = core_user::get_noreply_user();
+        $message->userfrom = user::get_noreply_user();
         $message->subject = get_string('usercommentedonaplansubject', 'core_competency', $fullname);
         $message->fullmessage = $fullmessage;
         $message->fullmessageformat = $format;
@@ -208,7 +210,7 @@ function core_competency_comment_add($comment, $params) {
         $message->contexturl = $url->out(false);
         $message->contexturlname = $urlname;
 
-        $userpicture = new \user_picture($user);
+        $userpicture = new user_picture($user);
         $userpicture->size = 1; // Use f1 size.
         // Message each recipient.
         foreach ($recipients as $recipient) {

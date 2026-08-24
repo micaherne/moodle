@@ -28,6 +28,10 @@
  * @copyright  2007 onwards Shane Elliot {@link http://pukunui.com}
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\exception\moodle_exception;
+use core_cache\cache;
+use core_cache\store;
+
 class profile_define_base {
 
     /**
@@ -284,11 +288,11 @@ function profile_delete_category($id) {
 
     // Retrieve the category.
     if (!$category = $DB->get_record('user_info_category', array('id' => $id))) {
-        throw new \moodle_exception('invalidcategoryid');
+        throw new moodle_exception('invalidcategoryid');
     }
 
     if (!$categories = $DB->get_records('user_info_category', null, 'sortorder ASC')) {
-        throw new \moodle_exception('nocate', 'debug');
+        throw new moodle_exception('nocate', 'debug');
     }
 
     unset($categories[$category->id]);
@@ -343,7 +347,7 @@ function profile_delete_field($id) {
 
     // Remove any user data associated with this field.
     if (!$DB->delete_records('user_info_data', array('fieldid' => $id))) {
-        throw new \moodle_exception('cannotdeletecustomfield');
+        throw new moodle_exception('cannotdeletecustomfield');
     }
 
     // Note: Any availability conditions that depend on this field will remain,
@@ -554,7 +558,7 @@ function profile_save_field(stdClass $data, array $editors): void {
  * Purge the cache for the user profile fields
  */
 function profile_purge_user_fields_cache() {
-    $cache = \cache::make_from_params(cache_store::MODE_REQUEST, 'core_profile', 'customfields',
+    $cache = cache::make_from_params(store::MODE_REQUEST, 'core_profile', 'customfields',
         [], ['simplekeys' => true, 'simpledata' => true]);
     $cache->purge();
 }

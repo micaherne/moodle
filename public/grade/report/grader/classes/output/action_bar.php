@@ -16,12 +16,15 @@
 
 namespace gradereport_grader\output;
 
+use core\context\course;
 use core\output\comboboxsearch;
+use core\output\renderer_base;
+use core\user;
 use core_course\output\actionbar\group_selector;
 use core_course\output\actionbar\initials_selector;
 use core_course\output\actionbar\user_selector;
 use core_grades\output\general_action_bar;
-use moodle_url;
+use core\url;
 
 /**
  * Renderable class for the action bar elements in the grader report.
@@ -43,14 +46,14 @@ class action_bar extends \core_grades\output\action_bar {
      *
      * @param \context_course $context The context object.
      */
-    public function __construct(\context_course $context) {
+    public function __construct(course $context) {
         parent::__construct($context);
 
         $this->userid = optional_param('gpr_userid', 0, PARAM_INT);
         $this->usersearch = optional_param('gpr_search', '', PARAM_NOTAGS);
 
         if ($this->userid) {
-            $user = \core_user::get_user($this->userid);
+            $user = user::get_user($this->userid);
             $this->usersearch = fullname($user);
         }
     }
@@ -71,13 +74,13 @@ class action_bar extends \core_grades\output\action_bar {
      * @return array
      * @throws \moodle_exception
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         global $SESSION, $USER;
         // If in the course context, we should display the general navigation selector in gradebook.
         $courseid = $this->context->instanceid;
         // Get the data used to output the general navigation selector.
         $generalnavselector = new general_action_bar($this->context,
-            new moodle_url('/grade/report/grader/index.php', ['id' => $courseid]), 'gradereport', 'grader');
+            new url('/grade/report/grader/index.php', ['id' => $courseid]), 'gradereport', 'grader');
 
         $data = $generalnavselector->export_for_template($output);
 
@@ -110,7 +113,7 @@ class action_bar extends \core_grades\output\action_bar {
                 $data['groupselector'] = $gs->export_for_template($output);
             }
 
-            $resetlink = new moodle_url('/grade/report/grader/index.php', ['id' => $courseid]);
+            $resetlink = new url('/grade/report/grader/index.php', ['id' => $courseid]);
             $userselector = new user_selector(
                 course: $course,
                 resetlink: $resetlink,
@@ -151,7 +154,7 @@ class action_bar extends \core_grades\output\action_bar {
                 groups_get_course_group($course, true, $allowedgroups) ||
                 $this->usersearch
             ) {
-                $reset = new moodle_url('/grade/report/grader/index.php', [
+                $reset = new url('/grade/report/grader/index.php', [
                     'id' => $courseid,
                     'group' => 0,
                     'sifirst' => '',

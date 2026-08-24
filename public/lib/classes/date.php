@@ -32,6 +32,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author    Petr Skoda <petr.skoda@totaralms.com>
  */
+use core\exception\coding_exception;
+
 class core_date {
     /** @var array list of recommended zones */
     protected static $goodzones = null;

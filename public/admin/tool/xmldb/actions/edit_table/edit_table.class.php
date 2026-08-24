@@ -31,6 +31,9 @@
  * @copyright  2003 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\output\html_writer;
+use core\url;
+
 class edit_table extends XMLDBAction {
 
     /**
@@ -179,13 +182,13 @@ class edit_table extends XMLDBAction {
         // The view php code button
         $b .= '&nbsp;<a href="index.php?action=view_table_php&amp;table=' . $tableparam . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">[' . $this->str['viewphpcode'] . ']</a>';
         // The add persistent fields button.
-        $url = new \moodle_url('/admin/tool/xmldb/index.php', [
+        $url = new url('/admin/tool/xmldb/index.php', [
             'action' => 'add_persistent_mandatory',
             'sesskey' => sesskey(),
             'table' => $tableparam,
             'dir'=> str_replace($CFG->dirroot, '', $dirpath)
         ]);
-        $b .= '&nbsp;' . \html_writer::link($url, '[' . $this->str['addpersistent'] . ']');
+        $b .= '&nbsp;' . html_writer::link($url, '[' . $this->str['addpersistent'] . ']');
 
         // The save button (if possible)
         if ($cansavenow) {

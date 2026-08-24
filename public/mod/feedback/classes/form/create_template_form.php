@@ -16,11 +16,12 @@
 
 namespace mod_feedback\form;
 
+use core\exception\moodle_exception;
 use core_form\dynamic_form;
-use moodle_url;
-use context;
-use context_module;
-use context_system;
+use core\url;
+use core\context;
+use core\context\module;
+use core\context\system;
 
 /**
  * Prints the create new template form
@@ -46,7 +47,7 @@ class create_template_form extends dynamic_form {
         $mform->setType('templatename', PARAM_TEXT);
         $mform->addRule('templatename', null, 'required', null, 'client');
 
-        if (has_capability('mod/feedback:createpublictemplate', context_system::instance())) {
+        if (has_capability('mod/feedback:createpublictemplate', system::instance())) {
             $mform->addElement('checkbox',
                 'ispublic', '',
                 get_string('availableforallcourses', 'feedback'));
@@ -61,7 +62,7 @@ class create_template_form extends dynamic_form {
     protected function get_context_for_dynamic_submission(): context {
         $id = $this->optional_param('id', null, PARAM_INT);
         list($course, $cm) = get_course_and_cm_from_cmid($id, 'feedback');
-        return context_module::instance($cm->id);
+        return module::instance($cm->id);
     }
 
     /**
@@ -74,7 +75,7 @@ class create_template_form extends dynamic_form {
         if (!has_capability('mod/feedback:edititems', $context) ||
             !(has_capability('mod/feedback:createprivatetemplate', $context) ||
             has_capability('mod/feedback:createpublictemplate', $context))) {
-            throw new \moodle_exception('nocapabilitytousethisservice');
+            throw new moodle_exception('nocapabilitytousethisservice');
         }
     }
 
@@ -107,10 +108,10 @@ class create_template_form extends dynamic_form {
      *
      * @return moodle_url
      */
-    protected function get_page_url_for_dynamic_submission(): moodle_url {
+    protected function get_page_url_for_dynamic_submission(): url {
         $params = [
             'id' => $this->optional_param('id', null, PARAM_INT),
         ];
-        return new moodle_url('/mod/feedback/edit.php', $params);
+        return new url('/mod/feedback/edit.php', $params);
     }
 }

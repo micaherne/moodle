@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
@@ -67,7 +70,7 @@ $urloptions = [
     'parentid' => $parentid,
     'pagecontextid' => $pagecontextid
 ];
-$url = new moodle_url("/admin/tool/lp/editcompetency.php", $urloptions);
+$url = new url("/admin/tool/lp/editcompetency.php", $urloptions);
 
 // Set up the page.
 list($title, $subtitle, $returnurl) = \tool_lp\page_helper::setup_for_competency($pagecontextid, $url, $competencyframework,

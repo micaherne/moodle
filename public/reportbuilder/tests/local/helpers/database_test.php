@@ -19,8 +19,8 @@ declare(strict_types=1);
 namespace core_reportbuilder\local\helpers;
 
 use advanced_testcase;
-use coding_exception;
-use core_user;
+use core\exception\coding_exception;
+use core\user;
 
 /**
  * Unit tests for the database helper class
@@ -155,7 +155,7 @@ final class database_test extends advanced_testcase {
                  WHERE {$usertablealias}.id = :{$paramuserid}
                    AND {$usertablealias}.deleted = :{$paramuserdeleted}";
 
-        $admin = core_user::get_user_by_username('admin');
+        $admin = user::get_user_by_username('admin');
 
         $params = [
             $paramuserid => $admin->id,

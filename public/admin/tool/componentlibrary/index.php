@@ -22,11 +22,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 
 require_login();
-require_capability('moodle/site:configview', context_system::instance());
+require_capability('moodle/site:configview', system::instance());
 
-$firstpage = new moodle_url('/admin/tool/componentlibrary/docspage.php/library/getting-started/');
+$firstpage = new url('/admin/tool/componentlibrary/docspage.php/library/getting-started/');
 
 redirect($firstpage);

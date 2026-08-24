@@ -16,8 +16,10 @@
 
 namespace core_user;
 
+use core\context;
+use core\exception\coding_exception;
 use core_text;
-use core_user;
+use core\user;
 
 /**
  * Class for retrieving information about user fields that are needed for displaying user identity.
@@ -110,7 +112,7 @@ class fields {
      * @param bool $allowcustom If true, custom profile fields may be included
      * @return fields User fields object ready for use
      */
-    public static function for_identity(?\context $context, bool $allowcustom = true): fields {
+    public static function for_identity(?context $context, bool $allowcustom = true): fields {
         $fields = new fields(self::PURPOSE_IDENTITY);
         $fields->context = $context;
         $fields->allowcustom = $allowcustom;
@@ -179,7 +181,7 @@ class fields {
      * @param bool $allowcustom If true, custom profile fields may be included
      * @return $this Same object for chaining function calls
      */
-    public function with_identity(?\context $context, bool $allowcustom = true): fields {
+    public function with_identity(?context $context, bool $allowcustom = true): fields {
         $this->context = $context;
         $this->allowcustom = $allowcustom;
         $this->purposes[self::PURPOSE_IDENTITY] = true;
@@ -288,7 +290,7 @@ class fields {
             // Check the value was legitimate.
             foreach ($limitpurposes as $purpose) {
                 if ($purpose != self::CUSTOM_INCLUDE && empty($this->purposes[$purpose])) {
-                    throw new \coding_exception('$limitpurposes can only include purposes defined in object');
+                    throw new coding_exception('$limitpurposes can only include purposes defined in object');
                 }
             }
 
@@ -360,7 +362,7 @@ class fields {
      * @return string[] Array of required fields
      * @throws \coding_exception
      */
-    public static function get_identity_fields(?\context $context, bool $allowcustom = true): array {
+    public static function get_identity_fields(?context $context, bool $allowcustom = true): array {
         global $CFG;
 
         // Only users with permission get the extra fields.
@@ -586,7 +588,7 @@ class fields {
         $unique = self::$uniqueidentifier++;
 
         $namefields = self::get_name_fields();
-        $dummyfullname = core_user::get_dummy_fullname(null, ['override' => $override]);
+        $dummyfullname = user::get_dummy_fullname(null, ['override' => $override]);
 
         // Extract any name fields from the fullname format in the order that they appear.
         $matchednames = array_values(order_in_string($namefields, $dummyfullname));

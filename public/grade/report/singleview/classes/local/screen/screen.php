@@ -24,10 +24,12 @@
 
 namespace gradereport_singleview\local\screen;
 
-use context_course;
+use core\context\course;
+use core_cache\cache;
+use core_cache\store;
 use grade_report;
-use moodle_url;
-use html_writer;
+use core\url;
+use core\output\html_writer;
 use grade_structure;
 use grade_grade;
 use grade_item;
@@ -122,12 +124,12 @@ abstract class screen {
         $this->itemid = $itemid;
         $this->groupid = $groupid;
 
-        $this->context = context_course::instance($this->courseid);
+        $this->context = course::instance($this->courseid);
         $this->course = $DB->get_record('course', ['id' => $courseid]);
 
         $this->page = optional_param('page', 0, PARAM_INT);
 
-        $cache = \cache::make_from_params(\cache_store::MODE_SESSION, 'gradereport_singleview', 'perpage');
+        $cache = cache::make_from_params(store::MODE_SESSION, 'gradereport_singleview', 'perpage');
         $perpage = optional_param('perpage', null, PARAM_INT);
         if ((!in_array($perpage, self::$validperpage) && $perpage != self::$maxperpage) && ($perpage !== 0)) {
             // Get from cache.
@@ -164,7 +166,7 @@ abstract class screen {
      * @return string The link
      */
     public function format_link(string $screen, int $itemid, ?bool $display = null): string {
-        $url = new moodle_url('/grade/report/singleview/index.php', [
+        $url = new url('/grade/report/singleview/index.php', [
             'id' => $this->courseid,
             'item' => $screen,
             'itemid' => $itemid,
@@ -424,7 +426,7 @@ abstract class screen {
     public function perpage_select(): string {
         global $PAGE, $OUTPUT;
 
-        $url = new moodle_url($PAGE->url);
+        $url = new url($PAGE->url);
         $numusers = count($this->items);
         // Print per-page dropdown.
         $pagingoptions = self::$validperpage;

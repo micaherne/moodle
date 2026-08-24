@@ -17,7 +17,8 @@
 namespace mod_bigbluebuttonbn\completion;
 
 use completion_info;
-use context_module;
+use core\context\module;
+use core\url;
 use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\logger;
 use mod_bigbluebuttonbn\meeting;
@@ -211,7 +212,7 @@ final class completion_test extends \advanced_testcase {
         $this->assertEquals(0, $completiondata->viewed);
         $this->assertEquals(COMPLETION_NOT_VIEWED, $completiondata->completionstate);
 
-        bigbluebuttonbn_view($bbactivity, $this->get_course(), $bbactivitycm, context_module::instance($bbactivitycm->id));
+        bigbluebuttonbn_view($bbactivity, $this->get_course(), $bbactivitycm, module::instance($bbactivitycm->id));
 
         $events = $sink->get_events();
         $this->assertTrue(count($events) > 1); // TODO : Here we have the module completion event triggered twice.
@@ -221,7 +222,7 @@ final class completion_test extends \advanced_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_bigbluebuttonbn\event\course_module_viewed', $event);
         $this->assertEquals($bbactivitycontext, $event->get_context());
-        $url = new \moodle_url('/mod/bigbluebuttonbn/view.php', ['id' => $bbactivitycontext->instanceid]);
+        $url = new url('/mod/bigbluebuttonbn/view.php', ['id' => $bbactivitycontext->instanceid]);
         $this->assertEquals($url, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());

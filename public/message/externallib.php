@@ -23,6 +23,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\context\user as context_user;
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
+use core\exception\required_capability_exception;
+use core\output\user_picture;
+use core\user as core_user;
 use core_external\external_api;
 use core_external\external_format_value;
 use core_external\external_function_parameters;
@@ -87,7 +94,7 @@ class core_message_external extends external_api {
         }
 
         // Ensure the current user is allowed to run this function.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         $params = self::validate_parameters(self::send_messages_to_conversation_parameters(), [
@@ -170,7 +177,7 @@ class core_message_external extends external_api {
         }
 
         // Ensure the current user is allowed to run this function
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         require_capability('moodle/site:sendmessage', $context);
 
@@ -212,7 +219,7 @@ class core_message_external extends external_api {
             // Check if the recipient can be messaged by the sender.
             if ($success && !\core_message\api::can_send_message($tousers[$message['touserid']]->id, $USER->id)) {
                 $success = false;
-                $fullname = fullname(\core_user::get_user($message['touserid']));
+                $fullname = fullname(core_user::get_user($message['touserid']));
                 $errormessage = get_string(
                     'usercantbemessaged',
                     'message',
@@ -343,7 +350,7 @@ class core_message_external extends external_api {
         }
 
         // Validate context.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         $params = array('userids' => $userids, 'userid' => $userid);
@@ -403,7 +410,7 @@ class core_message_external extends external_api {
         }
 
         // Validate context.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         $params = ['userid' => $userid, 'conversationids' => $conversationids];
@@ -463,7 +470,7 @@ class core_message_external extends external_api {
         }
 
         // Validate context.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         $params = ['userid' => $userid, 'conversationids' => $conversationids];
@@ -520,7 +527,7 @@ class core_message_external extends external_api {
         }
 
         // Validate context.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         $params = ['userid' => $userid, 'blockeduserid' => $blockeduserid];
@@ -581,7 +588,7 @@ class core_message_external extends external_api {
         }
 
         // Validate context.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         $params = ['userid' => $userid, 'unblockeduserid' => $unblockeduserid];
@@ -642,7 +649,7 @@ class core_message_external extends external_api {
         }
 
         // Validate context.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         $params = [
@@ -700,7 +707,7 @@ class core_message_external extends external_api {
         }
 
         // Validate context.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         $params = [
@@ -766,7 +773,7 @@ class core_message_external extends external_api {
         }
 
         // Validate context.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         $params = [
@@ -833,7 +840,7 @@ class core_message_external extends external_api {
         }
 
         // Validate context.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         $params = ['userid' => $userid, 'requesteduserid' => $requesteduserid];
@@ -919,7 +926,7 @@ class core_message_external extends external_api {
         }
 
         // Validate context.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         $params = ['userid' => $userid, 'requesteduserid' => $requesteduserid];
@@ -973,7 +980,7 @@ class core_message_external extends external_api {
         }
 
         // Validate context.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         $params = ['userid' => $userid, 'requesteduserid' => $requesteduserid];
@@ -1162,7 +1169,7 @@ class core_message_external extends external_api {
     public static function message_search_users($userid, $search, $limitfrom = 0, $limitnum = 0) {
         global $USER;
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
 
         $params = array(
             'userid' => $userid,
@@ -1241,7 +1248,7 @@ class core_message_external extends external_api {
             throw new moodle_exception('disabled', 'message');
         }
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
 
         $params = array(
             'userid' => $userid,
@@ -1370,7 +1377,7 @@ class core_message_external extends external_api {
         );
         $params = self::validate_parameters(self::get_conversations_parameters(), $params);
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         self::validate_context($systemcontext);
 
         if (($USER->id != $params['userid']) && !has_capability('moodle/site:readallmessages', $systemcontext)) {
@@ -1472,7 +1479,7 @@ class core_message_external extends external_api {
         ];
         self::validate_parameters(self::get_conversation_parameters(), $params);
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         self::validate_context($systemcontext);
 
         $conversation = \core_message\api::get_conversation(
@@ -1492,7 +1499,7 @@ class core_message_external extends external_api {
         } else {
             // We have to throw an exception here because the external functions annoyingly
             // don't accept null to be returned for a single structure.
-            throw new \moodle_exception('errorconversationdoesnotexist', 'message');
+            throw new moodle_exception('errorconversationdoesnotexist', 'message');
         }
     }
 
@@ -1572,7 +1579,7 @@ class core_message_external extends external_api {
         ];
         self::validate_parameters(self::get_conversation_between_users_parameters(), $params);
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         self::validate_context($systemcontext);
 
         $conversationid = \core_message\api::get_conversation_between_users([$params['userid'], $params['otheruserid']]);
@@ -1597,7 +1604,7 @@ class core_message_external extends external_api {
         } else {
             // We have to throw an exception here because the external functions annoyingly
             // don't accept null to be returned for a single structure.
-            throw new \moodle_exception('errorconversationdoesnotexist', 'message');
+            throw new moodle_exception('errorconversationdoesnotexist', 'message');
         }
     }
 
@@ -1658,7 +1665,7 @@ class core_message_external extends external_api {
         ];
         self::validate_parameters(self::get_self_conversation_parameters(), $params);
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         self::validate_context($systemcontext);
 
         $conversation = \core_message\api::get_self_conversation($params['userid']);
@@ -1682,7 +1689,7 @@ class core_message_external extends external_api {
         } else {
             // We have to throw an exception here because the external functions annoyingly
             // don't accept null to be returned for a single structure.
-            throw new \moodle_exception('errorconversationdoesnotexist', 'message');
+            throw new moodle_exception('errorconversationdoesnotexist', 'message');
         }
     }
 
@@ -1737,7 +1744,7 @@ class core_message_external extends external_api {
             throw new moodle_exception('disabled', 'message');
         }
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
 
         $params = array(
             'currentuserid' => $currentuserid,
@@ -1840,7 +1847,7 @@ class core_message_external extends external_api {
             throw new moodle_exception('disabled', 'message');
         }
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
 
         $params = array(
             'userid' => $userid,
@@ -2031,7 +2038,7 @@ class core_message_external extends external_api {
 
         $params = self::validate_parameters(self::get_messages_parameters(), $params);
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         $useridto = $params['useridto'];
@@ -2259,7 +2266,7 @@ class core_message_external extends external_api {
             )
         );
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         $useridto = $params['useridto'];
@@ -2337,7 +2344,7 @@ class core_message_external extends external_api {
             array('useridto' => $useridto)
         );
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         $useridto = $params['useridto'];
@@ -2407,7 +2414,7 @@ class core_message_external extends external_api {
         $userid = $params['userid'];
 
         // Validate context.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         // Check if private messaging between users is allowed.
@@ -2523,7 +2530,7 @@ class core_message_external extends external_api {
         }
 
         // Validate context.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         $sql = "SELECT m.*, mcm.userid as useridto
@@ -2617,7 +2624,7 @@ class core_message_external extends external_api {
         }
 
         // Validate context.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         $notification = $DB->get_record('notifications', ['id' => $params['notificationid']], '*', MUST_EXIST);
@@ -2688,7 +2695,7 @@ class core_message_external extends external_api {
         );
         $params = self::validate_parameters(self::mark_all_conversation_messages_as_read_parameters(), $params);
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         $user = core_user::get_user($params['userid'], '*', MUST_EXIST);
@@ -2754,7 +2761,7 @@ class core_message_external extends external_api {
         $params = self::validate_parameters(self::delete_conversations_by_id_parameters(), $params);
 
         // Validate context.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         $user = core_user::get_user($params['userid'], '*', MUST_EXIST);
@@ -2827,7 +2834,7 @@ class core_message_external extends external_api {
         $params = self::validate_parameters(self::delete_message_parameters(), $params);
 
         // Validate context.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         $user = core_user::get_user($params['userid'], '*', MUST_EXIST);
@@ -3026,7 +3033,7 @@ class core_message_external extends external_api {
             core_user::require_active_user($user);
         }
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         self::validate_context($systemcontext);
 
         // Check access control.
@@ -3277,7 +3284,7 @@ class core_message_external extends external_api {
             'conversations' => $conversationids
         ];
         $params = self::validate_parameters(self::set_favourite_conversations_parameters(), $params);
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         self::validate_context($systemcontext);
 
         if (($USER->id != $params['userid']) && !has_capability('moodle/site:readallmessages', $systemcontext)) {
@@ -3336,7 +3343,7 @@ class core_message_external extends external_api {
             'conversations' => $conversationids
         ];
         $params = self::validate_parameters(self::unset_favourite_conversations_parameters(), $params);
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         self::validate_context($systemcontext);
 
         if (($USER->id != $params['userid']) && !has_capability('moodle/site:readallmessages', $systemcontext)) {
@@ -3407,7 +3414,7 @@ class core_message_external extends external_api {
             'includeprivacyinfo' => $includeprivacyinfo
         ];
         $params = self::validate_parameters(self::get_member_info_parameters(), $params);
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         self::validate_context($systemcontext);
 
         if (($USER->id != $referenceuserid) && !has_capability('moodle/site:readallmessages', $systemcontext)) {
@@ -3505,7 +3512,7 @@ class core_message_external extends external_api {
         $params = ['userid' => $userid];
         $params = self::validate_parameters(self::get_conversation_counts_parameters(), $params);
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         self::validate_context($systemcontext);
 
         if (($USER->id != $params['userid']) && !has_capability('moodle/site:readallmessages', $systemcontext)) {
@@ -3582,7 +3589,7 @@ class core_message_external extends external_api {
         $params = ['userid' => $userid];
         $params = self::validate_parameters(self::get_unread_conversation_counts_parameters(), $params);
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         self::validate_context($systemcontext);
 
         if (($USER->id != $params['userid']) && !has_capability('moodle/site:readallmessages', $systemcontext)) {
@@ -3654,7 +3661,7 @@ class core_message_external extends external_api {
         $params = self::validate_parameters(self::delete_message_for_all_users_parameters(), $params);
 
         // Validate context.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         core_user::require_active_user($USER);

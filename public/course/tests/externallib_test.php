@@ -14,8 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+use core\context\coursecat;
+use core\context\module;
+use core\context\system;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\exception\required_capability_exception;
+use core\output\user_picture;
+use core_course\modinfo;
 use core_external\external_api;
 use core_courseformat\local\linearnavigationsettings;
+use core_filters\filter_manager;
 
 /**
  * External course functions unit tests
@@ -45,7 +55,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->resetAfterTest(true);
 
         // Set the required capabilities by the external function
-        $contextid = context_system::instance()->id;
+        $contextid = system::instance()->id;
         $roleid = $this->assignUserCapability('moodle/category:manage', $contextid);
 
         // Create base categories.
@@ -122,7 +132,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->resetAfterTest(true);
 
         // Set the required capabilities by the external function
-        $contextid = context_system::instance()->id;
+        $contextid = system::instance()->id;
         $roleid = $this->assignUserCapability('moodle/category:manage', $contextid);
 
         $category1  = self::getDataGenerator()->create_category();
@@ -187,7 +197,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $generatedcats[$category5->id] = $category5;
 
         // Set the required capabilities by the external function.
-        $context = context_system::instance();
+        $context = system::instance();
         $roleid = $this->assignUserCapability('moodle/category:manage', $context->id);
         $this->assignUserCapability('moodle/category:viewhiddencategories', $context->id, $roleid);
 
@@ -296,7 +306,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->resetAfterTest(true);
 
         // Set the required capabilities by the external function
-        $contextid = context_system::instance()->id;
+        $contextid = system::instance()->id;
         $roleid = $this->assignUserCapability('moodle/category:manage', $contextid);
 
         // Create base categories.
@@ -373,7 +383,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->setUser($testuser);
 
         // Set the capability for CAT_A only.
-        $contextcata = context_coursecat::instance($categorya->id);
+        $contextcata = coursecat::instance($categorya->id);
         $roleid = $this->assignUserCapability('moodle/category:manage', $contextcata->id);
 
         // Then we move SUBCAT_A parent: CAT_A => CAT_B.
@@ -397,7 +407,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->resetAfterTest(true);
 
         // Set the required capabilities by the external function.
-        $contextid = context_system::instance()->id;
+        $contextid = system::instance()->id;
         $roleid = $this->assignUserCapability('moodle/course:create', $contextid);
         $this->assignUserCapability('moodle/course:visibility', $contextid, $roleid);
 
@@ -446,7 +456,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         ]);
 
         // Set the required capabilities by the external function
-        $contextid = context_system::instance()->id;
+        $contextid = system::instance()->id;
         $roleid = $this->assignUserCapability('moodle/course:create', $contextid);
         $this->assignUserCapability('moodle/course:visibility', $contextid, $roleid);
         $this->assignUserCapability('moodle/course:setforcedlanguage', $contextid, $roleid);
@@ -754,16 +764,16 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $generatedcourses[$course4->id] = $course4;
 
         // Set the required capabilities by the external function.
-        $context = context_system::instance();
+        $context = system::instance();
         $roleid = $this->assignUserCapability('moodle/course:view', $context->id);
         $this->assignUserCapability('moodle/course:update',
-                context_course::instance($course1->id)->id, $roleid);
+                course::instance($course1->id)->id, $roleid);
         $this->assignUserCapability('moodle/course:update',
-                context_course::instance($course2->id)->id, $roleid);
+                course::instance($course2->id)->id, $roleid);
         $this->assignUserCapability('moodle/course:update',
-                context_course::instance($course3->id)->id, $roleid);
+                course::instance($course3->id)->id, $roleid);
         $this->assignUserCapability('moodle/course:update',
-                context_course::instance($course4->id)->id, $roleid);
+                course::instance($course4->id)->id, $roleid);
 
         $courses = core_course_external::get_courses(array('ids' =>
             array($course1->id, $course2->id, $course4->id)));
@@ -775,7 +785,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->assertEquals(3, count($courses));
 
         foreach ($courses as $course) {
-            $coursecontext = context_course::instance($course['id']);
+            $coursecontext = course::instance($course['id']);
             $dbcourse = $generatedcourses[$course['id']];
             $this->assertEquals($course['idnumber'], $dbcourse->idnumber);
             $this->assertEquals(
@@ -885,7 +895,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // Set the multilang filter to apply to strings + reset filer caches.
         filter_set_global_state('multilang', TEXTFILTER_ON);
         filter_set_applies_to_strings('multilang', true);
-        \filter_manager::reset_caches();
+        filter_manager::reset_caches();
 
         // Let's create a custom field (number), and test the placeholders/multilang display.
         /** @var core_customfield_generator $cfgenerator */
@@ -997,7 +1007,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // Enable coursetag option.
         set_config('block_tags_showcoursetags', true);
         // Add tag 'TAG-LABEL ON SECOND COURSE' to Course2.
-        core_tag_tag::set_item_tags('core', 'course', $course2->id, context_course::instance($course2->id),
+        core_tag_tag::set_item_tags('core', 'course', $course2->id, course::instance($course2->id),
                 array('TAG-LABEL ON SECOND COURSE'));
         $taginstance = $DB->get_record('tag_instance',
                 array('itemtype' => 'course', 'itemid' => $course2->id), '*', MUST_EXIST);
@@ -1146,7 +1156,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
             array('availability' => '{"op":"&","c":[{"type":"date","d":">=","t":'. $yesterday .'}],"showc":[true]}'));
 
         // Set the required capabilities by the external function.
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $roleid = $this->assignUserCapability('moodle/course:view', $context->id);
         $this->assignUserCapability('moodle/course:update', $context->id, $roleid);
         $this->assignUserCapability('mod/data:view', $context->id, $roleid);
@@ -1172,7 +1182,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $forumcompleteautocm = get_coursemodule_from_id('forum', $forumcompleteauto->cmid);
         $sectionrecord = $DB->get_record('course_sections', $conditions);
         // Invalidate the section cache by given section number.
-        course_modinfo::purge_course_section_cache_by_number($sectionrecord->course, $sectionrecord->section);
+        modinfo::purge_course_section_cache_by_number($sectionrecord->course, $sectionrecord->section);
         rebuild_course_cache($course->id, true, true);
 
         return array($course, $forumcm, $datacm, $pagecm, $labelcm, $urlcm, $forumcompleteautocm);
@@ -1216,7 +1226,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
                     array('noclean' => true, 'para' => false, 'filter' => false));
                 $this->assertEquals($formattedtext, $module['description']);
                 $this->assertEquals($forumcm->instance, $module['instance']);
-                $this->assertEquals(context_module::instance($forumcm->id)->id, $module['contextid']);
+                $this->assertEquals(module::instance($forumcm->id)->id, $module['contextid']);
                 $this->assertFalse($module['noviewlink']);
                 $this->assertNotEmpty($module['description']);  // Module showdescription is on.
                 // Afterlink for forums has been removed; it has been moved to the new activity badge content.
@@ -1240,7 +1250,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
                     array('noclean' => true, 'para' => false, 'filter' => false));
                 $this->assertEquals($formattedtext, $module['description']);
                 $this->assertEquals($labelcm->instance, $module['instance']);
-                $this->assertEquals(context_module::instance($labelcm->id)->id, $module['contextid']);
+                $this->assertEquals(module::instance($labelcm->id)->id, $module['contextid']);
                 $this->assertTrue($module['noviewlink']);
                 $this->assertNotEmpty($module['description']);  // Label always prints the description.
                 $this->assertEquals(
@@ -1702,7 +1712,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // More type of files.
         $record->files = file_get_unused_draft_itemid();
-        $usercontext = context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $extensions = array('txt', 'png', 'pdf');
         $fs = get_file_storage();
         foreach ($extensions as $key => $extension) {
@@ -1940,17 +1950,17 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $course  = self::getDataGenerator()->create_course();
         $forum = $this->getDataGenerator()->create_module('forum', array('course'=>$course->id));
         $forumcm = get_coursemodule_from_id('forum', $forum->cmid);
-        $forumcontext = context_module::instance($forum->cmid);
+        $forumcontext = module::instance($forum->cmid);
         $data = $this->getDataGenerator()->create_module('data', array('assessed'=>1, 'scale'=>100, 'course'=>$course->id));
-        $datacontext = context_module::instance($data->cmid);
+        $datacontext = module::instance($data->cmid);
         $datacm = get_coursemodule_from_instance('page', $data->id);
         $page = $this->getDataGenerator()->create_module('page', array('course'=>$course->id));
-        $pagecontext = context_module::instance($page->cmid);
+        $pagecontext = module::instance($page->cmid);
         $pagecm = get_coursemodule_from_instance('page', $page->id);
 
         // Set the required capabilities by the external function.
-        $coursecontext = context_course::instance($course->id);
-        $categorycontext = context_coursecat::instance($course->category);
+        $coursecontext = course::instance($course->id);
+        $categorycontext = coursecat::instance($course->category);
         $roleid = $this->assignUserCapability('moodle/course:create', $categorycontext->id);
         $this->assignUserCapability('moodle/course:view', $categorycontext->id, $roleid);
         $this->assignUserCapability('moodle/restore:restorecourse', $categorycontext->id, $roleid);
@@ -1993,7 +2003,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->resetAfterTest(true);
 
         // Set the required capabilities by the external function.
-        $contextid = context_system::instance()->id;
+        $contextid = system::instance()->id;
         $roleid = $this->assignUserCapability('moodle/course:update', $contextid);
         $this->assignUserCapability('moodle/course:changecategory', $contextid, $roleid);
         $this->assignUserCapability('moodle/course:changelockedcustomfields', $contextid, $roleid);
@@ -2324,11 +2334,11 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $enrol->enrol_user($instance, $user->id);
 
         // Assign capabilities to delete module 1.
-        $modcontext = context_module::instance($module1->cmid);
+        $modcontext = module::instance($module1->cmid);
         $this->assignUserCapability('moodle/course:manageactivities', $modcontext->id);
 
         // Assign capabilities to delete module 2.
-        $modcontext = context_module::instance($module2->cmid);
+        $modcontext = module::instance($module2->cmid);
         $newrole = create_role('Role 2', 'role2', 'Role 2 description');
         $this->assignUserCapability('moodle/course:manageactivities', $modcontext->id, $newrole);
 
@@ -2486,12 +2496,12 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Add forum and page to course1.
         $course1  = self::getDataGenerator()->create_course();
-        $course1ctx = context_course::instance($course1->id);
+        $course1ctx = course::instance($course1->id);
         $forum = $this->getDataGenerator()->create_module('forum', array('course'=>$course1->id, 'name' => 'Forum test'));
         $block = $this->getDataGenerator()->create_block('online_users', array('parentcontextid' => $course1ctx->id));
 
         $course2  = self::getDataGenerator()->create_course();
-        $course2ctx = context_course::instance($course2->id);
+        $course2ctx = course::instance($course2->id);
         $initialblockcount = $DB->count_records('block_instances', array('parentcontextid' => $course2ctx->id));
         $initialcmcount = count(get_fast_modinfo($course2->id)->get_cms());
 
@@ -2601,7 +2611,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Check the event details are correct.
         $this->assertInstanceOf('\core\event\course_viewed', $event);
-        $this->assertEquals(context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals(1, $event->other['coursesectionnumber']);
 
         $result = core_course_external::view_course($course->id);
@@ -2612,7 +2622,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Check the event details are correct.
         $this->assertInstanceOf('\core\event\course_viewed', $event);
-        $this->assertEquals(context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEmpty($event->other);
 
     }
@@ -2961,7 +2971,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $filerecord = [
             'component' => 'user',
             'filearea' => 'draft',
-            'contextid' => context_user::instance($USER->id)->id,
+            'contextid' => user::instance($USER->id)->id,
             'itemid' => $draftid,
             'filename' => 'image.jpg',
             'filepath' => '/',
@@ -3062,7 +3072,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->assertCount(0, $result['courses']);
 
         // Change filter value.
-        filter_set_local_state('mediaplugin', context_course::instance($course1->id)->id, TEXTFILTER_OFF);
+        filter_set_local_state('mediaplugin', course::instance($course1->id)->id, TEXTFILTER_OFF);
 
         self::setUser($student1);
         // All visible courses  (including front page) for normal student.
@@ -3320,7 +3330,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         foreach ($tocreate as $modname) {
             $modules[$modname]['instance'] = $this->getDataGenerator()->create_module($modname, array('course' => $course->id));
             $modules[$modname]['cm'] = get_coursemodule_from_id(false, $modules[$modname]['instance']->cmid);
-            $modules[$modname]['context'] = context_module::instance($modules[$modname]['instance']->cmid);
+            $modules[$modname]['context'] = module::instance($modules[$modname]['instance']->cmid);
         }
 
         $student = self::getDataGenerator()->create_user();
@@ -3954,7 +3964,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // If last access is hidden, only get the courses where has viewhiddenuserfields capability.
         $this->setUser($teacher);
         $teacherroleid = $DB->get_field('role', 'id', array('shortname' => 'editingteacher'));
-        $usercontext = context_user::instance($student->id);
+        $usercontext = user::instance($student->id);
         $this->assignUserCapability('moodle/user:viewdetails', $usercontext, $teacherroleid);
 
         // Sorted by course id DESC.
@@ -4204,8 +4214,8 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         $this->resetAfterTest();
 
-        $context = context_system::instance();
-        $usercontext = context_user::instance($CFG->siteguest);
+        $context = system::instance();
+        $usercontext = user::instance($CFG->siteguest);
         $component = 'core_course';
         $favouritefactory = \core_favourites\service_factory::get_service_for_user_context($usercontext);
 

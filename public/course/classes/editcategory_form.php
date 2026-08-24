@@ -22,6 +22,8 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir.'/formslib.php');
@@ -46,7 +48,7 @@ class core_course_editcategory_form extends moodleform {
 
         // Get list of categories to use as parents, with site as the first one.
         $options = array();
-        if (has_capability('moodle/category:manage', context_system::instance()) || $parent == 0) {
+        if (has_capability('moodle/category:manage', system::instance()) || $parent == 0) {
             $options[0] = get_string('top');
         }
         if ($categoryid) {

@@ -16,6 +16,8 @@
 
 namespace core\progress;
 
+use core\output\html_writer;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -84,7 +86,7 @@ class display_if_slow extends display {
 
         // Containing div includes a CSS class so that it can be themed if required,
         // and an id so it can be automatically hidden at end.
-        echo \html_writer::start_div('core_progress_display_if_slow',
+        echo html_writer::start_div('core_progress_display_if_slow',
                 array('id' => $this->id));
 
         // Display optional heading.
@@ -124,8 +126,8 @@ class display_if_slow extends display {
      */
     public function end_html() {
         parent::end_html();
-        echo \html_writer::end_div();
-        echo \html_writer::script('document.getElementById("' . $this->id .
+        echo html_writer::end_div();
+        echo html_writer::script('document.getElementById("' . $this->id .
                 '").style.display = "none"');
     }
 }

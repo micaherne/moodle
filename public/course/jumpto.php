@@ -24,6 +24,9 @@
  * @package course
  */
 
+use core\exception\moodle_exception;
+use core\url;
+
 require('../config.php');
 
 $jump = required_param('jump', PARAM_RAW);
@@ -31,11 +34,11 @@ $jump = required_param('jump', PARAM_RAW);
 $PAGE->set_url('/course/jumpto.php');
 
 if (!confirm_sesskey()) {
-    throw new \moodle_exception('confirmsesskeybad');
+    throw new moodle_exception('confirmsesskeybad');
 }
 
 if (strpos($jump, '/') === 0 || strpos($jump, $CFG->wwwroot) === 0) {
-    redirect(new moodle_url($jump));
+    redirect(new url($jump));
 } else {
-    throw new \moodle_exception('error');
+    throw new moodle_exception('error');
 }

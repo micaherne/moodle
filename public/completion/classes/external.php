@@ -24,6 +24,10 @@
  * @since      Moodle 2.9
  */
 
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\user;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
@@ -79,7 +83,7 @@ class core_completion_external extends external_api {
 
         $warnings = array();
 
-        $context = context_module::instance($cmid);
+        $context = module::instance($cmid);
         self::validate_context($context);
         require_capability('moodle/course:togglecompletion', $context);
 
@@ -154,7 +158,7 @@ class core_completion_external extends external_api {
         $cmid = $params['cmid'];
         $newstate = $params['newstate'];
 
-        $context = context_module::instance($cmid);
+        $context = module::instance($cmid);
         self::validate_context($context);
 
         list($course, $cm) = get_course_and_cm_from_cmid($cmid);
@@ -239,10 +243,10 @@ class core_completion_external extends external_api {
         $params = self::validate_parameters(self::get_activities_completion_status_parameters(), $arrayparams);
 
         $course = get_course($params['courseid']);
-        $user = core_user::get_user($params['userid'], '*', MUST_EXIST);
-        core_user::require_active_user($user);
+        $user = user::get_user($params['userid'], '*', MUST_EXIST);
+        user::require_active_user($user);
 
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         self::validate_context($context);
 
         // Check that current user have permissions to see this user's activities.
@@ -395,10 +399,10 @@ class core_completion_external extends external_api {
         $params = self::validate_parameters(self::get_course_completion_status_parameters(), $arrayparams);
 
         $course = get_course($params['courseid']);
-        $user = core_user::get_user($params['userid'], '*', MUST_EXIST);
-        core_user::require_active_user($user);
+        $user = user::get_user($params['userid'], '*', MUST_EXIST);
+        user::require_active_user($user);
 
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         self::validate_context($context);
 
         // Can current user see user's course completion status?
@@ -534,7 +538,7 @@ class core_completion_external extends external_api {
                                             array('courseid' => $courseid));
 
         $course = get_course($params['courseid']);
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         self::validate_context($context);
 
         // Set up completion object and check it is enabled.

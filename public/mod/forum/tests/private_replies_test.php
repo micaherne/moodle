@@ -16,6 +16,7 @@
 
 namespace mod_forum;
 
+use core\context\module;
 use mod_forum_tests_generator_trait;
 
 defined('MOODLE_INTERNAL') || die();
@@ -193,7 +194,7 @@ final class private_replies_test extends \advanced_testcase {
 
         $this->setUser($teacher);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $this->assertTrue(forum_user_can_reply_privately($context, $post));
     }
 
@@ -213,7 +214,7 @@ final class private_replies_test extends \advanced_testcase {
 
         $this->setUser($otherstudent);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $this->assertFalse(forum_user_can_reply_privately($context, $post));
     }
 
@@ -235,7 +236,7 @@ final class private_replies_test extends \advanced_testcase {
 
         $this->setUser($teacher);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $this->assertFalse(forum_user_can_reply_privately($context, $post));
     }
 }

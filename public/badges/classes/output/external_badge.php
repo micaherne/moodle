@@ -30,8 +30,8 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/badgeslib.php');
 
-use renderable;
-use renderer_base;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
 
 /**

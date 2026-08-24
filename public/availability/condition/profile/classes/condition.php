@@ -24,6 +24,8 @@
 
 namespace availability_profile;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -83,7 +85,7 @@ class condition extends \core_availability\condition {
                 self::OP_ENDS_WITH, self::OP_IS_EMPTY, self::OP_IS_NOT_EMPTY), true)) {
             $this->operator = $structure->op;
         } else {
-            throw new \coding_exception('Missing or invalid ->op for profile condition');
+            throw new coding_exception('Missing or invalid ->op for profile condition');
         }
 
         // For operators other than the empty/not empty ones, require value.
@@ -91,14 +93,14 @@ class condition extends \core_availability\condition {
             case self::OP_IS_EMPTY:
             case self::OP_IS_NOT_EMPTY:
                 if (isset($structure->v)) {
-                    throw new \coding_exception('Unexpected ->v for non-value operator');
+                    throw new coding_exception('Unexpected ->v for non-value operator');
                 }
                 break;
             default:
                 if (isset($structure->v) && is_string($structure->v)) {
                     $this->value = $structure->v;
                 } else {
-                    throw new \coding_exception('Missing or invalid ->v for profile condition');
+                    throw new coding_exception('Missing or invalid ->v for profile condition');
                 }
                 break;
         }
@@ -106,21 +108,21 @@ class condition extends \core_availability\condition {
         // Get field type.
         if (property_exists($structure, 'sf')) {
             if (property_exists($structure, 'cf')) {
-                throw new \coding_exception('Both ->sf and ->cf for profile condition');
+                throw new coding_exception('Both ->sf and ->cf for profile condition');
             }
             if (is_string($structure->sf)) {
                 $this->standardfield = $structure->sf;
             } else {
-                throw new \coding_exception('Invalid ->sf for profile condition');
+                throw new coding_exception('Invalid ->sf for profile condition');
             }
         } else if (property_exists($structure, 'cf')) {
             if (is_string($structure->cf)) {
                 $this->customfield = $structure->cf;
             } else {
-                throw new \coding_exception('Invalid ->cf for profile condition');
+                throw new coding_exception('Invalid ->cf for profile condition');
             }
         } else {
-            throw new \coding_exception('Missing ->sf or ->cf for profile condition');
+            throw new coding_exception('Missing ->sf or ->cf for profile condition');
         }
     }
 
@@ -167,7 +169,7 @@ class condition extends \core_availability\condition {
                 break;
             default:
                 if (is_null($value)) {
-                    throw new \coding_exception('Operator requires value');
+                    throw new coding_exception('Operator requires value');
                 }
                 $result->v = $value;
                 break;
@@ -235,7 +237,7 @@ class condition extends \core_availability\condition {
                     $opname = 'notstartswith';
                     break;
                 default:
-                    throw new \coding_exception('Unexpected operator: ' . $this->operator);
+                    throw new coding_exception('Unexpected operator: ' . $this->operator);
             }
         } else {
             $opname = $this->operator;
@@ -422,7 +424,7 @@ class condition extends \core_availability\condition {
                     return $USER->{$field};
                 } else {
                     // Unknown user field. This should not happen.
-                    throw new \coding_exception('Requested user profile field does not exist');
+                    throw new coding_exception('Requested user profile field does not exist');
                 }
             }
             // Checking if the custom profile fields are already available.

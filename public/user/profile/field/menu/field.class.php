@@ -28,6 +28,8 @@
  * @copyright  2007 onwards Shane Elliot {@link http://pukunui.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context\system;
+
 class profile_field_menu extends profile_field_base {
 
     /** @var array $options */
@@ -61,7 +63,7 @@ class profile_field_menu extends profile_field_base {
         }
         foreach ($options as $key => $option) {
             // Multilang formatting with filters.
-            $this->options[$option] = format_string($option, true, ['context' => context_system::instance()]);
+            $this->options[$option] = format_string($option, true, ['context' => system::instance()]);
         }
 
         // Set the data key.
@@ -132,7 +134,7 @@ class profile_field_menu extends profile_field_base {
         if (!$mform->elementExists($this->inputname)) {
             return;
         }
-        if ($this->is_locked() and !has_capability('moodle/user:update', context_system::instance())) {
+        if ($this->is_locked() and !has_capability('moodle/user:update', system::instance())) {
             $mform->hardFreeze($this->inputname);
             $mform->setConstant($this->inputname, $this->datakey);
         }

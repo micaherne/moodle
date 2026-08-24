@@ -22,6 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\action_menu;
+use core\output\html_writer;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**

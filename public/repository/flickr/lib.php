@@ -22,6 +22,9 @@
  * @copyright  2010 Dongsheng Cai {@link http://dongsheng.org}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\exception\moodle_exception;
+use core\url;
+
 require_once($CFG->dirroot . '/repository/lib.php');
 require_once($CFG->libdir.'/flickrclient.php');
 
@@ -74,7 +77,7 @@ class repository_flickr extends repository {
         $this->accesstoken = get_user_preferences('repository_flickr_access_token');
         $this->accesstokensecret = get_user_preferences('repository_flickr_access_token_secret');
 
-        $callbackurl = new moodle_url('/repository/repository_callback.php', ['repo_id' => $repositoryid]);
+        $callbackurl = new url('/repository/repository_callback.php', ['repo_id' => $repositoryid]);
         $this->flickr = new flickr_client($this->api_key, $this->secret, $callbackurl);
         $this->flickr->set_access_token($this->accesstoken, $this->accesstokensecret);
     }
@@ -170,7 +173,7 @@ class repository_flickr extends repository {
 
         // Even when the Flick auth docs states the "perms" argument is
         // optional, it does not work without it.
-        $authurl = new moodle_url($reqtoken['authorize_url'], array('perms' => 'read'));
+        $authurl = new url($reqtoken['authorize_url'], array('perms' => 'read'));
 
         if ($this->options['ajax']) {
             return [

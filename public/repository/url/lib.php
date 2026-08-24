@@ -23,6 +23,8 @@
  * @copyright  2010 Dongsheng Cai {@link http://dongsheng.org}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\url;
+
 require_once($CFG->dirroot . '/repository/lib.php');
 require_once(__DIR__.'/locallib.php');
 
@@ -141,7 +143,7 @@ EOD;
             return;
         }
         // Remove the query string and anchors before check.
-        $recursioncheckurl = (new moodle_url($url))->out_omit_querystring();
+        $recursioncheckurl = (new url($url))->out_omit_querystring();
         if (in_array($recursioncheckurl, $this->processedfiles)) {
             $this->recursioncounter++;
         }

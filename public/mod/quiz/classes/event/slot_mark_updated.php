@@ -16,6 +16,9 @@
 
 namespace mod_quiz\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 /**
  * The mark a slot is graded out of has changed.
  *
@@ -49,7 +52,7 @@ class slot_mark_updated extends \core\event\base {
     }
 
     public function get_url() {
-        return new \moodle_url('/mod/quiz/edit.php', [
+        return new url('/mod/quiz/edit.php', [
             'cmid' => $this->contextinstanceid
         ]);
     }
@@ -58,23 +61,23 @@ class slot_mark_updated extends \core\event\base {
         parent::validate_data();
 
         if (!isset($this->objectid)) {
-            throw new \coding_exception('The \'objectid\' value must be set.');
+            throw new coding_exception('The \'objectid\' value must be set.');
         }
 
         if (!isset($this->contextinstanceid)) {
-            throw new \coding_exception('The \'contextinstanceid\' value must be set.');
+            throw new coding_exception('The \'contextinstanceid\' value must be set.');
         }
 
         if (!isset($this->other['quizid'])) {
-            throw new \coding_exception('The \'quizid\' value must be set in other.');
+            throw new coding_exception('The \'quizid\' value must be set in other.');
         }
 
         if (!isset($this->other['previousmaxmark'])) {
-            throw new \coding_exception('The \'previousmaxmark\' value must be set in other.');
+            throw new coding_exception('The \'previousmaxmark\' value must be set in other.');
         }
 
         if (!isset($this->other['newmaxmark'])) {
-            throw new \coding_exception('The \'newmaxmark\' value must be set in other.');
+            throw new coding_exception('The \'newmaxmark\' value must be set in other.');
         }
     }
 

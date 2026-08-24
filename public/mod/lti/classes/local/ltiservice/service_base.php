@@ -33,6 +33,7 @@ require_once($CFG->dirroot . '/mod/lti/locallib.php');
 require_once($CFG->dirroot . '/mod/lti/OAuthBody.php');
 
 // TODO: Switch to core oauthlib once implemented - MDL-30149.
+use core\url;
 use moodle\mod\lti as lti;
 use stdClass;
 
@@ -370,7 +371,7 @@ abstract class service_base {
      */
     public static function get_service_path() {
 
-        $url = new \moodle_url('/mod/lti/services.php');
+        $url = new url('/mod/lti/services.php');
 
         return $url->out(false);
 

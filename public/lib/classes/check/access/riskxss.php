@@ -32,6 +32,8 @@ namespace core\check\access;
 defined('MOODLE_INTERNAL') || die();
 
 use core\check\result;
+use core\output\action_link;
+use core\url;
 
 /**
  * Lists all users with XSS risk
@@ -59,9 +61,9 @@ class riskxss extends \core\check\check {
      *
      * @return \action_link|null
      */
-    public function get_action_link(): ?\action_link {
-        return new \action_link(
-            new \moodle_url('/admin/roles/manage.php'),
+    public function get_action_link(): ?action_link {
+        return new action_link(
+            new url('/admin/roles/manage.php'),
             get_string('manageroles', 'role'));
     }
 

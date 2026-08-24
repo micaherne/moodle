@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\coursecat;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
 use tool_brickfield\event\report_downloaded;
 use tool_brickfield\event\report_viewed;
 use tool_brickfield\accessibility;
@@ -61,16 +66,16 @@ if ($courseid != 0) {
         throw new moodle_exception('invalidcourseid', manager::PLUGINNAME);
     }
     require_login($course);
-    $context = context_course::instance($courseid);
+    $context = course::instance($courseid);
     require_capability(accessibility::get_capability_name('viewcoursetools'), $context);
 } else if ($categoryid != 0) {
     require_login();
-    $context = context_coursecat::instance($categoryid);
+    $context = coursecat::instance($categoryid);
     require_capability(accessibility::get_capability_name('viewcoursetools'), $context);
 } else {
     require_login();
     // If accessing system level, check that the user has capability to use toolkit at system level.
-    $context = context_system::instance();
+    $context = system::instance();
     require_capability(accessibility::get_capability_name('viewsystemtools'), $context);
 }
 
@@ -92,7 +97,7 @@ if ($action == 'requestanalysis') {
         if ($courseid == SITEID) {
             redirect(accessibility::get_plugin_url());
         } else {
-            redirect(new \moodle_url('/course/view.php', ['id' => $courseid]), analysis::redirect_message());
+            redirect(new url('/course/view.php', ['id' => $courseid]), analysis::redirect_message());
         }
     }
 }
@@ -107,8 +112,8 @@ if (isset($tools[$tab])) {
 
 $perpagedefault = $config->perpage;
 $perpage = optional_param('perpage', $perpagedefault, PARAM_INT);
-$navurl = new moodle_url(accessibility::get_plugin_url(), ['courseid' => $courseid]);
-$url = new moodle_url($navurl, ['tab' => $tab, 'perpage' => $perpage]);
+$navurl = new url(accessibility::get_plugin_url(), ['courseid' => $courseid]);
+$url = new url($navurl, ['tab' => $tab, 'perpage' => $perpage]);
 
 $tool->set_filter(new filter($courseid, $categoryid, $tab, $page, $perpage, $url, $target));
 

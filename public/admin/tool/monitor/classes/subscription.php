@@ -24,6 +24,11 @@
 
 namespace tool_monitor;
 
+use core\context;
+use core\context\course;
+use core\context\system;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -62,7 +67,7 @@ class subscription {
         if (isset($this->subscription->$prop)) {
             return $this->subscription->$prop;
         }
-        throw new \coding_exception('Property "' . $prop . '" doesn\'t exist');
+        throw new coding_exception('Property "' . $prop . '" doesn\'t exist');
     }
 
     /**
@@ -135,7 +140,7 @@ class subscription {
      * @param \context $context context where this name would be displayed.
      * @return string Formatted name of the rule.
      */
-    public function get_name(\context $context) {
+    public function get_name(context $context) {
         return format_text($this->name, FORMAT_HTML, array('context' => $context));
     }
 
@@ -145,7 +150,7 @@ class subscription {
      * @param \context $context context where this description would be displayed.
      * @return string Formatted description of the rule.
      */
-    public function get_description(\context $context) {
+    public function get_description(context $context) {
         return format_text($this->description, $this->descriptionformat, array('context' => $context));
     }
 
@@ -171,7 +176,7 @@ class subscription {
      * @param \context $context context where this name would be displayed.
      * @return string Formatted name of the rule.
      */
-    public function get_course_name(\context $context) {
+    public function get_course_name(context $context) {
         $courseid = $this->courseid;
         if (empty($courseid)) {
             return get_string('site');
@@ -192,7 +197,7 @@ class subscription {
      */
     public function can_manage_rule() {
         $courseid = $this->rulecourseid;
-        $context = empty($courseid) ? \context_system::instance() : \context_course::instance($courseid);
+        $context = empty($courseid) ? system::instance() : course::instance($courseid);
         return has_capability('tool/monitor:managerules', $context);
     }
 }

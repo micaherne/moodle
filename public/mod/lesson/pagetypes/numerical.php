@@ -28,6 +28,10 @@ defined('MOODLE_INTERNAL') || die();
 /** Numerical question type */
 define("LESSON_PAGE_NUMERICAL",     "8");
 
+use core\context\module;
+use core\url;
+use core_table\output\html_table;
+use core_table\output\html_table_row;
 use mod_lesson\local\numeric\helper;
 
 class lesson_page_type_numerical extends lesson_page {
@@ -51,7 +55,7 @@ class lesson_page_type_numerical extends lesson_page {
     }
     public function display($renderer, $attempt) {
         global $USER, $PAGE;
-        $mform = new lesson_display_answer_form_numerical(new moodle_url('/mod/lesson/continue.php'),
+        $mform = new lesson_display_answer_form_numerical(new url('/mod/lesson/continue.php'),
             array('contents' => $this->get_contents(), 'lessonid' => $this->lesson->id));
         $data = new stdClass;
         $data->id = $PAGE->cm->id;
@@ -63,7 +67,7 @@ class lesson_page_type_numerical extends lesson_page {
 
         // Trigger an event question viewed.
         $eventparams = array(
-            'context' => context_module::instance($PAGE->cm->id),
+            'context' => module::instance($PAGE->cm->id),
             'objectid' => $this->properties->id,
             'other' => array(
                     'pagetype' => $this->get_typestring()
@@ -114,7 +118,7 @@ class lesson_page_type_numerical extends lesson_page {
     public function check_answer() {
         $result = parent::check_answer();
 
-        $mform = new lesson_display_answer_form_numerical(new moodle_url('/mod/lesson/continue.php'),
+        $mform = new lesson_display_answer_form_numerical(new url('/mod/lesson/continue.php'),
             array('contents' => $this->get_contents()));
         $data = $mform->get_data();
         require_sesskey();

@@ -23,8 +23,8 @@
 namespace block_recentlyaccesseditems\external;
 
 use core_course\output\activity_icon;
-use renderer_base;
-use moodle_url;
+use core\output\renderer_base;
+use core\url;
 
 /**
  * Class for exporting the data needed to render a recent accessed item.
@@ -57,9 +57,9 @@ class recentlyaccesseditems_item_exporter extends \core\external\exporter {
         $icon = activity_icon::from_cm_info($cminfo);
 
         return array(
-            'viewurl' => (new moodle_url('/mod/'.$this->data->modname.'/view.php',
+            'viewurl' => (new url('/mod/'.$this->data->modname.'/view.php',
                 array('id' => $this->data->cmid)))->out(false),
-            'courseviewurl' => (new moodle_url('/course/view.php', array('id' => $this->data->courseid)))->out(false),
+            'courseviewurl' => (new url('/course/view.php', array('id' => $this->data->courseid)))->out(false),
             'icon' => $renderer->render($icon),
             'purpose' => plugin_supports('mod', $this->data->modname, FEATURE_MOD_PURPOSE, MOD_PURPOSE_OTHER),
             'branded' => $icon->is_branded(),

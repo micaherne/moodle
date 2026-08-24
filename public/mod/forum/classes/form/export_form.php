@@ -24,6 +24,9 @@
 
 namespace mod_forum\form;
 
+use core\plugin_manager;
+use core\user;
+
 defined('MOODLE_INTERNAL') || die('Direct access to this script is forbidden.');
 
 require_once($CFG->dirroot.'/mod/forum/lib.php');
@@ -61,7 +64,7 @@ class export_form extends \moodleform {
                     $userfieldsapi = \core_user\fields::for_name();
                     $allusernames = $userfieldsapi->get_sql('', false, '', '', false)->selects;
                     $fields = 'id, ' . $allusernames;
-                    $user = \core_user::get_user($value, $fields);
+                    $user = user::get_user($value, $fields);
                     $useroptiondata = [
                         'fullname' => fullname($user),
                     ];
@@ -88,7 +91,7 @@ class export_form extends \moodleform {
                 ['optional' => true]);
 
         // Export formats.
-        $formats = \core_plugin_manager::instance()->get_plugins_of_type('dataformat');
+        $formats = plugin_manager::instance()->get_plugins_of_type('dataformat');
         $options = [];
         foreach ($formats as $format) {
             $options[$format->name] = $format->displayname;

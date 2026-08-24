@@ -24,6 +24,8 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -97,7 +99,7 @@ abstract class comment_deleted extends base {
     protected function validate_data() {
         parent::validate_data();
         if (!isset($this->other['itemid'])) {
-            throw new \coding_exception('The \'itemid\' value must be set in other.');
+            throw new coding_exception('The \'itemid\' value must be set in other.');
         }
     }
 

@@ -16,6 +16,9 @@
 
 namespace core;
 
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+
 /**
  * Unit tests for context helper class.
  *
@@ -108,8 +111,8 @@ final class context_helper_test extends \advanced_testcase {
         try {
             context_helper::get_class_for_level(1);
             $this->fail('Exception expected if level does not exist');
-        } catch (\moodle_exception $e) {
-            $this->assertInstanceOf(\coding_exception::class, $e);
+        } catch (moodle_exception $e) {
+            $this->assertInstanceOf(coding_exception::class, $e);
             $this->assertSame('Coding error detected, it must be fixed by a programmer: Invalid context level specified',
                 $e->getMessage());
         }

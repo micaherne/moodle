@@ -17,6 +17,7 @@
 namespace auth_email\external;
 
 use auth_email_external;
+use core\context\system;
 
 /**
  * External auth email API tests.
@@ -114,7 +115,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $result = \core_external\external_api::clean_returnvalue(auth_email_external::get_signup_settings_returns(), $result);
 
         // Format the original data.
-        $sitecontext = \context_system::instance();
+        $sitecontext = system::instance();
         $categoryname = \core_external\util::format_string($categoryname, $sitecontext->id);
         $fieldname = \core_external\util::format_string($fieldname, $sitecontext->id);
 

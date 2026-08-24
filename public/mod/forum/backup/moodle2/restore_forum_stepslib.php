@@ -29,6 +29,8 @@
 /**
  * Structure step to restore one forum activity
  */
+use core\context\module;
+
 class restore_forum_activity_structure_step extends restore_activity_structure_step {
 
     protected function define_structure() {
@@ -82,7 +84,7 @@ class restore_forum_activity_structure_step extends restore_activity_structure_s
 
         // Add current enrolled user subscriptions if necessary.
         $data->id = $newitemid;
-        $ctx = context_module::instance($this->task->get_moduleid());
+        $ctx = module::instance($this->task->get_moduleid());
         forum_instance_created($ctx, $data);
     }
 
@@ -140,7 +142,7 @@ class restore_forum_activity_structure_step extends restore_activity_structure_s
             return;
         }
 
-        $context = context_module::instance($this->task->get_moduleid());
+        $context = module::instance($this->task->get_moduleid());
         core_tag_tag::add_item_tag('mod_forum', 'forum_posts', $itemid, $context, $tag);
     }
 

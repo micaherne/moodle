@@ -22,12 +22,21 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core\output\html_writer;
+use core_admin\setting\setting\configduration;
+use core_admin\setting\setting\configmulticheckbox;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\description;
+use core_admin\setting\tree\category;
+
 defined('MOODLE_INTERNAL') || die();
 
 // Needed for constants.
 require_once($CFG->dirroot . '/lib/editor/tiny/plugins/recordrtc/classes/plugininfo.php');
 
-$ADMIN->add('editortiny', new admin_category('tiny_recordrtc', new lang_string('pluginname', 'tiny_recordrtc')));
+$ADMIN->add('editortiny', new category('tiny_recordrtc', new lang_string('pluginname', 'tiny_recordrtc')));
 
 if ($ADMIN->fulltree) {
     $defaulttimelimit = 120;
@@ -39,7 +48,7 @@ if ($ADMIN->fulltree) {
 
     if (!$isvalid && $url['scheme'] !== 'https') {
         $warning = html_writer::div(get_string('insecurealert', 'tiny_recordrtc'), 'box py-3 generalbox alert alert-danger');
-        $setting = new admin_setting_description('tiny_recordrtc/warning', null, $warning);
+        $setting = new description('tiny_recordrtc/warning', null, $warning);
         $settings->add($setting);
     }
 
@@ -55,7 +64,7 @@ if ($ADMIN->fulltree) {
         \tiny_recordrtc\constants::TINYRECORDRTC_AUDIO_TYPE => 1,
         \tiny_recordrtc\constants::TINYRECORDRTC_VIDEO_TYPE => 1,
     ];
-    $setting = new admin_setting_configmulticheckbox('tiny_recordrtc/allowedtypes', $name, $desc, $default, $options);
+    $setting = new configmulticheckbox('tiny_recordrtc/allowedtypes', $name, $desc, $default, $options);
     $settings->add($setting);
 
     // Audio bitrate.
@@ -66,7 +75,7 @@ if ($ADMIN->fulltree) {
         $kbrate = $rate / 1000;
         $options[$rate] = get_string('kbrate', 'tiny_recordrtc', $kbrate);
     }
-    $setting = new admin_setting_configselect(
+    $setting = new configselect(
         name: 'tiny_recordrtc/audiobitrate',
         visiblename: $name,
         description: $desc,
@@ -79,21 +88,21 @@ if ($ADMIN->fulltree) {
     $name = get_string('videobitrate', 'tiny_recordrtc');
     $desc = get_string('videobitrate_desc', 'tiny_recordrtc');
     $default = '2500000';
-    $setting = new admin_setting_configtext('tiny_recordrtc/videobitrate', $name, $desc, $default, PARAM_INT, 8);
+    $setting = new configtext('tiny_recordrtc/videobitrate', $name, $desc, $default, PARAM_INT, 8);
     $settings->add($setting);
 
     // Screen bitrate.
     $name = get_string('screenbitrate', 'tiny_recordrtc');
     $desc = get_string('screenbitrate_desc', 'tiny_recordrtc');
     $default = '2500000';
-    $setting = new admin_setting_configtext('tiny_recordrtc/screenbitrate', $name, $desc, $default, PARAM_INT, 8);
+    $setting = new configtext('tiny_recordrtc/screenbitrate', $name, $desc, $default, PARAM_INT, 8);
     $settings->add($setting);
 
     // Audio recording time limit.
     $name = get_string('audiotimelimit', 'tiny_recordrtc');
     $desc = get_string('audiotimelimit_desc', 'tiny_recordrtc');
     // Validate audiotimelimit greater than 0.
-    $setting = new admin_setting_configduration('tiny_recordrtc/audiotimelimit', $name, $desc, $defaulttimelimit);
+    $setting = new configduration('tiny_recordrtc/audiotimelimit', $name, $desc, $defaulttimelimit);
     $setting->set_validate_function(function(int $value): string {
         if ($value <= 0) {
             return get_string('timelimitwarning', 'tiny_recordrtc');
@@ -106,7 +115,7 @@ if ($ADMIN->fulltree) {
     $name = get_string('videotimelimit', 'tiny_recordrtc');
     $desc = get_string('videotimelimit_desc', 'tiny_recordrtc');
     // Validate videotimelimit greater than 0.
-    $setting = new admin_setting_configduration('tiny_recordrtc/videotimelimit', $name, $desc, $defaulttimelimit);
+    $setting = new configduration('tiny_recordrtc/videotimelimit', $name, $desc, $defaulttimelimit);
     $setting->set_validate_function(function(int $value): string {
         if ($value <= 0) {
             return get_string('timelimitwarning', 'tiny_recordrtc');
@@ -119,7 +128,7 @@ if ($ADMIN->fulltree) {
     $name = get_string('screentimelimit', 'tiny_recordrtc');
     $desc = get_string('screentimelimit_desc', 'tiny_recordrtc');
     // Validate screentimelimit greater than 0.
-    $setting = new admin_setting_configduration('tiny_recordrtc/screentimelimit', $name, $desc, $defaulttimelimit);
+    $setting = new configduration('tiny_recordrtc/screentimelimit', $name, $desc, $defaulttimelimit);
     $setting->set_validate_function(function(int $value): string {
         if ($value <= 0) {
             return get_string('timelimitwarning', 'tiny_recordrtc');
@@ -137,7 +146,7 @@ if ($ADMIN->fulltree) {
     $name = get_string('screensize', 'tiny_recordrtc');
     $desc = get_string('screensize_desc', 'tiny_recordrtc');
     $default = '1280,720';
-    $setting = new admin_setting_configselect('tiny_recordrtc/screensize', $name, $desc, $default, $options);
+    $setting = new configselect('tiny_recordrtc/screensize', $name, $desc, $default, $options);
     $settings->add($setting);
 
     // Pausing allowed.
@@ -147,7 +156,7 @@ if ($ADMIN->fulltree) {
     ];
 
     $name = get_string('allowedpausing', 'tiny_recordrtc');
-    $setting = new admin_setting_configselect('tiny_recordrtc/allowedpausing', $name, '', 0, $options);
+    $setting = new configselect('tiny_recordrtc/allowedpausing', $name, '', 0, $options);
     $settings->add($setting);
 
     // Audio format selection.
@@ -155,7 +164,7 @@ if ($ADMIN->fulltree) {
         '0' => get_string('audiortcformatdefault', 'tiny_recordrtc'),
         '1' => get_string('audiortcformatmp3', 'tiny_recordrtc'),
     ];
-    $setting = new admin_setting_configselect(
+    $setting = new configselect(
         name: 'tiny_recordrtc/audiortcformat',
         visiblename: get_string('audiortcformat', 'tiny_recordrtc'),
         description: '',

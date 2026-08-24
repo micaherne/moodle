@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
 use core_reportbuilder\system_report_factory;
 use core_ai\reportbuilder\local\systemreports\usage;
 
@@ -31,8 +33,8 @@ require_once($CFG->libdir . '/adminlib.php');
 admin_externalpage_setup('aiusagereport');
 
 // Set up the page.
-$systemcontext = context_system::instance();
-$pageurl = new moodle_url($CFG->wwwroot . '/ai/usage_report.php');
+$systemcontext = system::instance();
+$pageurl = new url($CFG->wwwroot . '/ai/usage_report.php');
 $PAGE->set_url($pageurl);
 $PAGE->set_context($systemcontext);
 $PAGE->set_pagelayout('report');

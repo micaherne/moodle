@@ -1,5 +1,11 @@
 <?php
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+use core_admin\setting\settingpage\settingpage;
+
 require_once('../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
@@ -9,7 +15,7 @@ $adminediting = optional_param('adminedit', -1, PARAM_BOOL);
 
 /// no guest autologin
 require_login(0, false);
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $PAGE->set_url('/admin/settings.php', array('section' => $section));
 $PAGE->set_pagetype('admin-setting-' . $section);
 $PAGE->set_pagelayout('admin');
@@ -19,32 +25,32 @@ navigation_node::require_admin_tree();
 $adminroot = admin_get_root(); // need all settings
 $settingspage = $adminroot->locate($section, true);
 
-if (empty($settingspage) or !($settingspage instanceof admin_settingpage)) {
+if (empty($settingspage) or !($settingspage instanceof settingpage)) {
     if (moodle_needs_upgrading()) {
-        redirect(new moodle_url('/admin/index.php'));
+        redirect(new url('/admin/index.php'));
     } else {
-        throw new \moodle_exception('sectionerror', 'admin', "$CFG->wwwroot/$CFG->admin/");
+        throw new moodle_exception('sectionerror', 'admin', "$CFG->wwwroot/$CFG->admin/");
     }
     die;
 }
 
 if (!($settingspage->check_access())) {
-    throw new \moodle_exception('accessdenied', 'admin');
+    throw new moodle_exception('accessdenied', 'admin');
     die;
 }
 
 // If the context in the admin_settingpage object is explicitly defined and it is not system, reset the current
 // page context and use that one instead. This ensures that the proper navigation is displayed and highlighted.
-if ($settingspage->context && !$settingspage->context instanceof \context_system) {
+if ($settingspage->context && !$settingspage->context instanceof system) {
     $PAGE->set_context($settingspage->context);
 }
 
-$hassiteconfig = has_capability('moodle/site:config', context_system::instance());
+$hassiteconfig = has_capability('moodle/site:config', system::instance());
 // Display the admin search input element in the page header if the user has the capability to change the site
 // configuration and the current page context is system.
-if ($hassiteconfig && $PAGE->context instanceof \context_system) {
+if ($hassiteconfig && $PAGE->context instanceof system) {
     $PAGE->add_header_action($OUTPUT->render_from_template('core_admin/header_search_input', [
-        'action' => new moodle_url('/admin/search.php'),
+        'action' => new url('/admin/search.php'),
     ]));
 }
 

@@ -22,6 +22,12 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\context\user as context_user;
+use core\exception\moodle_exception;
+use core\url;
+use core\user as core_user;
+
 require(__DIR__.'/../../../config.php');
 require_once($CFG->dirroot.'/user/editlib.php');
 
@@ -31,7 +37,7 @@ $returnurl = optional_param('returnurl', null, PARAM_LOCALURL);
 require_login();
 $userid = $userid ?: $USER->id;
 if (isguestuser() || isguestuser($userid)) {
-    throw new \moodle_exception('noguest');
+    throw new moodle_exception('noguest');
 }
 $context = context_user::instance($userid);
 if ($userid != $USER->id) {
@@ -48,7 +54,7 @@ $title = get_string('policiesagreements', 'tool_policy');
 
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('standard');
-$PAGE->set_url(new moodle_url('/admin/tool/policy/user.php', ['userid' => $userid]));
+$PAGE->set_url(new url('/admin/tool/policy/user.php', ['userid' => $userid]));
 $PAGE->set_title($title);
 
 if ($userid == $USER->id &&
@@ -64,5 +70,5 @@ echo $output->header();
 echo $output->heading($title);
 $acceptances = new \tool_policy\output\acceptances($userid, $returnurl);
 echo $output->render($acceptances);
-$PAGE->requires->js_call_amd('tool_policy/acceptmodal', 'getInstance', [context_system::instance()->id]);
+$PAGE->requires->js_call_amd('tool_policy/acceptmodal', 'getInstance', [system::instance()->id]);
 echo $output->footer();

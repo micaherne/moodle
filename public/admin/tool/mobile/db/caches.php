@@ -22,17 +22,19 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_cache\store;
+
 defined('MOODLE_INTERNAL') || die;
 
 $definitions = array(
     'plugininfo' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'staticacceleration' => true,
         'staticaccelerationsize' => 1
     ),
     'subscriptioninfo' => [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => false,
     ],

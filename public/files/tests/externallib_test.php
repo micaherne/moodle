@@ -16,6 +16,9 @@
 
 namespace core_files;
 
+use core\context\course;
+use core\context\module;
+use core\context\user;
 use core_external\external_api;
 use core_files\external\delete\draft;
 use core_files\external\get\unused_draft;
@@ -48,7 +51,7 @@ final class externallib_test extends \advanced_testcase {
 
         $this->resetAfterTest();
         $this->setAdminUser();
-        $context = \context_user::instance($USER->id);
+        $context = user::instance($USER->id);
         $contextid = $context->id;
         $component = "user";
         $filearea = "draft";
@@ -114,7 +117,7 @@ final class externallib_test extends \advanced_testcase {
 
         $this->resetAfterTest();
         $this->setAdminUser();
-        $context = \context_user::instance($USER->id);
+        $context = user::instance($USER->id);
         $contextid = $context->id;
         $component = "backup";
         $filearea = "draft";
@@ -139,7 +142,7 @@ final class externallib_test extends \advanced_testcase {
 
         $this->resetAfterTest();
         $this->setAdminUser();
-        $context = \context_user::instance($USER->id);
+        $context = user::instance($USER->id);
         $contextid = $context->id;
         $component = "user";
         $filearea = "draft";
@@ -206,8 +209,8 @@ final class externallib_test extends \advanced_testcase {
         // Insert the information about the file.
         $contentid = $DB->insert_record('data_content', $datacontent);
         // Required information for uploading a file.
-        $context = \context_module::instance($module->cmid);
-        $usercontext = \context_user::instance($USER->id);
+        $context = module::instance($module->cmid);
+        $usercontext = user::instance($USER->id);
         $component = 'mod_data';
         $filearea = 'content';
         $itemid = $contentid;
@@ -237,7 +240,7 @@ final class externallib_test extends \advanced_testcase {
         $testfilelisting = external_api::clean_returnvalue(core_files_external::get_files_returns(), $testfilelisting);
 
         // With the information that we have provided we should get an object exactly like the one below.
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $testdata = array();
         $testdata['parents'] = array();
         $testdata['parents']['0'] = array('contextid' => 1,
@@ -311,7 +314,7 @@ final class externallib_test extends \advanced_testcase {
 
         // Add files to user draft area.
         $draftitemid = file_get_unused_draft_itemid();
-        $context = \context_user::instance($USER->id);
+        $context = user::instance($USER->id);
         $filerecordinline = array(
             'contextid' => $context->id,
             'component' => 'user',
@@ -383,7 +386,7 @@ final class externallib_test extends \advanced_testcase {
         $filerecordinline['filename'] = 'fakeimage.png';
         $fs->create_file_from_string($filerecordinline, 'img...');
 
-        $context = \context_user::instance($USER->id);
+        $context = user::instance($USER->id);
         // Check two files were created (one file and one directory).
         $files = core_files_external::get_files($context->id, 'user', 'draft', $result['itemid'], '/', '');
         $files = external_api::clean_returnvalue(core_files_external::get_files_returns(), $files);

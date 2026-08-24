@@ -24,6 +24,9 @@
 
 namespace core_analytics\local\time_splitting;
 
+use core\exception\coding_exception;
+use core\lang_string;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -77,7 +80,7 @@ abstract class base {
      *
      * @return \lang_string
      */
-    abstract public static function get_name(): \lang_string;
+    abstract public static function get_name(): lang_string;
 
     /**
      * Returns the time splitting method id.
@@ -303,7 +306,7 @@ abstract class base {
         foreach ($this->ranges as $key => $range) {
             if (!isset($this->ranges[$key]['start']) || !isset($this->ranges[$key]['end']) ||
                     !isset($this->ranges[$key]['time'])) {
-                throw new \coding_exception($this->get_id() . ' time splitting method "' . $key .
+                throw new coding_exception($this->get_id() . ' time splitting method "' . $key .
                     '" range is not fully defined. We need a start timestamp and an end timestamp.');
             }
         }

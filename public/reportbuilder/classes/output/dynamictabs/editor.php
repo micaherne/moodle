@@ -22,7 +22,7 @@ use core\output\dynamic_tabs\base;
 use core_reportbuilder\local\models\report;
 use core_reportbuilder\output\custom_report;
 use core_reportbuilder\permission;
-use renderer_base;
+use core\output\renderer_base;
 use stdClass;
 
 /**

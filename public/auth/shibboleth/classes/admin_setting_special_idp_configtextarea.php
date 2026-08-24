@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\configtextarea;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -31,7 +33,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2017 Stephen Bourget
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class auth_shibboleth_admin_setting_special_idp_configtextarea extends admin_setting_configtextarea {
+class auth_shibboleth_admin_setting_special_idp_configtextarea extends configtextarea {
 
     /**
      * Calls parent::__construct with specific arguments.

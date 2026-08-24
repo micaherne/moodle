@@ -26,10 +26,15 @@
 
 namespace core_user;
 
+use core\context\course;
+use core\context\system;
+use core\context\user as context_user;
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
 use core_external\external_api;
 use core_files_external;
 use core_user_external;
-use core_user;
+use core\user;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -85,7 +90,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $generatedusers[$user1->id] = $user1;
         $generatedusers[$user2->id] = $user2;
 
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $roleid = $this->assignUserCapability('moodle/user:viewdetails', $context->id);
 
         // Enrol the users in the course.
@@ -121,7 +126,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
             }
             $this->assertEquals($generateduser->firstname, $returneduser['firstname']);
             $this->assertEquals($generateduser->lastname, $returneduser['lastname']);
-            $this->assertEquals(core_user::get_initials($generateduser), $returneduser['initials']);
+            $this->assertEquals(user::get_initials($generateduser), $returneduser['initials']);
             if ($generateduser->email != $USER->email) { // Don't check the tmp modified $USER email.
                 $this->assertEquals($generateduser->email, $returneduser['email']);
             }
@@ -174,7 +179,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
             // Call the external function.
             $result = core_user_external::get_users($searchparams);
             $this->fail('Expecting \'keyalreadyset\' moodle_exception to be thrown.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('keyalreadyset', $e->errorcode);
         } catch (\Exception $e) {
             $this->fail('Expecting \'keyalreadyset\' moodle_exception to be thrown.');
@@ -239,7 +244,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $generatedusers[$user1->id] = $user1;
         $generatedusers[$user2->id] = $user2;
 
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $roleid = $this->assignUserCapability('moodle/user:viewdetails', $context->id);
 
         // Enrol the users in the course.
@@ -279,7 +284,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
                 }
                 $this->assertEquals($generateduser->firstname, $returneduser['firstname']);
                 $this->assertEquals($generateduser->lastname, $returneduser['lastname']);
-                $this->assertEquals(core_user::get_initials($generateduser), $returneduser['initials']);
+                $this->assertEquals(user::get_initials($generateduser), $returneduser['initials']);
                 if ($generateduser->email != $USER->email) { //don't check the tmp modified $USER email
                     $this->assertEquals($generateduser->email, $returneduser['email']);
                 }
@@ -403,7 +408,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         }
         $return->user2 = self::getDataGenerator()->create_user();
 
-        $context = \context_course::instance($return->course->id);
+        $context = course::instance($return->course->id);
         $return->roleid = $this->assignUserCapability($capability, $context->id);
 
         // Enrol the users in the course.
@@ -439,7 +444,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Check we retrieve the good total number of enrolled users + no error on capability.
         $this->assertEquals(1, count($enrolledusers));
-        $this->assertEquals(core_user::get_initials($USER), $enrolledusers[0]['initials']);
+        $this->assertEquals(user::get_initials($USER), $enrolledusers[0]['initials']);
     }
 
     public function test_get_user_course_profile_as_admin(): void {
@@ -470,7 +475,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
                 $this->assertEquals($data->user1->idnumber, $enrolleduser['idnumber']);
                 $this->assertEquals($data->user1->firstname, $enrolleduser['firstname']);
                 $this->assertEquals($data->user1->lastname, $enrolleduser['lastname']);
-                $this->assertEquals(core_user::get_initials($data->user1), $enrolleduser['initials']);
+                $this->assertEquals(user::get_initials($data->user1), $enrolleduser['initials']);
                 $this->assertEquals($data->user1->email, $enrolleduser['email']);
                 $this->assertEquals($data->user1->address, $enrolleduser['address']);
                 $this->assertEquals($data->user1->phone1, $enrolleduser['phone1']);
@@ -541,7 +546,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
             'auth' => 'oauth2'
         );
 
-        $context = \context_system::instance();
+        $context = system::instance();
         $roleid = $this->assignUserCapability('moodle/user:create', $context->id);
         $this->assignUserCapability('moodle/user:editprofile', $context->id, $roleid);
 
@@ -609,7 +614,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         ];
 
         // This should throw an exception because either password or createpassword param must be passed for auth_manual.
-        $this->expectException(\invalid_parameter_exception::class);
+        $this->expectException(invalid_parameter_exception::class);
         core_user_external::create_users([$user]);
     }
 
@@ -667,7 +672,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         if (!$sameemailallowed) {
             // This should throw an exception when $CFG->allowaccountssameemail is empty.
-            $this->expectException(\invalid_parameter_exception::class);
+            $this->expectException(invalid_parameter_exception::class);
         }
 
         // Create our users.
@@ -771,7 +776,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->assertEquals(2, $DB->count_records_select('user', 'deleted = 0 AND (id = :userid1 OR id = :userid2)',
                 array('userid1' => $user1->id, 'userid2' => $user2->id)));
 
-        $context = \context_system::instance();
+        $context = system::instance();
         $roleid = $this->assignUserCapability('moodle/user:delete', $context->id);
 
         // Call the external function.
@@ -799,7 +804,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $wsuser = self::getDataGenerator()->create_user();
         self::setUser($wsuser);
 
-        $context = \context_user::instance($USER->id);
+        $context = context_user::instance($USER->id);
         $contextid = $context->id;
         $filename = "reddot.png";
         $filecontent = "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38"
@@ -847,7 +852,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
             'interests' => 'badminton, basketball, cooking,  ',
         ];
 
-        $context = \context_system::instance();
+        $context = system::instance();
         $roleid = $this->assignUserCapability('moodle/user:update', $context->id);
         $this->assignUserCapability('moodle/user:editprofile', $context->id, $roleid);
 
@@ -1051,10 +1056,10 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         $this->resetAfterTest(true);
 
-        $context = \context_system::instance();
+        $context = system::instance();
         $roleid = $this->assignUserCapability('moodle/user:manageownfiles', $context->id);
 
-        $context = \context_user::instance($USER->id);
+        $context = context_user::instance($USER->id);
         $contextid = $context->id;
         $component = "user";
         $filearea = "draft";
@@ -1097,10 +1102,10 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         $this->resetAfterTest(true);
 
-        $context = \context_system::instance();
+        $context = system::instance();
         $roleid = $this->assignUserCapability('moodle/user:manageownfiles', $context->id);
 
-        $context = \context_user::instance($USER->id);
+        $context = context_user::instance($USER->id);
         $contextid = $context->id;
         $component = "user";
         $filearea = "draft";
@@ -1321,7 +1326,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $user = self::getDataGenerator()->create_user();
         self::setUser($user);
 
-        $context = \context_user::instance($USER->id);
+        $context = context_user::instance($USER->id);
         $contextid = $context->id;
         $filename = "reddot.png";
         $filecontent = "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38"
@@ -1350,7 +1355,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // Add again the user profile image (as admin).
         $this->setAdminUser();
 
-        $context = \context_user::instance($USER->id);
+        $context = context_user::instance($USER->id);
         $admincontextid = $context->id;
         $draftfile = core_files_external::upload($admincontextid, 'user', 'draft', 0, '/', $filename, $filecontent, null, null);
         $draftid = $draftfile['itemid'];
@@ -1595,7 +1600,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             $result = core_user_external::agree_site_policy();
             $this->fail('Expecting \'usernotfullysetup\' moodle_exception to be thrown');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('usernotfullysetup', $e->errorcode);
         } catch (\Exception $e) {
             $this->fail('Expecting \'usernotfullysetup\' moodle_exception to be thrown.');
@@ -1610,7 +1615,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->resetAfterTest(true);
         $user = self::getDataGenerator()->create_user();
         $this->setUser($user);
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = context_user::instance($user->id);
 
         $filerecord = array(
             'contextid' => $usercontext->id,

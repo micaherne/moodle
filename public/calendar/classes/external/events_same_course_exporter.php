@@ -26,7 +26,7 @@ namespace core_calendar\external;
 
 defined('MOODLE_INTERNAL') || die();
 
-use \renderer_base;
+use core\output\renderer_base;
 
 /**
  * Class for displaying a list of calendar events for a single course.

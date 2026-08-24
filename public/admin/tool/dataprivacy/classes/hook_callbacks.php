@@ -16,8 +16,8 @@
 
 namespace tool_dataprivacy;
 
-use html_writer;
-use moodle_url;
+use core\output\html_writer;
+use core\url;
 
 /**
  * Hook callbacks for tool_dataprivacy.
@@ -41,7 +41,7 @@ class hook_callbacks {
         }
 
         if ($showsummary) {
-            $url = new moodle_url('/admin/tool/dataprivacy/summary.php');
+            $url = new url('/admin/tool/dataprivacy/summary.php');
             $hook->add_html(
                 html_writer::div(
                     html_writer::link($url, get_string('dataretentionsummary', 'tool_dataprivacy')),

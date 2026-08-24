@@ -17,7 +17,13 @@
 namespace core_report\output;
 
 use core\output\local\properties\iconsize;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core_course\cm_info;
+use core_course\modinfo;
 use core_course\output\activity_icon;
+use core_course\section_info;
 
 /**
  * Course sections, subsections and activities structure for reports.
@@ -26,7 +32,7 @@ use core_course\output\activity_icon;
  * @copyright  2024 Amaia Anabitarte <amaia@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class coursestructure implements \renderable, \templatable {
+class coursestructure implements renderable, templatable {
 
     /**
      * Constructor
@@ -35,7 +41,7 @@ class coursestructure implements \renderable, \templatable {
      */
     public function __construct(
         /** @var \course_modinfo $modinfo */
-        protected \course_modinfo $modinfo
+        protected modinfo $modinfo
     ) {
     }
 
@@ -45,7 +51,7 @@ class coursestructure implements \renderable, \templatable {
      * @param \renderer_base $output
      * @return array|\stdClass
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
 
         $headers = $this->export_headers($output);
         return [
@@ -62,7 +68,7 @@ class coursestructure implements \renderable, \templatable {
      * @param \renderer_base $output
      * @return array|\stdClass
      */
-    public function export_activities(\renderer_base $output) {
+    public function export_activities(renderer_base $output) {
 
         $activities = [];
 
@@ -121,7 +127,7 @@ class coursestructure implements \renderable, \templatable {
      * @param \renderer_base $output
      * @return array|\stdClass
      */
-    public function export_hierarchy(\renderer_base $output) {
+    public function export_hierarchy(renderer_base $output) {
 
         $sections = [];
 
@@ -163,8 +169,8 @@ class coursestructure implements \renderable, \templatable {
      * @return array
      */
     private function export_hierarchy_section_activities_data(
-        \renderer_base $output,
-        \section_info $sectioninfo,
+        renderer_base $output,
+        section_info $sectioninfo,
         array $allsections
     ): array {
         $allsections = $this->modinfo->get_sections();
@@ -190,8 +196,8 @@ class coursestructure implements \renderable, \templatable {
      * @return array|null
      */
     private function export_hierarchy_activity_data(
-        \renderer_base $output,
-        \cm_info $cm,
+        renderer_base $output,
+        cm_info $cm,
         array $allsections
     ): ?array {
         $delegatedsections = $this->modinfo->get_sections_delegated_by_cm();
@@ -234,7 +240,7 @@ class coursestructure implements \renderable, \templatable {
      * @param \renderer_base $output
      * @return array
      */
-    protected function export_headers(\renderer_base $output): array {
+    protected function export_headers(renderer_base $output): array {
         return [get_string('activity')];
     }
 
@@ -246,7 +252,7 @@ class coursestructure implements \renderable, \templatable {
      * @param bool $isdelegated Whether the section is a delegated subsection or not.
      * @return array
      */
-    public function export_section_data(\renderer_base $output, \section_info $sectioninfo, bool $isdelegated = false): array {
+    public function export_section_data(renderer_base $output, section_info $sectioninfo, bool $isdelegated = false): array {
         $datasection = [
             'issection' => !$isdelegated,
             'isdelegated' => $isdelegated,
@@ -266,7 +272,7 @@ class coursestructure implements \renderable, \templatable {
      * @param bool $indelegated Whether the activity is part of a delegated section or not.
      * @return array
      */
-    public function export_activity_data(\renderer_base $output, \cm_info $cm, bool $indelegated = false): array {
+    public function export_activity_data(renderer_base $output, cm_info $cm, bool $indelegated = false): array {
         global $CFG;
 
         if (!$cm->has_view()) {

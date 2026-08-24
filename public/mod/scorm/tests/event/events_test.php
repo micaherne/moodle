@@ -24,6 +24,9 @@
 
 namespace mod_scorm\event;
 
+use core\context\module;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -81,13 +84,13 @@ final class events_test extends \advanced_testcase {
         $this->assertCount(3, $events);
         $this->assertInstanceOf('\mod_scorm\event\attempt_deleted', $event);
         $this->assertEquals($USER->id, $event->userid);
-        $this->assertEquals(\context_module::instance($this->eventcm->id), $event->get_context());
+        $this->assertEquals(module::instance($this->eventcm->id), $event->get_context());
         $this->assertEquals(4, $event->other['attemptid']);
         $this->assertEquals(2, $event->relateduserid);
         $this->assertEventContextNotUsed($event);
 
         // Test event validations.
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         \mod_scorm\event\attempt_deleted::create(array(
             'contextid' => 5,
             'relateduserid' => 2
@@ -101,7 +104,7 @@ final class events_test extends \advanced_testcase {
         $this->resetAfterTest();
         try {
             \mod_scorm\event\interactions_viewed::create(array(
-                'context' => \context_module::instance($this->eventcm->id),
+                'context' => module::instance($this->eventcm->id),
                 'courseid' => $this->eventcourse->id,
                 'other' => array('attemptid' => 2)
             ));
@@ -112,7 +115,7 @@ final class events_test extends \advanced_testcase {
         }
         try {
             \mod_scorm\event\interactions_viewed::create(array(
-                'context' => \context_module::instance($this->eventcm->id),
+                'context' => module::instance($this->eventcm->id),
                 'courseid' => $this->eventcourse->id,
                 'other' => array('instanceid' => 2)
             ));
@@ -130,7 +133,7 @@ final class events_test extends \advanced_testcase {
         $this->resetAfterTest();
         try {
             \mod_scorm\event\tracks_viewed::create(array(
-                'context' => \context_module::instance($this->eventcm->id),
+                'context' => module::instance($this->eventcm->id),
                 'courseid' => $this->eventcourse->id,
                 'other' => array('attemptid' => 2, 'scoid' => 2)
             ));
@@ -141,7 +144,7 @@ final class events_test extends \advanced_testcase {
         }
         try {
             \mod_scorm\event\tracks_viewed::create(array(
-                'context' => \context_module::instance($this->eventcm->id),
+                'context' => module::instance($this->eventcm->id),
                 'courseid' => $this->eventcourse->id,
                 'other' => array('instanceid' => 2, 'scoid' => 2)
             ));
@@ -153,7 +156,7 @@ final class events_test extends \advanced_testcase {
 
         try {
             \mod_scorm\event\tracks_viewed::create(array(
-                'context' => \context_module::instance($this->eventcm->id),
+                'context' => module::instance($this->eventcm->id),
                 'courseid' => $this->eventcourse->id,
                 'other' => array('attemptid' => 2, 'instanceid' => 2)
             ));
@@ -171,7 +174,7 @@ final class events_test extends \advanced_testcase {
         $this->resetAfterTest();
         try {
             \mod_scorm\event\user_report_viewed::create(array(
-                'context' => \context_module::instance($this->eventcm->id),
+                'context' => module::instance($this->eventcm->id),
                 'courseid' => $this->eventcourse->id,
                 'other' => array('attemptid' => 2)
             ));
@@ -182,7 +185,7 @@ final class events_test extends \advanced_testcase {
         }
         try {
             \mod_scorm\event\user_report_viewed::create(array(
-                'context' => \context_module::instance($this->eventcm->id),
+                'context' => module::instance($this->eventcm->id),
                 'courseid' => $this->eventcourse->id,
                 'other' => array('instanceid' => 2)
             ));
@@ -260,7 +263,7 @@ final class events_test extends \advanced_testcase {
         $this->resetAfterTest();
         try {
             $data = array(
-                'context' => \context_module::instance($this->eventcm->id),
+                'context' => module::instance($this->eventcm->id),
                 'courseid' => $this->eventcourse->id,
                 'other' => array('attemptid' => 2)
             );
@@ -354,7 +357,7 @@ final class events_test extends \advanced_testcase {
         $this->resetAfterTest();
         try {
             $data = array(
-                'context' => \context_module::instance($this->eventcm->id),
+                'context' => module::instance($this->eventcm->id),
                 'courseid' => $this->eventcourse->id,
                 'other' => array('attemptid' => 2)
             );

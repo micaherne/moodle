@@ -23,6 +23,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -65,7 +67,7 @@ class tool_lp_site_competencies_form_element extends MoodleQuickForm_hidden {
         $html = parent::toHTML();
 
         if (!$this->isFrozen()) {
-            $context = context_system::instance();
+            $context = system::instance();
             $params = [$context->id];
             // Require some JS to select the competencies.
             $PAGE->requires->js_call_amd('tool_lp/form_competency_element', 'init', $params);

@@ -26,6 +26,7 @@ namespace core_completion\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\course;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_userlist;
 use core_privacy\local\request\contextlist;
@@ -116,7 +117,7 @@ class provider implements
     public static function add_course_completion_users_to_userlist(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_course) {
+        if (!$context instanceof course) {
             return;
         }
 

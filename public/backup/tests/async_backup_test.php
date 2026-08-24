@@ -18,6 +18,7 @@ namespace core_backup;
 
 use backup;
 use backup_controller;
+use core\context\module;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -64,7 +65,7 @@ final class async_backup_test extends \advanced_testcase {
         // We need a grade, easiest is to add an assignment.
         $assignrow = $generator->create_module('assign', array(
                 'course' => $course->id));
-        $assign = new \assign(\context_module::instance($assignrow->cmid), false, false);
+        $assign = new \assign(module::instance($assignrow->cmid), false, false);
         $item = $assign->get_grade_item();
 
         // Make a test grouping as well.
@@ -194,7 +195,7 @@ final class async_backup_test extends \advanced_testcase {
         // We need a grade, easiest is to add an assignment.
         $assignrow = $generator->create_module('assign', array(
                 'course' => $course->id));
-        $assign = new \assign(\context_module::instance($assignrow->cmid), false, false);
+        $assign = new \assign(module::instance($assignrow->cmid), false, false);
         $item = $assign->get_grade_item();
 
         // Make a test grouping as well.

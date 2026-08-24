@@ -20,6 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/question/engine/bank.php');
 
+use core\context;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
@@ -81,7 +82,7 @@ class update_question_version_status extends external_api {
             ];
         }
         $question = question_bank::load_question($params['questionid']);
-        $editingcontext = \context::instance_by_id($question->contextid);
+        $editingcontext = context::instance_by_id($question->contextid);
         self::validate_context($editingcontext);
         $canedit = question_has_capability_on($question, 'edit');
         if ($canedit) {

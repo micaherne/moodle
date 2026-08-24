@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+
 require('../config.php');
 require_once("$CFG->libdir/formslib.php");
 
@@ -41,15 +44,15 @@ if (!isloggedin()) {
 }
 
 $course = $DB->get_record('course', array('id'=>$id), '*', MUST_EXIST);
-$context = context_course::instance($course->id, MUST_EXIST);
+$context = course::instance($course->id, MUST_EXIST);
 
 // Everybody is enrolled on the frontpage
 if ($course->id == SITEID) {
     redirect("$CFG->wwwroot/");
 }
 
-if (!$course->visible && !has_capability('moodle/course:viewhiddencourses', context_course::instance($course->id))) {
-    throw new \moodle_exception('coursehidden');
+if (!$course->visible && !has_capability('moodle/course:viewhiddencourses', course::instance($course->id))) {
+    throw new moodle_exception('coursehidden');
 }
 
 $PAGE->set_course($course);
@@ -61,12 +64,12 @@ $PAGE->add_body_class('limitedwidth');
 
 // do not allow enrols when in login-as session
 if (\core\session\manager::is_loggedinas() and $USER->loginascontext->contextlevel == CONTEXT_COURSE) {
-    throw new \moodle_exception('loginasnoenrol', '', $CFG->wwwroot.'/course/view.php?id='.$USER->loginascontext->instanceid);
+    throw new moodle_exception('loginasnoenrol', '', $CFG->wwwroot.'/course/view.php?id='.$USER->loginascontext->instanceid);
 }
 
 // Check if user has access to the category where the course is located.
 if (!core_course_category::can_view_course_info($course) && !is_enrolled($context, $USER, '', true)) {
-    throw new \moodle_exception('coursehidden', '', $CFG->wwwroot . '/');
+    throw new moodle_exception('coursehidden', '', $CFG->wwwroot . '/');
 }
 
 // Get all enrol widgets available in this course.

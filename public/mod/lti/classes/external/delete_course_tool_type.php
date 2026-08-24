@@ -16,6 +16,8 @@
 
 namespace mod_lti\external;
 
+use core\context\course;
+use core\exception\invalid_parameter_exception;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
@@ -59,10 +61,10 @@ class delete_course_tool_type extends external_api {
         global $DB;
         $course = (int) $DB->get_field('lti_types', 'course', ['id' => $tooltypeid]);
         if ($course == get_site()->id) {
-            throw new \invalid_parameter_exception('This is a site-level tool and cannot be deleted via this service');
+            throw new invalid_parameter_exception('This is a site-level tool and cannot be deleted via this service');
         }
 
-        $context = \context_course::instance($course);
+        $context = course::instance($course);
         self::validate_context($context);
         require_capability('mod/lti:addcoursetool', $context);
 

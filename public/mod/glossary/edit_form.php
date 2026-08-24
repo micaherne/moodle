@@ -1,4 +1,6 @@
 <?php
+use core\context\module;
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
@@ -18,7 +20,7 @@ class mod_glossary_entry_form extends moodleform {
         $definitionoptions = $this->_customdata['definitionoptions'];
         $attachmentoptions = $this->_customdata['attachmentoptions'];
 
-        $context  = context_module::instance($cm->id);
+        $context  = module::instance($cm->id);
         // Prepare format_string/text options
         $fmtoptions = array(
             'context' => $context);
@@ -103,7 +105,7 @@ class mod_glossary_entry_form extends moodleform {
 
         $glossary = $this->_customdata['glossary'];
         $cm       = $this->_customdata['cm'];
-        $context  = context_module::instance($cm->id);
+        $context  = module::instance($cm->id);
 
         $id = (int)$data['id'];
         $data['concept'] = trim($data['concept']);

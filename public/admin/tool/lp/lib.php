@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\navigation\navigation_node;
+use core\output\pix_icon;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -40,11 +44,11 @@ function tool_lp_extend_navigation_user($navigation, $user, $usercontext, $cours
 
     if (\core_competency\plan::can_read_user($user->id)) {
         $node = $navigation->add(get_string('learningplans', 'tool_lp'),
-            new moodle_url('/admin/tool/lp/plans.php', array('userid' => $user->id)));
+            new url('/admin/tool/lp/plans.php', array('userid' => $user->id)));
 
         if (\core_competency\user_evidence::can_read_user($user->id)) {
             $node->add(get_string('userevidence', 'tool_lp'),
-                new moodle_url('/admin/tool/lp/user_evidence_list.php', array('userid' => $user->id)));
+                new url('/admin/tool/lp/user_evidence_list.php', array('userid' => $user->id)));
         }
     }
 
@@ -67,7 +71,7 @@ function tool_lp_myprofile_navigation(core_user\output\myprofile\tree $tree, $us
         return false;
     }
 
-    $url = new moodle_url('/admin/tool/lp/plans.php', array('userid' => $user->id));
+    $url = new url('/admin/tool/lp/plans.php', array('userid' => $user->id));
     $node = new core_user\output\myprofile\node('miscellaneous', 'learningplans',
                                                 get_string('learningplans', 'tool_lp'), null, $url);
     $tree->add_node($node);
@@ -96,7 +100,7 @@ function tool_lp_extend_navigation_category_settings($navigation, $coursecategor
     // The link to the learning plan page.
     if ($templatereadcapability) {
         $title = get_string('templates', 'tool_lp');
-        $path = new moodle_url("/admin/tool/lp/learningplans.php", array('pagecontextid' => $coursecategorycontext->id));
+        $path = new url("/admin/tool/lp/learningplans.php", array('pagecontextid' => $coursecategorycontext->id));
         $settingsnode = navigation_node::create($title,
                                                 $path,
                                                 navigation_node::TYPE_SETTING,
@@ -112,7 +116,7 @@ function tool_lp_extend_navigation_category_settings($navigation, $coursecategor
     // The link to the competency frameworks page.
     if ($competencyreadcapability) {
         $title = get_string('competencyframeworks', 'tool_lp');
-        $path = new moodle_url("/admin/tool/lp/competencyframeworks.php", array('pagecontextid' => $coursecategorycontext->id));
+        $path = new url("/admin/tool/lp/competencyframeworks.php", array('pagecontextid' => $coursecategorycontext->id));
         $settingsnode = navigation_node::create($title,
                                                 $path,
                                                 navigation_node::TYPE_SETTING,

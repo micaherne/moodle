@@ -23,6 +23,8 @@
  */
 namespace core\event;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -87,23 +89,23 @@ class user_deleted extends base {
         }
 
         if (!isset($this->other['username'])) {
-            throw new \coding_exception('The \'username\' value must be set in other.');
+            throw new coding_exception('The \'username\' value must be set in other.');
         }
 
         if (!isset($this->other['email'])) {
-            throw new \coding_exception('The \'email\' value must be set in other.');
+            throw new coding_exception('The \'email\' value must be set in other.');
         }
 
         if (!isset($this->other['idnumber'])) {
-            throw new \coding_exception('The \'idnumber\' value must be set in other.');
+            throw new coding_exception('The \'idnumber\' value must be set in other.');
         }
 
         if (!isset($this->other['picture'])) {
-            throw new \coding_exception('The \'picture\' value must be set in other.');
+            throw new coding_exception('The \'picture\' value must be set in other.');
         }
 
         if (!isset($this->other['mnethostid'])) {
-            throw new \coding_exception('The \'mnethostid\' value must be set in other.');
+            throw new coding_exception('The \'mnethostid\' value must be set in other.');
         }
     }
 

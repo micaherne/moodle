@@ -16,11 +16,14 @@
 
 namespace core_courseformat\output\local;
 
+use core\exception\moodle_exception;
 use core\output\named_templatable;
+use core\output\renderer_base;
+use core\url;
 use core_courseformat\base as course_format;
-use course_modinfo;
-use section_info;
-use renderable;
+use core_course\modinfo;
+use core_course\section_info;
+use core\output\renderable;
 
 /**
  * Base class to render a course format.
@@ -79,7 +82,7 @@ class content implements named_templatable, renderable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return \stdClass data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         global $PAGE;
         $format = $this->format;
 
@@ -129,7 +132,7 @@ class content implements named_templatable, renderable {
      * @param \renderer_base $output The renderer object used for rendering the action menu.
      * @return string|null The rendered action menu HTML, null if page no action menu is available.
      */
-    public function get_page_header_action(\renderer_base $output): ?string {
+    public function get_page_header_action(renderer_base $output): ?string {
         $sectionid = $this->format->get_sectionid();
         if ($sectionid !== null) {
             $modinfo = $this->format->get_modinfo();
@@ -147,20 +150,20 @@ class content implements named_templatable, renderable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return array data context for a mustache template
      */
-    protected function export_sections(\renderer_base $output): array {
+    protected function export_sections(renderer_base $output): array {
 
         $format = $this->format;
         $course = $format->get_course();
 
         if (!$format->uses_sections()) {
             if (has_capability('moodle/course:update', \core\context\course::instance($course->id))) {
-                $url = new \moodle_url('/course/edit.php', ['id' => $course->id]);
+                $url = new url('/course/edit.php', ['id' => $course->id]);
                 $params = [
                     'courseformat' => $format->get_format_name(),
                 ];
-                throw new \moodle_exception('nosections_editor', 'error', $url, $params);
+                throw new moodle_exception('nosections_editor', 'error', $url, $params);
             }
-            throw new \moodle_exception('nosections_noneditor', 'error');
+            throw new moodle_exception('nosections_noneditor', 'error');
         }
 
         $modinfo = $this->format->get_modinfo();
@@ -172,7 +175,7 @@ class content implements named_templatable, renderable {
             // The course/view.php check the section existence but the output can be called
             // from other parts so we need to check it.
             if (!$thissection) {
-                throw new \moodle_exception('unknowncoursesection', 'error', course_get_url($course),
+                throw new moodle_exception('unknowncoursesection', 'error', course_get_url($course),
                     format_string($course->fullname));
             }
 
@@ -208,7 +211,7 @@ class content implements named_templatable, renderable {
      * @param course_modinfo $modinfo the current course modinfo object
      * @return section_info[] an array of section_info to display
      */
-    protected function get_sections_to_display(course_modinfo $modinfo): array {
+    protected function get_sections_to_display(modinfo $modinfo): array {
         $singlesectionid = $this->format->get_sectionid();
         if ($singlesectionid) {
             return [

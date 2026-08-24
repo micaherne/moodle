@@ -14,6 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\user;
 use core_external\external_api;
 use core_external\external_format_value;
 use core_external\external_function_parameters;
@@ -118,7 +122,7 @@ class core_notes_external extends external_api {
                 $errormessage = get_string('invalidcourseid', 'error');
             } else {
                 // Ensure the current user is allowed to run this function.
-                $context = context_course::instance($note['courseid']);
+                $context = course::instance($note['courseid']);
                 self::validate_context($context);
                 require_capability('moodle/notes:manage', $context);
             }
@@ -246,7 +250,7 @@ class core_notes_external extends external_api {
             $note = note_load($noteid);
             if (isset($note->id)) {
                 // Ensure the current user is allowed to run this function.
-                $context = context_course::instance($note->courseid);
+                $context = course::instance($note->courseid);
                 self::validate_context($context);
                 require_capability('moodle/notes:manage', $context);
                 note_delete($note);
@@ -310,7 +314,7 @@ class core_notes_external extends external_api {
             $note = note_load($noteid);
             if (isset($note->id)) {
                 // Ensure the current user is allowed to run this function.
-                $context = context_course::instance($note->courseid);
+                $context = course::instance($note->courseid);
                 self::validate_context($context);
                 require_capability('moodle/notes:view', $context);
 
@@ -413,7 +417,7 @@ class core_notes_external extends external_api {
             $notedetails = note_load($note['id']);
             if (isset($notedetails->id)) {
                 // Ensure the current user is allowed to run this function.
-                $context = context_course::instance($notedetails->courseid);
+                $context = course::instance($notedetails->courseid);
                 self::validate_context($context);
                 require_capability('moodle/notes:manage', $context);
 
@@ -542,20 +546,20 @@ class core_notes_external extends external_api {
         }
         $user = null;
         if (!empty($params['userid'])) {
-            $user = core_user::get_user($params['userid'], '*', MUST_EXIST);
-            core_user::require_active_user($user);
+            $user = user::get_user($params['userid'], '*', MUST_EXIST);
+            user::require_active_user($user);
         }
 
         $course = get_course($params['courseid']);
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         $canmanagesystemnotes = has_capability('moodle/notes:manage', $systemcontext);
 
         if ($course->id == SITEID) {
             $context = $systemcontext;
             $canmanagecoursenotes = $canmanagesystemnotes;
         } else {
-            $context = context_course::instance($course->id);
+            $context = course::instance($course->id);
             $canmanagecoursenotes = has_capability('moodle/notes:manage', $context);
         }
         self::validate_context($context);
@@ -580,7 +584,7 @@ class core_notes_external extends external_api {
                 $usercourses = enrol_get_users_courses($user->id, true);
                 foreach ($usercourses as $c) {
                     // All notes at course level, only if we have capability on every course.
-                    if (has_capability('moodle/notes:view', context_course::instance($c->id))) {
+                    if (has_capability('moodle/notes:view', course::instance($c->id))) {
                         $coursenotes += self::create_note_list($c->id, $context, $params['userid'], NOTES_STATE_PUBLIC);
                     }
                 }
@@ -692,9 +696,9 @@ class core_notes_external extends external_api {
         $course = get_course($params['courseid']);
 
         if ($course->id == SITEID) {
-            $context = context_system::instance();
+            $context = system::instance();
         } else {
-            $context = context_course::instance($course->id);
+            $context = course::instance($course->id);
         }
 
         // First of all, validate the context before do further permission checks.
@@ -702,8 +706,8 @@ class core_notes_external extends external_api {
         require_capability('moodle/notes:view', $context);
 
         if (!empty($params['userid'])) {
-            $user = core_user::get_user($params['userid'], '*', MUST_EXIST);
-            core_user::require_active_user($user);
+            $user = user::get_user($params['userid'], '*', MUST_EXIST);
+            user::require_active_user($user);
 
             if ($course->id != SITEID and !can_access_course($course, $user, '', true)) {
                 throw new moodle_exception('notenrolledprofile');

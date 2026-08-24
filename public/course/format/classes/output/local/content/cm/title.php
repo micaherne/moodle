@@ -26,17 +26,18 @@
 
 namespace core_courseformat\output\local\content\cm;
 
-use cm_info;
+use core\output\renderer_base;
+use core_course\cm_info;
 use core\output\inplace_editable;
 use core\output\named_templatable;
 use core_courseformat\base as course_format;
 use core_text;
-use lang_string;
-use renderable;
-use section_info;
+use core\lang_string;
+use core\output\renderable;
+use core_course\section_info;
 use stdClass;
 use core_external\external_api;
-use context_module;
+use core\context\module;
 
 /**
  * Base class to render a course module title inside a course format.
@@ -113,7 +114,7 @@ class title extends inplace_editable implements named_templatable, renderable {
      * @param \renderer_base $renderer The renderer requesting the template name
      * @return string
      */
-    public function get_template_name(\renderer_base $renderer): string {
+    public function get_template_name(renderer_base $renderer): string {
         return 'core/inplace_editable';
     }
 
@@ -123,7 +124,7 @@ class title extends inplace_editable implements named_templatable, renderable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return array data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
 
         // Inplace editable uses pre-rendered elements and does not allow line beaks in the UI value.
         $this->displayvalue = str_replace("\n", "", $this->get_title_displayvalue());
@@ -217,7 +218,7 @@ class title extends inplace_editable implements named_templatable, renderable {
      * @return static
      */
     public static function update($itemid, $newvalue) {
-        $context = context_module::instance($itemid);
+        $context = module::instance($itemid);
         // Check access.
         external_api::validate_context($context);
         require_capability('moodle/course:manageactivities', $context);

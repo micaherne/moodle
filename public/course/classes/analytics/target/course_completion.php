@@ -24,6 +24,8 @@
 
 namespace core_course\analytics\target;
 
+use core\lang_string;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/course/lib.php');
@@ -46,8 +48,8 @@ class course_completion extends course_enrolments {
      *
      * @return \lang_string
      */
-    public static function get_name(): \lang_string {
-        return new \lang_string('target:coursecompletion', 'course');
+    public static function get_name(): lang_string {
+        return new lang_string('target:coursecompletion', 'course');
     }
 
     /**

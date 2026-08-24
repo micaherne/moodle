@@ -24,7 +24,7 @@ use core_external\external_single_structure;
 use core_external\external_value;
 use mod_quiz\quiz_attempt;
 use mod_quiz\quiz_settings;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 /**
  * Web service method to update the properties of one or more slots in a quiz.

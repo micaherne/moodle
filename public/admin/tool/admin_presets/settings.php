@@ -23,10 +23,13 @@
  * @license          http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
-    $ADMIN->add('root', new admin_externalpage('tool_admin_presets',
+    $ADMIN->add('root', new externalpage('tool_admin_presets',
     get_string('pluginname', 'tool_admin_presets'),
-    new moodle_url('/admin/tool/admin_presets/index.php')));
+    new url('/admin/tool/admin_presets/index.php')));
 }

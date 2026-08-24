@@ -24,6 +24,9 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -60,7 +63,7 @@ class message_contact_removed extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/message/index.php', array('user1' => $this->userid, 'user2' => $this->relateduserid));
+        return new url('/message/index.php', array('user1' => $this->userid, 'user2' => $this->relateduserid));
     }
 
     /**
@@ -81,7 +84,7 @@ class message_contact_removed extends base {
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
     }
 

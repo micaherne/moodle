@@ -30,6 +30,10 @@
 
 // Disable moodle specific debug messages and any errors in output,
 // comment out when debugging or better look into error log!
+use core\context\course;
+use core\exception\moodle_exception;
+use core\user;
+
 define('NO_DEBUG_DISPLAY', true);
 
 // This script does not require login.
@@ -94,7 +98,7 @@ $data->timeupdated      = time();
 
 $user = $DB->get_record("user", array("id" => $data->userid), "*", MUST_EXIST);
 $course = $DB->get_record("course", array("id" => $data->courseid), "*", MUST_EXIST);
-$context = context_course::instance($course->id, MUST_EXIST);
+$context = course::instance($course->id, MUST_EXIST);
 
 $PAGE->set_context($context);
 
@@ -210,7 +214,7 @@ if (strlen($result) > 0) {
             die;
         }
 
-        $coursecontext = context_course::instance($course->id, IGNORE_MISSING);
+        $coursecontext = course::instance($course->id, IGNORE_MISSING);
 
         // Check that amount paid is the correct amount
         if ( (float) $plugin_instance->cost <= 0 ) {
@@ -270,7 +274,7 @@ if (strlen($result) > 0) {
             $eventdata->modulename        = 'moodle';
             $eventdata->component         = 'enrol_paypal';
             $eventdata->name              = 'paypal_enrolment';
-            $eventdata->userfrom          = empty($teacher) ? core_user::get_noreply_user() : $teacher;
+            $eventdata->userfrom          = empty($teacher) ? user::get_noreply_user() : $teacher;
             $eventdata->userto            = $user;
             $eventdata->subject           = get_string("enrolmentnew", 'enrol', $shortname);
             $eventdata->fullmessage       = get_string('welcometocoursetext', '', $a);

@@ -25,6 +25,11 @@
 
 namespace block_rss_client\output;
 
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -35,7 +40,7 @@ defined('MOODLE_INTERNAL') || die();
  * @author    Brendan Anderson <brendan_anderson@hcpss.org>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class footer implements \renderable, \templatable {
+class footer implements renderable, templatable {
 
     /**
      * The link provided in the RSS channel
@@ -66,7 +71,7 @@ class footer implements \renderable, \templatable {
      * @param \moodle_url $channelurl
      * @return \block_rss_client\output\footer
      */
-    public function set_channelurl(\moodle_url $channelurl) {
+    public function set_channelurl(url $channelurl) {
         $this->channelurl = $channelurl;
 
         return $this;
@@ -78,7 +83,7 @@ class footer implements \renderable, \templatable {
      *
      * @param \moodle_url $manageurl the URL to link to for more information
      */
-    public function set_failed(\moodle_url $manageurl) {
+    public function set_failed(url $manageurl) {
         $this->manageurl = $manageurl;
     }
 
@@ -98,7 +103,7 @@ class footer implements \renderable, \templatable {
      * @param renderer_base $output
      * @return stdClass
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         $data = new \stdClass();
         if ($this->manageurl) {
             $data->hasfailedfeeds = true;

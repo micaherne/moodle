@@ -16,6 +16,9 @@
 
 namespace mod_bigbluebuttonbn\privacy;
 
+use core\context;
+use core\context\module;
+use core\user;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -92,7 +95,7 @@ class provider implements
      */
     public static function get_contexts_for_userid(int $userid): contextlist {
         // If user was already deleted, do nothing.
-        if (!\core_user::get_user($userid)) {
+        if (!user::get_user($userid)) {
             return new contextlist();
         }
         // Fetch all bigbluebuttonbn logs.
@@ -165,7 +168,7 @@ class provider implements
                 return $carry;
             },
             function($instanceid, $data) use ($user, $instanceidstocmids) {
-                $context = \context_module::instance($instanceidstocmids[$instanceid]);
+                $context = module::instance($instanceidstocmids[$instanceid]);
                 $contextdata = helper::get_context_data($context, $user);
                 $finaldata = (object) array_merge((array) $contextdata, ['logs' => $data]);
                 helper::export_context_files($context, $user);
@@ -179,10 +182,10 @@ class provider implements
      *
      * @param \context $context the context to delete in.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         global $DB;
 
-        if (!$context instanceof \context_module) {
+        if (!$context instanceof module) {
             return;
         }
 
@@ -203,7 +206,7 @@ class provider implements
         }
         $userid = $contextlist->get_user()->id;
         foreach ($contextlist->get_contexts() as $context) {
-            if (!$context instanceof \context_module) {
+            if (!$context instanceof module) {
                 return;
             }
             $instanceid = $DB->get_field('course_modules', 'instance', ['id' => $context->instanceid], MUST_EXIST);
@@ -277,7 +280,7 @@ class provider implements
     public static function get_users_in_context(\core_privacy\local\request\userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_module) {
+        if (!$context instanceof module) {
             return;
         }
 

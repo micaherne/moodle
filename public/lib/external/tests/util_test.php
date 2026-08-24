@@ -16,6 +16,9 @@
 
 namespace core_external;
 
+use core\context\system;
+use core_filters\filter_manager;
+
 /**
  * Unit tests for core_external\util.
  *
@@ -426,12 +429,12 @@ final class util_test extends \advanced_testcase {
         // Enable multilang filter to on content and heading.
         filter_set_global_state('multilang', TEXTFILTER_ON);
         filter_set_applies_to_strings('multilang', 1);
-        $filtermanager = \filter_manager::instance();
+        $filtermanager = filter_manager::instance();
         $filtermanager->reset_caches();
 
         $settings->set_raw($raw);
         $settings->set_filter($filter);
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $this->assertSame($correct, util::format_string($text, $context, options: $options));
     }

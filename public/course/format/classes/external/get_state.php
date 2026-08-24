@@ -16,6 +16,7 @@
 
 namespace core_courseformat\external;
 
+use core\context\course;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
@@ -69,7 +70,7 @@ class get_state extends external_api {
         ]);
         $courseid = $params['courseid'];
 
-        self::validate_context(\context_course::instance($courseid));
+        self::validate_context(course::instance($courseid));
 
         $courseformat = course_get_format($courseid);
         $modinfo = $courseformat->get_modinfo();

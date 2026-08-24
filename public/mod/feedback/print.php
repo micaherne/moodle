@@ -22,6 +22,10 @@
  * @package mod_feedback
  */
 
+use core\context\module;
+use core\exception\required_capability_exception;
+use core\url;
+
 require_once("../../config.php");
 require_once("lib.php");
 
@@ -34,7 +38,7 @@ list($course, $cm) = get_course_and_cm_from_cmid($id, 'feedback');
 require_course_login($course, true, $cm);
 
 // This page should be only displayed to users with capability to edit or view reports (to include non-editing teachers too).
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 $capabilities = [
     'mod/feedback:edititems',
     'mod/feedback:viewreports',
@@ -56,7 +60,7 @@ $PAGE->set_pagelayout('popup');
 $strfeedbacks = get_string("modulenameplural", "feedback");
 $strfeedback  = get_string("modulename", "feedback");
 
-$feedback_url = new moodle_url('/mod/feedback/index.php', array('id'=>$course->id));
+$feedback_url = new url('/mod/feedback/index.php', array('id'=>$course->id));
 $PAGE->navbar->add($strfeedbacks, $feedback_url);
 $PAGE->navbar->add(format_string($feedback->name));
 
@@ -72,7 +76,7 @@ $PAGE->set_show_navigation_footer(false);
 
 echo $OUTPUT->header();
 
-$continueurl = new moodle_url('/mod/feedback/view.php', array('id' => $id));
+$continueurl = new url('/mod/feedback/view.php', array('id' => $id));
 if ($courseid) {
     $continueurl->param('courseid', $courseid);
 }

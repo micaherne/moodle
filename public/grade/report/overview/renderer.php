@@ -31,6 +31,9 @@
  * @copyright 2010 Sam Hemelryk
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+
 class gradereport_overview_renderer extends plugin_renderer_base {
 
     public function graded_users_selector($report, $course, $userid, $groupid, $includeall) {

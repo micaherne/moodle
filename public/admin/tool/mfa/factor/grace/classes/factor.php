@@ -16,6 +16,8 @@
 
 namespace factor_grace;
 
+use core\output\html_writer;
+use core\url;
 use stdClass;
 use tool_mfa\local\factor\object_factor_base;
 
@@ -120,7 +122,7 @@ class factor extends object_factor_base {
                             $SESSION->mfa_gracemode_recursive = true;
 
                             $factorurls = \tool_mfa\manager::get_no_redirect_urls();
-                            $cleanurl = new \moodle_url($FULLME);
+                            $cleanurl = new url($FULLME);
 
                             foreach ($factorurls as $factorurl) {
                                 if ($factorurl->compare($cleanurl)) {
@@ -136,7 +138,7 @@ class factor extends object_factor_base {
                             unset($SESSION->mfa_gracemode_recursive);
 
                             if ($redirectable) {
-                                redirect(new \moodle_url('/admin/tool/mfa/user_preferences.php'),
+                                redirect(new url('/admin/tool/mfa/user_preferences.php'),
                                     get_string('redirectsetup', 'factor_grace'));
                             }
                         }
@@ -175,8 +177,8 @@ class factor extends object_factor_base {
         // Ensure grace factor passed before displaying notification.
         if ($this->get_state() == \tool_mfa\plugininfo\factor::STATE_PASS
             && !\tool_mfa\manager::check_factor_pending($this->name)) {
-            $url = new \moodle_url('/admin/tool/mfa/user_preferences.php');
-            $link = \html_writer::link($url, get_string('preferences', 'factor_grace'));
+            $url = new url('/admin/tool/mfa/user_preferences.php');
+            $link = html_writer::link($url, get_string('preferences', 'factor_grace'));
 
             $records = ($this->get_all_user_factors($USER));
             $record = reset($records);
@@ -256,8 +258,8 @@ class factor extends object_factor_base {
         if ($redirect && $this->get_state(false) === \tool_mfa\plugininfo\factor::STATE_NEUTRAL) {
             // If the config is enabled, the user should be able to access + setup a factor using these pages.
             return [
-                new \moodle_url('/admin/tool/mfa/user_preferences.php'),
-                new \moodle_url('/admin/tool/mfa/action.php'),
+                new url('/admin/tool/mfa/user_preferences.php'),
+                new url('/admin/tool/mfa/action.php'),
             ];
         } else {
             return [];

@@ -23,6 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\plugin_manager;
+use core\url;
+
 require_once('../config.php');
 require_once("{$CFG->libdir}/adminlib.php");
 
@@ -30,19 +34,19 @@ $action = required_param('action', PARAM_ALPHANUMEXT);
 $plugin = required_param('plugin', PARAM_PLUGIN);
 
 $PAGE->set_url('/admin/media.php');
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 require_admin();
 require_sesskey();
 
-$return = new moodle_url('/admin/settings.php', [
+$return = new url('/admin/settings.php', [
     'section' => 'managemediaplayers',
 ]);
 
 $displayname = get_string('pluginname', "media_{$plugin}");
 switch ($action) {
     case 'disable':
-        $class = \core_plugin_manager::resolve_plugininfo_class('media');
+        $class = plugin_manager::resolve_plugininfo_class('media');
         if ($class::enable_plugin($plugin, false)) {
             \core\notification::add(
                 get_string('plugin_disabled', 'core_admin', $displayname),
@@ -52,7 +56,7 @@ switch ($action) {
         break;
 
     case 'enable':
-        $class = \core_plugin_manager::resolve_plugininfo_class('media');
+        $class = plugin_manager::resolve_plugininfo_class('media');
         if ($class::enable_plugin($plugin, true)) {
             \core\notification::add(
                 get_string('plugin_enabled', 'core_admin', $displayname),

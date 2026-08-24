@@ -25,15 +25,19 @@
 
 // Ignore coding standards for login check, this page does not require login.
 // phpcs:disable moodle.Files.RequireLogin.Missing
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once(__DIR__ . '/../../../../../config.php');
 
 $instanceid = required_param('instance', PARAM_INT);
 $pass = optional_param('pass', '0', PARAM_INT);
 $secret = optional_param('secret', 0, PARAM_INT);
 
-$context = context_system::instance();
+$context = system::instance();
 $PAGE->set_context($context);
-$url = new moodle_url('/admin/tool/mfa/factor/email/email.php',
+$url = new url('/admin/tool/mfa/factor/email/email.php',
     ['instance' => $instanceid, 'pass' => $pass, 'secret' => $secret]);
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('secure');
@@ -51,7 +55,7 @@ if (!empty($instance) && $pass != 0 && $secret != 0) {
     }
     if ($factor->get_state() === \tool_mfa\plugininfo\factor::STATE_LOCKED) {
         // Redirect through to auth, this will bounce them to the next factor.
-        redirect(new moodle_url('/admin/tool/mfa/auth.php'));
+        redirect(new url('/admin/tool/mfa/auth.php'));
     }
     // Check the code with the same measures on the page entry.
     if ($instance->secret != $secret) {
@@ -65,14 +69,14 @@ if (!empty($instance) && $pass != 0 && $secret != 0) {
     if (!empty($SESSION->wantsurl)) {
         redirect($SESSION->wantsurl);
     } else {
-        redirect(new moodle_url('/'));
+        redirect(new url('/'));
     }
 }
 
 $form = new \factor_email\form\email($url);
 
 if ($form->is_cancelled()) {
-    redirect(new moodle_url('/'));
+    redirect(new url('/'));
 }
 
 // If submitted without the pass param, is a cancel request - do checks and revoke email factor.

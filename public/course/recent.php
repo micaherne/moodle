@@ -23,6 +23,12 @@
  * @package course
  */
 
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 require_once('../config.php');
 require_once('lib.php');
 require_once('recent_form.php');
@@ -33,11 +39,11 @@ $PAGE->set_url('/course/recent.php', array('id'=>$id));
 $PAGE->set_pagelayout('report');
 
 if (!$course = $DB->get_record('course', array('id'=>$id))) {
-    throw new \moodle_exception("That's an invalid course id");
+    throw new moodle_exception("That's an invalid course id");
 }
 
 require_login($course);
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 
 \core\event\recent_activity_viewed::create(array('context' => $context))->trigger();
 
@@ -67,13 +73,13 @@ $dateinfo = get_string('alldays');
 
 if (!empty($param->user)) {
     if (!$u = $DB->get_record('user', array('id'=>$param->user))) {
-        throw new \moodle_exception("That's an invalid user!");
+        throw new moodle_exception("That's an invalid user!");
     }
     $userinfo = fullname($u);
 }
 
 $strrecentactivity = get_string('recentactivity');
-$PAGE->navbar->add($strrecentactivity, new moodle_url('/course/recent.php', array('id'=>$course->id)));
+$PAGE->navbar->add($strrecentactivity, new url('/course/recent.php', array('id'=>$course->id)));
 $PAGE->navbar->add($userinfo);
 $PAGE->set_title("$course->shortname: $strrecentactivity");
 $PAGE->set_heading($course->fullname);
@@ -232,7 +238,7 @@ if (!empty($activities)) {
                 $modfullname = $modnames[$cm->modname];
 
                 $image = $OUTPUT->pix_icon('monologo', $modfullname, $cm->modname, array('class' => 'icon smallicon'));
-                $link = html_writer::link(new moodle_url("/mod/$cm->modname/view.php",
+                $link = html_writer::link(new url("/mod/$cm->modname/view.php",
                             array("id" => $cm->id)), $name, array('class' => $class));
                 echo html_writer::tag('li', "$image $modfullname $link");
            }
@@ -240,7 +246,7 @@ if (!empty($activities)) {
         } else {
 
             if (!isset($viewfullnames[$activity->cmid])) {
-                $cm_context = context_module::instance($activity->cmid);
+                $cm_context = module::instance($activity->cmid);
                 $viewfullnames[$activity->cmid] = has_capability('moodle/site:viewfullnames', $cm_context);
             }
 

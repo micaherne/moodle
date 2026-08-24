@@ -26,6 +26,8 @@
 
 namespace core\analytics\time_splitting;
 
+use core\lang_string;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -48,8 +50,8 @@ class no_splitting extends \core_analytics\local\time_splitting\base {
      *
      * @return \lang_string
      */
-    public static function get_name(): \lang_string {
-        return new \lang_string('timesplitting:nosplitting');
+    public static function get_name(): lang_string {
+        return new lang_string('timesplitting:nosplitting');
     }
 
     /**

@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\module;
 use core_course\external\helper_for_get_mods_by_courses;
 use core_external\external_api;
 use core_external\external_function_parameters;
@@ -70,7 +71,7 @@ class mod_folder_external extends external_api {
         $folder = $DB->get_record('folder', array('id' => $params['folderid']), '*', MUST_EXIST);
         list($course, $cm) = get_course_and_cm_from_instance($folder, 'folder');
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         require_capability('mod/folder:view', $context);

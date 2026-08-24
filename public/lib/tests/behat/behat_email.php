@@ -17,6 +17,7 @@
 use core\test\message;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\ExpectationException;
+use core\user;
 use Moodle\BehatExtension\Exception\SkippedException;
 
 require_once(__DIR__ . '/../../behat/behat_base.php');
@@ -222,7 +223,7 @@ class behat_email extends behat_base {
             $message = isset($headers['message']) ? $row[$headers['message']] : 'Default test message';
 
             // Use no-reply user as dummy user to send emails from.
-            $noreplyuser = \core_user::get_user(\core_user::NOREPLY_USER);
+            $noreplyuser = user::get_user(user::NOREPLY_USER);
 
             // Create a dummy user to send emails to.
             $emailuserto = new stdClass();

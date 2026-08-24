@@ -17,7 +17,7 @@
 namespace core_files\local\archive_writer;
 
 use advanced_testcase;
-use context_module;
+use core\context\module;
 use core_files\archive_writer;
 use ZipArchive;
 
@@ -90,7 +90,7 @@ final class zip_writer_test extends advanced_testcase {
 
         // Add a file to the intro.
         $filerecord = [
-            'contextid' => context_module::instance($assign->cmid)->id,
+            'contextid' => module::instance($assign->cmid)->id,
             'component' => 'mod_assign',
             'filearea'  => 'intro',
             'itemid'    => 0,
@@ -129,7 +129,7 @@ final class zip_writer_test extends advanced_testcase {
 
         // Add a file to the intro.
         $filerecord = [
-            'contextid' => context_module::instance($assign->cmid)->id,
+            'contextid' => module::instance($assign->cmid)->id,
             'component' => 'mod_assign',
             'filearea'  => 'intro',
             'itemid'    => 0,

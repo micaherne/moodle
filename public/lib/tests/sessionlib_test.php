@@ -16,6 +16,8 @@
 
 namespace core;
 
+use core\exception\moodle_exception;
+
 /**
  * Unit tests for sessionlib.php file.
  *
@@ -152,7 +154,7 @@ final class sessionlib_test extends \advanced_testcase {
         try {
             confirm_sesskey();
             $this->fail('Exception expected when sesskey not present');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertSame('missingparam', $e->errorcode);
         }
 
@@ -174,7 +176,7 @@ final class sessionlib_test extends \advanced_testcase {
         try {
             require_sesskey();
             $this->fail('Exception expected when sesskey not present');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertSame('missingparam', $e->errorcode);
         }
 
@@ -185,7 +187,7 @@ final class sessionlib_test extends \advanced_testcase {
         try {
             require_sesskey();
             $this->fail('Exception expected when sesskey not incorrect');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertSame('invalidsesskey', $e->errorcode);
         }
     }

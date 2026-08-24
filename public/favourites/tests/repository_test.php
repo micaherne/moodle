@@ -16,6 +16,8 @@
 
 namespace core_favourites;
 
+use core\context\course;
+use core\context\user;
 use core_favourites\local\repository\favourite_repository;
 use core_favourites\local\entity\favourite;
 
@@ -37,13 +39,13 @@ final class repository_test extends \advanced_testcase {
     // Basic setup stuff to be reused in most tests.
     protected function setup_users_and_courses() {
         $user1 = self::getDataGenerator()->create_user();
-        $user1context = \context_user::instance($user1->id);
+        $user1context = user::instance($user1->id);
         $user2 = self::getDataGenerator()->create_user();
-        $user2context = \context_user::instance($user2->id);
+        $user2context = user::instance($user2->id);
         $course1 = self::getDataGenerator()->create_course();
         $course2 = self::getDataGenerator()->create_course();
-        $course1context = \context_course::instance($course1->id);
-        $course2context = \context_course::instance($course2->id);
+        $course1context = course::instance($course1->id);
+        $course2context = course::instance($course2->id);
         return [$user1context, $user2context, $course1context, $course2context];
     }
 

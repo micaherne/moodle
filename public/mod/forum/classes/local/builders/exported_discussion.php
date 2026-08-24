@@ -26,13 +26,15 @@ namespace mod_forum\local\builders;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\module;
+use core\context\user;
 use mod_forum\local\entities\discussion as discussion_entity;
 use mod_forum\local\entities\forum as forum_entity;
 use mod_forum\local\factories\legacy_data_mapper as legacy_data_mapper_factory;
 use mod_forum\local\factories\exporter as exporter_factory;
 use mod_forum\local\factories\vault as vault_factory;
 use rating_manager;
-use renderer_base;
+use core\output\renderer_base;
 use stdClass;
 
 /**
@@ -141,12 +143,12 @@ class exported_discussion {
      *
      * @return bool Whether or not the user has favourited the discussion
      */
-    public function is_favourited(discussion_entity $discussion, \context_module $forumcontext, \stdClass $user) {
+    public function is_favourited(discussion_entity $discussion, module $forumcontext, \stdClass $user) {
         if (!isloggedin()) {
             return false;
         }
 
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
         $ufservice = \core_favourites\service_factory::get_service_for_user_context($usercontext);
         return $ufservice->favourite_exists('mod_forum', 'discussions', $discussion->get_id(), $forumcontext);
     }

@@ -18,10 +18,10 @@ declare(strict_types=1);
 
 namespace core_comment\reportbuilder\local\systemreports;
 
-use context_system;
-use lang_string;
-use moodle_url;
-use pix_icon;
+use core\context\system;
+use core\lang_string;
+use core\url;
+use core\output\pix_icon;
 use stdClass;
 use core\reportbuilder\local\entities\context;
 use core_reportbuilder\system_report;
@@ -80,7 +80,7 @@ class comments extends system_report {
      * @return bool
      */
     protected function can_view(): bool {
-        return has_capability('moodle/comment:delete', context_system::instance());
+        return has_capability('moodle/comment:delete', system::instance());
     }
 
     /**
@@ -114,7 +114,7 @@ class comments extends system_report {
      */
     protected function add_actions(): void {
         $this->add_action(new action(
-            new moodle_url('#'),
+            new url('#'),
             new pix_icon('t/delete', ''),
             ['data-action' => 'comment-delete', 'data-comment-id' => ':id', 'class' => 'text-danger'],
             false,

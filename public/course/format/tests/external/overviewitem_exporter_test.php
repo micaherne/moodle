@@ -16,6 +16,7 @@
 
 namespace core_courseformat\external;
 
+use core\context\system;
 use core\output\local\properties\text_align;
 use core_courseformat\local\overview\overviewitem;
 
@@ -50,7 +51,7 @@ final class overviewitem_exporter_test extends \advanced_testcase {
         $source = new overviewitem($name, $value, $content, $textalign, $alertcount, $alertlabel, $extradata);
         $source->set_key($key);
 
-        $exporter = new overviewitem_exporter($source, ['context' => \context_system::instance()]);
+        $exporter = new overviewitem_exporter($source, ['context' => system::instance()]);
         $data = $exporter->export($renderer);
 
         $this->assertObjectHasProperty('name', $data);
@@ -101,7 +102,7 @@ final class overviewitem_exporter_test extends \advanced_testcase {
         $source = new overviewitem($name, $value, $content, $textalign, $alertcount, $alertlabel);
         $source->set_key($key);
 
-        $exporter = new overviewitem_exporter($source, ['context' => \context_system::instance()]);
+        $exporter = new overviewitem_exporter($source, ['context' => system::instance()]);
         $data = $exporter->export($renderer);
 
         $this->assertObjectHasProperty('name', $data);
@@ -151,7 +152,7 @@ final class overviewitem_exporter_test extends \advanced_testcase {
 
         $source = new overviewitem($name, $value, $content);
 
-        $exporter = new overviewitem_exporter($source, ['context' => \context_system::instance()]);
+        $exporter = new overviewitem_exporter($source, ['context' => system::instance()]);
         $data = $exporter->export($renderer);
 
         $this->assertObjectHasProperty('name', $data);

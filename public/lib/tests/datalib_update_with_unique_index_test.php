@@ -16,6 +16,8 @@
 
 namespace core;
 
+use core\exception\coding_exception;
+
 /**
  * Tests for {@link decompose_update_into_safe_changes()} and
  * {@link update_field_with_unique_index()}.
@@ -63,7 +65,7 @@ final class datalib_update_with_unique_index_test extends \advanced_testcase {
         try {
             decompose_update_into_safe_changes(array(1 => 1), 1);
             $this->fail('Expected exception was not thrown');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertEquals('Supposedly unused value 1 is actually used!', $e->a);
         }
     }

@@ -22,6 +22,10 @@
  * @package mod_data
  */
 
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\url;
+use core_table\output\html_table;
 use mod_data\manager;
 
 defined('MOODLE_INTERNAL') || die();
@@ -109,7 +113,7 @@ class mod_data_renderer extends plugin_renderer_base {
         $html .= html_writer::end_tag('div');
 
         $actionbuttons = html_writer::start_div();
-        $cancelurl = new moodle_url('/mod/data/field.php', ['d' => $datamodule->id]);
+        $cancelurl = new url('/mod/data/field.php', ['d' => $datamodule->id]);
         $actionbuttons .= html_writer::tag('a', get_string('cancel') , [
             'href' => $cancelurl->out(false),
             'class' => 'btn btn-secondary mx-1',
@@ -153,7 +157,7 @@ class mod_data_renderer extends plugin_renderer_base {
         \core\deprecation::emit_deprecation([self::class, __FUNCTION__]);
 
         $cm = $manager->get_coursemodule();
-        $pageurl = new moodle_url('/mod/data/templates.php', ['id' => $cm->id]);
+        $pageurl = new url('/mod/data/templates.php', ['id' => $cm->id]);
         return $this->render_from_template('mod_data/fields_footer', [
             'pageurl' => $pageurl->out(false),
         ]);

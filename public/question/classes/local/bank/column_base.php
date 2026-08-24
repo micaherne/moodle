@@ -24,6 +24,11 @@
 
 namespace core_question\local\bank;
 
+use core\exception\coding_exception;
+use core\output\action_menu;
+use core\output\help_icon;
+use core\output\html_writer;
+
 /**
  * Base class for representing a column.
  *
@@ -148,7 +153,7 @@ abstract class column_base extends view_component {
         $data['width'] = $width;
         if (!empty($columnactions)) {
             $actions = array_map(fn($columnaction) => $columnaction->get_action_menu_link($this), $columnactions);
-            $actionmenu = new \action_menu($actions);
+            $actionmenu = new action_menu($actions);
             $data['actionmenu'] = $actionmenu->export_for_template($renderer);
         }
 
@@ -175,7 +180,7 @@ abstract class column_base extends view_component {
      *
      * @return \help_icon|null help icon to show, if required.
      */
-    public function help_icon(): ?\help_icon {
+    public function help_icon(): ?help_icon {
         return null;
     }
 
@@ -262,7 +267,7 @@ abstract class column_base extends view_component {
             $tag = 'th';
             $attr['scope'] = 'row';
         }
-        echo \html_writer::start_tag($tag, $attr);
+        echo html_writer::start_tag($tag, $attr);
     }
 
     /**
@@ -349,7 +354,7 @@ abstract class column_base extends view_component {
         if ($this->isheading) {
             $tag = 'th';
         }
-        echo \html_writer::end_tag($tag);
+        echo html_writer::end_tag($tag);
     }
 
     public function get_extra_joins(): array {
@@ -454,12 +459,12 @@ abstract class column_base extends view_component {
             if (array_key_exists($subsort, $sortable)) {
                 return $sortable[$subsort]['field'] . $this->sortorder($reverse);
             } else {
-                throw new \coding_exception('Unexpected $subsort type: ' . $subsort);
+                throw new coding_exception('Unexpected $subsort type: ' . $subsort);
             }
         } else if ($sortable) {
             return $sortable . $this->sortorder($reverse);
         } else {
-            throw new \coding_exception('sort_expression called on a non-sortable column.');
+            throw new coding_exception('sort_expression called on a non-sortable column.');
         }
     }
 

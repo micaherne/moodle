@@ -20,6 +20,7 @@ use core\context\user as context_user;
 use core\context\course as context_course;
 use core\context\system as context_system;
 use core\context_helper;
+use core_cache\cache;
 use core_tag_tag;
 use core_tag\output\tagindex;
 use core_text;
@@ -1837,7 +1838,7 @@ class user {
             \core\event\user_created::create_from_userid($newuserid)->trigger();
         }
 
-        $presignupcache = \cache::make('core', 'presignup');
+        $presignupcache = cache::make('core', 'presignup');
         $presignupcache->purge_current_user();
 
         return $newuserid;

@@ -24,6 +24,11 @@
  * @author     Yuliya Bozhko <yuliya.bozhko@totaralms.com>
  */
 
+use \core_badges\badge;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\url;
 use core_badges\award_manager;
 use core_badges\existing_award_selector;
 use core_badges\potential_award_selector;
@@ -39,23 +44,23 @@ $revoke = optional_param('revoke', false, PARAM_BOOL);
 require_login();
 
 if (empty($CFG->enablebadges)) {
-    throw new \moodle_exception('badgesdisabled', 'badges');
+    throw new moodle_exception('badgesdisabled', 'badges');
 }
 
 $badge = new badge($badgeid);
 $context = $badge->get_context();
 $isadmin = is_siteadmin($USER);
 
-$navurl = new moodle_url('/badges/index.php', array('type' => $badge->type));
+$navurl = new url('/badges/index.php', array('type' => $badge->type));
 
 if ($badge->type == BADGE_TYPE_COURSE) {
     if (empty($CFG->badges_allowcoursebadges)) {
-        throw new \moodle_exception('coursebadgesdisabled', 'badges');
+        throw new moodle_exception('coursebadgesdisabled', 'badges');
     }
     require_login($badge->courseid);
     $course = get_course($badge->courseid);
     $heading = format_string($course->fullname, true, ['context' => $context]);
-    $navurl = new moodle_url('/badges/index.php', array('type' => $badge->type, 'id' => $badge->courseid));
+    $navurl = new url('/badges/index.php', array('type' => $badge->type, 'id' => $badge->courseid));
     $PAGE->set_pagelayout('standard');
     navigation_node::override_active_url($navurl);
 } else {
@@ -66,14 +71,14 @@ if ($badge->type == BADGE_TYPE_COURSE) {
 
 require_capability('moodle/badges:awardbadge', $context);
 
-$url = new moodle_url('/badges/award.php', array('id' => $badgeid, 'role' => $role));
+$url = new url('/badges/award.php', array('id' => $badgeid, 'role' => $role));
 $PAGE->set_url($url);
 $PAGE->set_context($context);
 
 // Set up navigation and breadcrumbs.
 $strrecipients = get_string('recipients', 'badges');
-$PAGE->navbar->add($badge->name, new moodle_url('overview.php', array('id' => $badge->id)))
-    ->add($strrecipients, new moodle_url('recipients.php', array('id' => $badge->id)))
+$PAGE->navbar->add($badge->name, new url('overview.php', array('id' => $badge->id)))
+    ->add($strrecipients, new url('recipients.php', array('id' => $badge->id)))
     ->add(get_string('award', 'badges'));
 $PAGE->set_title($strrecipients);
 $PAGE->set_heading($heading);
@@ -95,7 +100,7 @@ if (!empty($role)) {
     }
 }
 
-$returnurl = new moodle_url('recipients.php', array('id' => $badge->id));
+$returnurl = new url('recipients.php', array('id' => $badge->id));
 $returnlink = html_writer::link($returnurl, $strrecipients);
 $actionbar = new \core_badges\output\standard_action_bar(
     page: $PAGE,
@@ -150,18 +155,18 @@ if (count($acceptedroles) > 1) {
             $select[$p->id] = role_get_name($p);
         }
         if (!$role) {
-            $pageurl = new moodle_url('/badges/award.php', array('id' => $badgeid));
+            $pageurl = new url('/badges/award.php', array('id' => $badgeid));
             echo $OUTPUT->header();
             echo $tertiarynav;
-            echo $OUTPUT->box($OUTPUT->single_select(new moodle_url($pageurl), 'role', $select, '', array('' => 'choosedots'),
+            echo $OUTPUT->box($OUTPUT->single_select(new url($pageurl), 'role', $select, '', array('' => 'choosedots'),
                 null, array('label' => get_string('selectaward', 'badges'))));
             echo $OUTPUT->footer();
             die();
         } else {
-            $pageurl = new moodle_url('/badges/award.php', array('id' => $badgeid));
+            $pageurl = new url('/badges/award.php', array('id' => $badgeid));
             $issuerrole = new stdClass();
             $issuerrole->roleid = $role;
-            $roleselect = $OUTPUT->single_select(new moodle_url($pageurl), 'role', $select, $role, null, null,
+            $roleselect = $OUTPUT->single_select(new url($pageurl), 'role', $select, $role, null, null,
                 array('label' => get_string('selectaward', 'badges')));
         }
     } else {

@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace core_tag\reportbuilder\local\entities;
 
-use context_system;
+use core\context\system;
 use core_tag_tag;
 use stdClass;
 use core\lang_string;
@@ -143,7 +143,7 @@ class tag extends base {
                     return '';
                 }
 
-                $context = context_system::instance();
+                $context = system::instance();
                 $description = file_rewrite_pluginfile_urls($description, 'pluginfile.php', $context->id, 'tag',
                     'description', $tag->id);
 

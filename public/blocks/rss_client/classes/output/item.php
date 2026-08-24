@@ -25,6 +25,11 @@
 
 namespace block_rss_client\output;
 
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -35,7 +40,7 @@ defined('MOODLE_INTERNAL') || die();
  * @author    Brendan Anderson <brendan_anderson@hcpss.org>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class item implements \renderable, \templatable {
+class item implements renderable, templatable {
 
     /**
      * The unique id of the item
@@ -97,7 +102,7 @@ class item implements \renderable, \templatable {
      * @param int $timestamp The Unix timestamp that represents the published date
      * @param boolean $showdescription Whether or not to show the description
      */
-    public function __construct($id, \moodle_url $link, $title, $description, \moodle_url $permalink, $timestamp,
+    public function __construct($id, url $link, $title, $description, url $permalink, $timestamp,
             $showdescription = true) {
         $this->id               = $id;
         $this->link             = $link;
@@ -115,7 +120,7 @@ class item implements \renderable, \templatable {
      * @param \renderer_base $output
      * @return array
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         $data = array(
             'id'            => $this->id,
             'permalink'     => clean_param($this->permalink, PARAM_URL),
@@ -164,7 +169,7 @@ class item implements \renderable, \templatable {
      * @param \moodle_url $link
      * @return \block_rss_client\output\item
      */
-    public function set_link(\moodle_url $link) {
+    public function set_link(url $link) {
         $this->link = $link;
 
         return $this;

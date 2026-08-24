@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+
 define('AJAX_SCRIPT', true);
 
 require_once(__DIR__ . '/../../../config.php');
@@ -32,7 +35,7 @@ $search = optional_param('search', '', PARAM_RAW);
 $page = optional_param('page', 0, PARAM_INT);
 
 $course = $DB->get_record('course', array('id' => $id), '*', MUST_EXIST);
-$context = context_course::instance($course->id, MUST_EXIST);
+$context = course::instance($course->id, MUST_EXIST);
 
 if ($course->id == SITEID) {
     throw new moodle_exception('invalidcourse');

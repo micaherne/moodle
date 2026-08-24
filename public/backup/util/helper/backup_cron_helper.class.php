@@ -25,6 +25,9 @@
  * @copyright  2010 Sam Hemelryk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context\course;
+use core\exception\moodle_exception;
+
 abstract class backup_cron_automated_helper {
     /** Automated backups are active and ready to run */
     const STATE_OK = 0;
@@ -228,7 +231,7 @@ abstract class backup_cron_automated_helper {
 
         // Build the message subject.
         $site = get_site();
-        $prefix = format_string($site->shortname, true, array('context' => context_course::instance(SITEID))).": ";
+        $prefix = format_string($site->shortname, true, array('context' => course::instance(SITEID))).": ";
         if ($haserrors) {
             $prefix .= "[".strtoupper(get_string('error'))."] ";
         }
@@ -655,7 +658,7 @@ abstract class backup_cron_automated_helper {
      */
     protected static function remove_excess_backups_from_course($course, $now) {
         $fs = get_file_storage();
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $component = 'backup';
         $filearea = 'automated';
         $itemid = 0;

@@ -46,6 +46,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->libdir.'/completionlib.php');
 require_once($CFG->dirroot.'/mod/lti/lib.php');
@@ -84,7 +89,7 @@ if ($typeid) {
 }
 
 $PAGE->set_cm($cm, $course); // Set's up global $COURSE.
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 $PAGE->set_context($context);
 
 require_login($course, true, $cm);
@@ -94,7 +99,7 @@ if (!empty($foruserid) && (int)$foruserid !== (int)$USER->id) {
     require_capability('gradereport/grader:view', $context);
 }
 
-$url = new moodle_url('/mod/lti/view.php', array('id' => $cm->id));
+$url = new url('/mod/lti/view.php', array('id' => $cm->id));
 $PAGE->set_url($url);
 
 
@@ -111,7 +116,7 @@ if ($launchcontainer == LTI_LAUNCH_CONTAINER_EMBED_NO_BLOCKS) {
     $PAGE->blocks->show_only_fake_blocks(); // Disable blocks for layouts which do include pre-post blocks.
 } else if ($launchcontainer == LTI_LAUNCH_CONTAINER_REPLACE_MOODLE_WINDOW) {
     if (!$forceview) {
-        $url = new moodle_url('/mod/lti/launch.php', array('id' => $cm->id));
+        $url = new url('/mod/lti/launch.php', array('id' => $cm->id));
         redirect($url);
     }
 } else { // Handles LTI_LAUNCH_CONTAINER_DEFAULT, LTI_LAUNCH_CONTAINER_EMBED, LTI_LAUNCH_CONTAINER_WINDOW.
@@ -142,7 +147,7 @@ if ($typeid) {
     $config = new stdClass();
     $config->lti_ltiversion = LTI_VERSION_1;
 }
-$launchurl = new moodle_url('/mod/lti/launch.php', ['id' => $cm->id, 'triggerview' => 0]);
+$launchurl = new url('/mod/lti/launch.php', ['id' => $cm->id, 'triggerview' => 0]);
 if ($action) {
     $launchurl->param('action', $action);;
 }

@@ -16,6 +16,7 @@
 
 namespace mod_quiz\tests;
 
+use core\exception\coding_exception;
 use question_engine;
 use mod_quiz\quiz_settings;
 use mod_quiz\quiz_attempt;
@@ -365,7 +366,7 @@ abstract class attempt_walkthrough_testcase extends \advanced_testcase {
                                     );
                                     break;
                                 default:
-                                    throw new \coding_exception('Unknown slots sub field column in csv file '
+                                    throw new coding_exception('Unknown slots sub field column in csv file '
                                                                . s($slotfieldname));
                             }
                         }
@@ -401,7 +402,7 @@ abstract class attempt_walkthrough_testcase extends \advanced_testcase {
                     $this->assertEquals($value, $gradebookgrade->grade, "Gradebook grade for attempt {$result['quizattempt']}.");
                     break;
                 default:
-                    throw new \coding_exception('Unknown column in csv file ' . s($fieldname));
+                    throw new coding_exception('Unknown column in csv file ' . s($fieldname));
             }
         }
     }

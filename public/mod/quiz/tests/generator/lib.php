@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\exception\coding_exception;
 use mod_quiz\quiz_attempt;
 use mod_quiz\quiz_settings;
 
@@ -332,7 +333,7 @@ class mod_quiz_generator extends testing_module_generator {
         foreach ($layout as $item) {
             if (is_string($item)) {
                 if (isset($headings[$lastpage + 1])) {
-                    throw new \coding_exception('Sections cannot be empty.');
+                    throw new coding_exception('Sections cannot be empty.');
                 }
                 $headings[$lastpage + 1] = $item;
             } else {
@@ -344,7 +345,7 @@ class mod_quiz_generator extends testing_module_generator {
                     $page = $lastslot ? $lastslot->page : 1;
                 }
                 if ($page < 1 || !($page == $lastpage + 1 || (!isset($headings[$lastpage + 1]) && $page == $lastpage))) {
-                    throw new \coding_exception('Page numbers wrong.');
+                    throw new coding_exception('Page numbers wrong.');
                 }
                 $q = $questiongenerator->create_question($qtype, null, ['name' => $name, 'category' => $catid]);
                 quiz_add_quiz_question($q->id, $quiz, $page);

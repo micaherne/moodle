@@ -22,6 +22,9 @@
  */
 namespace mod_feedback;
 
+use core\context\course;
+use core\context\module;
+use core_course\cm_info;
 use mod_feedback_completion;
 
 defined('MOODLE_INTERNAL') || die();
@@ -63,7 +66,7 @@ final class lib_test extends \advanced_testcase {
         foreach ($constructorparams as $params) {
             $structure = new mod_feedback_completion($params[0], $params[1], 0);
             $this->assertTrue($structure->is_open());
-            $this->assertTrue($structure->get_cm() instanceof \cm_info);
+            $this->assertTrue($structure->get_cm() instanceof cm_info);
             $this->assertEquals($feedback->cmid, $structure->get_cm()->id);
             $this->assertEquals($feedback->intro, $structure->get_feedback()->intro);
         }
@@ -87,7 +90,7 @@ final class lib_test extends \advanced_testcase {
         $params['timeclose'] = $timeclose;
         $feedback = $generator->create_instance($params);
         $cm = get_coursemodule_from_instance('feedback', $feedback->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         // Normal case, with existing course.
         $this->assertTrue(feedback_refresh_events($course->id));
@@ -139,7 +142,7 @@ final class lib_test extends \advanced_testcase {
         );
         $feedback = $this->getDataGenerator()->create_module('feedback', $record);
         $cm = get_coursemodule_from_instance('feedback', $feedback->id, $course->id);
-        $cm = \cm_info::create($cm);
+        $cm = cm_info::create($cm);
 
         $this->setUser($student);
         // Check that upon creation, the updates are only about the new configuration created.
@@ -427,7 +430,7 @@ final class lib_test extends \advanced_testcase {
         $feedback = $this->getDataGenerator()->create_module('feedback', ['course' => $course->id]);
         $event = $this->create_action_event($course->id, $feedback->id, FEEDBACK_EVENT_TYPE_OPEN);
         $cm = get_coursemodule_from_instance('feedback', $feedback->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $this->getDataGenerator()->enrol_user($user->id, $course->id, $studentrole->id, 'manual');
 
         $this->setUser($user);
@@ -455,7 +458,7 @@ final class lib_test extends \advanced_testcase {
         $feedback = $this->getDataGenerator()->create_module('feedback', ['course' => $course->id]);
         $event = $this->create_action_event($course->id, $feedback->id, FEEDBACK_EVENT_TYPE_OPEN);
         $cm = get_coursemodule_from_instance('feedback', $feedback->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $this->getDataGenerator()->enrol_user($user->id, $course->id, $studentrole->id, 'manual');
 
         assign_capability('mod/feedback:complete', CAP_PROHIBIT, $studentrole->id, $context);
@@ -488,7 +491,7 @@ final class lib_test extends \advanced_testcase {
         $feedback = $this->getDataGenerator()->create_module('feedback', ['course' => $course->id]);
         $event = $this->create_action_event($course->id, $feedback->id, FEEDBACK_EVENT_TYPE_OPEN);
         $cm = get_coursemodule_from_instance('feedback', $feedback->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $this->setUser($user);
 
@@ -524,7 +527,7 @@ final class lib_test extends \advanced_testcase {
         $feedback = $this->getDataGenerator()->create_module('feedback', ['course' => $course->id]);
         $event = $this->create_action_event($course->id, $feedback->id, FEEDBACK_EVENT_TYPE_OPEN);
         $cm = get_coursemodule_from_instance('feedback', $feedback->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $this->setUser($user);
 
@@ -658,8 +661,8 @@ final class lib_test extends \advanced_testcase {
             'completion' => 2,
             'completionsubmit' => 0
         ]);
-        $cm1 = \cm_info::create(get_coursemodule_from_instance('feedback', $feedback1->id));
-        $cm2 = \cm_info::create(get_coursemodule_from_instance('feedback', $feedback2->id));
+        $cm1 = cm_info::create(get_coursemodule_from_instance('feedback', $feedback1->id));
+        $cm2 = cm_info::create(get_coursemodule_from_instance('feedback', $feedback2->id));
 
         // Data for the stdClass input type.
         // This type of input would occur when checking the default completion rules for an activity type, where we don't have
@@ -1033,7 +1036,7 @@ final class lib_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $course = $generator->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $roleid = $generator->create_role();
         $feedbackgenerator = $generator->get_plugin_generator('mod_feedback');
         $timeopen = time();
@@ -1092,7 +1095,7 @@ final class lib_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $course = $generator->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $roleid = $generator->create_role();
         $feedbackgenerator = $generator->get_plugin_generator('mod_feedback');
         $timeopen = time();
@@ -1153,7 +1156,7 @@ final class lib_test extends \advanced_testcase {
     public function test_creation_with_no_calendar_capabilities(): void {
         $this->resetAfterTest();
         $course = self::getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $user = self::getDataGenerator()->create_and_enrol($course, 'editingteacher');
         $roleid = self::getDataGenerator()->create_role();
         self::getDataGenerator()->role_assign($roleid, $user->id, $context->id);

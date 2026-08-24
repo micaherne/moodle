@@ -15,6 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once("../../../config.php");
 require_once($CFG->libdir.'/gradelib.php');
 require_once($CFG->dirroot.'/grade/lib.php');
@@ -29,7 +33,7 @@ $iid           = optional_param('iid', null, PARAM_INT);
 $importcode    = optional_param('importcode', '', PARAM_FILE);
 $forceimport   = optional_param('forceimport', false, PARAM_BOOL);
 
-$url = new moodle_url('/grade/import/csv/index.php', array('id'=>$id));
+$url = new url('/grade/import/csv/index.php', array('id'=>$id));
 if ($separator !== '') {
     $url->param('separator', $separator);
 }
@@ -39,11 +43,11 @@ if ($verbosescales !== 1) {
 $PAGE->set_url($url);
 
 if (!$course = $DB->get_record('course', array('id'=>$id))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 
 require_login($course);
-$context = context_course::instance($id);
+$context = course::instance($id);
 require_capability('moodle/grade:import', $context);
 require_capability('gradeimport/csv:view', $context);
 
@@ -76,7 +80,7 @@ if (!$iid) {
         $csvimporterror = $csvimport->get_error();
         if (!empty($csvimporterror)) {
             echo $renderer->errors(array($csvimport->get_error()));
-            echo $OUTPUT->continue_button(new moodle_url('/grade/import/csv/index.php', ['id' => $course->id]));
+            echo $OUTPUT->continue_button(new url('/grade/import/csv/index.php', ['id' => $course->id]));
             echo $OUTPUT->footer();
             die();
         }
@@ -123,7 +127,7 @@ if ($formdata = $mform2->get_data()) {
         $errors = $gradeimport->get_gradebookerrors();
         $errors[] = get_string('importfailed', 'grades');
         echo $renderer->errors($errors);
-        echo $OUTPUT->continue_button(new moodle_url('/grade/import/csv/index.php', ['id' => $course->id]));
+        echo $OUTPUT->continue_button(new url('/grade/import/csv/index.php', ['id' => $course->id]));
     }
     echo $OUTPUT->footer();
 } else {

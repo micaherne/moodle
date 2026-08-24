@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\require_login_exception;
+use core\url;
+
 require(__DIR__ . '/../../../config.php');
 
 $id = required_param('id', PARAM_INT);
@@ -33,7 +36,7 @@ if (isguestuser()) {
 \core_competency\api::require_enabled();
 
 $plan = \core_competency\api::read_plan($id);
-$url = new moodle_url('/admin/tool/lp/plan.php', array('id' => $id));
+$url = new url('/admin/tool/lp/plan.php', array('id' => $id));
 
 list($title, $subtitle) = \tool_lp\page_helper::setup_for_plan($plan->get('userid'), $url, $plan);
 

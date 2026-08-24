@@ -22,6 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\single_select;
+use core\url;
+use core_cache\cache;
+
 require_once("$CFG->dirroot/mod/scorm/lib.php");
 require_once("$CFG->libdir/filelib.php");
 
@@ -226,7 +233,7 @@ function scorm_parse($scorm, $full) {
         $cm = get_coursemodule_from_instance('scorm', $scorm->id);
         $scorm->cmid = $cm->id;
     }
-    $context = context_module::instance($scorm->cmid);
+    $context = module::instance($scorm->cmid);
     $newhash = $scorm->sha1hash;
 
     if ($scorm->scormtype === SCORM_TYPE_LOCAL or $scorm->scormtype === SCORM_TYPE_LOCALSYNC) {
@@ -577,7 +584,7 @@ function scorm_insert_track($userid, $scormid, $scoid, $attemptornumber, $elemen
         $cm = get_coursemodule_from_instance('scorm', $scormid);
         $data = ['other' => ['attemptid' => $attempt->id, 'cmielement' => $element, 'cmivalue' => $value],
                  'objectid' => $scorm->id,
-                 'context' => context_module::instance($cm->id),
+                 'context' => module::instance($cm->id),
                  'relateduserid' => $userid,
                 ];
         if (in_array($element, array('cmi.core.score.raw', 'cmi.score.raw'))) {
@@ -959,7 +966,7 @@ function scorm_print_launch($user, $scorm, $action, $cm) {
                                          $DB->sql_isempty('scorm_scoes', 'organization', false, false),
                                          array($scorm->id), 'sortorder, id', 'id,title')) {
         if (count($orgs) > 1) {
-            $select = new single_select(new moodle_url($action), 'organization', $orgs, $organization, null);
+            $select = new single_select(new url($action), 'organization', $orgs, $organization, null);
             $select->label = get_string('organizations', 'scorm');
             $select->class = 'scorm-center';
             echo $OUTPUT->render($select);
@@ -1086,7 +1093,7 @@ function scorm_simple_play($scorm, $user, $context, $cmid) {
         if ($scorm->skipview >= SCORM_SKIPVIEW_FIRST) {
             $sco = current($scoes);
             $result = scorm_get_toc($user, $scorm, $cmid, TOCFULLURL, $orgidentifier);
-            $url = new moodle_url('/mod/scorm/player.php', array('a' => $scorm->id, 'currentorg' => $orgidentifier));
+            $url = new url('/mod/scorm/player.php', array('a' => $scorm->id, 'currentorg' => $orgidentifier));
 
             // Set last incomplete sco to launch first if forcenewattempt not set to always.
             if (!empty($result->sco->id) && $scorm->forcenewattempt != SCORM_FORCEATTEMPT_ALWAYS) {
@@ -1361,11 +1368,11 @@ function scorm_get_attempt_status($user, $scorm, $cm='') {
         $result .= html_writer::tag('p', get_string('exceededmaxattempts', 'scorm'), array('class' => 'exceededmaxattempts'));
     }
     if (!empty($cm)) {
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         if (has_capability('mod/scorm:deleteownresponses', $context) &&
             $DB->record_exists('scorm_attempt', ['userid' => $user->id, 'scormid' => $scorm->id])) {
             // Check to see if any data is stored for this user.
-            $deleteurl = new moodle_url($PAGE->url, array('action' => 'delete', 'sesskey' => sesskey()));
+            $deleteurl = new url($PAGE->url, array('action' => 'delete', 'sesskey' => sesskey()));
             $result .= $OUTPUT->single_button($deleteurl, get_string('deleteallattempts', 'scorm'));
         }
     }
@@ -1517,7 +1524,7 @@ function scorm_delete_attempt($userid, $scorm, $attemptornumber) {
     // Trigger instances list viewed event.
     $event = \mod_scorm\event\attempt_deleted::create([
          'other' => ['attemptid' => $attempt->attempt],
-         'context' => context_module::instance($cm->id),
+         'context' => module::instance($cm->id),
          'relateduserid' => $userid
     ]);
     $event->add_record_snapshot('course_modules', $cm);
@@ -1823,7 +1830,7 @@ function scorm_format_toc_for_treeview($user, $scorm, $scoes, $usertracks, $cmid
             $score = '';
 
             if (isset($usertracks[$sco->identifier])) {
-                $viewscore = has_capability('mod/scorm:viewscores', context_module::instance($cmid));
+                $viewscore = has_capability('mod/scorm:viewscores', module::instance($cmid));
                 if (isset($usertracks[$sco->identifier]->score_raw) && $viewscore) {
                     if ($usertracks[$sco->identifier]->score_raw != '') {
                         $score = '('.get_string('score', 'scorm').':&nbsp;'.$usertracks[$sco->identifier]->score_raw.')';
@@ -2024,7 +2031,7 @@ function scorm_get_toc($user, $scorm, $cmid, $toclink=TOCJSLINK, $currentorg='',
             $modestr = '&mode='.$mode;
         }
 
-        $url = new moodle_url('/mod/scorm/player.php?a='.$scorm->id.'&currentorg='.$currentorg.$modestr);
+        $url = new url('/mod/scorm/player.php?a='.$scorm->id.'&currentorg='.$currentorg.$modestr);
         $result->tocmenu = $OUTPUT->single_select($url, 'scoid', $tocmenu, $result->sco->id, null, "tocmenu");
     }
 

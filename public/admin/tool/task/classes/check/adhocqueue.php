@@ -16,10 +16,10 @@
 
 namespace tool_task\check;
 
-use action_link;
+use core\output\action_link;
 use core\check\check;
 use core\check\result;
-use moodle_url;
+use core\url;
 
 /**
  * Adhoc queue check.
@@ -88,7 +88,7 @@ class adhocqueue extends check {
      */
     public function get_action_link(): ?action_link {
         return new action_link(
-            new moodle_url('/admin/tool/task/adhoctasks.php'),
+            new url('/admin/tool/task/adhoctasks.php'),
             get_string('adhoctasks', 'tool_task'),
         );
     }

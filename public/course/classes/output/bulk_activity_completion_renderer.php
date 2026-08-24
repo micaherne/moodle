@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\output\plugin_renderer_base;
 use core_completion\manager;
 use core_course\output\activity_icon;
 

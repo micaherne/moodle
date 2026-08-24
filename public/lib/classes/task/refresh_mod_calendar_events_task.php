@@ -24,7 +24,7 @@
 
 namespace core\task;
 
-use core_plugin_manager;
+use core\plugin_manager;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -61,7 +61,7 @@ class refresh_mod_calendar_events_task extends adhoc_task {
             $courseid = 0;
         }
 
-        $pluginmanager = core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $modplugins = $pluginmanager->get_plugins_of_type('mod');
         foreach ($modplugins as $plugin) {
             // Check if a specific list of plugins is defined and check if it contains the plugin that is currently being evaluated.

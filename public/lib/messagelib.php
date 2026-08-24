@@ -22,6 +22,16 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\context\system;
+use core\exception\coding_exception;
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
+use core\user;
+use core_cache\cache;
+use core_cache\helper;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/../message/lib.php');
@@ -77,7 +87,7 @@ function message_send(\core\message\message $eventdata) {
     }
 
     if (!is_object($eventdata->userfrom)) {
-        $eventdata->userfrom = core_user::get_user($eventdata->userfrom);
+        $eventdata->userfrom = user::get_user($eventdata->userfrom);
     }
     if (!$eventdata->userfrom) {
         debugging('Attempt to send msg from unknown user', DEBUG_NORMAL);
@@ -106,7 +116,7 @@ function message_send(\core\message\message $eventdata) {
         }
 
         if (!is_object($eventdata->userto)) {
-            $eventdata->userto = core_user::get_user($eventdata->userto);
+            $eventdata->userto = user::get_user($eventdata->userto);
         }
         if (!$eventdata->userto) {
             debugging('Attempt to send msg to unknown user', DEBUG_NORMAL);
@@ -118,10 +128,10 @@ function message_send(\core\message\message $eventdata) {
             or !isset($eventdata->userto->deleted) or !isset($eventdata->userto->emailstop)) {
 
             debugging('Necessary properties missing in userto object, fetching full record', DEBUG_DEVELOPER);
-            $eventdata->userto = core_user::get_user($eventdata->userto->id);
+            $eventdata->userto = user::get_user($eventdata->userto->id);
         }
 
-        $usertoisrealuser = (core_user::is_real_user($eventdata->userto->id) != false);
+        $usertoisrealuser = (user::is_real_user($eventdata->userto->id) != false);
         // If recipient is internal user (noreply user), and emailstop is set then don't send any msg.
         if (!$usertoisrealuser && !empty($eventdata->userto->emailstop)) {
             debugging('Attempt to send msg to internal (noreply) user', DEBUG_NORMAL);
@@ -181,11 +191,11 @@ function message_send(\core\message\message $eventdata) {
         // Texts created or uploaded by such users will be marked as trusted and will not be cleaned before display.
         if (trusttext_active()) {
             // Individual conversations are always in system context.
-            $messagecontext = \context_system::instance();
+            $messagecontext = system::instance();
             // We need to know the type of conversation and the contextid if it is a group conversation.
             if ($conv = $DB->get_record('message_conversations', ['id' => $conversationid], 'id, type, contextid')) {
                 if ($conv->type == \core_message\api::MESSAGE_CONVERSATION_TYPE_GROUP && $conv->contextid) {
-                    $messagecontext = \context::instance_by_id($conv->contextid);
+                    $messagecontext = context::instance_by_id($conv->contextid);
                 }
             }
             $tabledata->fullmessagetrust = trusttext_trusted($messagecontext);
@@ -214,7 +224,7 @@ function message_send(\core\message\message $eventdata) {
 
     // Else the message is a notification.
     if (!is_object($eventdata->userto)) {
-        $eventdata->userto = core_user::get_user($eventdata->userto);
+        $eventdata->userto = user::get_user($eventdata->userto);
     }
     if (!$eventdata->userto) {
         debugging('Attempt to send msg to unknown user', DEBUG_NORMAL);
@@ -240,10 +250,10 @@ function message_send(\core\message\message $eventdata) {
             or !isset($eventdata->userto->deleted) or !isset($eventdata->userto->emailstop)) {
 
         debugging('Necessary properties missing in userto object, fetching full record', DEBUG_DEVELOPER);
-        $eventdata->userto = core_user::get_user($eventdata->userto->id);
+        $eventdata->userto = user::get_user($eventdata->userto->id);
     }
 
-    $usertoisrealuser = (core_user::is_real_user($eventdata->userto->id) != false);
+    $usertoisrealuser = (user::is_real_user($eventdata->userto->id) != false);
     // If recipient is internal user (noreply user), and emailstop is set then don't send any msg.
     if (!$usertoisrealuser && !empty($eventdata->userto->emailstop)) {
         debugging('Attempt to send msg to internal (noreply) user', DEBUG_NORMAL);
@@ -339,7 +349,7 @@ function message_send(\core\message\message $eventdata) {
     // Let the manager do the sending or buffering when db transaction in progress.
     try {
         return \core\message\manager::send_message($eventdata, $tabledata, $processorlist);
-    } catch (\moodle_exception $exception) {
+    } catch (moodle_exception $exception) {
         return false;
     }
 }
@@ -457,7 +467,7 @@ function message_update_providers($component='moodle') {
         $DB->delete_records('message_providers', array('id' => $dbprovider->id));
         $DB->delete_records_select('config_plugins', "plugin = 'message' AND ".$DB->sql_like('name', '?', false), array("%_provider_{$component}_{$dbprovider->name}_%"));
         $DB->delete_records_select('user_preferences', $DB->sql_like('name', '?', false), array("message_provider_{$component}_{$dbprovider->name}_%"));
-        cache_helper::invalidate_by_definition('core', 'config', array(), 'message');
+        helper::invalidate_by_definition('core', 'config', array(), 'message');
     }
 
     return true;
@@ -587,7 +597,7 @@ function message_get_providers_for_user($userid) {
     // query involving all overrides everywhere.
     $unsureproviders = array();
     $unsurecapabilities = array();
-    $systemcontext = context_system::instance();
+    $systemcontext = system::instance();
     foreach ($providers as $providerid => $provider) {
         if (empty($provider->capability) || has_capability($provider->capability, $systemcontext, $userid)) {
             // The provider is relevant to this user.
@@ -623,7 +633,7 @@ function message_get_providers_for_user($userid) {
                " OR ".$DB->sql_concat('cctx.path', "'/'")." LIKE ".$DB->sql_concat('actx.path', "'/%'").")";
 
     if (!empty($CFG->defaultfrontpageroleid)) {
-        $frontpagecontext = context_course::instance(SITEID);
+        $frontpagecontext = course::instance(SITEID);
 
         list($capcondition2, $params2) = $DB->get_in_or_equal(
                 array_keys($unsurecapabilities), SQL_PARAMS_NAMED);
@@ -719,7 +729,7 @@ function message_provider_uninstall($component) {
     $DB->delete_records_select('user_preferences', $DB->sql_like('name', '?'), ["message_provider_{$component}_%"]);
     $transaction->allow_commit();
     // Purge all messaging settings from the caches. They are stored by plugin so we have to clear all message settings.
-    cache_helper::invalidate_by_definition('core', 'config', array(), 'message');
+    helper::invalidate_by_definition('core', 'config', array(), 'message');
 }
 
 /**
@@ -738,5 +748,5 @@ function message_processor_uninstall($name) {
     $DB->delete_records_select('config_plugins', "plugin = 'message' AND ".$DB->sql_like('name', '?', false), array("{$name}_provider_%"));
     $transaction->allow_commit();
     // Purge all messaging settings from the caches. They are stored by plugin so we have to clear all message settings.
-    cache_helper::invalidate_by_definition('core', 'config', array(), array('message', "message_{$name}"));
+    helper::invalidate_by_definition('core', 'config', array(), array('message', "message_{$name}"));
 }

@@ -16,6 +16,8 @@
 
 namespace qbank_deletequestion;
 
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -62,7 +64,7 @@ final class helper_test extends \advanced_testcase {
         $this->course = $datagenerator->create_course();
         $this->quiz = $datagenerator->create_module('quiz', ['course' => $this->course->id]);
         $this->qgenerator = $datagenerator->get_plugin_generator('core_question');
-        $this->context = \context_module::instance($this->quiz->cmid);
+        $this->context = module::instance($this->quiz->cmid);
     }
 
     /**

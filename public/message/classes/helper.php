@@ -17,6 +17,10 @@
 namespace core_message;
 
 use core\{clock, di};
+use core\context\system;
+use core\output\user_picture;
+use core\url;
+use core\user;
 use DOMDocument;
 use stdClass;
 
@@ -161,14 +165,14 @@ class helper {
         global $PAGE;
 
         // Create the data we are going to pass to the renderable.
-        $userfields = \user_picture::unalias($contact, array('lastaccess'), $prefix . 'id', $prefix);
+        $userfields = user_picture::unalias($contact, array('lastaccess'), $prefix . 'id', $prefix);
         $data = new stdClass();
         $data->userid = $userfields->id;
         $data->useridfrom = null;
         $data->fullname = fullname($userfields);
-        $data->initials = \core_user::get_initials($userfields);
+        $data->initials = user::get_initials($userfields);
         // Get the user picture data.
-        $userpicture = new \user_picture($userfields);
+        $userpicture = new user_picture($userfields);
         $userpicture->size = 1; // Size f1.
         $data->profileimageurl = $userpicture->get_url($PAGE)->out(false);
         $userpicture->size = 0; // Size f2.
@@ -189,7 +193,7 @@ class helper {
             }
         }
         $data->isonline = null;
-        $user = \core_user::get_user($data->userid);
+        $user = user::get_user($data->userid);
         if (self::show_online_status($user)) {
             $data->isonline = self::is_online($userfields->lastaccess);
         }
@@ -438,14 +442,14 @@ class helper {
             $data = new stdClass();
             $data->id = $member->id;
             $data->fullname = fullname($member);
-            $data->initials = \core_user::get_initials($member);
+            $data->initials = user::get_initials($member);
 
             // Create the URL for their profile.
-            $profileurl = new \moodle_url('/user/profile.php', ['id' => $member->id]);
+            $profileurl = new url('/user/profile.php', ['id' => $member->id]);
             $data->profileurl = $profileurl->out(false);
 
             // Set the user picture data.
-            $userpicture = new \user_picture($member);
+            $userpicture = new user_picture($member);
             $userpicture->size = 1; // Size f1.
             $data->profileimageurl = $userpicture->get_url($PAGE)->out(false);
             $userpicture->size = 0; // Size f2.
@@ -539,7 +543,7 @@ class helper {
         global $USER, $CFG, $PAGE;
 
         // Early bail out conditions.
-        if (empty($CFG->messaging) || !isloggedin() || isguestuser() || \core_user::awaiting_action()) {
+        if (empty($CFG->messaging) || !isloggedin() || isguestuser() || user::awaiting_action()) {
             return '';
         }
 
@@ -574,7 +578,7 @@ class helper {
 
         if ($isdrawer) {
             $template = 'core_message/message_drawer';
-            $messageurl = new \moodle_url('/message/index.php');
+            $messageurl = new url('/message/index.php');
         } else {
             $template = 'core_message/message_index';
             $messageurl = null;
@@ -611,7 +615,7 @@ class helper {
             'isdrawer' => $isdrawer,
             'showemojipicker' => !empty($CFG->allowemojipicker),
             'messagemaxlength' => api::MESSAGE_MAX_LENGTH,
-            'caneditownmessageprofile' => has_capability('moodle/user:editownmessageprofile', \context_system::instance())
+            'caneditownmessageprofile' => has_capability('moodle/user:editownmessageprofile', system::instance())
         ];
 
         if ($sendtouser || $conversationid) {

@@ -22,6 +22,8 @@
  * @package core_user
  */
 
+use core\user;
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    //  It must be included from a Moodle page.
 }
@@ -61,7 +63,7 @@ class user_edit_language_form extends moodleform {
         $purpose = \core\user::edit_map_field_purpose($userid, 'lang');
         $translations = get_string_manager()->get_list_of_translations();
         $mform->addElement('select', 'lang', get_string('preferredlanguage'), $translations, $purpose);
-        $mform->setDefault('lang', core_user::get_property_default('lang'));
+        $mform->setDefault('lang', user::get_property_default('lang'));
 
         $this->add_action_buttons(true, get_string('savechanges'));
     }
@@ -80,7 +82,7 @@ class user_edit_language_form extends moodleform {
             // Check lang exists.
             if (!get_string_manager()->translation_exists($lang, false)) {
                 $langel =& $mform->getElement('lang');
-                $langel->setValue(core_user::get_property_default('lang'));
+                $langel->setValue(user::get_property_default('lang'));
             }
         }
 

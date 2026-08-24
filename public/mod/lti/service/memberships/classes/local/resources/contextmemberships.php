@@ -26,6 +26,7 @@
 
 namespace ltiservice_memberships\local\resources;
 
+use core\context\course;
 use mod_lti\local\ltiservice\resource_base;
 use ltiservice_memberships\local\service\memberships;
 use core_availability\info_module;
@@ -91,7 +92,7 @@ class contextmemberships extends resource_base {
             if (!$this->get_service()->is_allowed_in_context($params['tool_code'], $course->id)) {
                 throw new \Exception(null, 404);
             }
-            if (!($context = \context_course::instance($course->id))) {
+            if (!($context = course::instance($course->id))) {
                 throw new \Exception("Not Found: Course instance {$course->id} doesn't exist", 404);
             }
             if (!empty($linkid)) {

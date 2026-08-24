@@ -23,11 +23,14 @@
  * @copyright  2015 Damyon Wiese
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\url;
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die;
 // Template library page.
-$temp = new admin_externalpage(
+$temp = new externalpage(
     'tooltemplatelibrary',
     get_string('pluginname', 'tool_templatelibrary'),
-    new moodle_url('/admin/tool/templatelibrary/index.php')
+    new url('/admin/tool/templatelibrary/index.php')
 );
 $ADMIN->add('development', $temp);

@@ -26,11 +26,12 @@ namespace mod_forum\local\exporters;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\url;
 use mod_forum\local\entities\discussion as discussion_entity;
 use mod_forum\local\exporters\post as post_exporter;
 use mod_forum\local\factories\exporter as exporter_factory;
 use core\external\exporter;
-use renderer_base;
+use core\output\renderer_base;
 
 /**
  * Discussion exporter class.
@@ -187,7 +188,7 @@ class discussion extends exporter {
                 }
 
                 if ($capabilitymanager->can_view_participants($user, $discussion)) {
-                    $groupdata['urls']['userlist'] = (new \moodle_url('/user/index.php', [
+                    $groupdata['urls']['userlist'] = (new url('/user/index.php', [
                         'id' => $forum->get_course_id(),
                         'group' => $group->id,
                     ]));

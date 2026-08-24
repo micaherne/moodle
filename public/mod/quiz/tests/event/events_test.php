@@ -25,9 +25,11 @@
 
 namespace mod_quiz\event;
 
+use core\exception\coding_exception;
+use core\url;
 use mod_quiz\quiz_attempt;
 use mod_quiz\quiz_settings;
-use context_module;
+use core\context\module;
 use core_question\local\bank\condition;
 use mod_quiz\external\submit_question_version;
 
@@ -240,7 +242,7 @@ final class events_test extends \advanced_testcase {
         $this->assertEquals($attempt->id, $event->objectid);
         $this->assertEquals($attempt->userid, $event->relateduserid);
         $this->assertEquals($quizobj->get_context(), $event->get_context());
-        $this->assertEquals(\context_module::instance($quizobj->get_cmid()), $event->get_context());
+        $this->assertEquals(module::instance($quizobj->get_cmid()), $event->get_context());
     }
 
     /**
@@ -256,7 +258,7 @@ final class events_test extends \advanced_testcase {
             'objectid' => 1,
             'relateduserid' => 2,
             'courseid' => $quizobj->get_courseid(),
-            'context' => \context_module::instance($quizobj->get_cmid()),
+            'context' => module::instance($quizobj->get_cmid()),
             'other' => [
                 'quizid' => $quizobj->get_quizid(),
                 'page' => 2,
@@ -274,7 +276,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\attempt_question_restarted', $event);
-        $this->assertEquals(\context_module::instance($quizobj->get_cmid()), $event->get_context());
+        $this->assertEquals(module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -291,7 +293,7 @@ final class events_test extends \advanced_testcase {
             'objectid' => 1,
             'relateduserid' => 2,
             'courseid' => $quizobj->get_courseid(),
-            'context' => \context_module::instance($quizobj->get_cmid()),
+            'context' => module::instance($quizobj->get_cmid()),
             'other' => [
                 'quizid' => $quizobj->get_quizid(),
                 'page' => 0
@@ -307,7 +309,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\attempt_updated', $event);
-        $this->assertEquals(\context_module::instance($quizobj->get_cmid()), $event->get_context());
+        $this->assertEquals(module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -324,7 +326,7 @@ final class events_test extends \advanced_testcase {
             'objectid' => 1,
             'relateduserid' => 2,
             'courseid' => $quizobj->get_courseid(),
-            'context' => \context_module::instance($quizobj->get_cmid()),
+            'context' => module::instance($quizobj->get_cmid()),
             'other' => [
                 'quizid' => $quizobj->get_quizid(),
                 'page' => 0
@@ -341,7 +343,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\attempt_autosaved', $event);
-        $this->assertEquals(\context_module::instance($quizobj->get_cmid()), $event->get_context());
+        $this->assertEquals(module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -360,7 +362,7 @@ final class events_test extends \advanced_testcase {
 
         $params = [
             'courseid' => $course->id,
-            'context' => \context_module::instance($quiz->cmid),
+            'context' => module::instance($quiz->cmid),
             'other' => [
                 'quizid' => $quiz->id
             ]
@@ -375,7 +377,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\edit_page_viewed', $event);
-        $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
+        $this->assertEquals(module::instance($quiz->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -393,7 +395,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\attempt_deleted', $event);
-        $this->assertEquals(\context_module::instance($quizobj->get_cmid()), $event->get_context());
+        $this->assertEquals(module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -426,7 +428,7 @@ final class events_test extends \advanced_testcase {
         $quiz = $this->getDataGenerator()->create_module('quiz', ['course' => $course->id]);
 
         $params = [
-            'context' => $context = \context_module::instance($quiz->cmid),
+            'context' => $context = module::instance($quiz->cmid),
             'other' => [
                 'quizid' => $quiz->id,
                 'reportname' => 'overview'
@@ -442,7 +444,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\report_viewed', $event);
-        $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
+        $this->assertEquals(module::instance($quiz->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -463,7 +465,7 @@ final class events_test extends \advanced_testcase {
             'objectid' => 1,
             'relateduserid' => 2,
             'courseid' => $course->id,
-            'context' => \context_module::instance($quiz->cmid),
+            'context' => module::instance($quiz->cmid),
             'other' => [
                 'quizid' => $quiz->id
             ]
@@ -478,7 +480,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\attempt_reviewed', $event);
-        $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
+        $this->assertEquals(module::instance($quiz->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -499,7 +501,7 @@ final class events_test extends \advanced_testcase {
             'objectid' => 1,
             'relateduserid' => 2,
             'courseid' => $course->id,
-            'context' => \context_module::instance($quiz->cmid),
+            'context' => module::instance($quiz->cmid),
             'other' => [
                 'quizid' => $quiz->id
             ]
@@ -514,7 +516,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\attempt_summary_viewed', $event);
-        $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
+        $this->assertEquals(module::instance($quiz->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -534,7 +536,7 @@ final class events_test extends \advanced_testcase {
         $params = [
             'objectid' => 1,
             'relateduserid' => 2,
-            'context' => \context_module::instance($quiz->cmid),
+            'context' => module::instance($quiz->cmid),
             'other' => [
                 'quizid' => $quiz->id
             ]
@@ -549,7 +551,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\user_override_created', $event);
-        $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
+        $this->assertEquals(module::instance($quiz->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -568,7 +570,7 @@ final class events_test extends \advanced_testcase {
 
         $params = [
             'objectid' => 1,
-            'context' => \context_module::instance($quiz->cmid),
+            'context' => module::instance($quiz->cmid),
             'other' => [
                 'quizid' => $quiz->id,
                 'groupid' => 2
@@ -584,7 +586,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\group_override_created', $event);
-        $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
+        $this->assertEquals(module::instance($quiz->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -604,7 +606,7 @@ final class events_test extends \advanced_testcase {
         $params = [
             'objectid' => 1,
             'relateduserid' => 2,
-            'context' => \context_module::instance($quiz->cmid),
+            'context' => module::instance($quiz->cmid),
             'other' => [
                 'quizid' => $quiz->id
             ]
@@ -619,7 +621,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\user_override_updated', $event);
-        $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
+        $this->assertEquals(module::instance($quiz->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -638,7 +640,7 @@ final class events_test extends \advanced_testcase {
 
         $params = [
             'objectid' => 1,
-            'context' => \context_module::instance($quiz->cmid),
+            'context' => module::instance($quiz->cmid),
             'other' => [
                 'quizid' => $quiz->id,
                 'groupid' => 2
@@ -654,7 +656,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\group_override_updated', $event);
-        $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
+        $this->assertEquals(module::instance($quiz->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -685,7 +687,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\user_override_deleted', $event);
-        $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
+        $this->assertEquals(module::instance($quiz->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -716,7 +718,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\group_override_deleted', $event);
-        $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
+        $this->assertEquals(module::instance($quiz->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -737,7 +739,7 @@ final class events_test extends \advanced_testcase {
             'objectid' => 1,
             'relateduserid' => 2,
             'courseid' => $course->id,
-            'context' => \context_module::instance($quiz->cmid),
+            'context' => module::instance($quiz->cmid),
             'other' => [
                 'quizid' => $quiz->id,
                 'page' => 0
@@ -753,7 +755,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\attempt_viewed', $event);
-        $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
+        $this->assertEquals(module::instance($quiz->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -778,7 +780,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\attempt_preview_started', $event);
-        $this->assertEquals(\context_module::instance($quizobj->get_cmid()), $event->get_context());
+        $this->assertEquals(module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -794,7 +796,7 @@ final class events_test extends \advanced_testcase {
         $params = [
             'objectid' => 1,
             'courseid' => $quizobj->get_courseid(),
-            'context' => \context_module::instance($quizobj->get_cmid()),
+            'context' => module::instance($quizobj->get_cmid()),
             'other' => [
                 'quizid' => $quizobj->get_quizid(),
                 'attemptid' => 2,
@@ -811,7 +813,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\question_manually_graded', $event);
-        $this->assertEquals(\context_module::instance($quizobj->get_cmid()), $event->get_context());
+        $this->assertEquals(module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -832,7 +834,7 @@ final class events_test extends \advanced_testcase {
             'objectid' => 1,
             'relateduserid' => 2,
             'courseid' => $course->id,
-            'context' => \context_module::instance($quiz->cmid),
+            'context' => module::instance($quiz->cmid),
             'other' => [
                 'quizid' => $quiz->id
             ]
@@ -847,7 +849,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\attempt_regraded', $event);
-        $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
+        $this->assertEquals(module::instance($quiz->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -865,7 +867,7 @@ final class events_test extends \advanced_testcase {
             'objectid' => $attemptobj->get_attemptid(),
             'relateduserid' => $attemptobj->get_userid(),
             'courseid' => $attemptobj->get_course()->id,
-            'context' => \context_module::instance($attemptobj->get_cmid()),
+            'context' => module::instance($attemptobj->get_cmid()),
             'other' => [
                 'quizid' => $attemptobj->get_quizid()
             ]
@@ -900,7 +902,7 @@ final class events_test extends \advanced_testcase {
 
         $params = [
             'objectid' => 1,
-            'context' => context_module::instance($quizobj->get_cmid()),
+            'context' => module::instance($quizobj->get_cmid()),
             'other' => [
                 'quizid' => $quizobj->get_quizid(),
                 'slotnumber' => 3,
@@ -916,7 +918,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\page_break_created', $event);
-        $this->assertEquals(context_module::instance($quizobj->get_cmid()), $event->get_context());
+        $this->assertEquals(module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -931,7 +933,7 @@ final class events_test extends \advanced_testcase {
 
         $params = [
             'objectid' => 1,
-            'context' => context_module::instance($quizobj->get_cmid()),
+            'context' => module::instance($quizobj->get_cmid()),
             'other' => [
                 'quizid' => $quizobj->get_quizid(),
                 'slotnumber' => 3,
@@ -947,7 +949,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\page_break_deleted', $event);
-        $this->assertEquals(context_module::instance($quizobj->get_cmid()), $event->get_context());
+        $this->assertEquals(module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -962,7 +964,7 @@ final class events_test extends \advanced_testcase {
 
         $params = [
             'objectid' => $quizobj->get_quizid(),
-            'context' => context_module::instance($quizobj->get_cmid()),
+            'context' => module::instance($quizobj->get_cmid()),
             'other' => [
                 'oldgrade' => 1,
                 'newgrade' => 3,
@@ -978,7 +980,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\quiz_grade_updated', $event);
-        $this->assertEquals(context_module::instance($quizobj->get_cmid()), $event->get_context());
+        $this->assertEquals(module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -993,7 +995,7 @@ final class events_test extends \advanced_testcase {
 
         $params = [
             'objectid' => $quizobj->get_quizid(),
-            'context' => context_module::instance($quizobj->get_cmid()),
+            'context' => module::instance($quizobj->get_cmid()),
             'other' => [
                 'slotsperpage' => 3,
             ]
@@ -1008,7 +1010,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\quiz_repaginated', $event);
-        $this->assertEquals(context_module::instance($quizobj->get_cmid()), $event->get_context());
+        $this->assertEquals(module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -1023,7 +1025,7 @@ final class events_test extends \advanced_testcase {
 
         $params = [
             'objectid' => 1,
-            'context' => context_module::instance($quizobj->get_cmid()),
+            'context' => module::instance($quizobj->get_cmid()),
             'other' => [
                 'quizid' => $quizobj->get_quizid(),
                 'firstslotid' => 1,
@@ -1041,7 +1043,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\section_break_created', $event);
-        $this->assertEquals(context_module::instance($quizobj->get_cmid()), $event->get_context());
+        $this->assertEquals(module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertStringContainsString($params['other']['title'], $event->get_description());
         $this->assertEventContextNotUsed($event);
     }
@@ -1057,7 +1059,7 @@ final class events_test extends \advanced_testcase {
 
         $params = [
             'objectid' => 1,
-            'context' => context_module::instance($quizobj->get_cmid()),
+            'context' => module::instance($quizobj->get_cmid()),
             'other' => [
                 'quizid' => $quizobj->get_quizid(),
                 'firstslotid' => 1,
@@ -1074,7 +1076,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\section_break_deleted', $event);
-        $this->assertEquals(context_module::instance($quizobj->get_cmid()), $event->get_context());
+        $this->assertEquals(module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -1089,7 +1091,7 @@ final class events_test extends \advanced_testcase {
 
         $params = [
             'objectid' => 1,
-            'context' => context_module::instance($quizobj->get_cmid()),
+            'context' => module::instance($quizobj->get_cmid()),
             'other' => [
                 'quizid' => $quizobj->get_quizid(),
                 'firstslotnumber' => 2,
@@ -1106,7 +1108,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\section_shuffle_updated', $event);
-        $this->assertEquals(context_module::instance($quizobj->get_cmid()), $event->get_context());
+        $this->assertEquals(module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -1121,7 +1123,7 @@ final class events_test extends \advanced_testcase {
 
         $params = [
             'objectid' => 1,
-            'context' => context_module::instance($quizobj->get_cmid()),
+            'context' => module::instance($quizobj->get_cmid()),
             'other' => [
                 'quizid' => $quizobj->get_quizid(),
                 'firstslotid' => 1,
@@ -1139,7 +1141,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\section_title_updated', $event);
-        $this->assertEquals(context_module::instance($quizobj->get_cmid()), $event->get_context());
+        $this->assertEquals(module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertStringContainsString($params['other']['newtitle'], $event->get_description());
         $this->assertEventContextNotUsed($event);
     }
@@ -1155,7 +1157,7 @@ final class events_test extends \advanced_testcase {
 
         $params = [
             'objectid' => 1,
-            'context' => context_module::instance($quizobj->get_cmid()),
+            'context' => module::instance($quizobj->get_cmid()),
             'other' => [
                 'quizid' => $quizobj->get_quizid(),
                 'slotnumber' => 1,
@@ -1174,7 +1176,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\slot_created', $event);
-        $this->assertEquals(context_module::instance($quizobj->get_cmid()), $event->get_context());
+        $this->assertEquals(module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -1244,7 +1246,7 @@ final class events_test extends \advanced_testcase {
 
         $params = [
             'objectid' => 1,
-            'context' => context_module::instance($quizobj->get_cmid()),
+            'context' => module::instance($quizobj->get_cmid()),
             'other' => [
                 'quizid' => $quizobj->get_quizid(),
                 'slotnumber' => 1,
@@ -1261,7 +1263,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\slot_deleted', $event);
-        $this->assertEquals(context_module::instance($quizobj->get_cmid()), $event->get_context());
+        $this->assertEquals(module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEquals(2, $event->other['questionreferenceid']);
         $this->assertEventContextNotUsed($event);
     }
@@ -1274,14 +1276,14 @@ final class events_test extends \advanced_testcase {
 
         $params = [
             'objectid' => 1,
-            'context' => \context_module::instance($quizobj->get_cmid()),
+            'context' => module::instance($quizobj->get_cmid()),
             'other' => [
                 'quizid' => $quizobj->get_quizid(),
                 'slotnumber' => 1,
             ],
         ];
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage('Either \'questionreferenceid\' or \'questionsetreferenceid\' must be set in other.');
         slot_deleted::create($params);
     }
@@ -1297,7 +1299,7 @@ final class events_test extends \advanced_testcase {
 
         $params = [
             'objectid' => 1,
-            'context' => context_module::instance($quizobj->get_cmid()),
+            'context' => module::instance($quizobj->get_cmid()),
             'other' => [
                 'quizid' => $quizobj->get_quizid(),
                 'previousmaxmark' => 1,
@@ -1364,7 +1366,7 @@ final class events_test extends \advanced_testcase {
         $this->assertInstanceOf(quiz_grade_item_created::class, $event);
         $this->assertEquals($quizobj->get_context(), $event->get_context());
         $this->assertEventContextNotUsed($event);
-        $this->assertEquals(new \moodle_url('/mod/quiz/editgrading.php', ['cmid' => $quizobj->get_cmid()]),
+        $this->assertEquals(new url('/mod/quiz/editgrading.php', ['cmid' => $quizobj->get_cmid()]),
             $event->get_url());
         $this->assertEquals("The user with id '$USER->id' created quiz grade item with id '$gradeitem->id' " .
             "for the quiz with course module id '{$quizobj->get_cmid()}'.",
@@ -1397,7 +1399,7 @@ final class events_test extends \advanced_testcase {
         $this->assertInstanceOf(quiz_grade_item_updated::class, $event);
         $this->assertEquals($quizobj->get_context(), $event->get_context());
         $this->assertEventContextNotUsed($event);
-        $this->assertEquals(new \moodle_url('/mod/quiz/editgrading.php', ['cmid' => $quizobj->get_cmid()]),
+        $this->assertEquals(new url('/mod/quiz/editgrading.php', ['cmid' => $quizobj->get_cmid()]),
             $event->get_url());
         $this->assertEquals("The user with id '$USER->id' updated quiz grade item with id '$gradeitem->id' " .
             "for the quiz with course module id '{$quizobj->get_cmid()}'.",
@@ -1430,7 +1432,7 @@ final class events_test extends \advanced_testcase {
         $this->assertInstanceOf(quiz_grade_item_deleted::class, $event);
         $this->assertEquals($quizobj->get_context(), $event->get_context());
         $this->assertEventContextNotUsed($event);
-        $this->assertEquals(new \moodle_url('/mod/quiz/editgrading.php', ['cmid' => $quizobj->get_cmid()]),
+        $this->assertEquals(new url('/mod/quiz/editgrading.php', ['cmid' => $quizobj->get_cmid()]),
             $event->get_url());
         $this->assertEquals("The user with id '$USER->id' deleted quiz grade item with id '$gradeitem->id' " .
             "for the quiz with course module id '{$quizobj->get_cmid()}'.",
@@ -1464,7 +1466,7 @@ final class events_test extends \advanced_testcase {
         $this->assertInstanceOf(slot_grade_item_updated::class, $event);
         $this->assertEquals($quizobj->get_context(), $event->get_context());
         $this->assertEventContextNotUsed($event);
-        $this->assertEquals(new \moodle_url('/mod/quiz/editgrading.php', ['cmid' => $quizobj->get_cmid()]),
+        $this->assertEquals(new url('/mod/quiz/editgrading.php', ['cmid' => $quizobj->get_cmid()]),
             $event->get_url());
         $this->assertEquals("The user with id '$USER->id' updated the slot with id '{$slot->id}' " .
             "belonging to the quiz with course module id '{$quizobj->get_cmid()}'. " .
@@ -1489,7 +1491,7 @@ final class events_test extends \advanced_testcase {
 
         $params = [
             'objectid' => 1,
-            'context' => context_module::instance($quizobj->get_cmid()),
+            'context' => module::instance($quizobj->get_cmid()),
             'other' => [
                 'quizid' => $quizobj->get_quizid(),
                 'previousslotnumber' => 1,
@@ -1507,7 +1509,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\slot_moved', $event);
-        $this->assertEquals(context_module::instance($quizobj->get_cmid()), $event->get_context());
+        $this->assertEquals(module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -1522,7 +1524,7 @@ final class events_test extends \advanced_testcase {
 
         $params = [
             'objectid' => 1,
-            'context' => context_module::instance($quizobj->get_cmid()),
+            'context' => module::instance($quizobj->get_cmid()),
             'other' => [
                 'quizid' => $quizobj->get_quizid(),
                 'requireprevious' => true
@@ -1538,7 +1540,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\slot_requireprevious_updated', $event);
-        $this->assertEquals(context_module::instance($quizobj->get_cmid()), $event->get_context());
+        $this->assertEquals(module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 }

@@ -25,7 +25,9 @@
 
 namespace quizaccess_seb;
 
+use core\context\system;
 use core\notification;
+use core\url;
 use quizaccess_seb\local\table\template_list;
 
 defined('MOODLE_INTERNAL') || die();
@@ -208,7 +210,7 @@ class template_controller {
     protected function edit($action, $id = null) {
         global $PAGE;
 
-        $PAGE->set_url(new \moodle_url(static::get_base_url(), ['action' => $action, 'id' => $id]));
+        $PAGE->set_url(new url(static::get_base_url(), ['action' => $action, 'id' => $id]));
         $instance = null;
 
         if ($id) {
@@ -218,7 +220,7 @@ class template_controller {
         $form = $this->get_form($instance);
 
         if ($form->is_cancelled()) {
-            redirect(new \moodle_url(static::get_base_url()));
+            redirect(new url(static::get_base_url()));
         } else if ($data = $form->get_data()) {
             unset($data->submitbutton);
             try {
@@ -229,7 +231,7 @@ class template_controller {
 
                     \quizaccess_seb\event\template_created::create_strict(
                         $persistent,
-                        \context_system::instance()
+                        system::instance()
                     )->trigger();
                     $this->trigger_enabled_event($persistent);
                 } else {
@@ -238,7 +240,7 @@ class template_controller {
 
                     \quizaccess_seb\event\template_updated::create_strict(
                         $instance,
-                        \context_system::instance()
+                        system::instance()
                     )->trigger();
                     $this->trigger_enabled_event($instance);
                 }
@@ -246,7 +248,7 @@ class template_controller {
             } catch (\Exception $e) {
                 notification::error($e->getMessage());
             }
-            redirect(new \moodle_url(static::get_base_url()));
+            redirect(new url(static::get_base_url()));
         } else {
             if (empty($instance)) {
                 $this->header($this->get_new_heading());
@@ -277,13 +279,13 @@ class template_controller {
 
             \quizaccess_seb\event\template_deleted::create_strict(
                 $id,
-                \context_system::instance()
+                system::instance()
             )->trigger();
 
-            redirect(new \moodle_url(static::get_base_url()));
+            redirect(new url(static::get_base_url()));
         } else {
             notification::warning(get_string('cantdelete', 'quizaccess_seb'));
-            redirect(new \moodle_url(static::get_base_url()));
+            redirect(new url(static::get_base_url()));
         }
     }
 
@@ -335,7 +337,7 @@ class template_controller {
 
         $this->trigger_enabled_event($template);
 
-        redirect(new \moodle_url(self::get_base_url()));
+        redirect(new url(self::get_base_url()));
     }
 
     /**
@@ -343,7 +345,7 @@ class template_controller {
      */
     protected function print_add_button() {
         echo $this->output->single_button(
-            new \moodle_url(static::get_base_url(), ['action' => self::ACTION_ADD]),
+            new url(static::get_base_url(), ['action' => self::ACTION_ADD]),
             $this->get_create_button_text()
         );
     }
@@ -377,7 +379,7 @@ class template_controller {
         $func = '\quizaccess_seb\event\template_' . $eventstring;
         $func::create_strict(
             $template,
-            \context_system::instance()
+            system::instance()
         )->trigger();
     }
 

@@ -16,6 +16,7 @@
 
 namespace core_calendar;
 
+use core\context\system;
 use core_calendar\local\event\container;
 
 defined('MOODLE_INTERNAL') || die();
@@ -1053,7 +1054,7 @@ final class local_api_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $roleid = $generator->create_role();
-        $context = \context_system::instance();
+        $context = system::instance();
         $originalstarttime = new \DateTimeImmutable('2017-01-1T15:00:00+08:00');
         $newstartdate = new \DateTimeImmutable('2018-02-2T10:00:00+08:00');
         $expected = new \DateTimeImmutable('2018-02-2T15:00:00+08:00');
@@ -1088,7 +1089,7 @@ final class local_api_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $roleid = $generator->create_role();
-        $context = \context_system::instance();
+        $context = system::instance();
         $originalstarttime = new \DateTimeImmutable('2017-01-1T15:00:00+08:00');
         $newstartdate = new \DateTimeImmutable('2018-02-2T10:00:00+08:00');
         $expected = new \DateTimeImmutable('2018-02-2T15:00:00+08:00');

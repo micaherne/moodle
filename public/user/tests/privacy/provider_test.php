@@ -16,6 +16,8 @@
 
 namespace core_user\privacy;
 
+use core\context\system;
+use core\context\user;
 use core\tests\session\mock_handler;
 use core_privacy\tests\provider_testcase;
 use core_privacy\local\request\approved_userlist;
@@ -48,7 +50,7 @@ final class provider_test extends provider_testcase {
         $user2 = $this->getDataGenerator()->create_user();
         $user3 = $this->getDataGenerator()->create_user();
 
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
         $contextlist = provider::get_contexts_for_userid($user->id);
         $this->assertSame($context, $contextlist->current());
     }
@@ -64,7 +66,7 @@ final class provider_test extends provider_testcase {
             'currentlogin' => 1541030400,
         ]);
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
 
         $this->create_data_for_user($user, $course);
 
@@ -156,7 +158,7 @@ final class provider_test extends provider_testcase {
         $this->create_data_for_user($user, $course);
         $this->create_data_for_user($user2, $course);
 
-        provider::delete_data_for_all_users_in_context(\context_user::instance($user->id));
+        provider::delete_data_for_all_users_in_context(user::instance($user->id));
 
         // These tables should not have any user data for $user. Only for $user2.
         $records = $DB->get_records('user_password_history');
@@ -227,9 +229,9 @@ final class provider_test extends provider_testcase {
 
         // Provide multiple different context to check that only the correct user is deleted.
         $contexts = [
-            \context_user::instance($user->id)->id,
-            \context_user::instance($user2->id)->id,
-            \context_system::instance()->id];
+            user::instance($user->id)->id,
+            user::instance($user2->id)->id,
+            system::instance()->id];
         $approvedlist = new \core_privacy\local\request\approved_contextlist($user, 'core_user', $contexts);
 
         provider::delete_data_for_user($approvedlist);
@@ -289,7 +291,7 @@ final class provider_test extends provider_testcase {
         $component = 'core_user';
         // Create a user.
         $user = $this->getDataGenerator()->create_user();
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
         $userlist = new \core_privacy\local\request\userlist($usercontext, $component);
 
         // The list of users for user context should return the user.
@@ -300,7 +302,7 @@ final class provider_test extends provider_testcase {
         $this->assertEquals($expected, $actual);
 
         // The list of users for system context should not return any users.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $userlist = new \core_privacy\local\request\userlist($systemcontext, $component);
         provider::get_users_in_context($userlist);
         $this->assertCount(0, $userlist);
@@ -326,7 +328,7 @@ final class provider_test extends provider_testcase {
             'city' => 'Perth',
             'country' => 'AU'
         ]);
-        $usercontext1 = \context_user::instance($user1->id);
+        $usercontext1 = user::instance($user1->id);
         $userlist1 = new \core_privacy\local\request\userlist($usercontext1, $component);
 
         // Create user2.
@@ -339,7 +341,7 @@ final class provider_test extends provider_testcase {
             'city' => 'Perth',
             'country' => 'AU'
         ]);
-        $usercontext2 = \context_user::instance($user2->id);
+        $usercontext2 = user::instance($user2->id);
         $userlist2 = new \core_privacy\local\request\userlist($usercontext2, $component);
 
         // The list of users for usercontext1 should return user1.

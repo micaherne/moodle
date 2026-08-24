@@ -18,7 +18,9 @@ declare(strict_types=1);
 
 namespace customfield_number\external;
 
+use core\context\system;
 use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
 use core_customfield\handler;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
@@ -84,7 +86,7 @@ class recalculate extends external_api {
         ]);
 
         // Access validation.
-        $context = \context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         $field = \core_customfield\field_controller::create($fieldid);
@@ -95,7 +97,7 @@ class recalculate extends external_api {
 
         $handler = handler::get_handler($component, $area, $itemid);
         if (!$handler->can_edit($field, $instanceid)) {
-            throw new \moodle_exception('nopermissions', '', '', get_string('update'));
+            throw new moodle_exception('nopermissions', '', '', get_string('update'));
         }
 
         $provider->recalculate($instanceid, $component, $area, $itemid);

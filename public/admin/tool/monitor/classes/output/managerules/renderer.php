@@ -24,6 +24,10 @@
 
 namespace tool_monitor\output\managerules;
 
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -34,7 +38,7 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class renderer extends \plugin_renderer_base {
+class renderer extends plugin_renderer_base {
 
     /**
      * Get html to display on the page.
@@ -77,9 +81,9 @@ class renderer extends \plugin_renderer_base {
     protected function render_add_button($courseid) {
         global $CFG;
 
-        $button = \html_writer::tag('button', get_string('addrule', 'tool_monitor'), ['class' => 'btn btn-primary']);
-        $addurl = new \moodle_url($CFG->wwwroot. '/admin/tool/monitor/edit.php', array('courseid' => $courseid));
-        return \html_writer::link($addurl, $button);
+        $button = html_writer::tag('button', get_string('addrule', 'tool_monitor'), ['class' => 'btn btn-primary']);
+        $addurl = new url($CFG->wwwroot. '/admin/tool/monitor/edit.php', array('courseid' => $courseid));
+        return html_writer::link($addurl, $button);
     }
 
     /**
@@ -90,10 +94,10 @@ class renderer extends \plugin_renderer_base {
      * @return string html for the link to the subscription page.
      */
     public function render_subscriptions_link($manageurl) {
-        echo \html_writer::start_div();
-        $a = \html_writer::link($manageurl, get_string('managesubscriptions', 'tool_monitor'));
-        $link = \html_writer::tag('span', get_string('managesubscriptionslink', 'tool_monitor', $a));
+        echo html_writer::start_div();
+        $a = html_writer::link($manageurl, get_string('managesubscriptions', 'tool_monitor'));
+        $link = html_writer::tag('span', get_string('managesubscriptionslink', 'tool_monitor', $a));
         echo $link;
-        echo \html_writer::end_div();
+        echo html_writer::end_div();
     }
 }

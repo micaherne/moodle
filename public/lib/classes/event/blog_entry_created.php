@@ -24,6 +24,10 @@
 
 namespace core\event;
 
+use core\context\system;
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -45,7 +49,7 @@ class blog_entry_created extends base {
      * Set basic properties for the event.
      */
     protected function init() {
-        $this->context = \context_system::instance();
+        $this->context = system::instance();
         $this->data['objecttable'] = 'post';
         $this->data['crud'] = 'c';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
@@ -68,7 +72,7 @@ class blog_entry_created extends base {
      */
     public function get_blog_entry() {
         if ($this->is_restored()) {
-            throw new \coding_exception('Function get_blog_entry() can not be used on restored events.');
+            throw new coding_exception('Function get_blog_entry() can not be used on restored events.');
         }
         return $this->blogentry;
     }
@@ -96,7 +100,7 @@ class blog_entry_created extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/blog/index.php', array('entryid' => $this->objectid));
+        return new url('/blog/index.php', array('entryid' => $this->objectid));
     }
 
     /**
@@ -109,7 +113,7 @@ class blog_entry_created extends base {
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
     }
 

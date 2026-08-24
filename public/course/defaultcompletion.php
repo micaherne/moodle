@@ -23,6 +23,12 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once(__DIR__.'/../config.php');
 require_once($CFG->dirroot.'/course/lib.php');
 require_once($CFG->libdir.'/completionlib.php');
@@ -32,16 +38,16 @@ $modids = optional_param_array('modids', [], PARAM_INT);
 
 if ($id) {
     if (!$course = $DB->get_record('course', array('id' => $id))) {
-        throw new \moodle_exception('invalidcourseid');
+        throw new moodle_exception('invalidcourseid');
     }
 }
 
 if ($id == SITEID) {
-    $context = context_system::instance();
+    $context = system::instance();
     $title = get_string('defaultcompletion', 'completion');
     $heading = format_string($SITE->fullname, true, ['context' => $context]);
 } else {
-    $context = context_course::instance($id);
+    $context = course::instance($id);
     $title = $course->shortname;
     $heading = $course->fullname;
 }
@@ -50,7 +56,7 @@ require_capability('moodle/course:manageactivities', $context);
 
 // Set up the page.
 if ($id != SITEID) {
-    navigation_node::override_active_url(new moodle_url('/course/completion.php', array('id' => $course->id)));
+    navigation_node::override_active_url(new url('/course/completion.php', array('id' => $course->id)));
     $PAGE->set_course($course);
 }
 $PAGE->set_url('/course/defaultcompletion.php', ['id' => $id]);

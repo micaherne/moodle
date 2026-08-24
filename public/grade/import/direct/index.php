@@ -22,6 +22,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once("../../../config.php");
 require_once($CFG->libdir . '/gradelib.php');
 require_once($CFG->dirroot . '/grade/lib.php');
@@ -35,7 +39,7 @@ $iid           = optional_param('iid', null, PARAM_INT);
 $importcode    = optional_param('importcode', '', PARAM_FILE);
 $forceimport   = optional_param('forceimport', false, PARAM_BOOL);
 
-$url = new moodle_url('/grade/import/direct/index.php', array('id' => $id));
+$url = new url('/grade/import/direct/index.php', array('id' => $id));
 
 if ($verbosescales !== 1) {
     $url->param('verbosescales', $verbosescales);
@@ -44,11 +48,11 @@ if ($verbosescales !== 1) {
 $PAGE->set_url($url);
 
 if (!$course = $DB->get_record('course', array('id' => $id))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 
 require_login($course);
-$context = context_course::instance($id);
+$context = course::instance($id);
 require_capability('moodle/grade:import', $context);
 require_capability('gradeimport/direct:view', $context);
 

@@ -16,6 +16,8 @@
 
 namespace core;
 
+use core\exception\moodle_exception;
+
 /**
  * Authentication plugin registry.
  *
@@ -70,7 +72,7 @@ class authentication {
         global $CFG;
 
         if (!$this->plugin_exists($auth)) {
-            throw new \moodle_exception('authpluginnotfound', 'debug', '', $auth);
+            throw new moodle_exception('authpluginnotfound', 'debug', '', $auth);
         }
 
         require_once("{$CFG->dirroot}/auth/$auth/auth.php");

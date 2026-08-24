@@ -16,6 +16,8 @@
 
 namespace core_sms;
 
+use core\exception\coding_exception;
+use core\lang_string;
 use libphonenumber\NumberParseException;
 use Spatie\Cloneable\Cloneable;
 use ValueError;
@@ -126,7 +128,7 @@ class message {
      */
     public function with(...$args): self {
         if (isset($this->id) && array_key_exists('id', $args)) {
-            throw new \coding_exception('Message already has an id');
+            throw new coding_exception('Message already has an id');
         }
 
         return $this->_with(...$args);
@@ -145,7 +147,7 @@ class message {
             // Note: Throw errors which are not specific to libphonenumber here.
             // This is to avoid hard-trying use of this library.
             throw new ValueError(
-                new \lang_string('phonenumbernotvalid', 'sms', ['message' => $e->getMessage()]),
+                new lang_string('phonenumbernotvalid', 'sms', ['message' => $e->getMessage()]),
                 $e->getCode(),
                 $e,
             );

@@ -24,7 +24,7 @@ use core_external\external_function_parameters;
 use core_external\external_value;
 use core_external\restricted_context_exception;
 use core_question\local\bank\filter_condition_manager;
-use moodle_url;
+use core\url;
 
 /**
  * API for moving questions from one question bank category to another.
@@ -103,14 +103,14 @@ class move_questions extends external_api {
         $contexts->require_cap('moodle/question:add');
 
         if (!$targetcategory = $DB->get_record('question_categories', ['id' => $newcategoryid, 'contextid' => $newcontextid])) {
-            throw new \moodle_exception('cannotfindcate', 'question');
+            throw new moodle_exception('cannotfindcate', 'question');
         }
 
         \qbank_bulkmove\helper::bulk_move_questions($questionids, $targetcategory);
         notification::success(get_string('questionsmoved', 'qbank_bulkmove'));
 
         if ($returnurlstring) {
-            $returnurl = new moodle_url($returnurlstring);
+            $returnurl = new url($returnurlstring);
             $returnurl->param('cmid', $newcontext->instanceid);
             $returnurl->param('cat', "{$newcategoryid},{$newcontextid}");
             $returnurl->remove_params('category');

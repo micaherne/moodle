@@ -23,6 +23,13 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\lang_string;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\category;
+use core_admin\setting\tree\externalpage;
 use tool_brickfield\accessibility;
 use tool_brickfield\manager;
 use tool_brickfield\analysis;
@@ -36,7 +43,7 @@ $accessibilitydisabled = !accessibility::is_accessibility_enabled();
 if ($hassiteconfig) {
     // Add an enable subsystem setting to the "Advanced features" settings page.
     $optionalsubsystems = $ADMIN->locate('optionalsubsystems');
-    $optionalsubsystems->add(new admin_setting_configcheckbox(
+    $optionalsubsystems->add(new configcheckbox(
         'enableaccessibilitytools',
         new lang_string('enableaccessibilitytools', manager::PLUGINNAME),
         new lang_string('enableaccessibilitytools_desc', manager::PLUGINNAME),
@@ -50,12 +57,12 @@ $moodleurl = accessibility::get_plugin_url();
 if ($hassiteconfig) {
     $ADMIN->add(
         'tools',
-        new admin_category('brickfieldfolder', get_string('accessibility', manager::PLUGINNAME), $accessibilitydisabled)
+        new category('brickfieldfolder', get_string('accessibility', manager::PLUGINNAME), $accessibilitydisabled)
     );
 
     $ADMIN->add(
         'brickfieldfolder',
-        new admin_externalpage(
+        new externalpage(
             'tool_brickfield_activation',
             get_string('activationform', manager::PLUGINNAME),
             manager::registration_url(),
@@ -63,9 +70,9 @@ if ($hassiteconfig) {
         )
     );
 
-    $settings = new admin_settingpage(manager::PLUGINNAME, get_string('settings', manager::PLUGINNAME));
+    $settings = new settingpage(manager::PLUGINNAME, get_string('settings', manager::PLUGINNAME));
 
-    $settings->add(new admin_setting_configcheckbox(
+    $settings->add(new configcheckbox(
         manager::PLUGINNAME . '/analysistype',
         get_string('analysistype', manager::PLUGINNAME),
         get_string('analysistype_desc', manager::PLUGINNAME),
@@ -74,14 +81,14 @@ if ($hassiteconfig) {
         analysis::ANALYSISDISABLED
     ));
 
-    $settings->add(new admin_setting_configcheckbox(
+    $settings->add(new configcheckbox(
         manager::PLUGINNAME . '/deletehistoricaldata',
         get_string('deletehistoricaldata', manager::PLUGINNAME),
         '',
         1
     ));
 
-    $settings->add(new admin_setting_configtext(
+    $settings->add(new configtext(
         manager::PLUGINNAME . '/batch',
         get_string('batch', manager::PLUGINNAME),
         '',
@@ -89,7 +96,7 @@ if ($hassiteconfig) {
         PARAM_INT
     ));
 
-    $settings->add(new admin_setting_configtext(
+    $settings->add(new configtext(
         manager::PLUGINNAME . '/perpage',
         get_string('perpage', manager::PLUGINNAME),
         '',
@@ -98,7 +105,7 @@ if ($hassiteconfig) {
 
     $ADMIN->add('brickfieldfolder', $settings);
 
-    $ADMIN->add('brickfieldfolder', new admin_externalpage('tool_brickfield_tool',
+    $ADMIN->add('brickfieldfolder', new externalpage('tool_brickfield_tool',
         get_string('tools', manager::PLUGINNAME),
         $moodleurl,
         accessibility::get_capability_name('viewsystemtools')
@@ -106,13 +113,13 @@ if ($hassiteconfig) {
 }
 
 // Add the reports link if the toolkit is enabled, and is either registered, or the user has the ability to register it.
-$showreports = has_capability('moodle/site:config', \context_system::instance());
+$showreports = has_capability('moodle/site:config', system::instance());
 $showreports = $showreports || (new registration())->toolkit_is_active();
 
 // Create a link to the main page in the reports menu.
 $ADMIN->add(
     'reports',
-    new admin_externalpage(
+    new externalpage(
         'tool_brickfield_reports',
         get_string('pluginname', manager::PLUGINNAME),
         $moodleurl,

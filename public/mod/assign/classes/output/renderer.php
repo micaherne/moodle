@@ -25,7 +25,16 @@
 namespace mod_assign\output;
 
 use assign_files;
-use html_writer;
+use core\context;
+use core\context\module;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\output\plugin_renderer_base;
+use core\url;
+use core_table\flexible_table;
+use core_table\output\html_table;
+use core_table\output\html_table_cell;
+use core_table\output\html_table_row;
 use mod_assign\output\grading_app;
 use portfolio_add_button;
 use stored_file;
@@ -41,7 +50,7 @@ require_once($CFG->dirroot . '/mod/assign/locallib.php');
  * @copyright 2012 NetSpot {@link http://www.netspot.com.au}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class renderer extends \plugin_renderer_base {
+class renderer extends plugin_renderer_base {
 
     /** @var string a unique ID. */
     public $htmlid;
@@ -57,7 +66,7 @@ class renderer extends \plugin_renderer_base {
      * @param \stdClass $coursemodule
      * @return string
      */
-    public function assign_files(\context $context, $userid, $filearea, $component, $course = null, $coursemodule = null) {
+    public function assign_files(context $context, $userid, $filearea, $component, $course = null, $coursemodule = null) {
         return $this->render(new \assign_files($context, $userid, $filearea, $component, $course, $coursemodule));
     }
 
@@ -68,7 +77,7 @@ class renderer extends \plugin_renderer_base {
      * @return string
      */
     public function render_assign_files(\assign_files $tree) {
-        $this->htmlid = \html_writer::random_id('assign_files_tree');
+        $this->htmlid = html_writer::random_id('assign_files_tree');
         $this->page->requires->js_init_call('M.mod_assign.init_tree', array(true, $this->htmlid));
         $html = '<div id="'.$this->htmlid.'">';
         $html .= $this->htmllize_tree($tree, $tree->dir);
@@ -91,15 +100,15 @@ class renderer extends \plugin_renderer_base {
      * @param array $secondattributes The second column attributes (optional)
      * @return void
      */
-    private function add_table_row_tuple(\html_table $table, $first, $second, $firstattributes = [],
+    private function add_table_row_tuple(html_table $table, $first, $second, $firstattributes = [],
             $secondattributes = []) {
-        $row = new \html_table_row();
-        $cell1 = new \html_table_cell($first);
+        $row = new html_table_row();
+        $cell1 = new html_table_cell($first);
         $cell1->header = true;
         if (!empty($firstattributes)) {
             $cell1->attributes = $firstattributes;
         }
-        $cell2 = new \html_table_cell($second);
+        $cell2 = new html_table_cell($second);
         if (!empty($secondattributes)) {
             $cell2->attributes = $secondattributes;
         }
@@ -117,7 +126,7 @@ class renderer extends \plugin_renderer_base {
         if (!empty($result->page)) {
             $urlparams['page'] = $result->page;
         }
-        $url = new \moodle_url('/mod/assign/view.php', $urlparams);
+        $url = new url('/mod/assign/view.php', $urlparams);
         $classes = $result->gradingerror ? 'notifyproblem' : 'notifysuccess';
 
         $o = '';
@@ -171,7 +180,7 @@ class renderer extends \plugin_renderer_base {
             $o .= $this->output->user_picture($summary->user);
             $o .= $this->output->spacer(array('width'=>30));
             $urlparams = array('id' => $summary->user->id, 'course'=>$summary->courseid);
-            $url = new \moodle_url('/user/view.php', $urlparams);
+            $url = new url('/user/view.php', $urlparams);
             $fullname = fullname($summary->user, $summary->viewfullnames);
             $extrainfo = array();
             foreach ($summary->extrauserfields as $extrafield) {
@@ -201,7 +210,7 @@ class renderer extends \plugin_renderer_base {
         $o .= $this->output->container_start('submitforgrading');
         $o .= $this->output->heading(get_string('confirmsubmissionheading', 'assign'), 3);
 
-        $cancelurl = new \moodle_url('/mod/assign/view.php', array('id' => $page->coursemoduleid));
+        $cancelurl = new url('/mod/assign/view.php', array('id' => $page->coursemoduleid));
         if (count($page->notifications)) {
             // At least one of the submission plugins is not ready for submission.
 
@@ -300,12 +309,12 @@ class renderer extends \plugin_renderer_base {
         $o .= $this->output->heading(get_string('gradingsummary', 'assign'), 3);
 
         if (isset($summary->cm)) {
-            $currenturl = new \moodle_url('/mod/assign/view.php', array('id' => $summary->cm->id));
+            $currenturl = new url('/mod/assign/view.php', array('id' => $summary->cm->id));
             $o .= groups_print_activity_menu($summary->cm, $currenturl->out(), true, participationonly: false);
         }
 
         $o .= $this->output->box_start('boxaligncenter gradingsummarytable');
-        $t = new \html_table();
+        $t = new html_table();
         $t->attributes['class'] = 'generaltable table table-striped table-bordered table-hover';
         $t->caption = get_string('gradingsummary', 'assign');
         $t->captionhide = true; // Hidden because it matches the title above.
@@ -392,12 +401,12 @@ class renderer extends \plugin_renderer_base {
         }
 
         // All done - write the table.
-        $o .= \html_writer::table($t);
+        $o .= html_writer::table($t);
         $o .= $this->output->box_end();
 
         // Close the container and insert a spacer.
         $o .= $this->output->container_end();
-        $o .= \html_writer::end_tag('center');
+        $o .= html_writer::end_tag('center');
 
         return $o;
     }
@@ -414,7 +423,7 @@ class renderer extends \plugin_renderer_base {
         $o .= $this->output->container_start('feedback');
         $o .= $this->output->heading(get_string('feedback', 'assign'), 3);
         $o .= $this->output->box_start('boxaligncenter feedbacktable');
-        $t = new \html_table();
+        $t = new html_table();
         $t->caption = get_string('feedback', 'assign');
         $t->captionhide = true; // Hidden because it matches the title above.
 
@@ -469,7 +478,7 @@ class renderer extends \plugin_renderer_base {
             }
         }
 
-        $o .= \html_writer::table($t);
+        $o .= html_writer::table($t);
         $o .= $this->output->box_end();
 
         if (!empty($status->gradingcontrollergrade)) {
@@ -535,7 +544,7 @@ class renderer extends \plugin_renderer_base {
                 $userslist = array();
                 foreach ($members as $member) {
                     $urlparams = array('id' => $member->id, 'course' => $status->courseid);
-                    $url = new \moodle_url('/user/view.php', $urlparams);
+                    $url = new url('/user/view.php', $urlparams);
                     if ($status->view == assign_submission_status::GRADER_VIEW && $status->blindmarking) {
                         $userslist[] = $member->alias;
                     } else {
@@ -665,7 +674,7 @@ class renderer extends \plugin_renderer_base {
 
         $o .= $this->output->box_start('boxaligncenter submissionsummarytable');
 
-        $t = new \html_table();
+        $t = new html_table();
         $t->attributes['class'] = 'generaltable table table-striped table-bordered table-hover';
         $t->caption = get_string('submissionstatusheading', 'assign');
         $t->captionhide = true; // Hidden because it matches the title above.
@@ -744,7 +753,7 @@ class renderer extends \plugin_renderer_base {
                 $userslist = array();
                 foreach ($members as $member) {
                     $urlparams = array('id' => $member->id, 'course'=>$status->courseid);
-                    $url = new \moodle_url('/user/view.php', $urlparams);
+                    $url = new url('/user/view.php', $urlparams);
                     if ($status->view == assign_submission_status::GRADER_VIEW && $status->blindmarking) {
                         $userslist[] = $member->alias;
                     } else {
@@ -882,7 +891,7 @@ class renderer extends \plugin_renderer_base {
         }
 
         $o .= $warningmsg;
-        $o .= \html_writer::table($t);
+        $o .= html_writer::table($t);
         $o .= $this->output->box_end();
 
         // Grading criteria preview.
@@ -954,7 +963,7 @@ class renderer extends \plugin_renderer_base {
                                           'submissionsummary'=>$submissionsummary);
             $o .= $this->heading(get_string('attemptheading', 'assign', $attemptsummaryparams), 4);
 
-            $t = new \html_table();
+            $t = new html_table();
             $t->caption = get_string('attemptheading', 'assign', $attemptsummaryparams);
             $t->captionhide = true; // Hidden because it matches the title above.
 
@@ -997,16 +1006,16 @@ class renderer extends \plugin_renderer_base {
                                    'action'=>'grade',
                                    'returnaction'=>$history->returnaction,
                                    'returnparams'=>$returnparams);
-                    $url = new \moodle_url('/mod/assign/view.php', $urlparams);
-                    $icon = new \pix_icon('gradefeedback',
+                    $url = new url('/mod/assign/view.php', $urlparams);
+                    $icon = new pix_icon('gradefeedback',
                                             get_string('editattemptfeedback', 'assign', $grade->attemptnumber+1),
                                             'mod_assign');
                     $title .= $this->output->action_icon($url, $icon);
                 }
-                $cell = new \html_table_cell($title);
+                $cell = new html_table_cell($title);
                 $cell->attributes['class'] = 'feedbacktitle';
                 $cell->colspan = 2;
-                $t->data[] = new \html_table_row(array($cell));
+                $t->data[] = new html_table_row(array($cell));
 
                 // Grade.
                 $cell1content = get_string('gradenoun');
@@ -1047,7 +1056,7 @@ class renderer extends \plugin_renderer_base {
 
             }
 
-            $o .= \html_writer::table($t);
+            $o .= html_writer::table($t);
         }
         $o .= $this->box_end();
 
@@ -1091,7 +1100,7 @@ class renderer extends \plugin_renderer_base {
                     'role' => 'button',
                     'aria-expanded' => 'false'
                 );
-                $o .= \html_writer::link('', $expandicon, $options);
+                $o .= html_writer::link('', $expandicon, $options);
 
                 $jsparams = array($submissionplugin->plugin->get_subtype(),
                                   $submissionplugin->plugin->get_type(),
@@ -1108,7 +1117,7 @@ class renderer extends \plugin_renderer_base {
                                    'action'=>$action,
                                    'returnaction'=>$submissionplugin->returnaction,
                                    'returnparams'=>$returnparams);
-                $url = new \moodle_url('/mod/assign/view.php', $urlparams);
+                $url = new url('/mod/assign/view.php', $urlparams);
                 $link .= $this->output->action_link($url, $icon);
                 $link .= '</noscript>';
 
@@ -1127,7 +1136,7 @@ class renderer extends \plugin_renderer_base {
                     'aria-expanded' => 'true'
                 );
                 $collapseicon = $this->output->pix_icon('t/switch_minus', $collapsestr);
-                $o .= \html_writer::link('', $collapseicon, $options);
+                $o .= html_writer::link('', $collapseicon, $options);
 
                 $o .= $submissionplugin->plugin->view($submissionplugin->submission);
                 $o .= $this->output->box_end();
@@ -1191,7 +1200,7 @@ class renderer extends \plugin_renderer_base {
                     'role' => 'button',
                     'aria-expanded' => 'false'
                 );
-                $o .= \html_writer::link('', $expandicon, $options);
+                $o .= html_writer::link('', $expandicon, $options);
 
                 $jsparams = array($feedbackplugin->plugin->get_subtype(),
                                   $feedbackplugin->plugin->get_type(),
@@ -1204,7 +1213,7 @@ class renderer extends \plugin_renderer_base {
                                    'action'=>'viewplugin' . $feedbackplugin->plugin->get_subtype(),
                                    'returnaction'=>$feedbackplugin->returnaction,
                                    'returnparams'=>http_build_query($feedbackplugin->returnparams));
-                $url = new \moodle_url('/mod/assign/view.php', $urlparams);
+                $url = new url('/mod/assign/view.php', $urlparams);
                 $link .= '<noscript>';
                 $link .= $this->output->action_link($url, $icon);
                 $link .= '</noscript>';
@@ -1224,7 +1233,7 @@ class renderer extends \plugin_renderer_base {
                     'aria-expanded' => 'true'
                 );
                 $collapseicon = $this->output->pix_icon('t/switch_minus', $collapsestr);
-                $o .= \html_writer::link('', $collapseicon, $options);
+                $o .= html_writer::link('', $collapseicon, $options);
 
                 $o .= $feedbackplugin->plugin->view($feedbackplugin->grade);
                 $o .= $this->output->box_end();
@@ -1262,7 +1271,7 @@ class renderer extends \plugin_renderer_base {
         $strsubmission = get_string('submission', 'assign');
         $strgrade = get_string('gradenoun');
 
-        $table = new \html_table();
+        $table = new html_table();
         if ($indexsummary->usesections) {
             $table->head  = array ($strsectionname, $strplural, $strduedate, $strsubmission, $strgrade);
             $table->align = array ('left', 'left', 'center', 'right', 'right');
@@ -1275,13 +1284,13 @@ class renderer extends \plugin_renderer_base {
         $currentsection = '';
         foreach ($indexsummary->assignments as $info) {
             $params = array('id' => $info['cmid']);
-            $link = \html_writer::link(new \moodle_url('/mod/assign/view.php', $params),
+            $link = html_writer::link(new url('/mod/assign/view.php', $params),
                                       $info['cmname']);
             $due = $info['timedue'] ? userdate($info['timedue']) : '-';
 
             if ($info['cangrade']) {
                 $params['action'] = 'grading';
-                $gradeinfo = \html_writer::link(new \moodle_url('/mod/assign/view.php', $params),
+                $gradeinfo = html_writer::link(new url('/mod/assign/view.php', $params),
                     get_string('numberofsubmissionsneedgradinglabel', 'assign', $info['gradeinfo']));
             } else {
                 $gradeinfo = $info['gradeinfo'];
@@ -1308,7 +1317,7 @@ class renderer extends \plugin_renderer_base {
             $table->data[] = $row;
         }
 
-        $o .= \html_writer::table($table);
+        $o .= html_writer::table($table);
 
         return $o;
     }
@@ -1473,7 +1482,7 @@ class renderer extends \plugin_renderer_base {
      *                             (e.g. downloads would not enable this)
      * @return string HTML
      */
-    protected function flexible_table(\flexible_table $table, $rowsperpage, $displaylinks) {
+    protected function flexible_table(flexible_table $table, $rowsperpage, $displaylinks) {
 
         $o = '';
         ob_start();
@@ -1565,7 +1574,7 @@ class renderer extends \plugin_renderer_base {
     public function format_activity_text($assign, $cmid) {
         global $CFG;
         require_once("$CFG->libdir/filelib.php");
-        $context = \context_module::instance($cmid);
+        $context = module::instance($cmid);
         $options = array('noclean' => true, 'para' => false, 'filter' => true, 'context' => $context, 'overflowdiv' => true);
         $activity = file_rewrite_pluginfile_urls(
             $assign->activity, 'pluginfile.php', $context->id, 'mod_assign', ASSIGN_ACTIVITYATTACHMENT_FILEAREA, 0);

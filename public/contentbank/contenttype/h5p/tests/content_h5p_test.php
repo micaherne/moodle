@@ -16,6 +16,9 @@
 
 namespace contenttype_h5p;
 
+use core\context\course;
+use core\context\system;
+
 /**
  * Test for H5P content bank plugin.
  *
@@ -39,13 +42,13 @@ final class content_h5p_test extends \advanced_testcase {
         $record = new \stdClass();
         $record->name = 'Test content';
         $record->configdata = '';
-        $contenttype = new \contenttype_h5p\contenttype(\context_system::instance());
+        $contenttype = new \contenttype_h5p\contenttype(system::instance());
         $content = $contenttype->create_content($record);
 
         // Create a dummy file.
         $filename = 'content.h5p';
         $dummy = [
-            'contextid' => \context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'component' => 'contentbank',
             'filearea' => 'public',
             'itemid' => $content->get_id(),
@@ -78,7 +81,7 @@ final class content_h5p_test extends \advanced_testcase {
 
         // Create a course.
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         // Set user.
         if ($role == 'admin') {

@@ -27,6 +27,8 @@ namespace quizaccess_seb;
 
 
 use CFPropertyList\CFPropertyList;
+use core\exception\moodle_exception;
+use core\output\pix_icon;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -52,7 +54,7 @@ class helper {
 
         return $OUTPUT->action_icon(
             $url,
-            new \pix_icon($icon, $alt, $iconcomponent, [
+            new pix_icon($icon, $alt, $iconcomponent, [
                 'title' => $alt,
             ]),
             null,
@@ -123,7 +125,7 @@ class helper {
         // Retrieve the config for quiz.
         $config = seb_quiz_settings::get_config_by_quiz_id($cm->instance);
         if (empty($config)) {
-            throw new \moodle_exception('noconfigfound', 'quizaccess_seb', '', $cm->id);
+            throw new moodle_exception('noconfigfound', 'quizaccess_seb', '', $cm->id);
         }
         return $config;
     }

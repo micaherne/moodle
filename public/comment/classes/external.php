@@ -24,6 +24,8 @@
  * @since      Moodle 2.9
  */
 
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
 use core_external\external_api;
 use core_external\external_format_value;
 use core_external\external_function_parameters;

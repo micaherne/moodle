@@ -23,6 +23,8 @@
  */
 
 namespace mod_wiki\event;
+
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -80,16 +82,16 @@ class page_viewed extends \core\event\base {
      */
     public function get_url() {
         if (!empty($this->data['other']['wid'])) {
-            return new \moodle_url('/mod/wiki/view.php', array('wid' => $this->data['other']['wid'],
+            return new url('/mod/wiki/view.php', array('wid' => $this->data['other']['wid'],
                     'title' => $this->data['other']['title'],
                     'uid' => $this->relateduserid,
                     'groupanduser' => $this->data['other']['groupanduser'],
                     'group' => $this->data['other']['group']
                 ));
         } else if (!empty($this->other['prettyview'])) {
-            return new \moodle_url('/mod/wiki/prettyview.php', array('pageid' => $this->objectid));
+            return new url('/mod/wiki/prettyview.php', array('pageid' => $this->objectid));
         } else {
-            return new \moodle_url('/mod/wiki/view.php', array('pageid' => $this->objectid));
+            return new url('/mod/wiki/view.php', array('pageid' => $this->objectid));
         }
     }
 

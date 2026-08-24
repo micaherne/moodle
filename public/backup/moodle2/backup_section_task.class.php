@@ -25,6 +25,8 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -115,7 +117,7 @@ class backup_section_task extends backup_task {
     public function build() {
 
         // Set the backup::VAR_CONTEXTID setting to course context as far as next steps require that
-        $coursectxid = context_course::instance($this->get_courseid())->id;
+        $coursectxid = course::instance($this->get_courseid())->id;
         $this->add_section_setting(backup::VAR_CONTEXTID, base_setting::IS_INTEGER, $coursectxid);
 
         // Add some extra settings that related processors are going to need

@@ -25,6 +25,9 @@
  */
 namespace mod_page;
 
+use core\context\module;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 
@@ -63,7 +66,7 @@ final class lib_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course(array('enablecompletion' => 1));
         $page = $this->getDataGenerator()->create_module('page', array('course' => $course->id),
                                                             array('completion' => 2, 'completionview' => 1));
-        $context = \context_module::instance($page->cmid);
+        $context = module::instance($page->cmid);
         $cm = get_coursemodule_from_instance('page', $page->id);
 
         // Trigger and capture the event.
@@ -80,7 +83,7 @@ final class lib_test extends \advanced_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_page\event\course_module_viewed', $event);
         $this->assertEquals($context, $event->get_context());
-        $moodleurl = new \moodle_url('/mod/page/view.php', array('id' => $cm->id));
+        $moodleurl = new url('/mod/page/view.php', array('id' => $cm->id));
         $this->assertEquals($moodleurl, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());

@@ -27,6 +27,10 @@
  *
  * TODO: Finish phpdocs
  */
+use core\context;
+use core\context\course;
+use core\context\user;
+
 abstract class restore_dbops {
     /**
      * Keep cache of backup records.
@@ -363,7 +367,7 @@ abstract class restore_dbops {
         global $CFG, $DB;
 
         // Gather various information about roles
-        $coursectx = context_course::instance($courseid);
+        $coursectx = course::instance($courseid);
         $assignablerolesshortname = get_assignable_roles($coursectx, ROLENAME_SHORT, false, $userid);
 
         // Note: under 1.9 we had one function restore_samerole() that performed one complete
@@ -909,7 +913,7 @@ abstract class restore_dbops {
                 }
             }
             // We don't have a target so set as course context until the module is created and then assign to the module context.
-            $targetcontext = $targetcontext ?: context_course::instance($courseid);
+            $targetcontext = $targetcontext ?: course::instance($courseid);
         }
 
         return $targetcontext;
@@ -1314,7 +1318,7 @@ abstract class restore_dbops {
             // but for deleted users that don't have a context anymore (MDL-30192). We are done for them
             // and nothing else (custom fields, prefs, tags, files...) will be created.
             if (empty($user->deleted)) {
-                $newuserctxid = $user->deleted ? 0 : context_user::instance($newuserid)->id;
+                $newuserctxid = $user->deleted ? 0 : user::instance($newuserid)->id;
                 self::set_backup_ids_record($restoreid, 'context', $recuser->parentitemid, $newuserctxid);
 
                 // Process custom fields
@@ -1347,7 +1351,7 @@ abstract class restore_dbops {
                         $tags[] = $usertag->rawname;
                     }
                     core_tag_tag::set_item_tags('core', 'user', $newuserid,
-                            context_user::instance($newuserid), $tags);
+                            user::instance($newuserid), $tags);
                 }
 
                 // Process preferences
@@ -1678,7 +1682,7 @@ abstract class restore_dbops {
         $mnethosts = $DB->get_records('mnet_host', array(), 'wwwroot', 'wwwroot, id');
 
         // Calculate the context we are going to use for capability checking
-        $context = context_course::instance($courseid);
+        $context = course::instance($courseid);
 
         // TODO: Some day we must kill this dependency and change the process
         // to pass info around without loading a controller copy.
@@ -1889,7 +1893,7 @@ abstract class restore_dbops {
         global $DB;
 
         // Get the course context
-        $coursectx = context_course::instance($courseid);
+        $coursectx = course::instance($courseid);
         // Get all the mapped roles we have
         $rs = $DB->get_recordset('backup_ids_temp', array('backupid' => $restoreid, 'itemname' => 'role'), '', 'itemid, info, newitemid');
         foreach ($rs as $recrole) {

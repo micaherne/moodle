@@ -16,7 +16,13 @@
 
 namespace core_admin\setting\setting;
 
+use core\context;
+use core\context\system;
+use core\output\html_writer;
+use core\output\single_select;
+use core\url;
 use core_admin\admin_search;
+use core_table\output\html_table;
 
 /**
  * Repository settings management.
@@ -108,7 +114,7 @@ class managerepository extends \core_admin\setting {
      * @param string $repository the repository to generate the URL for
      */
     private function repository_action_url(string $repository) {
-        return new \moodle_url($this->baseurl, ['sesskey' => sesskey(), 'repos' => $repository]);
+        return new url($this->baseurl, ['sesskey' => sesskey(), 'repos' => $repository]);
     }
 
     /**
@@ -146,7 +152,7 @@ class managerepository extends \core_admin\setting {
         $disablestr = get_string('disable');
 
         // Table to list plug-ins.
-        $table = new \html_table();
+        $table = new html_table();
         $table->head = [get_string('name'), get_string('isactive', 'repository'), get_string('order'), $settingsstr];
         $table->align = ['left', 'center', 'center', 'center', 'center'];
         $table->data = [];
@@ -169,7 +175,7 @@ class managerepository extends \core_admin\setting {
                     // Calculate number of instances in order to display them for the Moodle administrator.
                     if (!empty($instanceoptionnames)) {
                         $params = [];
-                        $params['context'] = [\context_system::instance()];
+                        $params['context'] = [system::instance()];
                         $params['onlyvisible'] = false;
                         $params['type'] = $typename;
                         $admininstancenumber = count(\repository::static_function($typename, 'get_instances', $params));
@@ -181,7 +187,7 @@ class managerepository extends \core_admin\setting {
                         $userinstances = [];
 
                         foreach ($instances as $instance) {
-                            $repocontext = \context::instance_by_id($instance->instance->contextid);
+                            $repocontext = context::instance_by_id($instance->instance->contextid);
                             if ($repocontext->contextlevel == CONTEXT_COURSE) {
                                 $courseinstances[] = $instance;
                             } else if ($repocontext->contextlevel == CONTEXT_USER) {
@@ -219,7 +225,7 @@ class managerepository extends \core_admin\setting {
                     $currentaction = 'hide';
                 }
 
-                $select = new \single_select(
+                $select = new single_select(
                     $this->repository_action_url($typename),
                     'action',
                     $actionchoicesforexisting,
@@ -262,7 +268,7 @@ class managerepository extends \core_admin\setting {
             foreach ($plugins as $plugin => $dir) {
                 // Check that it has not already been listed.
                 if (!in_array($plugin, $alreadyplugins)) {
-                    $select = new \single_select(
+                    $select = new single_select(
                         $this->repository_action_url($plugin),
                         'action',
                         $actionchoicesfornew,
@@ -275,7 +281,7 @@ class managerepository extends \core_admin\setting {
             }
         }
 
-        $return .= \html_writer::table($table);
+        $return .= html_writer::table($table);
         $return .= $OUTPUT->box_end();
         return highlight($query, $return);
     }

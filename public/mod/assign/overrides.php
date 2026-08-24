@@ -23,6 +23,14 @@
  */
 
 
+use core\context\module;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\url;
+use core_table\output\html_table;
+use core_table\output\html_table_cell;
+use core_table\output\html_table_row;
+
 require_once(dirname(__FILE__) . '/../../config.php');
 require_once($CFG->dirroot . '/mod/assign/lib.php');
 require_once($CFG->dirroot . '/mod/assign/locallib.php');
@@ -40,7 +48,7 @@ $assign = $DB->get_record('assign', ['id' => $cm->instance], '*', MUST_EXIST);
 
 require_login($course, false, $cm);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 
 // Check the user has the required capabilities to list overrides.
 $manager = new mod_assign\override_manager($assign, $context);
@@ -64,11 +72,11 @@ if ($mode != "user" and $mode != "group") {
 }
 $groupmode = ($mode == "group");
 
-$url = new moodle_url('/mod/assign/overrides.php', ['cmid' => $cm->id, 'mode' => $mode]);
+$url = new url('/mod/assign/overrides.php', ['cmid' => $cm->id, 'mode' => $mode]);
 
 $PAGE->set_show_navigation_footer(false);
 $PAGE->set_url($url);
-navigation_node::override_active_url(new moodle_url('/mod/assign/overrides.php', ['cmid' => $cmid]));
+navigation_node::override_active_url(new url('/mod/assign/overrides.php', ['cmid' => $cmid]));
 
 if ($action == 'movegroupoverride') {
     $id = required_param('id', PARAM_INT);
@@ -121,11 +129,11 @@ $table->head = [
         get_string('action'),
 ];
 
-$userurl = new moodle_url('/user/view.php', []);
-$groupurl = new moodle_url('/group/overview.php', ['id' => $cm->course]);
+$userurl = new url('/user/view.php', []);
+$groupurl = new url('/group/overview.php', ['id' => $cm->course]);
 
-$overridedeleteurl = new moodle_url('/mod/assign/overridedelete.php');
-$overrideediturl = new moodle_url('/mod/assign/overrideedit.php');
+$overridedeleteurl = new url('/mod/assign/overridedelete.php');
+$overrideediturl = new url('/mod/assign/overrideedit.php');
 
 $hasinactive = false; // Whether there are any inactive overrides.
 

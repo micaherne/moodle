@@ -34,6 +34,7 @@
 
 namespace mod_lti\local;
 
+use core\exception\required_capability_exception;
 use mod_lti_testcase;
 
 defined('MOODLE_INTERNAL') || die();
@@ -265,7 +266,7 @@ final class types_helper_test extends mod_lti_testcase {
         $this->assertEquals(LTI_COURSEVISIBLE_PRECONFIGURED, $coursevisibleoverriden);
 
         $this->setUser($teacher2);
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         types_helper::override_type_showinactivitychooser($tool5id, $course->id, $context, false);
     }
 

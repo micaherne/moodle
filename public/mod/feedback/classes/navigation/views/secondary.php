@@ -17,8 +17,8 @@
 namespace mod_feedback\navigation\views;
 
 use core\navigation\views\secondary as core_secondary;
-use settings_navigation;
-use navigation_node;
+use core\navigation\settings_navigation;
+use core\navigation\navigation_node;
 
 /**
  * Custom secondary navigation class

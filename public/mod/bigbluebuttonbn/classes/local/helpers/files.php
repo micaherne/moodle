@@ -25,13 +25,13 @@
 
 namespace mod_bigbluebuttonbn\local\helpers;
 
-use cache;
-use cache_store;
-use context;
-use context_module;
-use context_system;
+use core_cache\cache;
+use core_cache\store;
+use core\context;
+use core\context\module;
+use core\context\system;
 use mod_bigbluebuttonbn\instance;
-use moodle_url;
+use core\url;
 use stdClass;
 
 /**
@@ -103,7 +103,7 @@ class files {
         if (!isset($bigbluebuttonformdata->presentation) || $bigbluebuttonformdata->presentation == '') {
             return '';
         }
-        $context = context_module::instance($bigbluebuttonformdata->coursemodule);
+        $context = module::instance($bigbluebuttonformdata->coursemodule);
         // Set the filestorage object.
         $fs = get_file_storage();
         // Save the file if it exists that is currently in the draft area.
@@ -141,7 +141,7 @@ class files {
         $fs = get_file_storage();
         $files = [];
         $defaultpresentation = $fs->get_area_files(
-            context_system::instance()->id,
+            system::instance()->id,
             'mod_bigbluebuttonbn',
             'presentationdefault',
             0,
@@ -195,7 +195,7 @@ class files {
         }
 
         // Note: $pnoncevalue is an int.
-        $url = moodle_url::make_pluginfile_url(
+        $url = url::make_pluginfile_url(
             $file->get_contextid(),
             $file->get_component(),
             $file->get_filearea(),
@@ -305,7 +305,7 @@ class files {
      */
     private static function get_nonce_cache() {
         return cache::make_from_params(
-            cache_store::MODE_APPLICATION,
+            store::MODE_APPLICATION,
             'mod_bigbluebuttonbn',
             'presentation_cache'
         );

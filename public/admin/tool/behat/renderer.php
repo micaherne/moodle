@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/behat/classes/behat_generator_base.php');
@@ -86,7 +90,7 @@ class tool_behat_renderer extends plugin_renderer_base {
                     global $CFG;
 
                     // Creating a link to a popup with the help.
-                    $url = new moodle_url(
+                    $url = new url(
                         '/help.php',
                         array(
                             'component' => 'tool_behat',

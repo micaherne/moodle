@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\privacy;
 
-use context;
+use core\context;
 use stdClass;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;

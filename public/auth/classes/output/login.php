@@ -24,13 +24,13 @@
 
 namespace core_auth\output;
 
-use context_system;
-use help_icon;
-use moodle_url;
-use renderable;
-use renderer_base;
+use core\context\system;
+use core\output\help_icon;
+use core\url;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use templatable;
+use core\output\templatable;
 
 /**
  * Login renderable class.
@@ -107,9 +107,9 @@ class login implements renderable, templatable {
 
         $this->autofocusform = !empty($CFG->loginpageautofocus);
 
-        $this->forgotpasswordurl = new moodle_url('/login/forgot_password.php');
-        $this->loginurl = new moodle_url('/login/index.php');
-        $this->signupurl = new moodle_url('/login/signup.php');
+        $this->forgotpasswordurl = new url('/login/forgot_password.php');
+        $this->loginurl = new url('/login/index.php');
+        $this->signupurl = new url('/login/signup.php');
 
         // Authentication instructions.
         $this->instructions = $CFG->auth_instructions;
@@ -185,7 +185,7 @@ class login implements renderable, templatable {
         $data->hasidentityproviders = !empty($this->identityproviders);
         $data->identityproviders = $identityproviders;
         list($data->instructions, $data->instructionsformat) = \core_external\util::format_text($this->instructions, FORMAT_MOODLE,
-            context_system::instance()->id);
+            system::instance()->id);
         $data->loginurl = $this->loginurl->out(false);
         $data->signupurl = $this->signupurl->out(false);
         $data->username = $this->username;

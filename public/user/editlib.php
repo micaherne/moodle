@@ -22,6 +22,13 @@
  * @package core_user
  */
 
+use core\context\system;
+use core\context\user as context_user;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\user as core_user;
+
 require_once($CFG->dirroot . '/user/lib.php');
 
 /**
@@ -48,11 +55,11 @@ function useredit_setup_preference_page($userid, $courseid) {
 
     // Guest can not edit.
     if (isguestuser()) {
-        throw new \moodle_exception('guestnoeditprofile');
+        throw new moodle_exception('guestnoeditprofile');
     }
 
     if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-        throw new \moodle_exception('invalidcourseid');
+        throw new moodle_exception('invalidcourseid');
     }
 
     if ($course->id != SITEID) {
@@ -63,36 +70,36 @@ function useredit_setup_preference_page($userid, $courseid) {
         }
         redirect(get_login_url());
     } else {
-        $PAGE->set_context(context_system::instance());
+        $PAGE->set_context(system::instance());
     }
 
     // The user profile we are editing.
     if (!$user = $DB->get_record('user', array('id' => $userid))) {
-        throw new \moodle_exception('invaliduserid');
+        throw new moodle_exception('invaliduserid');
     }
 
     // Guest can not be edited.
     if (isguestuser($user)) {
-        throw new \moodle_exception('guestnoeditprofile');
+        throw new moodle_exception('guestnoeditprofile');
     }
 
     // Remote users cannot be edited.
     if (is_mnet_remote_user($user)) {
         if (user_not_fully_set_up($user, false)) {
             $hostwwwroot = $DB->get_field('mnet_host', 'wwwroot', array('id' => $user->mnethostid));
-            throw new \moodle_exception('usernotfullysetup', 'mnet', '', $hostwwwroot);
+            throw new moodle_exception('usernotfullysetup', 'mnet', '', $hostwwwroot);
         }
         redirect($CFG->wwwroot . "/user/view.php?course={$course->id}");
     }
 
-    $systemcontext   = context_system::instance();
+    $systemcontext   = system::instance();
     $personalcontext = context_user::instance($user->id);
 
     // Check access control.
     if ($user->id == $USER->id) {
         // Editing own profile - require_login() MUST NOT be used here, it would result in infinite loop!
         if (!has_capability('moodle/user:editownprofile', $systemcontext)) {
-            throw new \moodle_exception('cannotedityourprofile');
+            throw new moodle_exception('cannotedityourprofile');
         }
 
     } else {
@@ -101,7 +108,7 @@ function useredit_setup_preference_page($userid, $courseid) {
 
         // No editing of primary admin!
         if (is_siteadmin($user) and !is_siteadmin($USER)) {  // Only admins may edit other admins.
-            throw new \moodle_exception('useradmineditadmin');
+            throw new moodle_exception('useradmineditadmin');
         }
     }
 

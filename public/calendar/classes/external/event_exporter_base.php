@@ -29,6 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . "/calendar/lib.php");
 require_once($CFG->libdir . "/filelib.php");
 
+use core\context\course;
 use core\external\exporter;
 use core_calendar\local\event\container;
 use core_calendar\local\event\entities\event_interface;
@@ -36,7 +37,7 @@ use core_calendar\local\event\entities\action_event_interface;
 use core_calendar\output\humantimeperiod;
 use core_course\external\course_summary_exporter;
 use core\external\coursecat_summary_exporter;
-use renderer_base;
+use core\output\renderer_base;
 use core\url;
 
 /**
@@ -391,7 +392,7 @@ class event_exporter_base extends exporter {
 
         if ($group = $event->get_group()) {
             $values['groupname'] = format_string($group->get('name'), true,
-                ['context' => \context_course::instance($event->get_course()->get('id'))]);
+                ['context' => course::instance($event->get_course()->get('id'))]);
         }
 
         if ($event instanceof action_event_interface) {

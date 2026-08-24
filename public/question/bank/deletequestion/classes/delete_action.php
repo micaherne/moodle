@@ -24,6 +24,8 @@
 
 namespace qbank_deletequestion;
 
+use core\output\action_menu\link;
+use core\url;
 use core_question\local\bank\question_version_status;
 use core_question\local\bank\question_action_base;
 
@@ -63,7 +65,7 @@ class delete_action extends question_action_base {
         parent::init();
         $this->strdelete = get_string('delete');
         $this->strrestore = get_string('restore');
-        $this->deletequestionurl = new \moodle_url('/question/bank/deletequestion/delete.php');
+        $this->deletequestionurl = new url('/question/bank/deletequestion/delete.php');
         $this->returnparams['cmid'] = $this->qbank->cm->id;
 
         if (!empty($this->qbank->returnurl)) {
@@ -84,7 +86,7 @@ class delete_action extends question_action_base {
                     'unhide' => $question->id,
                     'sesskey' => sesskey());
             $hiddenparams = array_merge($hiddenparams, $this->returnparams);
-            $url = new \moodle_url($this->deletequestionurl, $hiddenparams);
+            $url = new url($this->deletequestionurl, $hiddenparams);
             return [$url, 't/restore', $this->strrestore];
         } else {
             $deleteparams = array(
@@ -95,7 +97,7 @@ class delete_action extends question_action_base {
             if (!$this->qbank->is_listing_specific_versions()) {
                 $deleteparams['deleteall'] = 1;
             }
-            $url = new \moodle_url($this->deletequestionurl, $deleteparams);
+            $url = new url($this->deletequestionurl, $deleteparams);
             return [$url, 't/delete', $this->strdelete];
         }
     }
@@ -106,7 +108,7 @@ class delete_action extends question_action_base {
      * @param \stdClass $question
      * @return \action_menu_link|null
      */
-    public function get_action_menu_link(\stdClass $question): ?\action_menu_link {
+    public function get_action_menu_link(\stdClass $question): ?link {
         $deletelink = parent::get_action_menu_link($question);
         if ($deletelink !== null) {
             $deletelink->add_class('text-danger');

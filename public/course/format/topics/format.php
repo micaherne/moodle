@@ -23,6 +23,8 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/filelib.php');
@@ -40,7 +42,7 @@ if ($topic = optional_param('topic', 0, PARAM_INT)) {
 // Retrieve course format option fields and add them to the $course object.
 $format = course_get_format($course);
 $course = $format->get_course();
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 
 if (($marker >= 0) && has_capability('moodle/course:setcurrentsection', $context) && confirm_sesskey()) {
     $course->marker = $marker;

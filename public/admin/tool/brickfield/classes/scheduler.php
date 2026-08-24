@@ -16,6 +16,9 @@
 
 namespace tool_brickfield;
 
+use core\context\course;
+use core\context\system;
+
 /**
  * Scheduler class.
  *
@@ -73,9 +76,9 @@ class scheduler {
         }
         if ($DB->set_field(self::DATA_TABLE, 'status', self::STATUS_REQUESTED, $this->standard_search_params())) {
             if ($this->contextlevel == CONTEXT_COURSE) {
-                $context = \context_course::instance($this->instanceid);
+                $context = course::instance($this->instanceid);
             } else {
-                $context = \context_system::instance();
+                $context = system::instance();
             }
             $event = \tool_brickfield\event\analysis_requested::create([
                 'context' => $context,

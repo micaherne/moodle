@@ -24,6 +24,7 @@
 
 namespace core_contentbank\privacy;
 
+use core\context;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\contextlist;
@@ -31,9 +32,9 @@ use core_privacy\local\request\transform;
 use core_privacy\local\request\writer;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\approved_userlist;
-use context_system;
-use context_coursecat;
-use context_course;
+use core\context\system;
+use core\context\coursecat;
+use core\context\course;
 
 /**
  * Privacy provider implementation for core_contentbank.
@@ -194,7 +195,7 @@ class provider implements
             // The core_contentbank data export is organised in:
             // {Sytem|Course Category|Course Context Level}/Content/data.json.
             if ($lastcontextid && $lastcontextid != $content->contextid) {
-                $context = \context::instance_by_id($lastcontextid);
+                $context = context::instance_by_id($lastcontextid);
                 writer::with_context($context)->export_data($subcontext, (object)$data);
                 $data = [];
             }
@@ -210,11 +211,11 @@ class provider implements
 
             // The core_contentbank files export is organised in:
             // {Sytem|Course Category|Course Context Level}/Content/_files/public/_itemid/filename.
-            $context = \context::instance_by_id($lastcontextid);
+            $context = context::instance_by_id($lastcontextid);
             writer::with_context($context)->export_area_files($subcontext, 'contentbank', 'public', $content->id);
         }
         if (!empty($data)) {
-            $context = \context::instance_by_id($lastcontextid);
+            $context = context::instance_by_id($lastcontextid);
             writer::with_context($context)->export_data($subcontext, (object)$data);
         }
         $contents->close();
@@ -225,11 +226,11 @@ class provider implements
      *
      * @param   context $context The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         global $DB;
 
-        if (!$context instanceof context_system && !$context instanceof context_coursecat
-                && !$context instanceof context_course) {
+        if (!$context instanceof system && !$context instanceof coursecat
+                && !$context instanceof course) {
             return;
         }
 
@@ -244,8 +245,8 @@ class provider implements
     public static function delete_data_for_users(approved_userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!$context instanceof context_system && !$context instanceof context_coursecat
-                && !$context instanceof context_course) {
+        if (!$context instanceof system && !$context instanceof coursecat
+                && !$context instanceof course) {
             return;
         }
 
@@ -264,8 +265,8 @@ class provider implements
 
         $userid = $contextlist->get_user()->id;
         foreach ($contextlist->get_contexts() as $context) {
-            if (!$context instanceof context_system && !$context instanceof context_coursecat
-            && !$context instanceof context_course) {
+            if (!$context instanceof system && !$context instanceof coursecat
+            && !$context instanceof course) {
                 continue;
             }
             static::delete_data($context, [$userid]);
@@ -278,7 +279,7 @@ class provider implements
      * @param context $context A context.
      * @param array $userids The user IDs.
      */
-    protected static function delete_data(\context $context, array $userids) {
+    protected static function delete_data(context $context, array $userids) {
         global $DB;
 
         $params = ['contextid' => $context->id];

@@ -24,6 +24,9 @@
 
 namespace tool_monitor;
 
+use core\context\course;
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -177,12 +180,12 @@ class eventobservers {
                     // Trigger a subscription_criteria_met event.
                     // It's possible that the course has been deleted since the criteria was met, so in that case use
                     // the system context. Set it here and change later if needed.
-                    $context = \context_system::instance();
+                    $context = system::instance();
                     // We can't perform if (!empty($subscription->courseid)) below as it uses the magic method
                     // __get to return the variable, which will always result in being empty.
                     $courseid = $subscription->courseid;
                     if (!empty($courseid)) {
-                        if ($coursecontext = \context_course::instance($courseid, IGNORE_MISSING)) {
+                        if ($coursecontext = course::instance($courseid, IGNORE_MISSING)) {
                             $context = $coursecontext;
                         }
                     }

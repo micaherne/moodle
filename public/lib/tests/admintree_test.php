@@ -16,6 +16,8 @@
 
 namespace core;
 
+use core\context\system;
+use core\exception\coding_exception;
 use core_admin\setting\tree\category;
 use core_admin\setting\tree\externalpage;
 use core_admin\setting\tree\root as admin_root;
@@ -101,13 +103,13 @@ final class admintree_test extends \advanced_testcase {
 
     public function test_add_nodes_before_invalid1(): void {
         $tree = new admin_root(true);
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $tree->add('root', new externalpage('foo', 'Foo', 'http://foo.bar'), ['moodle:site/config']);
     }
 
     public function test_add_nodes_before_invalid2(): void {
         $tree = new admin_root(true);
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $tree->add('root', new category('bar', 'Bar'), '');
     }
 
@@ -263,7 +265,7 @@ final class admintree_test extends \advanced_testcase {
         global $DB;
         // Current user is a manager at site context, which won't have access to the 'debugging' section of the admin tree.
         $manageruser = $this->getDataGenerator()->create_user();
-        $context = \context_system::instance();
+        $context = system::instance();
         $managerrole = $DB->get_record('role', ['shortname' => 'manager']);
         role_assign($managerrole->id, $manageruser->id, $context->id);
         $this->setUser($manageruser);

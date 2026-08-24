@@ -24,8 +24,9 @@
 
 namespace core_tag\output;
 
-use context_system;
-use lang_string;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\lang_string;
 use core_tag_area;
 
 /**
@@ -54,7 +55,7 @@ class tagareacollection extends \core\output\inplace_editable {
 
         $tagcollections = \core_tag_collection::get_collections_menu(true);
         $editable = (count($tagcollections) > 1) &&
-                has_capability('moodle/tag:manage', context_system::instance());
+                has_capability('moodle/tag:manage', system::instance());
         $areaname = core_tag_area::display_name($tagarea->component, $tagarea->itemtype);
         $edithint = new lang_string('edittagcollection', 'core_tag');
         $editlabel = new lang_string('changetagcoll', 'core_tag', $areaname);
@@ -74,12 +75,12 @@ class tagareacollection extends \core\output\inplace_editable {
      */
     public static function update($itemid, $newvalue) {
         global $DB;
-        require_capability('moodle/tag:manage', \context_system::instance());
+        require_capability('moodle/tag:manage', system::instance());
         $tagarea = $DB->get_record('tag_area', array('id' => $itemid), '*', MUST_EXIST);
         $newvalue = clean_param($newvalue, PARAM_INT);
         $tagcollections = \core_tag_collection::get_collections_menu(true);
         if (!array_key_exists($newvalue, $tagcollections)) {
-            throw new \moodle_exception('invalidparameter', 'debug');
+            throw new moodle_exception('invalidparameter', 'debug');
         }
         $data = array('tagcollid' => $newvalue);
         core_tag_area::update($tagarea, $data);

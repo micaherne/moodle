@@ -23,13 +23,15 @@
  * @author    Laurent David  (laurent [at] call-learning [dt] fr)
  */
 
+use core_cache\store;
+
 defined('MOODLE_INTERNAL') || die();
 
 $definitions = [
     // Server information
     // version  (double) => server version.
     'serverinfo' => [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'invalidationevents' => [
             'mod_bigbluebuttonbn/serversettingschanged',
         ],
@@ -39,13 +41,13 @@ $definitions = [
     // Keys are a URL
     // Values are an integer.
     'validatedurls' => [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simpledata' => true,
     ],
 
     // The 'recordings' cache stores a cache of recording data.
     'recordings' => [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'invalidationevents' => [
             'mod_bigbluebuttonbn/recordingchanged',
             'mod_bigbluebuttonbn/serversettingschanged',
@@ -54,12 +56,12 @@ $definitions = [
     ],
 
     'currentfetch' => [
-        'mode' => cache_store::MODE_REQUEST,
+        'mode' => store::MODE_REQUEST,
     ],
 
     // The 'subplugins' cache stores a cache of subplugins data to accelerate some of the subplugin discovery features.
     'subplugins' => [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'invalidationevents' => [
             'mod_bigbluebuttonbn/subpluginschanged',
         ],

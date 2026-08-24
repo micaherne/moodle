@@ -27,6 +27,9 @@ namespace core_group\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
+use core\context\course;
+use core_cache\helper;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -81,10 +84,10 @@ class provider implements
      * @param array     $subcontext The sub-context in which to export this data.
      * @param int       $itemid     Optional itemid associated with component.
      */
-    public static function export_groups(\context $context, string $component, array $subcontext = [], int $itemid = 0) {
+    public static function export_groups(context $context, string $component, array $subcontext = [], int $itemid = 0) {
         global $DB, $USER;
 
-        if (!$context instanceof \context_course) {
+        if (!$context instanceof course) {
             return;
         }
 
@@ -137,10 +140,10 @@ class provider implements
      * @param string    $component  Component to delete. Empty string means no component (manual group memberships).
      * @param int       $itemid     Optional itemid associated with component.
      */
-    public static function delete_groups_for_all_users(\context $context, string $component, int $itemid = 0) {
+    public static function delete_groups_for_all_users(context $context, string $component, int $itemid = 0) {
         global $DB;
 
-        if (!$context instanceof \context_course) {
+        if (!$context instanceof course) {
             return;
         }
 
@@ -166,7 +169,7 @@ class provider implements
         $DB->delete_records_select('groups_members', $select, $params);
 
         // Purge the group and grouping cache for users.
-        \cache_helper::purge_by_definition('core', 'user_group_groupings');
+        helper::purge_by_definition('core', 'user_group_groupings');
     }
 
     /**
@@ -216,7 +219,7 @@ class provider implements
         $DB->delete_records_select('groups_members', $select, $params);
 
         // Invalidate the group and grouping cache for the user.
-        \cache_helper::invalidate_by_definition('core', 'user_group_groupings', array(), array($userid));
+        helper::invalidate_by_definition('core', 'user_group_groupings', array(), array($userid));
     }
 
     /**
@@ -229,7 +232,7 @@ class provider implements
     public static function get_group_members_in_context(userlist $userlist, string $component, int $itemid = 0) {
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_course) {
+        if (!$context instanceof course) {
             return;
         }
 
@@ -267,7 +270,7 @@ class provider implements
         $context = $userlist->get_context();
         $userids = $userlist->get_userids();
 
-        if (!$context instanceof \context_course) {
+        if (!$context instanceof course) {
             return;
         }
 
@@ -293,7 +296,7 @@ class provider implements
         $DB->delete_records_select('groups_members', $select, $params);
 
         // Invalidate the group and grouping cache for the user.
-        \cache_helper::invalidate_by_definition('core', 'user_group_groupings', array(), $userids);
+        helper::invalidate_by_definition('core', 'user_group_groupings', array(), $userids);
     }
 
     /**
@@ -350,7 +353,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_course) {
+        if (!$context instanceof course) {
             return;
         }
 
@@ -375,7 +378,7 @@ class provider implements
      *
      * @param context $context The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         static::delete_groups_for_all_users($context, '');
     }
 

@@ -23,6 +23,9 @@
  */
 
 namespace mod_glossary\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -68,7 +71,7 @@ class category_deleted extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url("/mod/glossary/editcategories.php",
+        return new url("/mod/glossary/editcategories.php",
                 array('id' => $this->contextinstanceid));
     }
 
@@ -82,7 +85,7 @@ class category_deleted extends \core\event\base {
         parent::validate_data();
         // Make sure this class is never used without proper object details.
         if (!$this->contextlevel === CONTEXT_MODULE) {
-            throw new \coding_exception('Context level must be CONTEXT_MODULE.');
+            throw new coding_exception('Context level must be CONTEXT_MODULE.');
         }
     }
 

@@ -20,7 +20,7 @@ namespace core_tag\reportbuilder\local\entities;
 
 use core_collator;
 use core_tag_area;
-use lang_string;
+use core\lang_string;
 use stdClass;
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\filters\{date, select};

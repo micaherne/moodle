@@ -22,10 +22,14 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\category;
+
 defined('MOODLE_INTERNAL') || die();
 
 if (!$ADMIN->locate('file_redactor')) {
-    $ADMIN->add('server', new admin_category('file_redactor', get_string('redactor', 'core_files')));
+    $ADMIN->add('server', new category('file_redactor', get_string('redactor', 'core_files')));
 }
 if ($hassiteconfig) {
 
@@ -33,7 +37,7 @@ if ($hassiteconfig) {
 
     // Get settings from each service.
     foreach ($manager->get_service_classnames() as $servicename => $service) {
-        $servicesettings = new admin_settingpage(
+        $servicesettings = new settingpage(
             $servicename,
             new lang_string("redactor:{$servicename}", 'core_files'),
         );

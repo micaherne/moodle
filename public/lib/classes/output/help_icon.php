@@ -16,7 +16,7 @@
 
 namespace core\output;
 
-use moodle_url;
+use core\url;
 use stdClass;
 
 /**
@@ -115,7 +115,7 @@ class help_icon implements renderable, templatable {
             $options['strings'] = 1;
         }
 
-        $data->url = (new moodle_url('/help.php', $options))->out(false);
+        $data->url = (new url('/help.php', $options))->out(false);
         $data->ltr = !right_to_left();
         return $data;
     }

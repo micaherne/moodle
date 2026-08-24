@@ -23,6 +23,18 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
+use core\output\html_writer;
+use core\output\paging_bar;
+use core\output\pix_icon;
+use core\output\plugin_renderer_base;
+use core\output\single_button;
+use core\output\single_select;
+use core\url;
+use core_table\output\html_table;
+use core_table\output\html_table_cell;
+use core_table\output\html_table_row;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -115,7 +127,7 @@ class mod_workshop_renderer extends plugin_renderer_base {
             $additionalfields = explode(',', implode(',', \core_user\fields::get_picture_fields()));
             $author = username_load_fields_from_object($author, $submission, 'author', $additionalfields);
             $userpic            = $this->output->user_picture($author, array('courseid' => $this->page->course->id, 'size' => 64));
-            $userurl            = new moodle_url('/user/view.php',
+            $userurl            = new url('/user/view.php',
                                             array('id' => $author->id, 'course' => $this->page->course->id));
             $a                  = new stdclass();
             $a->name            = fullname($author);
@@ -193,7 +205,7 @@ class mod_workshop_renderer extends plugin_renderer_base {
             $additionalfields = explode(',', implode(',', \core_user\fields::get_picture_fields()));
             $author = username_load_fields_from_object($author, $summary, 'author', $additionalfields);
             $userpic            = $this->output->user_picture($author, array('courseid' => $this->page->course->id, 'size' => 35));
-            $userurl            = new moodle_url('/user/view.php',
+            $userurl            = new url('/user/view.php',
                                             array('id' => $author->id, 'course' => $this->page->course->id));
             $a                  = new stdClass();
             $a->name            = fullname($author);
@@ -654,7 +666,7 @@ class mod_workshop_renderer extends plugin_renderer_base {
         } else {
             $title = get_string('assessment', 'workshop');
         }
-        if (($assessment->url instanceof moodle_url) and ($this->page->url != $assessment->url)) {
+        if (($assessment->url instanceof url) and ($this->page->url != $assessment->url)) {
             $o .= $this->output->container(html_writer::link($assessment->url, $title), 'title');
         } else {
             $o .= $this->output->container($title, 'title');
@@ -664,7 +676,7 @@ class mod_workshop_renderer extends plugin_renderer_base {
             $reviewer   = $assessment->reviewer;
             $userpic    = $this->output->user_picture($reviewer, array('courseid' => $this->page->course->id, 'size' => 32));
 
-            $userurl    = new moodle_url('/user/view.php',
+            $userurl    = new url('/user/view.php',
                                        array('id' => $reviewer->id, 'course' => $this->page->course->id));
             $a          = new stdClass();
             $a->name    = fullname($reviewer);
@@ -834,7 +846,7 @@ class mod_workshop_renderer extends plugin_renderer_base {
      * @param moodle_url $url base URL object.
      * @return string HTML.
      */
-    public function initials_bars(workshop $workshop, moodle_url $url): string {
+    public function initials_bars(workshop $workshop, url $url): string {
         $ifirst = $workshop->get_initial_first();
         $ilast = $workshop->get_initial_last();
 
@@ -916,11 +928,11 @@ class mod_workshop_renderer extends plugin_renderer_base {
 
             $filepath   = $file->get_filepath();
             $filename   = $file->get_filename();
-            $fileurl    = moodle_url::make_pluginfile_url($ctx->id, 'mod_workshop', 'submission_attachment',
+            $fileurl    = url::make_pluginfile_url($ctx->id, 'mod_workshop', 'submission_attachment',
                             $submissionid, $filepath, $filename, true);
-            $embedurl   = moodle_url::make_pluginfile_url($ctx->id, 'mod_workshop', 'submission_attachment',
+            $embedurl   = url::make_pluginfile_url($ctx->id, 'mod_workshop', 'submission_attachment',
                             $submissionid, $filepath, $filename, false);
-            $embedurl   = new moodle_url($embedurl, array('preview' => 'bigthumb'));
+            $embedurl   = new url($embedurl, array('preview' => 'bigthumb'));
             $type       = $file->get_mimetype();
             $image      = $this->output->pix_icon(file_file_icon($file), get_mimetype_description($file), 'moodle', array('class' => 'icon'));
 
@@ -1025,13 +1037,13 @@ class mod_workshop_renderer extends plugin_renderer_base {
 
         if (!is_null($sortid)) {
             if ($sortby !== $sortid or $sorthow !== 'ASC') {
-                $url = new moodle_url($this->page->url);
+                $url = new url($this->page->url);
                 $url->params(array('sortby' => $sortid, 'sorthow' => 'ASC'));
                 $out .= $this->output->action_icon($url, new pix_icon('t/sort_asc', get_string('sortasc', 'workshop')),
                     null, ['class' => 'sort asc']);
             }
             if ($sortby !== $sortid or $sorthow !== 'DESC') {
-                $url = new moodle_url($this->page->url);
+                $url = new url($this->page->url);
                 $url->params(array('sortby' => $sortid, 'sorthow' => 'DESC'));
                 $out .= $this->output->action_icon($url, new pix_icon('t/sort_desc', get_string('sortdesc', 'workshop')),
                     null, ['class' => 'sort desc']);
@@ -1063,7 +1075,7 @@ class mod_workshop_renderer extends plugin_renderer_base {
         if (is_null($participant->submissionid)) {
             $out = $this->output->container(get_string('nosubmissionfound', 'workshop'), 'info');
         } else {
-            $url = new moodle_url('/mod/workshop/submission.php',
+            $url = new url('/mod/workshop/submission.php',
                                   array('cmid' => $this->page->context->instanceid, 'id' => $participant->submissionid));
             $out = html_writer::link($url, format_string($participant->submissiontitle), array('class'=>'title'));
 
@@ -1106,7 +1118,7 @@ class mod_workshop_renderer extends plugin_renderer_base {
                 $grade = get_string('formatpeergradeoverweighted', 'workshop', $a);
             }
         }
-        $url = new moodle_url('/mod/workshop/assessment.php',
+        $url = new url('/mod/workshop/assessment.php',
                               array('asid' => $assessment->assessmentid));
         $grade = html_writer::link($url, $grade, array('class'=>'grade'));
 
@@ -1229,7 +1241,7 @@ class mod_workshop_renderer extends plugin_renderer_base {
 
                 if (has_capability('mod/workshop:submit', $this->page->context) && (!$examplesmust || $examplesdone)) {
                     if (!$workshop->get_submission_by_author($USER->id)) {
-                        $btnurl = new moodle_url($workshop->submission_url(), ['edit' => 'on']);
+                        $btnurl = new url($workshop->submission_url(), ['edit' => 'on']);
                         $btntxt = get_string('createsubmission', 'workshop');
                         $output .= $this->single_button($btnurl, $btntxt, 'get', ['type' => single_button::BUTTON_PRIMARY]);
                     }
@@ -1240,7 +1252,7 @@ class mod_workshop_renderer extends plugin_renderer_base {
                 if (has_capability('mod/workshop:submit', $this->page->context)) {
                     if (!$workshop->get_submission_by_author($USER->id)) {
                         if ($workshop->creating_submission_allowed($USER->id)) {
-                            $btnurl = new moodle_url($workshop->submission_url(), ['edit' => 'on']);
+                            $btnurl = new url($workshop->submission_url(), ['edit' => 'on']);
                             $btntxt = get_string('createsubmission', 'workshop');
                             $output .= $this->single_button($btnurl, $btntxt, 'get', ['type' => single_button::BUTTON_PRIMARY]);
                         }
@@ -1310,7 +1322,7 @@ class mod_workshop_renderer extends plugin_renderer_base {
                             $summary->editable = true;
                             $output .= $this->render($summary);
                         }
-                        $aurl = new moodle_url($workshop->exsubmission_url(0), ['edit' => 'on']);
+                        $aurl = new url($workshop->exsubmission_url(0), ['edit' => 'on']);
                         $output .= $this->single_button($aurl, get_string('exampleadd', 'workshop'), 'get');
                     } else {
                         $output .= $this->container(get_string('noexamplesformready', 'workshop'));
@@ -1408,7 +1420,7 @@ class mod_workshop_renderer extends plugin_renderer_base {
                             groups_print_activity_menu($workshop->cm, $this->page->url, true), 'groupwidget');
 
                         // Prepare the paging bar.
-                        $baseurl = new moodle_url($this->page->url, ['sortby' => $sortby, 'sorthow' => $sorthow]);
+                        $baseurl = new url($this->page->url, ['sortby' => $sortby, 'sorthow' => $sorthow]);
                         $pagingbar = new paging_bar($data->totalcount, $page, $perpage, $baseurl, 'page');
 
                         // Populate the display options for the submissions report.
@@ -1466,7 +1478,7 @@ class mod_workshop_renderer extends plugin_renderer_base {
                         $showreviewernames = has_capability('mod/workshop:viewreviewernames', $workshop->context);
 
                         // Prepare paging bar.
-                        $baseurl = new moodle_url($this->page->url, ['sortby' => $sortby, 'sorthow' => $sorthow]);
+                        $baseurl = new url($this->page->url, ['sortby' => $sortby, 'sorthow' => $sorthow]);
                         $pagingbar = new paging_bar($data->totalcount, $page, $perpage, $baseurl, 'page');
 
                         // Grading report display options.
@@ -1624,13 +1636,13 @@ class mod_workshop_renderer extends plugin_renderer_base {
                             $output .= $this->render($selector);
                             // Load the grading evaluator.
                             $evaluator = $workshop->grading_evaluation_instance();
-                            $form = $evaluator->get_settings_form(new moodle_url($workshop->aggregate_url(),
+                            $form = $evaluator->get_settings_form(new url($workshop->aggregate_url(),
                                 compact('sortby', 'sorthow', 'page')));
                             $form->display();
                         }
 
                         // Prepare paging bar.
-                        $baseurl = new moodle_url($this->page->url, ['sortby' => $sortby, 'sorthow' => $sorthow]);
+                        $baseurl = new url($this->page->url, ['sortby' => $sortby, 'sorthow' => $sorthow]);
                         $pagingbar = new paging_bar($data->totalcount, $page, $perpage, $baseurl, 'page');
 
                         // Grading report display options.
@@ -1664,7 +1676,7 @@ class mod_workshop_renderer extends plugin_renderer_base {
                     $output .= $this->box_start('generalbox toolbox');
 
                     // Clear aggregated grades.
-                    $url = new moodle_url($workshop->toolbox_url('clearaggregatedgrades'));
+                    $url = new url($workshop->toolbox_url('clearaggregatedgrades'));
                     $btn = new single_button($url, get_string('clearaggregatedgrades', 'workshop'), 'post');
                     $btn->add_confirm_action(get_string('clearaggregatedgradesconfirm', 'workshop'));
                     $output .= $this->container_start('toolboxaction');
@@ -1672,7 +1684,7 @@ class mod_workshop_renderer extends plugin_renderer_base {
                     $output .= $this->help_icon('clearaggregatedgrades', 'workshop');
                     $output .= $this->container_end();
                     // Clear assessments.
-                    $url = new moodle_url($workshop->toolbox_url('clearassessments'));
+                    $url = new url($workshop->toolbox_url('clearassessments'));
                     $btn = new single_button($url, get_string('clearassessments', 'workshop'), 'post');
                     $btn->add_confirm_action(get_string('clearassessmentsconfirm', 'workshop'));
                     $output .= $this->container_start('toolboxaction');
@@ -1761,7 +1773,7 @@ class mod_workshop_renderer extends plugin_renderer_base {
                         $showreviewernames = has_capability('mod/workshop:viewreviewernames', $workshop->context);
 
                         // Prepare paging bar.
-                        $baseurl = new moodle_url($this->page->url, ['sortby' => $sortby, 'sorthow' => $sorthow]);
+                        $baseurl = new url($this->page->url, ['sortby' => $sortby, 'sorthow' => $sorthow]);
                         $pagingbar = new paging_bar($data->totalcount, $page, $perpage, $baseurl, 'page');
 
                         // Grading report display options.

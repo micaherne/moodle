@@ -16,6 +16,9 @@
 
 namespace auth_oauth2;
 
+use core\exception\moodle_exception;
+use core\url;
+
 /**
  * Auth oauth2 auth functions tests.
  *
@@ -48,7 +51,7 @@ final class auth_test extends \advanced_testcase {
         global $CFG;
         $this->resetAfterTest();
         $this->setAdminUser();
-        $wantsurl = new \moodle_url('/');
+        $wantsurl = new url('/');
 
         $issuer = \core\oauth2\api::create_standard_issuer('microsoft');
 
@@ -76,7 +79,7 @@ final class auth_test extends \advanced_testcase {
             @$auth->complete_login($client, $wantsurl);
         } catch (\Exception $e) {
             // This happens as complete login is using 'redirect'.
-            $this->assertInstanceOf(\moodle_exception::class, $e);
+            $this->assertInstanceOf(moodle_exception::class, $e);
         }
         $events = $sink->get_events();
         $sink->close();

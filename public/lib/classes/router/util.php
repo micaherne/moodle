@@ -16,6 +16,7 @@
 
 namespace core\router;
 
+use core\exception\coding_exception;
 use core\url;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\ResponseInterface;
@@ -190,7 +191,7 @@ class util {
         $callable = $resolver->resolve($callable);
 
         if (!is_array($callable)) {
-            throw new \coding_exception('Resolved callable must be in array form');
+            throw new coding_exception('Resolved callable must be in array form');
         }
 
         return get_class($callable[0]) . '::' . $callable[1];

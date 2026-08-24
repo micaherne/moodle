@@ -16,6 +16,7 @@
 
 namespace core_course\route\controller;
 
+use core\exception\coding_exception;
 use core\router\route_loader_interface;
 use core\tests\router\route_testcase;
 use core\url;
@@ -1743,7 +1744,7 @@ final class course_navigation_test extends route_testcase {
         $section = $modinfo->get_section_info(1);
         $navigation = new course_navigation();
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $navigation->get_adjacent_section($modinfo, $section, 'unknowndirection');
     }
 
@@ -2017,7 +2018,7 @@ final class course_navigation_test extends route_testcase {
         $allcms = $navigation->get_all_section_cms($modinfo, $section);
         $cmnotinlist = $modinfo->get_cm($cm2->cmid);
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $navigation->is_first_navigable($cmnotinlist, $modinfo, $allcms);
     }
 
@@ -2131,7 +2132,7 @@ final class course_navigation_test extends route_testcase {
         $allcms = $navigation->get_all_section_cms($modinfo, $section);
         $cmnotinlist = $modinfo->get_cm($cm2->cmid);
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $navigation->is_last_navigable($cmnotinlist, $modinfo, $allcms);
     }
 

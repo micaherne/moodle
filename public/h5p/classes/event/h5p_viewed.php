@@ -24,6 +24,8 @@
  */
 
 namespace core_h5p\event;
+
+use core\exception\coding_exception;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -72,7 +74,7 @@ class h5p_viewed extends \core\event\base {
     protected function validate_data() {
         parent::validate_data();
         if (!isset($this->objectid)) {
-            throw new \coding_exception('The \'objectid\' must be set.');
+            throw new coding_exception('The \'objectid\' must be set.');
         }
     }
 

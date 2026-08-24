@@ -16,6 +16,8 @@
 
 namespace report_log;
 
+use core\context_helper;
+
 /**
  * Helper class for displaying logs.
  *
@@ -38,7 +40,7 @@ class helper {
             return '';
         }
 
-        $name = \context_helper::get_level_name($event->contextlevel);
+        $name = context_helper::get_level_name($event->contextlevel);
         $instanceid = $event->contextinstanceid ?? '';
 
         // Use the plugin name for modules and blocks.

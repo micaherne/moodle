@@ -28,6 +28,8 @@ global $CFG;
 
 require_once($CFG->dirroot . '/calendar/lib.php');
 
+use core\exception\coding_exception;
+use core\url;
 use core_calendar\local\event\entities\action_event;
 use core_calendar\local\event\entities\event;
 use core_calendar\local\event\entities\repeat_event_collection;
@@ -240,7 +242,7 @@ class action_event_test_factory implements event_factory_interface {
 
         $action = new action(
             'Test action',
-            new \moodle_url('/'),
+            new url('/'),
             1,
             true
         );

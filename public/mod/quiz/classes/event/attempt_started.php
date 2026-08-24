@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace mod_quiz\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -74,7 +77,7 @@ class attempt_started extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/quiz/review.php', ['attempt' => $this->objectid]);
+        return new url('/mod/quiz/review.php', ['attempt' => $this->objectid]);
     }
 
     /**
@@ -86,7 +89,7 @@ class attempt_started extends \core\event\base {
     protected function validate_data() {
         parent::validate_data();
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
     }
 

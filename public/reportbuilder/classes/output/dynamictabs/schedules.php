@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\output\dynamictabs;
 
-use context_system;
+use core\context\system;
 use core\output\{choicelist, renderer_base};
 use core\output\local\dropdown\{dialog, status};
 use core\output\dynamic_tabs\base;
@@ -44,7 +44,7 @@ class schedules extends base {
      * @return array
      */
     public function export_for_template(renderer_base $output): array {
-        $report = system_report_factory::create(report_schedules::class, context_system::instance(), '', '', 0,
+        $report = system_report_factory::create(report_schedules::class, system::instance(), '', '', 0,
             ['reportid' => $this->data['reportid']]);
 
         // Schedule type menu.

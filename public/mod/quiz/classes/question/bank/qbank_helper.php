@@ -16,7 +16,8 @@
 
 namespace mod_quiz\question\bank;
 
-use context_module;
+use core\context\module;
+use core\exception\moodle_exception;
 use core_question\local\bank\version_options;
 use core_question\local\bank\question_version_status;
 use core_question\local\bank\random_question_loader;
@@ -74,7 +75,7 @@ class qbank_helper {
      * @param int|null $slotid optional, if passed only load the data for this one slot (if it is in this quiz).
      * @return array indexed by slot, with information about the content of each slot.
      */
-    public static function get_question_structure(int $quizid, context_module $quizcontext,
+    public static function get_question_structure(int $quizid, module $quizcontext,
             ?int $slotid = null): array {
         global $DB;
 
@@ -250,7 +251,7 @@ class qbank_helper {
      * @param qubaid_condition $qubaids attempts to consider when avoiding picking repeats of random questions.
      * @return int the id of the question to use.
      */
-    public static function choose_question_for_redo(int $quizid, context_module $quizcontext,
+    public static function choose_question_for_redo(int $quizid, module $quizcontext,
             int $slotid, qubaid_condition $qubaids): int {
         $slotdata = self::get_question_structure($quizid, $quizcontext, $slotid);
         $slotdata = reset($slotdata);
@@ -267,7 +268,7 @@ class qbank_helper {
         $newqusetionid = $randomloader->get_next_filtered_question_id($filter);
 
         if ($newqusetionid === null) {
-            throw new \moodle_exception('notenoughrandomquestions', 'quiz');
+            throw new moodle_exception('notenoughrandomquestions', 'quiz');
         }
         return $newqusetionid;
     }
@@ -307,7 +308,7 @@ class qbank_helper {
      */
     public static function get_version_information_for_questions_in_attempt(
         stdClass $attempt,
-        context_module $quizcontext,
+        module $quizcontext,
     ): array {
         global $DB;
 

@@ -27,6 +27,7 @@ require_once($CFG->dirroot . '/repository/lib.php');
 require_once(__DIR__ . '/wikimedia.php');
 
 use core\di;
+use core\exception\moodle_exception;
 use core\http_client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\RequestOptions;
@@ -227,7 +228,7 @@ EOD;
             if (file_exists($path)) {
                 unlink($path);
             }
-            throw new \moodle_exception('errorwhiledownload', 'repository', '', $e->getMessage());
+            throw new moodle_exception('errorwhiledownload', 'repository', '', $e->getMessage());
         }
 
         if ($response->getStatusCode() === 429) {
@@ -241,7 +242,7 @@ EOD;
             if (file_exists($path)) {
                 unlink($path);
             }
-            throw new \moodle_exception('errorwhiledownload', 'repository', '', $response->getReasonPhrase());
+            throw new moodle_exception('errorwhiledownload', 'repository', '', $response->getReasonPhrase());
         }
 
         return ['path' => $path, 'url' => $url];

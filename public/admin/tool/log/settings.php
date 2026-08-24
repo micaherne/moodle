@@ -22,6 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core\plugin_manager;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\category;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
@@ -29,19 +35,19 @@ if ($hassiteconfig) {
     $privacysettings = $ADMIN->locate('privacysettings');
 
     if ($ADMIN->fulltree) {
-        $privacysettings->add(new admin_setting_configcheckbox('tool_log/exportlog',
+        $privacysettings->add(new configcheckbox('tool_log/exportlog',
                 new lang_string('exportlog', 'tool_log'),
                 new lang_string('exportlogdetail', 'tool_log'), 1)
         );
     }
 
-    $ADMIN->add('modules', new admin_category('logging', new lang_string('logging', 'tool_log')));
+    $ADMIN->add('modules', new category('logging', new lang_string('logging', 'tool_log')));
 
-    $temp = new admin_settingpage('managelogging', new lang_string('managelogging', 'tool_log'));
+    $temp = new settingpage('managelogging', new lang_string('managelogging', 'tool_log'));
     $temp->add(new tool_log_setting_managestores());
     $ADMIN->add('logging', $temp);
 
-    foreach (core_plugin_manager::instance()->get_plugins_of_type('logstore') as $plugin) {
+    foreach (plugin_manager::instance()->get_plugins_of_type('logstore') as $plugin) {
         /** @var \tool_log\plugininfo\logstore $plugin */
         $plugin->load_settings($ADMIN, 'logging', $hassiteconfig);
     }

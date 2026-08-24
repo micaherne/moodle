@@ -23,6 +23,8 @@
  */
 
 namespace core\event;
+
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -60,7 +62,7 @@ class grouping_group_assigned extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/group/assign.php', array('id' => $this->objectid));
+        return new url('/group/assign.php', array('id' => $this->objectid));
     }
 
     /**

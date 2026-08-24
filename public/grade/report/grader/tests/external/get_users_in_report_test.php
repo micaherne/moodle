@@ -24,6 +24,7 @@
  */
 namespace gradereport_grader\external;
 
+use core\user;
 use gradereport_grader\external\get_users_in_report;
 use core_external\external_api;
 /**
@@ -72,7 +73,7 @@ final class get_users_in_report_test extends \core_external\tests\externallib_te
             $expecteduser = $createdusers[$user['id']];
 
             $this->assertEquals(fullname($expecteduser), $user['fullname']);
-            $this->assertEquals(\core_user::get_initials($expecteduser), $user['initials']);
+            $this->assertEquals(user::get_initials($expecteduser), $user['initials']);
 
             // Profile image should be a non-empty string.
             $this->assertIsString($user['profileimageurl']);

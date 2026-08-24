@@ -24,6 +24,9 @@
 
 namespace availability_date;
 
+use core\exception\coding_exception;
+use core_course\modinfo;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -61,14 +64,14 @@ class condition extends \core_availability\condition {
                 array(self::DIRECTION_FROM, self::DIRECTION_UNTIL))) {
             $this->direction = $structure->d;
         } else {
-            throw new \coding_exception('Missing or invalid ->d for date condition');
+            throw new coding_exception('Missing or invalid ->d for date condition');
         }
 
         // Get time.
         if (isset($structure->t) && is_int($structure->t)) {
             $this->time = $structure->t;
         } else {
-            throw new \coding_exception('Missing or invalid ->t for date condition');
+            throw new coding_exception('Missing or invalid ->t for date condition');
         }
     }
 
@@ -106,7 +109,7 @@ class condition extends \core_availability\condition {
                 $allow = $now < $this->time;
                 break;
             default:
-                throw new \coding_exception('Unexpected direction');
+                throw new coding_exception('Unexpected direction');
         }
         if ($not) {
             $allow = !$allow;
@@ -129,7 +132,7 @@ class condition extends \core_availability\condition {
             case self::DIRECTION_UNTIL:
                 return $not ? self::DIRECTION_FROM : self::DIRECTION_UNTIL;
             default:
-                throw new \coding_exception('Unexpected direction');
+                throw new coding_exception('Unexpected direction');
         }
     }
 
@@ -293,7 +296,7 @@ class condition extends \core_availability\condition {
                 $updatesection->timemodified = time();
                 $DB->update_record('course_sections', $updatesection);
                 // Invalidate the section cache by given section id.
-                \course_modinfo::purge_course_section_cache_by_id($courseid, $section->id);
+                modinfo::purge_course_section_cache_by_id($courseid, $section->id);
 
                 $anychanged = true;
             }

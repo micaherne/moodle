@@ -16,6 +16,8 @@
 
 namespace tool_recyclebin;
 
+use core\context\course;
+
 /**
  * Recycle bin category tests.
  *
@@ -260,7 +262,7 @@ final class category_bin_test extends \advanced_testcase {
         $this->assertEquals(0, count($recyclebin->get_items()));
 
         // Verify that student DOES continue enrolled.
-        $this->assertTrue(is_enrolled(\context_course::instance($newcourse->id), $student->id));
+        $this->assertTrue(is_enrolled(course::instance($newcourse->id), $student->id));
     }
 
     /**
@@ -304,6 +306,6 @@ final class category_bin_test extends \advanced_testcase {
         $this->assertEquals(0, count($recyclebin->get_items()));
 
         // Verify that student DOES NOT continue enrolled.
-        $this->assertFalse(is_enrolled(\context_course::instance($newcourse->id), $student->id));
+        $this->assertFalse(is_enrolled(course::instance($newcourse->id), $student->id));
     }
 }

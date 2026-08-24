@@ -25,6 +25,8 @@
 
 namespace workshopform_comments\privacy;
 
+use core\context;
+use core\exception\coding_exception;
 use core_privacy\local\request\writer;
 
 defined('MOODLE_INTERNAL') || die();
@@ -54,11 +56,11 @@ class provider implements \core_privacy\local\metadata\null_provider, \mod_works
      * @param array $subcontext Subcontext within the context to export to
      * @param int $assessmentid ID of the assessment
      */
-    public static function export_assessment_form(\stdClass $user, \context $context, array $subcontext, int $assessmentid) {
+    public static function export_assessment_form(\stdClass $user, context $context, array $subcontext, int $assessmentid) {
         global $DB;
 
         if ($context->contextlevel != CONTEXT_MODULE) {
-            throw new \coding_exception('Unexpected context provided');
+            throw new coding_exception('Unexpected context provided');
         }
 
         $sql = "SELECT dim.id, dim.description, dim.descriptionformat, wg.peercomment, wg.peercommentformat

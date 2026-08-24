@@ -24,6 +24,7 @@
 
 namespace core_h5p;
 
+use core_cache\cache;
 use Moodle\H5peditorStorage;
 use stdClass;
 
@@ -106,7 +107,7 @@ class editor_framework implements H5peditorStorage {
     public function getLanguage($name, $major, $minor, $lang) {
 
         // Check if this information has been saved previously into the cache.
-        $langcache = \cache::make('core', 'h5p_content_type_translations');
+        $langcache = cache::make('core', 'h5p_content_type_translations');
         $library = new stdClass();
         $library->machinename = $name;
         $library->majorversion = $major;
@@ -160,7 +161,7 @@ class editor_framework implements H5peditorStorage {
         global $DB;
 
         // Check if this information has been saved previously into the cache.
-        $langcache = \cache::make('core', 'h5p_content_type_translations');
+        $langcache = cache::make('core', 'h5p_content_type_translations');
         $library = new stdClass();
         $library->machinename = $machinename;
         $library->majorversion = $major;

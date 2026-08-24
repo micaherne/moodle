@@ -16,10 +16,11 @@
 
 namespace core_courseformat;
 
+use core_cache\cache;
 use core_courseformat\local\courseactions;
 use core_courseformat\local\sectionactions;
 use core_courseformat\local\cmactions;
-use coding_exception;
+use core\exception\coding_exception;
 use stdClass;
 
 /**
@@ -135,7 +136,7 @@ final class formatactions {
      * @return self
      */
     public static function instance(int|stdClass $courseorid): self {
-        $coursesectionscache = \cache::make('core', 'courseactionsinstances');
+        $coursesectionscache = cache::make('core', 'courseactionsinstances');
         $format = base::instance($courseorid);
         $courseid = $format->get_courseid();
         $cachekey = "{$courseid}_{$format->get_format()}";

@@ -24,6 +24,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\output\paging_bar;
+use core\output\renderable;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/../lib.php');            // interface definition
@@ -188,7 +193,7 @@ class workshop_manual_allocator implements workshop_allocator {
                     $message    = new workshop_message(get_string('areyousuretodeallocategraded', 'workshopallocation_manual'),
                         workshop_message::TYPE_ERROR);
                 }
-                $url = new moodle_url($PAGE->url, array('mode' => 'del', 'what' => $m[1], 'confirm' => 1, 'sesskey' => sesskey()));
+                $url = new url($PAGE->url, array('mode' => 'del', 'what' => $m[1], 'confirm' => 1, 'sesskey' => sesskey()));
                 $label = get_string('iamsure', 'workshop');
                 $message->set_action($url, $label);
                 break;

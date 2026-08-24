@@ -20,12 +20,12 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . "/questionlib.php");
 
-use context;
+use core\context;
 use core_question\category_manager;
 use core_question\local\bank\question_version_status;
 use core_question\output\question_category_selector;
-use moodle_exception;
-use html_writer;
+use core\exception\moodle_exception;
+use core\output\html_writer;
 
 /**
  * Class helper contains all the library functions.

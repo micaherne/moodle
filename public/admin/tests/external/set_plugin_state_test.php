@@ -18,6 +18,10 @@ declare(strict_types=1);
 
 namespace core_admin\external;
 
+use core\exception\require_login_exception;
+use core\exception\required_capability_exception;
+use core\plugin_manager;
+
 /**
  * Unit tests to configure the enabled/disabled state of a plugin.
  *
@@ -47,7 +51,7 @@ final class set_plugin_state_test extends \core_external\tests\externallib_testc
 
         if ($initialstate !== null) {
             [$plugintype, $pluginname] = \core_component::normalize_component($plugin);
-            $manager = \core_plugin_manager::resolve_plugininfo_class($plugintype);
+            $manager = plugin_manager::resolve_plugininfo_class($plugintype);
             $manager::enable_plugin($pluginname, $initialstate);
             \core\notification::fetch();
         }
@@ -109,7 +113,7 @@ final class set_plugin_state_test extends \core_external\tests\externallib_testc
      * Test execute method with no login.
      */
     public function test_execute_no_login(): void {
-        $this->expectException(\require_login_exception::class);
+        $this->expectException(require_login_exception::class);
         set_plugin_state::execute('mod_assign', 1);
     }
 
@@ -120,7 +124,7 @@ final class set_plugin_state_test extends \core_external\tests\externallib_testc
         $this->resetAfterTest();
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         set_plugin_state::execute('mod_assign', 1);
     }
 }

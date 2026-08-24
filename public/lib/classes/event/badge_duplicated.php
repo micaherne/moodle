@@ -23,6 +23,9 @@
  */
 
 namespace core\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -67,7 +70,7 @@ class badge_duplicated extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/badges/overview.php', array('id' => $this->objectid));
+        return new url('/badges/overview.php', array('id' => $this->objectid));
     }
 
     /**
@@ -80,7 +83,7 @@ class badge_duplicated extends base {
         parent::validate_data();
 
         if (!isset($this->objectid)) {
-            throw new \coding_exception('The \'objectid\' must be set.');
+            throw new coding_exception('The \'objectid\' must be set.');
         }
     }
 

@@ -22,27 +22,34 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\configcolourpicker;
+use core_admin\setting\setting\configexecutable;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\configtextarea;
+use core_admin\setting\setting\heading;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
     require_once($CFG->dirroot . '/filter/algebra/lib.php');
 
     $items = [];
-    $items[] = new admin_setting_heading('filter_algebra/latexheading', get_string('latexsettings', 'filter_algebra'), '');
-    $items[] = new admin_setting_configtextarea(
+    $items[] = new heading('filter_algebra/latexheading', get_string('latexsettings', 'filter_algebra'), '');
+    $items[] = new configtextarea(
         'filter_algebra/latexpreamble',
         get_string('latexpreamble', 'filter_algebra'),
         '',
         "\\usepackage[latin1]{inputenc}\n\\usepackage{amsmath}\n" .
         "\\usepackage{amsfonts}\n\\RequirePackage{amsmath,amssymb,latexsym}\n"
     );
-    $items[] = new admin_setting_configcolourpicker(
+    $items[] = new configcolourpicker(
         'filter_algebra/latexbackground',
         get_string('backgroundcolour', 'admin'),
         '',
         '#FFFFFF'
     );
-    $items[] = new admin_setting_configtext('filter_algebra/density', get_string('density', 'admin'), '', '120', PARAM_INT);
+    $items[] = new configtext('filter_algebra/density', get_string('density', 'admin'), '', '120', PARAM_INT);
 
     $defaultfilteralgebrapathlatex   = '';
     $defaultfilteralgebrapathdvips   = '';
@@ -82,25 +89,25 @@ if ($ADMIN->fulltree) {
         set_config('pathdvisvgm', trim($pathdvisvgm, " '\""), 'filter_algebra');
     }
 
-    $items[] = new admin_setting_configexecutable(
+    $items[] = new configexecutable(
         'filter_algebra/pathlatex',
         get_string('pathlatex', 'filter_algebra'),
         '',
         $defaultfilteralgebrapathlatex
     );
-    $items[] = new admin_setting_configexecutable(
+    $items[] = new configexecutable(
         'filter_algebra/pathdvips',
         get_string('pathdvips', 'filter_algebra'),
         '',
         $defaultfilteralgebrapathdvips
     );
-    $items[] = new admin_setting_configexecutable(
+    $items[] = new configexecutable(
         'filter_algebra/pathconvert',
         get_string('pathconvert', 'filter_algebra'),
         '',
         $defaultfilteralgebrapathconvert
     );
-    $items[] = new admin_setting_configexecutable(
+    $items[] = new configexecutable(
         'filter_algebra/pathdvisvgm',
         get_string('pathdvisvgm', 'filter_algebra'),
         '',
@@ -110,7 +117,7 @@ if ($ADMIN->fulltree) {
     // The update callback checks whether required paths actually point to executables.
     // If they don't, we force the setting to PNG as the default fallback format.
     $formats = ['png' => 'PNG', 'gif' => 'GIF', 'svg' => 'SVG'];
-    $items[] = new admin_setting_configselect(
+    $items[] = new configselect(
         'filter_algebra/convertformat',
         get_string('convertformat', 'filter_algebra'),
         get_string('configconvertformat', 'filter_algebra'),

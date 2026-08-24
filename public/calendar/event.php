@@ -46,6 +46,9 @@
  * @package calendar
  */
 
+use core\exception\moodle_exception;
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->dirroot.'/calendar/event_form.php');
 require_once($CFG->dirroot.'/calendar/lib.php');
@@ -75,7 +78,7 @@ if (!empty($day) && !empty($month) && !empty($year)) {
     $time = time();
 }
 
-$url = new moodle_url('/calendar/event.php', array('action' => $action));
+$url = new url('/calendar/event.php', array('action' => $action));
 
 if ($eventid != 0) {
     $url->param('id', $eventid);
@@ -100,7 +103,7 @@ if ($courseid != SITEID && !empty($courseid)) {
 require_login($course, false);
 
 if ($action === 'delete' && $eventid > 0) {
-    $deleteurl = new moodle_url('/calendar/delete.php', array('id'=>$eventid));
+    $deleteurl = new url('/calendar/delete.php', array('id'=>$eventid));
     if ($courseid > 0) {
         $deleteurl->param('course', $courseid);
     }
@@ -115,7 +118,7 @@ if ($eventid !== 0) {
     $title = get_string('editevent', 'calendar');
     $event = calendar_event::load($eventid);
     if (!calendar_edit_event_allowed($event, true)) {
-        throw new \moodle_exception('nopermissions');
+        throw new moodle_exception('nopermissions');
     }
     $event->action = $action;
     $event->course = $courseid;
@@ -123,7 +126,7 @@ if ($eventid !== 0) {
     $event->count_repeats();
 
     if (!calendar_add_event_allowed($event)) {
-        throw new \moodle_exception('nopermissions');
+        throw new moodle_exception('nopermissions');
     }
 
     // Check to see if this event is part of a subscription or import.
@@ -151,7 +154,7 @@ if ($eventid !== 0) {
     $event->timestart = $time;
     $event = new calendar_event($event);
     if (!calendar_add_event_allowed($event)) {
-        throw new \moodle_exception('nopermissions');
+        throw new moodle_exception('nopermissions');
     }
 }
 
@@ -176,7 +179,7 @@ if ($data) {
         'view' => 'day',
         'time' => $event->timestart,
     );
-    $eventurl = new moodle_url('/calendar/view.php', $params);
+    $eventurl = new url('/calendar/view.php', $params);
     if (!empty($event->courseid) && $event->courseid != SITEID) {
         $eventurl->param('course', $event->courseid);
     }
@@ -184,7 +187,7 @@ if ($data) {
     redirect($eventurl);
 }
 
-$viewcalendarurl = new moodle_url(CALENDAR_URL.'view.php', $PAGE->url->params());
+$viewcalendarurl = new url(CALENDAR_URL.'view.php', $PAGE->url->params());
 $viewcalendarurl->remove_params(array('id', 'action'));
 $viewcalendarurl->param('view', 'upcoming');
 $strcalendar = get_string('calendar', 'calendar');

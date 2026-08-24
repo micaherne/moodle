@@ -26,6 +26,7 @@
 
 namespace quizaccess_seb;
 
+use core\lang_string;
 use core\persistent;
 
 defined('MOODLE_INTERNAL') || die();
@@ -112,7 +113,7 @@ class template extends persistent {
         if (helper::is_valid_seb_config($content)) {
             return true;
         } else {
-            return new \lang_string('invalidtemplate', 'quizaccess_seb');
+            return new lang_string('invalidtemplate', 'quizaccess_seb');
         }
     }
 

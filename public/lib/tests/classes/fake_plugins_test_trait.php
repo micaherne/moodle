@@ -16,6 +16,9 @@
 
 namespace core\tests;
 
+use core\exception\coding_exception;
+use core_cache\cache;
+
 /**
  * Trait support full/deep plugin/subplugin mocking, forcing \core\component to rebuild in full.
  *
@@ -89,7 +92,7 @@ trait fake_plugins_test_trait {
         $componentsource = $mockedcomponent->getStaticPropertyValue('componentsource');
         $componentsourcekey = 'plugintypes';
         if (object_property_exists($componentsource[$componentsourcekey], $plugintype)) {
-            throw new \coding_exception("The plugintype '{$plugintype}' already exists in component sources.");
+            throw new coding_exception("The plugintype '{$plugintype}' already exists in component sources.");
         }
         $componentsource[$componentsourcekey]->$plugintype = $path;
         $mockedcomponent->setStaticPropertyValue('componentsource', $componentsource);
@@ -136,7 +139,7 @@ trait fake_plugins_test_trait {
         }
 
         // Finally purge whatever was already cached in plugin_manager.
-        \cache::make('core', 'plugin_manager')->purge();
+        cache::make('core', 'plugin_manager')->purge();
     }
 
     /**

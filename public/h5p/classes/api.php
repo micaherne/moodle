@@ -24,7 +24,12 @@
 
 namespace core_h5p;
 
+use core\context;
+use core\exception\moodle_exception;
 use core\lock\lock_config;
+use core\url;
+use core_cache\cache;
+use core_course\cm_info;
 use Moodle\H5PCore;
 
 /**
@@ -68,7 +73,7 @@ class api {
         $DB->delete_records('h5p_libraries', array('id' => $library->id));
 
         // Remove the library from the cache.
-        $libscache = \cache::make('core', 'h5p_libraries');
+        $libscache = cache::make('core', 'h5p_libraries');
         $libarray = [
             'machineName' => $library->machinename,
             'majorVersion' => $library->majorversion,
@@ -309,7 +314,7 @@ class api {
         // For mod/block files, check if the user has the addinstance capability of the component where the file belongs.
         if ($type === 'mod' || $type === 'block') {
             // For any other component, check whether the user can add/edit them.
-            $context = \context::instance_by_id($file->get_contextid());
+            $context = context::instance_by_id($file->get_contextid());
             $plugins = \core_component::get_plugin_list($type);
             $isvalid = array_key_exists($component, $plugins);
             if ($isvalid && has_capability("$type/$component:addinstance", $context)) {
@@ -372,7 +377,7 @@ class api {
             $h5p = false;
         }
 
-        $context = \context::instance_by_id($file->get_contextid());
+        $context = context::instance_by_id($file->get_contextid());
         if ($h5p) {
             // The H5P content has been deployed previously.
 
@@ -497,7 +502,7 @@ class api {
         global $USER, $CFG;
 
         // Decode the URL before start processing it.
-        $url = new \moodle_url(urldecode($url));
+        $url = new url(urldecode($url));
 
         // Remove params from the URL (such as the 'forcedownload=1'), to avoid errors.
         $url->remove_params(array_keys($url->params()));
@@ -520,13 +525,13 @@ class api {
         // Get the context.
         try {
             list($context, $course, $cm) = get_context_info_array($contextid);
-        } catch (\moodle_exception $e) {
-            throw new \moodle_exception('invalidcontextid', 'core_h5p');
+        } catch (moodle_exception $e) {
+            throw new moodle_exception('invalidcontextid', 'core_h5p');
         }
 
         // For CONTEXT_USER, such as the private files, raise an exception if the owner of the file is not the current user.
         if ($context->contextlevel == CONTEXT_USER && $USER->id !== $context->instanceid) {
-            throw new \moodle_exception('h5pprivatefile', 'core_h5p');
+            throw new moodle_exception('h5pprivatefile', 'core_h5p');
         }
 
         if (!is_siteadmin($USER)) {
@@ -572,7 +577,7 @@ class api {
 
                 // Now check if module is available OR it is restricted but the intro is shown on the course page.
                 if ($context->contextlevel == CONTEXT_MODULE) {
-                    $cminfo = \cm_info::create($cm);
+                    $cminfo = cm_info::create($cm);
                     if (!$cminfo->uservisible) {
                         if (!$cm->showdescription || !$cminfo->is_visible_on_course_page()) {
                             // Module intro is not visible on the course page and module is not available, show access error.
@@ -598,7 +603,7 @@ class api {
     protected static function get_pluginfile_hash(string $url) {
 
         // Decode the URL before start processing it.
-        $url = new \moodle_url(urldecode($url));
+        $url = new url(urldecode($url));
 
         // Remove params from the URL (such as the 'forcedownload=1'), to avoid errors.
         $url->remove_params(array_keys($url->params()));
@@ -627,8 +632,8 @@ class api {
         // Get the context.
         try {
             list($context, $course, $cm) = get_context_info_array($contextid);
-        } catch (\moodle_exception $e) {
-            throw new \moodle_exception('invalidcontextid', 'core_h5p');
+        } catch (moodle_exception $e) {
+            throw new moodle_exception('invalidcontextid', 'core_h5p');
         }
 
         // Some components, such as mod_page or mod_resource, add the revision to the URL to prevent caching problems.
@@ -767,7 +772,7 @@ class api {
         }
 
         if (empty($params)) {
-            throw new \moodle_exception("Missing 'machinename' or 'id' in librarydata parameter");
+            throw new moodle_exception("Missing 'machinename' or 'id' in librarydata parameter");
         }
 
         $libraries = $DB->get_records('h5p_libraries', $params);

@@ -19,7 +19,7 @@ declare(strict_types=1);
 namespace core_cohort\reportbuilder\local\entities;
 
 use stdClass;
-use theme_config;
+use core\output\theme_config;
 use core\{context, context_helper};
 use core\lang_string;
 use core_reportbuilder\local\entities\base;

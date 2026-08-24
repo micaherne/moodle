@@ -24,6 +24,10 @@
 
 namespace tool_langimport\event;
 
+use core\context\system;
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -49,7 +53,7 @@ class langpack_imported extends \core\event\base {
      */
     public static function event_with_langcode($langcode) {
         $data = array(
-            'context' => \context_system::instance(),
+            'context' => system::instance(),
             'other' => array(
                 'langcode' => $langcode,
             )
@@ -92,7 +96,7 @@ class langpack_imported extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/admin/tool/langimport/');
+        return new url('/admin/tool/langimport/');
     }
 
     /**
@@ -104,12 +108,12 @@ class langpack_imported extends \core\event\base {
         parent::validate_data();
 
         if (!isset($this->other['langcode'])) {
-            throw new \coding_exception('The \'langcode\' value must be set');
+            throw new coding_exception('The \'langcode\' value must be set');
         }
         // We can't use PARAM_LANG here as the string manager might not be aware of langpack yet.
         $cleanedlang = clean_param($this->other['langcode'], PARAM_SAFEDIR);
         if ($cleanedlang !== $this->other['langcode']) {
-            throw new \coding_exception('The \'langcode\' value must be set to a valid language code');
+            throw new coding_exception('The \'langcode\' value must be set to a valid language code');
         }
     }
 

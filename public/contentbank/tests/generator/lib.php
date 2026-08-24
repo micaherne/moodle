@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\system;
 use core_contentbank\content;
 
 defined('MOODLE_INTERNAL') || die();
@@ -53,7 +55,7 @@ class core_contentbank_generator extends \component_generator_base {
      * @return array An array with all the records added to the content bank.
      */
     public function generate_contentbank_data(?string $contenttype, int $itemstocreate = 1, int $userid = 0,
-            ?\context $context = null, bool $convert2class = true, string $filepath = 'contentfile.h5p',
+            ?context $context = null, bool $convert2class = true, string $filepath = 'contentfile.h5p',
             string $contentname = 'Test content ', int $visibility = content::VISIBILITY_PUBLIC): array {
         global $DB, $USER;
 
@@ -66,7 +68,7 @@ class core_contentbank_generator extends \component_generator_base {
             return $records;
         }
         if (empty($context)) {
-            $context = \context_system::instance();
+            $context = system::instance();
         }
         $type = new $contenttypeclass($context);
         $fs = get_file_storage();

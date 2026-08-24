@@ -1,5 +1,10 @@
 <?php
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 require_once('../../config.php');
 require_once('lib.php');
 
@@ -8,7 +13,7 @@ $courseid = optional_param('courseid', 0, PARAM_INT);
 $eid      = optional_param('eid', 0, PARAM_INT); // glossary entry id
 $displayformat = optional_param('displayformat',-1, PARAM_SAFEDIR);
 
-$url = new moodle_url('/mod/glossary/showentry.php');
+$url = new url('/mod/glossary/showentry.php');
 $url->param('concept', $concept);
 $url->param('courseid', $courseid);
 $url->param('eid', $eid);
@@ -41,7 +46,7 @@ if ($eid) {
     $entries = glossary_get_entries_search($concept, $courseid);
 
 } else {
-    throw new \moodle_exception('invalidelementid');
+    throw new moodle_exception('invalidelementid');
 }
 
 $PAGE->set_pagelayout('incourse');
@@ -60,7 +65,7 @@ if ($entries) {
         }
         // make sure the entry is approved (or approvable by current user)
         if (!$entry->approved and ($USER->id != $entry->userid)) {
-            $context = context_module::instance($entry->cmid);
+            $context = module::instance($entry->cmid);
             if (!has_capability('mod/glossary:approve', $context)) {
                 unset($entries[$key]);
                 continue;
@@ -90,7 +95,7 @@ if (!empty($courseid)) {
 }
 
 if (isset($glossary)) {
-    $url = new moodle_url('view.php', ['id' => $cm->id]);
+    $url = new url('view.php', ['id' => $cm->id]);
     $backlink = html_writer::link($url, get_string('back'), ['class' => 'btn btn-secondary']);
     echo html_writer::tag('div', $backlink, ['class' => 'tertiary-navigation']);
 }

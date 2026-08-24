@@ -27,6 +27,9 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
 use tool_policy\api;
 use tool_policy\output\page_agreedocs;
 
@@ -57,7 +60,7 @@ $listdocs = array_values(array_unique($listdocs));
 $agreedocs = array_values(array_unique($agreedocs));
 $declinedocs = array_values(array_unique($declinedocs));
 
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $PAGE->set_pagelayout('secure');
 $PAGE->set_url('/admin/tool/policy/index.php');
 $PAGE->set_popup_notification_allowed(false);
@@ -77,7 +80,7 @@ if (isloggedin() && !isguestuser()) {
 if (!$haspermissionagreedocs) {
     $outputpage = new \tool_policy\output\page_nopermission($listdocs, $behalfid);
 } else if ($cancel) {
-    redirect(new moodle_url('/'));
+    redirect(new url('/'));
 } else {
     if (!$behalfid && \core\session\manager::is_loggedinas()) {
         $behalfid = $USER->id;

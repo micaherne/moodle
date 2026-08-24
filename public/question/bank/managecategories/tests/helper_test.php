@@ -16,8 +16,11 @@
 
 namespace qbank_managecategories;
 
+use core\context\module;
 use core\exception\moodle_exception;
+use core\exception\required_capability_exception;
 use core_question\category_manager;
+use mod_quiz\tests\question_helper_test_trait;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -35,7 +38,7 @@ require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.ph
  * @coversDefaultClass \qbank_managecategories\helper
  */
 final class helper_test extends manage_category_test_base {
-    use \quiz_question_helper_test_trait;
+    use question_helper_test_trait;
 
     /**
      * @var \context_module module context.
@@ -72,7 +75,7 @@ final class helper_test extends manage_category_test_base {
             ['course' => $this->course->id, 'name' => 'Quiz 1'],
         );
         $this->qgenerator = $datagenerator->get_plugin_generator('core_question');
-        $this->context = \context_module::instance($this->quiz->cmid);
+        $this->context = module::instance($this->quiz->cmid);
     }
 
     /**
@@ -119,7 +122,7 @@ final class helper_test extends manage_category_test_base {
             MUST_EXIST
         );
 
-        $contexts = new \core_question\local\bank\question_edit_contexts(\context_module::instance($quiz->cmid));
+        $contexts = new \core_question\local\bank\question_edit_contexts(module::instance($quiz->cmid));
         $manager = new category_manager();
         $this->assertEquals(1, count($manager->get_real_question_ids_in_category($qcat1->id, $contexts)));
         $this->assertEquals(2, count($manager->get_real_question_ids_in_category($qcat2->id, $contexts)));
@@ -216,7 +219,7 @@ final class helper_test extends manage_category_test_base {
 
         try {
             helper::question_can_delete_cat($qcategory2->id);
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             $this->assertEquals(
                 get_string('nopermissions', 'error', get_string('question:managecategory', 'role')),
                 $e->getMessage(),
@@ -242,7 +245,7 @@ final class helper_test extends manage_category_test_base {
         // Create category.
         $quiz = $this->create_quiz();
         $this->create_question_category_for_a_quiz($quiz, ['name' => 'Test this question category']);
-        $contexts = new \core_question\local\bank\question_edit_contexts(\context_module::instance($quiz->cmid));
+        $contexts = new \core_question\local\bank\question_edit_contexts(module::instance($quiz->cmid));
 
         ob_start();
         helper::question_category_select_menu($contexts->having_cap('moodle/question:add'));
@@ -268,12 +271,12 @@ final class helper_test extends manage_category_test_base {
 
         // Create categories.
         $quiz = $this->create_quiz();
-        $context = \context_module::instance($quiz->cmid);
+        $context = module::instance($quiz->cmid);
         $qcategory1 = question_get_default_category($context->id);
         $this->create_question_category_for_a_quiz($quiz, ['parent' => $qcategory1->id]);
         $this->create_question_category_for_a_quiz($quiz);
 
-        $contexts = new \core_question\local\bank\question_edit_contexts(\context_module::instance($quiz->cmid));
+        $contexts = new \core_question\local\bank\question_edit_contexts(module::instance($quiz->cmid));
 
         // Validate that we have the array with the categories tree.
         $categorycontexts = helper::question_category_options($contexts->having_cap('moodle/question:add'));
@@ -301,12 +304,12 @@ final class helper_test extends manage_category_test_base {
 
         // Create categories.
         $quiz = $this->create_quiz();
-        $context = \context_module::instance($quiz->cmid);
+        $context = module::instance($quiz->cmid);
         $qcategory1 = question_get_default_category($context->id);
         $qcategory2 = $this->create_question_category_for_a_quiz($quiz, ['parent' => $qcategory1->id]);
         $qcategory3 = $this->create_question_category_for_a_quiz($quiz);
 
-        $contexts = new \core_question\local\bank\question_edit_contexts(\context_module::instance($quiz->cmid));
+        $contexts = new \core_question\local\bank\question_edit_contexts(module::instance($quiz->cmid));
 
         $categorycontexts = helper::question_category_options($contexts->having_cap('moodle/question:add'));
         // We get all categories without the currentcat parameter.
@@ -334,7 +337,7 @@ final class helper_test extends manage_category_test_base {
         global $DB;
         // Create quiz.
         $quiz = $this->quiz;
-        $context = \context_module::instance($quiz->cmid);
+        $context = module::instance($quiz->cmid);
         // Get the question category and create one hidden question.
         $qcat = question_get_default_category($context->id);
         $q1 = $this->create_question_in_a_category('shortanswer', $qcat->id);

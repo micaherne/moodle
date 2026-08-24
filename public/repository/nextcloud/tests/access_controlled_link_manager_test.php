@@ -16,6 +16,7 @@
 
 namespace repository_nextcloud;
 
+use core\context\module;
 use testable_access_controlled_link_manager;
 
 defined('MOODLE_INTERNAL') || die();
@@ -220,7 +221,7 @@ XML;
      */
     protected function set_up_mocks_for_create_folder_path($returnisdir, $returnestedcontext, $callmkcol = false,
                                                            $returnmkcol = 201) {
-        $mockcontext = $this->createMock(\context_module::class);
+        $mockcontext = $this->createMock(module::class);
         $mockclient = $this->getMockBuilder(\webdav_client::class
         )->disableOriginalConstructor()->disableOriginalClone()->getMock();
         $parsedwebdavurl = parse_url($this->issuer->get_endpoint_url('webdav'));

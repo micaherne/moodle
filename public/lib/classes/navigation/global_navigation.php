@@ -16,8 +16,8 @@
 
 namespace core\navigation;
 
-use cm_info;
-use section_info;
+use core_course\cm_info;
+use core_course\section_info;
 use core\component;
 use core\context\course as context_course;
 use core\context\coursecat as context_coursecat;
@@ -33,7 +33,7 @@ use core\url;
 use core_cache\cache;
 use core_cache\session_cache;
 use core_course_category;
-use course_modinfo;
+use core_course\modinfo;
 use moodle_page;
 use stdClass;
 

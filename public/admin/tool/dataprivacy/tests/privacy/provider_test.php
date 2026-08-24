@@ -25,6 +25,8 @@ namespace tool_dataprivacy\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\system;
+use core\context\user;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
 use core_privacy\tests\provider_testcase;
@@ -50,7 +52,7 @@ final class provider_test extends provider_testcase {
         $this->resetAfterTest();
 
         $user = $this->getDataGenerator()->create_user();
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
 
         // Returned context list should contain a single item.
         $contextlist = $this->get_contexts_for_userid($user->id, 'tool_dataprivacy');
@@ -69,7 +71,7 @@ final class provider_test extends provider_testcase {
         $this->resetAfterTest();
 
         $user = $this->getDataGenerator()->create_user();
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
 
         $userlist = new userlist($context, 'tool_dataprivacy');
         provider::get_users_in_context($userlist);
@@ -83,7 +85,7 @@ final class provider_test extends provider_testcase {
      * @return void
      */
     public function test_get_users_in_context_non_user_context(): void {
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $userlist = new userlist($context, 'tool_dataprivacy');
         provider::get_users_in_context($userlist);
@@ -100,7 +102,7 @@ final class provider_test extends provider_testcase {
         $this->resetAfterTest();
 
         $user = $this->getDataGenerator()->create_user();
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
 
         $this->setUser($user);
 
@@ -171,7 +173,7 @@ final class provider_test extends provider_testcase {
         provider::export_user_preferences($user->id);
 
         /** @var \core_privacy\tests\request\content_writer $writer */
-        $writer = writer::with_context(\context_system::instance());
+        $writer = writer::with_context(system::instance());
         $this->assertTrue($writer->has_any_data());
 
         /** @var stdClass[] $preferences */

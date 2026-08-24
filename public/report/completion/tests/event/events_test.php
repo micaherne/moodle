@@ -24,6 +24,9 @@
 
 namespace report_completion\event;
 
+use core\context\course;
+use core\url;
+
 /**
  * Class report_completion_events_testcase
  *
@@ -52,7 +55,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_report_viewed(): void {
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         // Trigger event for completion report viewed.
         $event = \report_completion\event\report_viewed::create(array('context' => $context));
 
@@ -64,7 +67,7 @@ final class events_test extends \advanced_testcase {
 
         $this->assertInstanceOf('\report_completion\event\report_viewed', $event);
         $this->assertEquals($context, $event->get_context());
-        $url = new \moodle_url('/report/completion/index.php', array('course' => $course->id));
+        $url = new url('/report/completion/index.php', array('course' => $course->id));
         $this->assertEquals($url, $event->get_url());
         $this->assertEventContextNotUsed($event);
     }
@@ -77,7 +80,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_user_report_viewed(): void {
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         // Trigger event for completion report viewed.
         $event = \report_completion\event\user_report_viewed::create(array('context' => $context, 'relateduserid' => 3));
 
@@ -90,7 +93,7 @@ final class events_test extends \advanced_testcase {
         $this->assertInstanceOf('\report_completion\event\user_report_viewed', $event);
         $this->assertEquals($context, $event->get_context());
         $this->assertEquals(3, $event->relateduserid);
-        $this->assertEquals(new \moodle_url('/report/completion/user.php', array('id' => 3, 'course' => $course->id)),
+        $this->assertEquals(new url('/report/completion/user.php', array('id' => 3, 'course' => $course->id)),
                 $event->get_url());
         $this->assertEventContextNotUsed($event);
     }

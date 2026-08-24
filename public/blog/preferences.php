@@ -24,6 +24,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->dirroot.'/blog/lib.php');
 require_once('preferences_form.php');
@@ -35,7 +40,7 @@ $userid   = optional_param('userid', null, PARAM_INT);
 $tagid    = optional_param('tagid', null, PARAM_INT);
 $groupid      = optional_param('groupid', null, PARAM_INT);
 
-$url = new moodle_url('/blog/preferences.php');
+$url = new url('/blog/preferences.php');
 if ($courseid !== SITEID) {
     $url->param('courseid', $courseid);
 }
@@ -55,17 +60,17 @@ if ($groupid !== null) {
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('admin');
 
-$sitecontext = context_system::instance();
-$usercontext = context_user::instance($USER->id);
+$sitecontext = system::instance();
+$usercontext = user::instance($USER->id);
 $PAGE->set_context($usercontext);
 require_login($courseid);
 
 if (empty($CFG->enableblogs)) {
-    throw new \moodle_exception('blogdisable', 'blog');
+    throw new moodle_exception('blogdisable', 'blog');
 }
 
 if (isguestuser()) {
-    throw new \moodle_exception('noguest');
+    throw new moodle_exception('noguest');
 }
 
 // The preference is site wide not blog specific. Hence user should have permissions in site level.
@@ -80,7 +85,7 @@ if (!$mform->is_cancelled() && $data = $mform->get_data()) {
     $pagesize = $data->pagesize;
 
     if ($pagesize < 1) {
-        throw new \moodle_exception('invalidpagesize');
+        throw new moodle_exception('invalidpagesize');
     }
     useredit_update_user_preference(['id' => $USER->id,
         'preference_blogpagesize' => $pagesize]);

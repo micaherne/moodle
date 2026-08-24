@@ -25,6 +25,8 @@
  */
 namespace core_external\privacy;
 
+use core\context\system;
+use core\context\user;
 use core_external\privacy\provider;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -59,10 +61,10 @@ final class provider_test extends provider_testcase {
         $u3 = $dg->create_user();
         $u4 = $dg->create_user();
         $u5 = $dg->create_user();
-        $u1ctx = \context_user::instance($u1->id);
-        $u2ctx = \context_user::instance($u2->id);
-        $u3ctx = \context_user::instance($u3->id);
-        $u5ctx = \context_user::instance($u5->id);
+        $u1ctx = user::instance($u1->id);
+        $u2ctx = user::instance($u2->id);
+        $u3ctx = user::instance($u3->id);
+        $u5ctx = user::instance($u5->id);
 
         $s = $this->create_service();
         $this->create_token(['userid' => $u1->id]);
@@ -101,8 +103,8 @@ final class provider_test extends provider_testcase {
         $dg = $this->getDataGenerator();
         $u1 = $dg->create_user();
         $u2 = $dg->create_user();
-        $u1ctx = \context_user::instance($u1->id);
-        $u2ctx = \context_user::instance($u2->id);
+        $u1ctx = user::instance($u1->id);
+        $u2ctx = user::instance($u2->id);
 
         $s = $this->create_service();
         $this->create_token(['userid' => $u1->id, 'creatorid' => $u2->id]);
@@ -142,8 +144,8 @@ final class provider_test extends provider_testcase {
         $dg = $this->getDataGenerator();
         $u1 = $dg->create_user();
         $u2 = $dg->create_user();
-        $u1ctx = \context_user::instance($u1->id);
-        $u2ctx = \context_user::instance($u2->id);
+        $u1ctx = user::instance($u1->id);
+        $u2ctx = user::instance($u2->id);
 
         $s = $this->create_service();
         $this->create_token(['userid' => $u1->id, 'creatorid' => $u2->id]);
@@ -181,8 +183,8 @@ final class provider_test extends provider_testcase {
         $dg = $this->getDataGenerator();
         $u1 = $dg->create_user();
         $u2 = $dg->create_user();
-        $u1ctx = \context_user::instance($u1->id);
-        $u2ctx = \context_user::instance($u2->id);
+        $u1ctx = user::instance($u1->id);
+        $u2ctx = user::instance($u2->id);
 
         $path = [get_string('services', 'core_external')];
         $yearago = time() - YEARSECS;
@@ -263,19 +265,19 @@ final class provider_test extends provider_testcase {
         $component = 'core_external';
         // Create user u1.
         $u1 = $this->getDataGenerator()->create_user();
-        $u1ctx = \context_user::instance($u1->id);
+        $u1ctx = user::instance($u1->id);
         // Create user u2.
         $u2 = $this->getDataGenerator()->create_user();
-        $u2ctx = \context_user::instance($u2->id);
+        $u2ctx = user::instance($u2->id);
         // Create user u3.
         $u3 = $this->getDataGenerator()->create_user();
-        $u3ctx = \context_user::instance($u3->id);
+        $u3ctx = user::instance($u3->id);
         // Create user u4.
         $u4 = $this->getDataGenerator()->create_user();
-        $u4ctx = \context_user::instance($u4->id);
+        $u4ctx = user::instance($u4->id);
         // Create user u5.
         $u5 = $this->getDataGenerator()->create_user();
-        $u5ctx = \context_user::instance($u5->id);
+        $u5ctx = user::instance($u5->id);
 
         // The lists of users for each user context ($u1ctx, $u2ctx, etc.) should be empty.
         // Related user data have not been created yet.
@@ -333,7 +335,7 @@ final class provider_test extends provider_testcase {
         $this->assertCount(0, $userlist5);
 
         // The list of users should only return users in the user context.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $userlist6 = new \core_privacy\local\request\userlist($systemcontext, $component);
         provider::get_users_in_context($userlist6);
         $this->assertCount(0, $userlist6);
@@ -349,19 +351,19 @@ final class provider_test extends provider_testcase {
         $component = 'core_external';
         // Create user u1.
         $u1 = $this->getDataGenerator()->create_user();
-        $u1ctx = \context_user::instance($u1->id);
+        $u1ctx = user::instance($u1->id);
         // Create user u2.
         $u2 = $this->getDataGenerator()->create_user();
-        $u2ctx = \context_user::instance($u2->id);
+        $u2ctx = user::instance($u2->id);
         // Create user u3.
         $u3 = $this->getDataGenerator()->create_user();
-        $u3ctx = \context_user::instance($u3->id);
+        $u3ctx = user::instance($u3->id);
         // Create user u4.
         $u4 = $this->getDataGenerator()->create_user();
-        $u4ctx = \context_user::instance($u4->id);
+        $u4ctx = user::instance($u4->id);
         // Create user u5.
         $u5 = $this->getDataGenerator()->create_user();
-        $u5ctx = \context_user::instance($u5->id);
+        $u5ctx = user::instance($u5->id);
 
         // Create a service.
         $s = $this->create_service();
@@ -429,7 +431,7 @@ final class provider_test extends provider_testcase {
         $this->assertCount(1, $userlist5);
 
         // User data should only be removed in the user context.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $approvedlist = new approved_userlist($systemcontext, $component, $userlist5->get_userids());
         // Delete using delete_data_for_user.
         provider::delete_data_for_users($approvedlist);

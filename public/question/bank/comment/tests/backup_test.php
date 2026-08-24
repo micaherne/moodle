@@ -16,6 +16,9 @@
 
 namespace qbank_comment;
 
+use core\context\module;
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -74,7 +77,7 @@ final class backup_test extends \advanced_testcase {
         $this->category = $this->getDataGenerator()->create_category();
         $this->course = $this->getDataGenerator()->create_course(['category' => $this->category->id]);
         $qbank = self::getDataGenerator()->create_module('qbank', ['course' => $this->course->id]);
-        $context = \context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
         $this->qgen = $this->getDataGenerator()->get_plugin_generator('core_question');
         $qcat = $this->qgen->create_question_category(['contextid' => $context->id]);
 
@@ -152,7 +155,7 @@ final class backup_test extends \advanced_testcase {
 
         // Add comments to the questions.
         $args = new \stdClass;
-        $args->context = \context_system::instance();
+        $args->context = system::instance();
         $args->course = $this->course;
         $args->area = 'question';
         $args->itemid = $question1->id;

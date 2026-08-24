@@ -22,27 +22,31 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\setting\configpasswordunmask;
+use core_admin\setting\setting\configtext;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($hassiteconfig) {
     // Home server URL.
     $name = new lang_string('matrixhomeserverurl', 'communication_matrix');
     $desc = new lang_string('matrixhomeserverurl_desc', 'communication_matrix');
-    $settings->add(new admin_setting_configtext('communication_matrix/matrixhomeserverurl', $name, $desc, ''));
+    $settings->add(new configtext('communication_matrix/matrixhomeserverurl', $name, $desc, ''));
 
     // Home server name.
     $name = new lang_string('matrixhomeservername', 'communication_matrix');
     $desc = new lang_string('matrixhomeservername_desc', 'communication_matrix');
-    $settings->add(new admin_setting_configtext('communication_matrix/matrixhomeservername', $name, $desc, ''));
+    $settings->add(new configtext('communication_matrix/matrixhomeservername', $name, $desc, ''));
 
     // Access token.
     $name = new lang_string('matrixaccesstoken', 'communication_matrix');
     $desc = new lang_string('matrixaccesstoken_desc', 'communication_matrix');
-    $settings->add(new admin_setting_configpasswordunmask('communication_matrix/matrixaccesstoken', $name, $desc, ''));
+    $settings->add(new configpasswordunmask('communication_matrix/matrixaccesstoken', $name, $desc, ''));
 
     // Element web URL.
     $name = new lang_string('matrixelementurl', 'communication_matrix');
-    $settings->add(new admin_setting_configtext('communication_matrix/matrixelementurl', $name, '', ''));
+    $settings->add(new configtext('communication_matrix/matrixelementurl', $name, '', ''));
 
     // User prefix for numeric usernames.
     $name = new lang_string('matrixuserprefix', 'communication_matrix');

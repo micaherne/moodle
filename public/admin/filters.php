@@ -22,6 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\output\single_select;
+use core\plugin_manager;
+use core\url;
+use core_table\output\html_table;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
@@ -32,7 +39,7 @@ admin_externalpage_setup('managefilters');
 
 // Clean up bogus filter states first.
 /** @var core\plugininfo\filter[] $plugininfos */
-$plugininfos = core_plugin_manager::instance()->get_plugins_of_type('filter');
+$plugininfos = plugin_manager::instance()->get_plugins_of_type('filter');
 $filters = [];
 $states = filter_get_global_states();
 foreach ($states as $state) {
@@ -73,7 +80,7 @@ switch ($action) {
     case 'setstate':
         if (isset($filters[$filterpath]) and $newstate = optional_param('newstate', '', PARAM_INT)) {
             /** @var \core\plugininfo\filter $class */
-            $class = core_plugin_manager::resolve_plugininfo_class('filter');
+            $class = plugin_manager::resolve_plugininfo_class('filter');
             $class::enable_plugin($filterpath, $newstate);
         }
         break;
@@ -83,7 +90,7 @@ switch ($action) {
             $applytostrings = optional_param('stringstoo', false, PARAM_BOOL);
             filter_set_applies_to_strings($filterpath, $applytostrings);
             reset_text_filters_cache();
-            core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
         }
         break;
 
@@ -91,7 +98,7 @@ switch ($action) {
         if (isset($filters[$filterpath])) {
             filter_set_global_state($filterpath, $filters[$filterpath]->active, 1);
             reset_text_filters_cache();
-            core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
         }
         break;
 
@@ -100,14 +107,14 @@ switch ($action) {
             $oldpos = $filters[$filterpath]->sortorder;
             filter_set_global_state($filterpath, $filters[$filterpath]->active, -1);
             reset_text_filters_cache();
-            core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
         }
         break;
 }
 
 // Return.
 if ($action) {
-    redirect(new moodle_url('/admin/filters.php'));
+    redirect(new url('/admin/filters.php'));
 }
 
 // Print the page heading.
@@ -164,11 +171,11 @@ die;
  * @param string $action which action to get the URL for.
  * @return moodle_url|null the requested URL.
  */
-function filters_action_url(string $filterpath, string $action): ?moodle_url {
+function filters_action_url(string $filterpath, string $action): ?url {
     if ($action === 'delete') {
-        return core_plugin_manager::instance()->get_uninstall_url('filter_'.$filterpath, 'manage');
+        return plugin_manager::instance()->get_uninstall_url('filter_'.$filterpath, 'manage');
     }
-    return new moodle_url('/admin/filters.php',
+    return new url('/admin/filters.php',
             ['sesskey' => sesskey(), 'filterpath' => $filterpath, 'action' => $action]);
 }
 
@@ -245,7 +252,7 @@ function get_table_row(\core\plugininfo\filter $plugininfo, stdClass $state,
 
     // Settings link, if required.
     if ($active and filter_has_global_settings($filter)) {
-        $row[] = html_writer::link(new moodle_url('/admin/settings.php',
+        $row[] = html_writer::link(new url('/admin/settings.php',
                 ['section' => 'filtersetting'.$filter]), get_string('settings'));
     } else {
         $row[] = '';

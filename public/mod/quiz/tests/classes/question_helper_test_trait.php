@@ -19,6 +19,7 @@ namespace mod_quiz\tests;
 use backup;
 use backup_controller;
 use component_generator_base;
+use core_course\cm_info;
 use mod_quiz_generator;
 use mod_quiz\quiz_attempt;
 use mod_quiz\quiz_settings;
@@ -198,7 +199,7 @@ trait question_helper_test_trait {
      * @param stdClass $quiz
      * @return \cm_info|null
      */
-    protected function duplicate_quiz($course, $quiz): ?\cm_info {
+    protected function duplicate_quiz($course, $quiz): ?cm_info {
         return \core_courseformat\formatactions::cm($course)->duplicate($quiz->cmid);
     }
 

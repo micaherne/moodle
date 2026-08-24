@@ -16,9 +16,11 @@
 
 namespace core_admin\table;
 
-use core_plugin_manager;
-use flexible_table;
-use html_writer;
+use core\output\help_icon;
+use core\output\renderable;
+use core\plugin_manager;
+use core_table\flexible_table;
+use core\output\html_writer;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
@@ -39,7 +41,7 @@ class hook_list_table extends flexible_table {
     protected int $enabledplugincount = 0;
 
     /** @var core_plugin_manager */
-    protected core_plugin_manager $pluginmanager;
+    protected plugin_manager $pluginmanager;
 
     /** @var string The plugininfo class for this plugintype */
     protected string $plugininfoclass;
@@ -73,9 +75,9 @@ class hook_list_table extends flexible_table {
         $this->define_headers(array_values($columnlist));
 
         $columnswithhelp = [
-            'callbacks' => new \help_icon('hookcallbacks', 'admin'),
+            'callbacks' => new help_icon('hookcallbacks', 'admin'),
         ];
-        $columnhelp = array_map(function (string $column) use ($columnswithhelp): ?\renderable {
+        $columnhelp = array_map(function (string $column) use ($columnswithhelp): ?renderable {
             if (array_key_exists($column, $columnswithhelp)) {
                 return $columnswithhelp[$column];
             }

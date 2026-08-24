@@ -22,15 +22,19 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\heading;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
     // Add the settings page.
-    $settings->add(new admin_setting_heading('media_youtube_settings',
+    $settings->add(new heading('media_youtube_settings',
                     get_string('pluginname', 'media_youtube'),
                     get_string('pluginname_help', 'media_youtube')));
     // Add a settings checkbox to enable or disable no cookie YouTube links.
-    $settings->add(new admin_setting_configcheckbox('media_youtube/nocookie',
+    $settings->add(new configcheckbox('media_youtube/nocookie',
         new lang_string('nocookie', 'media_youtube'),
         new lang_string('nocookie_desc', 'media_youtube'), 0));
 }

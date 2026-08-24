@@ -23,10 +23,12 @@
  */
 namespace core\plugininfo;
 
-use coding_exception;
+use core\exception\coding_exception;
+use core\output\progress_trace;
+use core_admin\setting\tree\part_of_admin_tree;
 use core_component;
-use core_plugin_manager;
-use moodle_url;
+use core\plugin_manager;
+use core\url;
 
 /**
  * Base class providing access to the information about a plugin
@@ -396,12 +398,12 @@ abstract class base {
         if ($standard !== false) {
             $standard = array_flip($standard);
             if (isset($standard[$this->name])) {
-                $this->source = core_plugin_manager::PLUGIN_SOURCE_STANDARD;
+                $this->source = plugin_manager::PLUGIN_SOURCE_STANDARD;
             } else if (!is_null($this->versiondb) and is_null($this->versiondisk)
                 and $pluginman::is_deleted_standard_plugin($this->type, $this->name)) {
-                $this->source = core_plugin_manager::PLUGIN_SOURCE_STANDARD; // To be deleted.
+                $this->source = plugin_manager::PLUGIN_SOURCE_STANDARD; // To be deleted.
             } else {
-                $this->source = core_plugin_manager::PLUGIN_SOURCE_EXTENSION;
+                $this->source = plugin_manager::PLUGIN_SOURCE_EXTENSION;
             }
         }
     }
@@ -428,7 +430,7 @@ abstract class base {
      * @return bool
      */
     public function is_standard() {
-        return $this->source === core_plugin_manager::PLUGIN_SOURCE_STANDARD;
+        return $this->source === plugin_manager::PLUGIN_SOURCE_STANDARD;
     }
 
     /**
@@ -471,28 +473,28 @@ abstract class base {
         $pluginman = $this->pluginman;
 
         if (is_null($this->versiondb) and is_null($this->versiondisk)) {
-            return core_plugin_manager::PLUGIN_STATUS_NODB;
+            return plugin_manager::PLUGIN_STATUS_NODB;
 
         } else if (is_null($this->versiondb) and !is_null($this->versiondisk)) {
-            return core_plugin_manager::PLUGIN_STATUS_NEW;
+            return plugin_manager::PLUGIN_STATUS_NEW;
 
         } else if (!is_null($this->versiondb) and is_null($this->versiondisk)) {
             if ($pluginman::is_deleted_standard_plugin($this->type, $this->name)) {
-                return core_plugin_manager::PLUGIN_STATUS_DELETE;
+                return plugin_manager::PLUGIN_STATUS_DELETE;
             } else {
-                return core_plugin_manager::PLUGIN_STATUS_MISSING;
+                return plugin_manager::PLUGIN_STATUS_MISSING;
             }
 
         } else if ((float)$this->versiondb === (float)$this->versiondisk) {
             // Note: the float comparison should work fine here
             //       because there are no arithmetic operations with the numbers.
-            return core_plugin_manager::PLUGIN_STATUS_UPTODATE;
+            return plugin_manager::PLUGIN_STATUS_UPTODATE;
 
         } else if ($this->versiondb < $this->versiondisk) {
-            return core_plugin_manager::PLUGIN_STATUS_UPGRADE;
+            return plugin_manager::PLUGIN_STATUS_UPGRADE;
 
         } else if ($this->versiondb > $this->versiondisk) {
-            return core_plugin_manager::PLUGIN_STATUS_DOWNGRADE;
+            return plugin_manager::PLUGIN_STATUS_DOWNGRADE;
 
         } else {
             // $version = pi(); and similar funny jokes - hopefully Donald E. Knuth will never contribute to Moodle ;-)
@@ -599,7 +601,7 @@ abstract class base {
      *
      * @return null|moodle_url
      */
-    public function get_settings_url(): ?moodle_url {
+    public function get_settings_url(): ?url {
         $section = $this->get_settings_section_name();
         if ($section === null) {
             return null;
@@ -623,7 +625,7 @@ abstract class base {
      * @param string $parentnodename
      * @param bool $hassiteconfig whether the current user has moodle/site:config capability
      */
-    public function load_settings(\part_of_admin_tree $adminroot, $parentnodename, $hassiteconfig) {
+    public function load_settings(part_of_admin_tree $adminroot, $parentnodename, $hassiteconfig) {
     }
 
     /**
@@ -684,7 +686,7 @@ abstract class base {
      * @param \progress_trace $progress traces the process
      * @return bool true on success, false on failure
      */
-    public function uninstall(\progress_trace $progress) {
+    public function uninstall(progress_trace $progress) {
         return true;
     }
 
@@ -699,7 +701,7 @@ abstract class base {
                 return $url;
             }
         }
-        return new moodle_url('/admin/plugins.php#plugin_type_cell_'.$this->type);
+        return new url('/admin/plugins.php#plugin_type_cell_'.$this->type);
     }
 
     /**
@@ -719,7 +721,7 @@ abstract class base {
      * @return moodle_url
      */
     final public function get_default_uninstall_url($return = 'overview') {
-        return new moodle_url('/admin/plugins.php', array(
+        return new url('/admin/plugins.php', array(
             'uninstall' => $this->component,
             'confirm' => 0,
             'return' => $return,

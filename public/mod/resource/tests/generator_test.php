@@ -16,6 +16,9 @@
 
 namespace mod_resource;
 
+use core\context\module;
+use core\exception\coding_exception;
+
 /**
  * PHPUnit data generator testcase.
  *
@@ -56,7 +59,7 @@ final class generator_test extends \advanced_testcase {
         $this->assertEquals($SITE->id, $cm->course);
 
         // Check the context is correct.
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $this->assertEquals($resource->cmid, $context->instanceid);
 
         // Check that generated resource module contains a file.
@@ -72,7 +75,7 @@ final class generator_test extends \advanced_testcase {
 
         // Check that generated resource module contains a file with the specified name.
         $cm = get_coursemodule_from_instance('resource', $resource->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $files = $fs->get_area_files($context->id, 'mod_resource', 'content', false, '', false);
         $file = array_values($files)[0];
         $this->assertCount(1, $files);
@@ -88,7 +91,7 @@ final class generator_test extends \advanced_testcase {
 
         // Check that generated resource module contains the uploaded samplefile.txt.
         $cm = get_coursemodule_from_instance('resource', $resource->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $files = $fs->get_area_files($context->id, 'mod_resource', 'content', false, '', false);
         $file = array_values($files)[0];
         $this->assertCount(1, $files);
@@ -103,7 +106,7 @@ final class generator_test extends \advanced_testcase {
             ]);
             $this->assertTrue(false, 'coding_exception expected, defaultfilename is required');
         } catch (\Exception $e) {
-            $this->assertInstanceOf(\coding_exception::class, $e);
+            $this->assertInstanceOf(coding_exception::class, $e);
             $this->assertStringContainsString('defaultfilename option is required', $e->getMessage());
         }
 
@@ -116,7 +119,7 @@ final class generator_test extends \advanced_testcase {
             ]);
             $this->assertTrue(false, 'coding_exception expected, defaultfilename must point to an existing file');
         } catch (\Exception $e) {
-            $this->assertInstanceOf(\coding_exception::class, $e);
+            $this->assertInstanceOf(coding_exception::class, $e);
             $this->assertStringContainsString('defaultfilename option must point to an existing file', $e->getMessage());
         }
     }

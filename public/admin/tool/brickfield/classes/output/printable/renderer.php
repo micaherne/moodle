@@ -16,6 +16,10 @@
 
 namespace tool_brickfield\output\printable;
 
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\url;
+use core_table\output\html_table;
 use tool_brickfield\local\tool\bfpdf;
 use core\chart_bar;
 use core\chart_pie;
@@ -52,7 +56,7 @@ class renderer extends \tool_brickfield\output\renderer {
 
         if (empty($filter->target)) {
             $linkname = get_string('printable:downloadpdf', 'tool_brickfield');
-            $link = new \moodle_url(
+            $link = new url(
                 accessibility::get_plugin_url(),
                 [
                     'tab' => 'printable',
@@ -60,32 +64,32 @@ class renderer extends \tool_brickfield\output\renderer {
                     'target' => 'pdf',
                 ]
             );
-            $htmlicon = new \pix_icon('t/print', $linkname);
+            $htmlicon = new pix_icon('t/print', $linkname);
             $class = 'tool_brickfield_floatprinticon';
             $printlink = $this->action_link($link, $linkname, null, ['class' => $class, 'title' => $linkname], $htmlicon);
         }
 
-        $out .= \html_writer::tag('h3', accessibility::get_title($filter, $data->countdata));
+        $out .= html_writer::tag('h3', accessibility::get_title($filter, $data->countdata));
         $out .= !empty($printlink) ? $printlink : '';
 
-        $div1 = \html_writer::div($this->pix_icon('f/award',
+        $div1 = html_writer::div($this->pix_icon('f/award',
                 get_string('totalactivities', manager::PLUGINNAME), manager::PLUGINNAME).
             get_string('totalactivitiescount', manager::PLUGINNAME, $data->combodata['total']), '',
             ['class' => 'col-sm-3'.$css]);
-        $div2 = \html_writer::div($this->pix_icon('f/done2',
+        $div2 = html_writer::div($this->pix_icon('f/done2',
                 get_string('passed', manager::PLUGINNAME), manager::PLUGINNAME).
             get_string('passedcount', manager::PLUGINNAME, $data->combodata['passed']), '',
             ['class' => 'col-sm-3'.$css]);
-        $div3 = \html_writer::div($this->pix_icon('f/error',
+        $div3 = html_writer::div($this->pix_icon('f/error',
                 get_string('failed', manager::PLUGINNAME), manager::PLUGINNAME).
             get_string('failedcount', manager::PLUGINNAME, $data->combodata['failed']), '',
             ['class' => 'col-sm-3'.$css]);
-        $out .= \html_writer::div($div1.$div2.$div3, '', ['id' => 'rowa', 'class' => 'row h4']);
+        $out .= html_writer::div($div1.$div2.$div3, '', ['id' => 'rowa', 'class' => 'row h4']);
 
-        $out .= \html_writer::div('&nbsp;'); // Padding row.
-        $str1 = \html_writer::tag('h4', get_string('toperrors', manager::PLUGINNAME));
+        $out .= html_writer::div('&nbsp;'); // Padding row.
+        $str1 = html_writer::tag('h4', get_string('toperrors', manager::PLUGINNAME));
 
-        $table = new \html_table();
+        $table = new html_table();
         $table->head  = [
             get_string('tblcheck', manager::PLUGINNAME),
             get_string('count', manager::PLUGINNAME),
@@ -100,15 +104,15 @@ class renderer extends \tool_brickfield\output\renderer {
         }
 
         if (count($data->checkcountdata) > 0) {
-            $str1 .= \html_writer::table($table, true);
+            $str1 .= html_writer::table($table, true);
         } else {
-            $str1 .= \html_writer::tag('p', get_string('noerrorsfound', manager::PLUGINNAME));
+            $str1 .= html_writer::tag('p', get_string('noerrorsfound', manager::PLUGINNAME));
         }
-        $out .= \html_writer::start_div('row', ['id' => 'row2']);
-        $out .= \html_writer::div($str1, '', ['class' => 'col-sm-4']);
+        $out .= html_writer::start_div('row', ['id' => 'row2']);
+        $out .= html_writer::div($str1, '', ['class' => 'col-sm-4']);
 
-        $str2 = \html_writer::tag('h4', get_string('toptargets', manager::PLUGINNAME));
-        $table = new \html_table();
+        $str2 = html_writer::tag('h4', get_string('toptargets', manager::PLUGINNAME));
+        $table = new html_table();
         $table->head  = [
             get_string('tbltarget', manager::PLUGINNAME),
             get_string('count', manager::PLUGINNAME),
@@ -118,14 +122,14 @@ class renderer extends \tool_brickfield\output\renderer {
         $data->toptargetdata = !empty($data->toptargetdata) ? $data->toptargetdata : [];
         $table->data = $data->toptargetdata;
         if (count($data->toptargetdata) > 0) {
-            $str2 .= \html_writer::table($table, true);
+            $str2 .= html_writer::table($table, true);
         } else {
-            $str2 .= \html_writer::tag('p', get_string('noerrorsfound', manager::PLUGINNAME));
+            $str2 .= html_writer::tag('p', get_string('noerrorsfound', manager::PLUGINNAME));
         }
-        $out .= \html_writer::div($str2, '', ['class' => 'col-sm-4']);
+        $out .= html_writer::div($str2, '', ['class' => 'col-sm-4']);
 
-        $str3 = \html_writer::tag('h4', get_string('taberrors', manager::PLUGINNAME));
-        $table = new \html_table();
+        $str3 = html_writer::tag('h4', get_string('taberrors', manager::PLUGINNAME));
+        $table = new html_table();
         $table->head  = [
             get_string('checktype', manager::PLUGINNAME),
             get_string('count', manager::PLUGINNAME),
@@ -138,12 +142,12 @@ class renderer extends \tool_brickfield\output\renderer {
             $icon = $this->pix_icon('f/' . $checkgroup, $tmplabel, manager::PLUGINNAME);
             $table->data[] = [get_string('checktype:' . $checkgroup, manager::PLUGINNAME), $group->errorinstances];
         }
-        $str3 .= \html_writer::table($table, true);
-        $out .= \html_writer::div($str3, '', ['class' => 'col-sm-4']);
+        $str3 .= html_writer::table($table, true);
+        $out .= html_writer::div($str3, '', ['class' => 'col-sm-4']);
 
-        $out .= \html_writer::end_div(); // End row2.
+        $out .= html_writer::end_div(); // End row2.
 
-        $out .= \html_writer::start_div('row', ['id' => 'row3']);
+        $out .= html_writer::start_div('row', ['id' => 'row3']);
 
         foreach ($data->combotardata as $key => &$combotar) {
             $combotar['passed'] = $combotar['total'] - $combotar['failed'];
@@ -151,8 +155,8 @@ class renderer extends \tool_brickfield\output\renderer {
             $combosf[] = $combotar['failed'];
         }
 
-        $str4 = \html_writer::tag('h4', get_string('targetratio', manager::PLUGINNAME));
-        $table = new \html_table();
+        $str4 = html_writer::tag('h4', get_string('targetratio', manager::PLUGINNAME));
+        $table = new html_table();
         $table->head  = [
             get_string('tbltarget', manager::PLUGINNAME),
             get_string('passed', manager::PLUGINNAME),
@@ -167,11 +171,11 @@ class renderer extends \tool_brickfield\output\renderer {
 
         $table->size = ['40%', '20%', '20%', '20%'];
         $table->align = ['left', 'center', 'center', 'center'];
-        $str4 .= \html_writer::table($table, true);
-        $out .= \html_writer::div($str4, '', ['class' => 'col-sm-4']);
+        $str4 .= html_writer::table($table, true);
+        $out .= html_writer::div($str4, '', ['class' => 'col-sm-4']);
 
-        $str5 = \html_writer::tag('h4', get_string('titleerrorscount', manager::PLUGINNAME, $data->errordetailscount));
-        $table = new \html_table();
+        $str5 = html_writer::tag('h4', get_string('titleerrorscount', manager::PLUGINNAME, $data->errordetailscount));
+        $table = new html_table();
         $table->head  = [
             get_string('tbltarget', manager::PLUGINNAME),
             get_string('tblcheck', manager::PLUGINNAME),
@@ -187,13 +191,13 @@ class renderer extends \tool_brickfield\output\renderer {
 
         $table->size = ['10%', '25%', '5%', '60%'];
         if (count($data->errordata) > 0) {
-            $str5 .= \html_writer::table($table, true);
+            $str5 .= html_writer::table($table, true);
         } else {
-            $str5 .= \html_writer::tag('p', get_string('noerrorsfound', manager::PLUGINNAME));
+            $str5 .= html_writer::tag('p', get_string('noerrorsfound', manager::PLUGINNAME));
         }
-        $out .= \html_writer::div($str5, '', ['class' => 'col-sm-8']);
+        $out .= html_writer::div($str5, '', ['class' => 'col-sm-8']);
 
-        $out .= \html_writer::end_div(); // End row3.
+        $out .= html_writer::end_div(); // End row3.
 
         if ($filter->target == 'pdf') {
             // Converting divs to spans for better PDF display.

@@ -28,6 +28,8 @@
 require_once(__DIR__ . '/../../../lib/behat/behat_base.php');
 
 use Behat\Mink\Exception\ExpectationException as ExpectationException;
+use core\exception\moodle_exception;
+use core\url;
 
 /**
  * Steps definitions for users.
@@ -112,11 +114,11 @@ class behat_user extends behat_base {
      * @return moodle_url the corresponding URL.
      * @throws Exception with a meaningful error message if the specified page cannot be found.
      */
-    protected function resolve_page_url(string $page): moodle_url {
+    protected function resolve_page_url(string $page): url {
 
         switch (strtolower($page)) {
             case 'contact site support':
-                return new moodle_url('/user/contactsitesupport.php');
+                return new url('/user/contactsitesupport.php');
 
             default:
                 throw new Exception("Unrecognised core_user page type '{$page}'.");
@@ -136,7 +138,7 @@ class behat_user extends behat_base {
      * @return moodle_url the corresponding URL.
      * @throws Exception with a meaningful error message if the specified page cannot be found.
      */
-    protected function resolve_page_instance_url(string $type, string $identifier): moodle_url {
+    protected function resolve_page_instance_url(string $type, string $identifier): url {
 
         switch (strtolower($type)) {
             case 'editing':
@@ -145,13 +147,13 @@ class behat_user extends behat_base {
                     throw new Exception('The specified user with username or email "' .
                         $identifier . '" does not exist');
                 }
-                return new moodle_url('/user/editadvanced.php', ['id' => $userid]);
+                return new url('/user/editadvanced.php', ['id' => $userid]);
             case 'profile':
                 $userid = $this->get_user_id_by_identifier($identifier);
                 if (!$userid) {
                     throw new Exception('The specified user with username or email "' . $identifier . '" does not exist');
                 }
-                return new moodle_url('/user/profile.php', ['id' => $userid]);
+                return new url('/user/profile.php', ['id' => $userid]);
             default:
                 throw new Exception("Unrecognised page type '{$type}'.");
         }

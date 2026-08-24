@@ -24,6 +24,7 @@
  */
 namespace workshopform_accumulative;
 
+use core\exception\coding_exception;
 use workshop;
 use workshop_accumulative_strategy;
 
@@ -89,7 +90,7 @@ final class lib_test extends \advanced_testcase {
         $this->strategy->dimensions[1003] = (object)array('grade' => '20', 'weight' => '-1');
         $grades[] = (object)array('dimensionid' => 1003, 'grade' => '20');
         // exercise SUT
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $suggested = $this->strategy->calculate_peer_grade($grades);
     }
 
@@ -190,7 +191,7 @@ final class lib_test extends \advanced_testcase {
         $grades[] = (object)array('dimensionid' => 1012, 'grade' => '4.00000'); // exceeds the number of scale items
 
         // Exercise SUT.
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $suggested = $this->strategy->calculate_peer_grade($grades);
     }
 }

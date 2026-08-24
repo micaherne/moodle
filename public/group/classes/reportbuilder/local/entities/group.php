@@ -19,9 +19,9 @@ declare(strict_types=1);
 namespace core_group\reportbuilder\local\entities;
 
 use core\{context, context_helper};
-use html_writer;
-use lang_string;
-use moodle_url;
+use core\output\html_writer;
+use core\lang_string;
+use core\url;
 use stdClass;
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\filters\{boolean_select, date, select, text};
@@ -206,7 +206,7 @@ class group extends base {
                     return '';
                 }
 
-                $pictureurl = moodle_url::make_pluginfile_url($group->contextid, 'group', 'icon', $group->id, '/', 'f2');
+                $pictureurl = url::make_pluginfile_url($group->contextid, 'group', 'icon', $group->id, '/', 'f2');
                 $pictureurl->param('rev', $group->picture);
 
                 return html_writer::img($pictureurl, '');

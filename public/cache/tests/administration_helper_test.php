@@ -17,6 +17,8 @@
 namespace core_cache;
 
 use cache_config_testing;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 
 /**
  * PHPunit tests for the cache API and in particular the core_cache\administration_helper
@@ -156,7 +158,7 @@ final class administration_helper_test extends \advanced_testcase {
         try {
             $form = factory::get_administration_display_helper()->get_add_store_form('somethingstupid');
             $this->fail('You should not be able to create an add form for a store plugin that does not exist.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e, 'Needs to be: ' . get_class($e) . " ::: " . $e->getMessage());
         }
     }
@@ -176,14 +178,14 @@ final class administration_helper_test extends \advanced_testcase {
         try {
             $form = $administrationhelper->get_edit_store_form('somethingstupid', 'moron');
             $this->fail('You should not be able to create an edit form for a store plugin that does not exist.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
 
         try {
             $form = $administrationhelper->get_edit_store_form('file', 'blisters');
             $this->fail('You should not be able to create an edit form for a store plugin that does not exist.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
     }
@@ -212,7 +214,7 @@ final class administration_helper_test extends \advanced_testcase {
         try {
             helper::hash_key('test/test', $definition);
             $this->fail('Invalid key was allowed, you should see this.');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertEquals('test/test', $e->debuginfo);
         }
 
@@ -244,7 +246,7 @@ final class administration_helper_test extends \advanced_testcase {
                 'area' => 'test',
                 'simplekeys' => true,
         ]);
-        $cache = \cache::make('phpunit', 'test');
+        $cache = cache::make('phpunit', 'test');
         for ($i = 0; $i < 100; $i++) {
             $cache->set('key' . $i, str_repeat('x', $i));
         }

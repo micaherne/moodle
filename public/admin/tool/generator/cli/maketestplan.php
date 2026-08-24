@@ -22,6 +22,9 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
+use core\url;
+
 define('CLI_SCRIPT', true);
 define('NO_OUTPUT_BUFFERING', true);
 
@@ -102,7 +105,7 @@ $usersfile = tool_generator_testplan_backend::create_users_file($courseid, !empt
 $testplanfile = tool_generator_testplan_backend::create_testplan_file($courseid, $size);
 
 // One file path per line so other CLI scripts can easily parse the output.
-echo moodle_url::make_pluginfile_url(
+echo url::make_pluginfile_url(
         $testplanfile->get_contextid(),
         $testplanfile->get_component(),
         $testplanfile->get_filearea(),
@@ -111,7 +114,7 @@ echo moodle_url::make_pluginfile_url(
         $testplanfile->get_filename()
     ) .
     PHP_EOL .
-    moodle_url::make_pluginfile_url(
+    url::make_pluginfile_url(
         $usersfile->get_contextid(),
         $usersfile->get_component(),
         $usersfile->get_filearea(),

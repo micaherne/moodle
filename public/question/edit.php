@@ -23,7 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
 use core\event\question_category_viewed;
+use core\navigation\navigation_node;
+use core\url;
 use core_question\output\qbank_action_menu;
 use core_question\local\bank\view;
 
@@ -32,13 +35,13 @@ require_once($CFG->dirroot . '/question/editlib.php');
 
 // Since Moodle 5.0 any request with the courseid parameter is deprecated and will redirect to the banks management page.
 if ($courseid = optional_param('courseid', 0, PARAM_INT)) {
-    redirect(new moodle_url('/question/banks.php', ['courseid' => $courseid]));
+    redirect(new url('/question/banks.php', ['courseid' => $courseid]));
 }
 
 list($thispageurl, $contexts, $cmid, $cm, $module, $pagevars) =
         question_edit_setup('questions', '/question/edit.php');
 
-$actionurl = new moodle_url($thispageurl);
+$actionurl = new url($thispageurl);
 if (($lastchanged = optional_param('lastchanged', 0, PARAM_INT)) !== 0) {
     $thispageurl->param('lastchanged', $lastchanged);
 }

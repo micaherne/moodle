@@ -16,6 +16,10 @@
 
 namespace core_message;
 
+use core\context\course;
+use core\context\system;
+use core\context\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -159,18 +163,18 @@ final class search_received_test extends \advanced_testcase {
         // Test function with null context and system context (same).
         $rs = $searcharea->get_document_recordset(0, null);
         $this->assertEquals(['Test1', 'Test2'], search_sent_test::recordset_to_subjects($rs));
-        $rs = $searcharea->get_document_recordset(0, \context_system::instance());
+        $rs = $searcharea->get_document_recordset(0, system::instance());
         $this->assertEquals(['Test1', 'Test2'], search_sent_test::recordset_to_subjects($rs));
 
         // Test with user context for each user.
-        $rs = $searcharea->get_document_recordset(0, \context_user::instance($user1->id));
+        $rs = $searcharea->get_document_recordset(0, user::instance($user1->id));
         $this->assertEquals(['Test2'], search_sent_test::recordset_to_subjects($rs));
-        $rs = $searcharea->get_document_recordset(0, \context_user::instance($user2->id));
+        $rs = $searcharea->get_document_recordset(0, user::instance($user2->id));
         $this->assertEquals(['Test1'], search_sent_test::recordset_to_subjects($rs));
 
         // Test with a course context (should return null).
         $this->assertNull($searcharea->get_document_recordset(0,
-                \context_course::instance($SITE->id)));
+                course::instance($SITE->id)));
     }
 
     /**

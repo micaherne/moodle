@@ -23,6 +23,9 @@
  */
 
 namespace mod_feedback\event;
+
+use core\context\module;
+use core\exception\coding_exception;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -61,7 +64,7 @@ class course_module_viewed extends \core\event\course_module_viewed {
     public static function create_from_record($feedback, $cm, $course) {
         $event = self::create(array(
             'objectid' => $feedback->id,
-            'context' => \context_module::instance($cm->id),
+            'context' => module::instance($cm->id),
             'anonymous' => ($feedback->anonymous == FEEDBACK_ANONYMOUS_YES),
             'other' => array(
                 'anonymous' => $feedback->anonymous // Deprecated.
@@ -104,7 +107,7 @@ class course_module_viewed extends \core\event\course_module_viewed {
         parent::validate_data();
 
         if (!isset($this->other['anonymous'])) {
-            throw new \coding_exception('The \'anonymous\' value must be set in other.');
+            throw new coding_exception('The \'anonymous\' value must be set in other.');
         }
     }
 

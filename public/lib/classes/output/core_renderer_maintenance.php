@@ -19,7 +19,7 @@ namespace core\output;
 use core_block\output\block_contents;
 use core\exception\coding_exception;
 use moodle_page;
-use moodle_url;
+use core\url;
 use stdClass;
 
 /**
@@ -159,12 +159,12 @@ class core_renderer_maintenance extends core_renderer {
             $continue->type = single_button::BUTTON_PRIMARY;
         } else if (is_string($continue)) {
             $continue = new single_button(
-                new moodle_url($continue),
+                new url($continue),
                 get_string('continue'),
                 'post',
                 $displayoptions['type'] ?? single_button::BUTTON_PRIMARY
             );
-        } else if ($continue instanceof moodle_url) {
+        } else if ($continue instanceof url) {
             $continue = new single_button(
                 $continue,
                 get_string('continue'),
@@ -179,8 +179,8 @@ class core_renderer_maintenance extends core_renderer {
         if ($cancel instanceof single_button) {
             $output = '';
         } else if (is_string($cancel)) {
-            $cancel = new single_button(new moodle_url($cancel), get_string('cancel'), 'get');
-        } else if ($cancel instanceof moodle_url) {
+            $cancel = new single_button(new url($cancel), get_string('cancel'), 'get');
+        } else if ($cancel instanceof url) {
             $cancel = new single_button($cancel, get_string('cancel'), 'get');
         } else {
             throw new coding_exception('The cancel param to $OUTPUT->confirm() must be either a URL' .

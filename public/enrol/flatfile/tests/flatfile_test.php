@@ -25,6 +25,10 @@
 
 namespace enrol_flatfile;
 
+use core\context\course;
+use core\output\progress_trace\null_progress_trace;
+use core\output\progress_trace\progress_trace_buffer;
+use core\output\progress_trace\text_progress_trace;
 use enrol_flatfile\task\flatfile_sync_task;
 
 /**
@@ -65,9 +69,9 @@ final class flatfile_test extends \advanced_testcase {
         $flatfileplugin = enrol_get_plugin('flatfile');
 
         // Just make sure the sync does not throw any errors when nothing to do.
-        $flatfileplugin->sync(new \null_progress_trace());
+        $flatfileplugin->sync(new null_progress_trace());
         $this->enable_plugin();
-        $flatfileplugin->sync(new \null_progress_trace());
+        $flatfileplugin->sync(new null_progress_trace());
     }
 
     public function test_sync(): void {
@@ -80,7 +84,7 @@ final class flatfile_test extends \advanced_testcase {
         $manualplugin = enrol_get_plugin('manual');
         $this->assertNotEmpty($manualplugin);
 
-        $trace = new \null_progress_trace();
+        $trace = new null_progress_trace();
         $this->enable_plugin();
         $file = "$CFG->dataroot/enrol.txt";
 
@@ -102,9 +106,9 @@ final class flatfile_test extends \advanced_testcase {
         $course1 = $this->getDataGenerator()->create_course(array('idnumber'=>'c1'));
         $course2 = $this->getDataGenerator()->create_course(array('idnumber'=>'c2'));
         $course3 = $this->getDataGenerator()->create_course(array('idnumber'=>'c3'));
-        $context1 = \context_course::instance($course1->id);
-        $context2 = \context_course::instance($course2->id);
-        $context3 = \context_course::instance($course3->id);
+        $context1 = course::instance($course1->id);
+        $context2 = course::instance($course2->id);
+        $context3 = course::instance($course3->id);
 
         $maninstance1 = $DB->get_record('enrol', array('courseid'=>$course1->id, 'enrol'=>'manual'), '*', MUST_EXIST);
         $maninstance2 = $DB->get_record('enrol', array('courseid'=>$course2->id, 'enrol'=>'manual'), '*', MUST_EXIST);
@@ -291,7 +295,7 @@ final class flatfile_test extends \advanced_testcase {
 
         $this->enable_plugin();
 
-        $trace = new \progress_trace_buffer(new \text_progress_trace(), false);
+        $trace = new progress_trace_buffer(new text_progress_trace(), false);
         $file = "$CFG->dataroot/enrol.txt";
         $flatfileplugin->set_config('location', $file);
 
@@ -307,8 +311,8 @@ final class flatfile_test extends \advanced_testcase {
 
         $course1 = $this->getDataGenerator()->create_course(array('idnumber'=>'c1'));
         $course2 = $this->getDataGenerator()->create_course(array('idnumber'=>'c2'));
-        $context1 = \context_course::instance($course1->id);
-        $context2 = \context_course::instance($course2->id);
+        $context1 = course::instance($course1->id);
+        $context2 = course::instance($course2->id);
 
         $maninstance1 = $DB->get_record('enrol', array('courseid'=>$course1->id, 'enrol'=>'manual'), '*', MUST_EXIST);
 
@@ -375,7 +379,7 @@ final class flatfile_test extends \advanced_testcase {
         $this->assertNotEmpty($manualplugin);
 
         $now = time();
-        $trace = new \null_progress_trace();
+        $trace = new null_progress_trace();
         $this->enable_plugin();
 
 
@@ -395,8 +399,8 @@ final class flatfile_test extends \advanced_testcase {
 
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
-        $context1 = \context_course::instance($course1->id);
-        $context2 = \context_course::instance($course2->id);
+        $context1 = course::instance($course1->id);
+        $context2 = course::instance($course2->id);
 
         $data = array('roleid'=>$studentrole->id, 'courseid'=>$course1->id);
         $id = $flatfileplugin->add_instance($course1, $data);
@@ -486,7 +490,7 @@ final class flatfile_test extends \advanced_testcase {
 
         $flatfileplugin = enrol_get_plugin('flatfile');
 
-        $trace = new \null_progress_trace();
+        $trace = new null_progress_trace();
         $this->enable_plugin();
         $file = "$CFG->dataroot/enrol.txt";
         $flatfileplugin->set_config('location', $file);
@@ -496,7 +500,7 @@ final class flatfile_test extends \advanced_testcase {
 
         $user1 = $this->getDataGenerator()->create_user(array('idnumber' => 'u1'));
         $course1 = $this->getDataGenerator()->create_course(array('idnumber' => 'c1'));
-        $context1 = \context_course::instance($course1->id);
+        $context1 = course::instance($course1->id);
 
         $data =
             "add,student,u1,c1";

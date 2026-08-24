@@ -25,6 +25,8 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -98,7 +100,7 @@ class restore_section_task extends restore_task {
     public function build() {
 
         // Define the task contextid (the course one)
-        $this->contextid = context_course::instance($this->get_courseid())->id;
+        $this->contextid = course::instance($this->get_courseid())->id;
 
         // We always try to restore as much info from sections as possible, no matter of the type
         // of restore (new, existing, deleting, import...). MDL-27764

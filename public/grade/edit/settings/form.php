@@ -22,6 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\coding_exception;
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
@@ -39,7 +42,7 @@ class course_settings_form extends moodleform {
 
         $mform =& $this->_form;
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         $can_view_admin_links = false;
         if (has_capability('moodle/grade:manage', $systemcontext)) {
             $can_view_admin_links = true;

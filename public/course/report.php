@@ -1,7 +1,10 @@
 <?php
       // Display all the interfaces for importing data into a specific course
 
-    require_once('../config.php');
+    use core\context\course;
+use core\url;
+
+require_once('../config.php');
 
     $id = required_param('id', PARAM_INT);   // course id to import TO
     $course = $DB->get_record('course', array('id'=>$id), '*', MUST_EXIST);
@@ -9,12 +12,12 @@
     $PAGE->set_pagelayout('standard');
     require_login($course);
 
-    $context = context_course::instance($course->id);
+    $context = course::instance($course->id);
     require_capability('moodle/site:viewreports', $context); // basic capability for listing of reports
 
     $strreports = get_string('reports');
 
-    $PAGE->set_url(new moodle_url('/course/report.php', array('id'=>$id)));
+    $PAGE->set_url(new url('/course/report.php', array('id'=>$id)));
     $PAGE->set_title($course->fullname.': '.$strreports);
     $PAGE->set_heading($course->fullname.': '.$strreports);
     echo $OUTPUT->header();

@@ -16,6 +16,8 @@
 
 namespace enrol_self;
 
+use core\context\course;
+use core\exception\moodle_exception;
 use core_external\external_api;
 use enrol_self_external;
 
@@ -106,7 +108,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->setUser($user);
         try {
             enrol_self_external::get_instance_info($instanceid3);
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('coursehidden', $e->errorcode);
         }
     }
@@ -129,8 +131,8 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $user3 = self::getDataGenerator()->create_user();
         $user4 = self::getDataGenerator()->create_user();
 
-        $context1 = \context_course::instance($course1->id);
-        $context2 = \context_course::instance($course2->id);
+        $context1 = course::instance($course1->id);
+        $context2 = course::instance($course2->id);
 
         $selfplugin = enrol_get_plugin('self');
         $studentrole = $DB->get_record('role', array('shortname' => 'student'));
@@ -162,7 +164,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // Try instance not enabled.
         try {
             enrol_self_external::enrol_user($course2->id);
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             self::assertEquals('canntenrol', $e->errorcode);
         }
 

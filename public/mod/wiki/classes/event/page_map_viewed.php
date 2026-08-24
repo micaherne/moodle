@@ -23,6 +23,9 @@
  */
 
 namespace mod_wiki\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -76,7 +79,7 @@ class page_map_viewed extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/wiki/map.php', array('pageid' => $this->objectid));
+        return new url('/mod/wiki/map.php', array('pageid' => $this->objectid));
     }
 
     /**
@@ -88,7 +91,7 @@ class page_map_viewed extends \core\event\base {
     protected function validate_data() {
         parent::validate_data();
         if (!isset($this->other['option'])) {
-            throw new \coding_exception('The \'option\' value must be set in other, even if 0.');
+            throw new coding_exception('The \'option\' value must be set in other, even if 0.');
         }
     }
 

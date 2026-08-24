@@ -22,6 +22,7 @@ global $CFG;
 
 require_once($CFG->dirroot . '/mod/forum/lib.php');
 
+use core\exception\moodle_exception;
 use core_external\external_api;
 use mod_forum\external\set_forum_subscription;
 use mod_forum\subscriptions;
@@ -86,7 +87,7 @@ final class set_forum_subscription_test extends \core_external\tests\externallib
         );
 
         if ($expectedexception) {
-            $this->expectException(\moodle_exception::class);
+            $this->expectException(moodle_exception::class);
         } else if ($initialstate !== null) {
             // Set the initial state of the subscription.
             if ($initialstate) {
@@ -189,7 +190,7 @@ final class set_forum_subscription_test extends \core_external\tests\externallib
 
         // Attempt to subscribe to a forum that does not allow subscriptions without the required capability.
         $this->setUser($student);
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         external_api::clean_returnvalue(
             set_forum_subscription::execute_returns(),
             set_forum_subscription::execute($forum->id, true),
@@ -206,7 +207,7 @@ final class set_forum_subscription_test extends \core_external\tests\externallib
         $this->resetAfterTest();
 
         $this->setAdminUser();
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         external_api::clean_returnvalue(
             set_forum_subscription::execute_returns(),
             set_forum_subscription::execute(9999, true),
@@ -227,7 +228,7 @@ final class set_forum_subscription_test extends \core_external\tests\externallib
         $this->setUser($user);
         $forum = self::getDataGenerator()->create_module('forum', ['course' => $course->id]);
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         external_api::clean_returnvalue(
             set_forum_subscription::execute_returns(),
             set_forum_subscription::execute($forum->id, true),

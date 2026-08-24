@@ -22,22 +22,26 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\lang_string;
 use core\url;
+use core_admin\setting\tree\category;
+use core_admin\setting\tree\externalpage;
 
 defined('MOODLE_INTERNAL') || die();
 
 // New category for the plugin.
-$ADMIN->add('gradepenalty', new admin_category('gradepenalty_duedate', new lang_string('pluginname', 'gradepenalty_duedate')));
+$ADMIN->add('gradepenalty', new category('gradepenalty_duedate', new lang_string('pluginname', 'gradepenalty_duedate')));
 
 $capabilities = ['gradepenalty/duedate:manage'];
 
 if ($hassiteconfig || has_any_capability($capabilities, core\context\system::instance())) {
 
     // External page to manage the duedate rules.
-    $temp = new admin_externalpage(
+    $temp = new externalpage(
         'duedaterule',
         get_string('duedaterule', 'gradepenalty_duedate'),
-        new url('/grade/penalty/duedate/manage_penalty_rule.php', ['contextid' => context_system::instance()->id]),
+        new url('/grade/penalty/duedate/manage_penalty_rule.php', ['contextid' => system::instance()->id]),
         'gradepenalty/duedate:manage'
     );
 

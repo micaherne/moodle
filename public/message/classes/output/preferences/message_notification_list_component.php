@@ -28,8 +28,8 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/message/lib.php');
 
-use renderable;
-use templatable;
+use core\output\renderable;
+use core\output\templatable;
 
 /**
  * Class to create context for a notification component on the message preferences page.

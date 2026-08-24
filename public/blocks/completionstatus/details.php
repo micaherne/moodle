@@ -23,6 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 require_once(__DIR__.'/../../config.php');
 require_once("{$CFG->libdir}/completionlib.php");
 
@@ -44,25 +48,25 @@ if ($userid) {
 require_login($course);
 
 if (!completion_can_view_data($user->id, $course)) {
-    throw new \moodle_exception('cannotviewreport');
+    throw new moodle_exception('cannotviewreport');
 }
 
 // Load completion data.
 $info = new completion_info($course);
 
-$returnurl = new moodle_url('/course/view.php', array('id' => $id));
+$returnurl = new url('/course/view.php', array('id' => $id));
 
 // Don't display if completion isn't enabled.
 if (!$info->is_enabled()) {
-    throw new \moodle_exception('completionnotenabled', 'completion', $returnurl);
+    throw new moodle_exception('completionnotenabled', 'completion', $returnurl);
 }
 
 // Check this user is enroled.
 if (!$info->is_tracked_user($user->id)) {
     if ($USER->id == $user->id) {
-        throw new \moodle_exception('notenroled', 'completion', $returnurl);
+        throw new moodle_exception('notenroled', 'completion', $returnurl);
     } else {
-        throw new \moodle_exception('usernotenroled', 'completion', $returnurl);
+        throw new moodle_exception('usernotenroled', 'completion', $returnurl);
     }
 }
 
@@ -87,7 +91,7 @@ if ($USER->id != $user->id) {
     echo html_writer::start_tag('tr');
     echo html_writer::start_tag('td', array('colspan' => '2'));
     echo html_writer::tag('b', get_string('showinguser', 'completion') . ' ');
-    $url = new moodle_url('/user/view.php', array('id' => $user->id, 'course' => $course->id));
+    $url = new url('/user/view.php', array('id' => $user->id, 'course' => $course->id));
     echo html_writer::link($url, fullname($user));
     echo html_writer::end_tag('td');
     echo html_writer::end_tag('tr');

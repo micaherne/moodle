@@ -16,8 +16,10 @@
 
 namespace mod_data\output;
 
-use templatable;
-use renderable;
+use core\output\action_menu;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\output\renderable;
 
 /**
  * Renderable class for the action bar elements in the presets page in the database activity.
@@ -40,7 +42,7 @@ class presets_action_bar implements templatable, renderable {
      * @param int $cmid The database module id
      * @param \action_menu|null $actionsselect The presets actions selector object.
      */
-    public function __construct(int $cmid, ?\action_menu $actionsselect) {
+    public function __construct(int $cmid, ?action_menu $actionsselect) {
         $this->cmid = $cmid;
         $this->actionsselect = $actionsselect;
     }
@@ -51,7 +53,7 @@ class presets_action_bar implements templatable, renderable {
      * @param \renderer_base $output The renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         $data = [
             'id' => $this->cmid,
         ];

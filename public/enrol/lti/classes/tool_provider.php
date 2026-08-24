@@ -26,18 +26,18 @@ namespace enrol_lti;
 
 defined('MOODLE_INTERNAL') || die;
 
-use context;
+use core\context;
 use core\notification;
-use core_user;
+use core\user;
 use enrol_lti\output\registration;
-use html_writer;
+use core\output\html_writer;
 use IMSGlobal\LTI\Profile\Item;
 use IMSGlobal\LTI\Profile\Message;
 use IMSGlobal\LTI\Profile\ResourceHandler;
 use IMSGlobal\LTI\Profile\ServiceDefinition;
 use IMSGlobal\LTI\ToolProvider\ToolProvider;
-use moodle_exception;
-use moodle_url;
+use core\exception\moodle_exception;
+use core\url;
 use stdClass;
 
 require_once($CFG->dirroot . '/user/lib.php');
@@ -204,7 +204,7 @@ class tool_provider extends ToolProvider {
             $handlers = $proxy->tool_profile->resource_handler;
             foreach ($handlers as $handler) {
                 foreach ($handler->message as $message) {
-                    $handlerurl = new moodle_url($message->path);
+                    $handlerurl = new url($message->path);
                     $fullpath = $handlerurl->out(false);
                     if ($message->message_type == "basic-lti-launch-request" && $fullpath == $url) {
                         $correctlaunchurl = true;
@@ -240,7 +240,7 @@ class tool_provider extends ToolProvider {
             $user->lastname = $this->tool->contextid;
         }
 
-        $user->email = core_user::clean_field($this->user->email, 'email');
+        $user->email = user::clean_field($this->user->email, 'email');
 
         // Get the user data from the LTI consumer.
         $user = helper::assign_user_tool_data($tool, $user);
@@ -310,18 +310,18 @@ class tool_provider extends ToolProvider {
 
         if ($context->contextlevel == CONTEXT_COURSE) {
             $courseid = $context->instanceid;
-            $urltogo = new moodle_url('/course/view.php', ['id' => $courseid]);
+            $urltogo = new url('/course/view.php', ['id' => $courseid]);
 
         } else if ($context->contextlevel == CONTEXT_MODULE) {
             $cm = get_coursemodule_from_id(false, $context->instanceid, 0, false, MUST_EXIST);
-            $urltogo = new moodle_url('/mod/' . $cm->modname . '/view.php', ['id' => $cm->id]);
+            $urltogo = new url('/mod/' . $cm->modname . '/view.php', ['id' => $cm->id]);
 
             // If we are a student in the course module context we do not want to display blocks.
             if (!$isforceembed && !$isinstructor) {
                 $isforceembed = true;
             }
         } else {
-            throw new \moodle_exception('invalidcontext');
+            throw new moodle_exception('invalidcontext');
             exit();
         }
 
@@ -338,7 +338,7 @@ class tool_provider extends ToolProvider {
 
         // Display an error, if there is one.
         if ($result !== helper::ENROLMENT_SUCCESSFUL) {
-            throw new \moodle_exception($result, 'enrol_lti');
+            throw new moodle_exception($result, 'enrol_lti');
             exit();
         }
 
@@ -425,7 +425,7 @@ class tool_provider extends ToolProvider {
             $this->message = get_string('successfulregistration', 'enrol_lti');
 
             // Prepare response.
-            $returnurl = new moodle_url($this->returnUrl);
+            $returnurl = new url($this->returnUrl);
             $returnurl->param('lti_msg', get_string("successfulregistration", "enrol_lti"));
             $returnurl->param('status', 'success');
             $guid = $this->consumer->getKey();

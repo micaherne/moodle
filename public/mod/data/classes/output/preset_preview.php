@@ -16,13 +16,14 @@
 
 namespace mod_data\output;
 
-use templatable;
-use renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\output\renderable;
 use mod_data\manager;
 use mod_data\preset;
 use mod_data\template;
 use moodle_page;
-use moodle_url;
+use core\url;
 
 /**
  * Preset preview output class.
@@ -66,12 +67,12 @@ class preset_preview implements templatable, renderable {
         // Add CSS and JS.
         $csscontent = $preset->get_template_content('csstemplate');
         if (!empty($csscontent)) {
-            $url = new moodle_url('/mod/data/css.php', ['d' => $instance->id, 'preset' => $preset->get_fullname()]);
+            $url = new url('/mod/data/css.php', ['d' => $instance->id, 'preset' => $preset->get_fullname()]);
             $page->requires->css($url);
         }
         $jscontent = $preset->get_template_content('jstemplate');
         if (!empty($jscontent)) {
-            $url = new moodle_url('/mod/data/js.php', ['d' => $instance->id, 'preset' => $preset->get_fullname()]);
+            $url = new url('/mod/data/js.php', ['d' => $instance->id, 'preset' => $preset->get_fullname()]);
             $page->requires->js($url);
         }
     }
@@ -82,7 +83,7 @@ class preset_preview implements templatable, renderable {
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         $coursemodule = $this->manager->get_coursemodule();
         $preset = $this->preset;
 
@@ -91,7 +92,7 @@ class preset_preview implements templatable, renderable {
         $fields = $preset->get_fields(true);
         $entries = $preset->get_sample_entries($count);
         $templatecontent = $preset->get_template_content($this->templatename);
-        $useurl = new moodle_url('/mod/data/field.php');
+        $useurl = new url('/mod/data/field.php');
 
         // Generate preview content.
         $options = ['templatename' => $this->templatename];

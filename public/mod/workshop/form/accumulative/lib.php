@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/../lib.php');  // interface definition
@@ -204,7 +207,7 @@ class workshop_accumulative_strategy implements workshop_strategy {
      * @param bool $editable
      * @param array $options
      */
-    public function get_assessment_form(?moodle_url $actionurl=null, $mode='preview', ?stdclass $assessment=null, $editable=true, $options=array()) {
+    public function get_assessment_form(?url $actionurl=null, $mode='preview', ?stdclass $assessment=null, $editable=true, $options=array()) {
         global $CFG;    // needed because the included files use it
         global $PAGE;
         global $DB;

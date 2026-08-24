@@ -24,7 +24,7 @@
 
 namespace core_privacy\local\sitepolicy;
 
-use moodle_url;
+use core\url;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -98,8 +98,8 @@ class manager {
      */
     public function get_redirect_url($forguests = false) {
         $url = component_class_callback($this->get_handler_classname(), 'get_redirect_url', [$forguests]);
-        if ($url && !($url instanceof moodle_url)) {
-            $url = new moodle_url($url);
+        if ($url && !($url instanceof url)) {
+            $url = new url($url);
         }
         return $url;
     }
@@ -115,8 +115,8 @@ class manager {
      */
     public function get_embed_url($forguests = false) {
         $url = component_class_callback($this->get_handler_classname(), 'get_embed_url', [$forguests]);
-        if ($url && !($url instanceof moodle_url)) {
-            $url = new moodle_url($url);
+        if ($url && !($url instanceof url)) {
+            $url = new url($url);
         }
         return $url;
     }

@@ -24,6 +24,13 @@
 
 namespace tool_monitor\output\managerules;
 
+use core\context\course;
+use core\context\system;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\url;
+use core_table\sql_table;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/tablelib.php');
@@ -36,7 +43,7 @@ require_once($CFG->libdir . '/tablelib.php');
  * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class renderable extends \table_sql implements \renderable {
+class renderable extends sql_table implements \core\output\renderable {
 
     /**
      * @var int course id.
@@ -61,7 +68,7 @@ class renderable extends \table_sql implements \renderable {
      * @param int $courseid course id.
      * @param int $perpage Number of rules to display per page.
      */
-    public function __construct($uniqueid, \moodle_url $url, $courseid = 0, $perpage = 100) {
+    public function __construct($uniqueid, url $url, $courseid = 0, $perpage = 100) {
         parent::__construct($uniqueid);
 
         $this->set_attribute('id', 'toolmonitorrules_table');
@@ -79,8 +86,8 @@ class renderable extends \table_sql implements \renderable {
         );
         $this->courseid = $courseid;
         $this->pagesize = $perpage;
-        $systemcontext = \context_system::instance();
-        $this->context = empty($courseid) ? $systemcontext : \context_course::instance($courseid);
+        $systemcontext = system::instance();
+        $this->context = empty($courseid) ? $systemcontext : course::instance($courseid);
         $this->hassystemcap = has_capability('tool/monitor:managerules', $systemcontext);
         $this->collapsible(false);
         $this->sortable(false);
@@ -122,7 +129,7 @@ class renderable extends \table_sql implements \renderable {
         if (empty($courseid)) {
             return $coursename;
         } else {
-            return \html_writer::link(new \moodle_url('/course/view.php', array('id' => $courseid)), $coursename);
+            return html_writer::link(new url('/course/view.php', array('id' => $courseid)), $coursename);
         }
     }
 
@@ -171,23 +178,23 @@ class renderable extends \table_sql implements \renderable {
         // for a course, and not the site. Note - we don't need to check for the capability at a course level since
         // the user is never shown this page otherwise.
         if ($this->hassystemcap || ($rule->courseid != 0)) {
-            $editurl = new \moodle_url($CFG->wwwroot. '/admin/tool/monitor/edit.php', array('ruleid' => $rule->id,
+            $editurl = new url($CFG->wwwroot. '/admin/tool/monitor/edit.php', array('ruleid' => $rule->id,
                     'courseid' => $rule->courseid, 'sesskey' => sesskey()));
-            $icon = $OUTPUT->render(new \pix_icon('t/edit', get_string('editrule', 'tool_monitor')));
-            $manage .= \html_writer::link($editurl, $icon, array('class' => 'action-icon'));
+            $icon = $OUTPUT->render(new pix_icon('t/edit', get_string('editrule', 'tool_monitor')));
+            $manage .= html_writer::link($editurl, $icon, array('class' => 'action-icon'));
         }
 
         // The user should always be able to copy the rule if they are able to view the page.
-        $copyurl = new \moodle_url($CFG->wwwroot. '/admin/tool/monitor/managerules.php',
+        $copyurl = new url($CFG->wwwroot. '/admin/tool/monitor/managerules.php',
                 array('ruleid' => $rule->id, 'action' => 'copy', 'courseid' => $this->courseid, 'sesskey' => sesskey()));
-        $icon = $OUTPUT->render(new \pix_icon('t/copy', get_string('duplicaterule', 'tool_monitor')));
-        $manage .= \html_writer::link($copyurl, $icon, array('class' => 'action-icon'));
+        $icon = $OUTPUT->render(new pix_icon('t/copy', get_string('duplicaterule', 'tool_monitor')));
+        $manage .= html_writer::link($copyurl, $icon, array('class' => 'action-icon'));
 
         if ($this->hassystemcap || ($rule->courseid != 0)) {
-            $deleteurl = new \moodle_url($CFG->wwwroot. '/admin/tool/monitor/managerules.php', array('ruleid' => $rule->id,
+            $deleteurl = new url($CFG->wwwroot. '/admin/tool/monitor/managerules.php', array('ruleid' => $rule->id,
                     'action' => 'delete', 'courseid' => $rule->courseid, 'sesskey' => sesskey()));
-            $icon = $OUTPUT->render(new \pix_icon('t/delete', get_string('deleterule', 'tool_monitor')));
-            $manage .= \html_writer::link($deleteurl, $icon, array('class' => 'action-icon'));
+            $icon = $OUTPUT->render(new pix_icon('t/delete', get_string('deleterule', 'tool_monitor')));
+            $manage .= html_writer::link($deleteurl, $icon, array('class' => 'action-icon'));
         }
 
         return $manage;

@@ -26,6 +26,9 @@ namespace core_user\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
+use core\context\user as context_user;
+use core\user as core_user;
 use \core_privacy\local\metadata\collection;
 use \core_privacy\local\request\transform;
 use \core_privacy\local\request\contextlist;
@@ -209,7 +212,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_user) {
+        if (!$context instanceof context_user) {
             return;
         }
 
@@ -223,7 +226,7 @@ class provider implements
      */
     public static function export_user_data(approved_contextlist $contextlist) {
         $context = $contextlist->current();
-        $user = \core_user::get_user($contextlist->get_user()->id);
+        $user = core_user::get_user($contextlist->get_user()->id);
         static::export_user($user, $context);
         static::export_password_history($user->id, $context);
         static::export_password_resets($user->id, $context);
@@ -238,7 +241,7 @@ class provider implements
      *
      * @param context $context The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         // Only delete data for a user context.
         if ($context->contextlevel == CONTEXT_USER) {
             static::delete_user_data($context->instanceid, $context);
@@ -254,7 +257,7 @@ class provider implements
 
         $context = $userlist->get_context();
 
-        if ($context instanceof \context_user) {
+        if ($context instanceof context_user) {
             static::delete_user_data($context->instanceid, $context);
         }
     }
@@ -279,7 +282,7 @@ class provider implements
      * @param  int      $userid  The user ID to delete
      * @param  \context $context The user context
      */
-    protected static function delete_user_data(int $userid, \context $context) {
+    protected static function delete_user_data(int $userid, context $context) {
         global $DB;
 
         // Delete password history.
@@ -306,7 +309,7 @@ class provider implements
 
         // For the user record itself we only want to remove unnecessary data. We still need the core data to keep as a record
         // that we actually did follow the request to be forgotten.
-        $user = \core_user::get_user($userid);
+        $user = core_user::get_user($userid);
         // Update fields we wish to change to nothing.
         $user->deleted = 1;
         $user->idnumber = '';
@@ -353,7 +356,7 @@ class provider implements
      * @param  \stdClass $user The user object.
      * @param  \context $context The user context.
      */
-    protected static function export_user(\stdClass $user, \context $context) {
+    protected static function export_user(\stdClass $user, context $context) {
         $data = (object) [
             'auth' => $user->auth,
             'confirmed' => transform::yesno($user->confirmed),
@@ -421,7 +424,7 @@ class provider implements
      * @param  int $userid The user ID.
      * @param  \context $context The user context.
      */
-    protected static function export_lastaccess(int $userid, \context $context) {
+    protected static function export_lastaccess(int $userid, context $context) {
         global $DB;
         $sql = "SELECT c.id, c.fullname, ul.timeaccess
                   FROM {user_lastaccess} ul
@@ -446,7 +449,7 @@ class provider implements
      * @param  int $userid The user ID
      * @param  \context $context Context for this user.
      */
-    protected static function export_password_resets(int $userid, \context $context) {
+    protected static function export_password_resets(int $userid, context $context) {
         global $DB;
         $records = $DB->get_records('user_password_resets', ['userid' => $userid]);
         if (!empty($records)) {
@@ -466,7 +469,7 @@ class provider implements
      * @param  int $userid The user ID.
      * @param  \context $context Context for this user.
      */
-    protected static function export_user_devices(int $userid, \context $context) {
+    protected static function export_user_devices(int $userid, context $context) {
         global $DB;
         $records = $DB->get_records('user_devices', ['userid' => $userid]);
         if (!empty($records)) {
@@ -491,7 +494,7 @@ class provider implements
      * @param  int    $userid  The user ID.
      * @param  \context $context The context object
      */
-    protected static function export_course_requests(int $userid, \context $context) {
+    protected static function export_course_requests(int $userid, context $context) {
         global $DB;
         $sql = "SELECT cr.shortname, cr.fullname, cr.summary, cc.name AS category, cr.reason
                   FROM {course_request} cr
@@ -510,7 +513,7 @@ class provider implements
      * @param int $userid The user ID that we are getting the password history for.
      * @param \context $context the user context.
      */
-    protected static function export_password_history(int $userid, \context $context) {
+    protected static function export_password_history(int $userid, context $context) {
         global $DB;
 
         // Just provide a count of how many entries we have.
@@ -527,7 +530,7 @@ class provider implements
      * @param  int $userid The user ID.
      * @param  \context $context The context for this user.
      */
-    protected static function export_user_session_data(int $userid, \context $context) {
+    protected static function export_user_session_data(int $userid, context $context) {
         global $DB, $SESSION;
 
         $records = \core\session\manager::get_sessions_by_userid($userid);

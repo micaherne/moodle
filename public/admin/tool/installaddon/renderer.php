@@ -24,6 +24,10 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
+use core\output\plugin_renderer_base;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -62,7 +66,7 @@ class tool_installaddon_renderer extends plugin_renderer_base {
             throw new coding_exception('Installer instance has not been set.');
         }
 
-        $permcheckurl = new moodle_url('/admin/tool/installaddon/permcheck.php');
+        $permcheckurl = new url('/admin/tool/installaddon/permcheck.php');
         $this->page->requires->yui_module('moodle-tool_installaddon-permcheck', 'M.tool_installaddon.permcheck.init',
             array(array('permcheckurl' => $permcheckurl->out())));
         $this->page->requires->strings_for_js(
@@ -84,7 +88,7 @@ class tool_installaddon_renderer extends plugin_renderer_base {
      * @param moodle_url $continueurl
      * @return string
      */
-    public function zip_not_valid_plugin_package_page(moodle_url $continueurl) {
+    public function zip_not_valid_plugin_package_page(url $continueurl) {
 
         $out = $this->output->header();
         $out .= $this->output->heading(get_string('installfromzip', 'tool_installaddon'));
@@ -101,7 +105,7 @@ class tool_installaddon_renderer extends plugin_renderer_base {
      * @param moodle_url $continueurl
      * @return string
      */
-    public function remote_request_invalid_page(moodle_url $continueurl) {
+    public function remote_request_invalid_page(url $continueurl) {
 
         $out = $this->output->header();
         $out .= $this->output->heading(get_string('installfromrepo', 'tool_installaddon'));
@@ -119,7 +123,7 @@ class tool_installaddon_renderer extends plugin_renderer_base {
      * @param moodle_url $continueurl
      * @return string
      */
-    public function remote_request_alreadyinstalled_page(stdClass $data, moodle_url $continueurl) {
+    public function remote_request_alreadyinstalled_page(stdClass $data, url $continueurl) {
 
         $out = $this->output->header();
         $out .= $this->output->heading(get_string('installfromrepo', 'tool_installaddon'));
@@ -138,7 +142,7 @@ class tool_installaddon_renderer extends plugin_renderer_base {
      * @param moodle_url $cancelurl
      * @return string
      */
-    public function remote_request_confirm_page(stdClass $data, moodle_url $continueurl, moodle_url $cancelurl) {
+    public function remote_request_confirm_page(stdClass $data, url $continueurl, url $cancelurl) {
 
         $out = $this->output->header();
         $out .= $this->output->heading(get_string('installfromrepo', 'tool_installaddon'));
@@ -157,7 +161,7 @@ class tool_installaddon_renderer extends plugin_renderer_base {
      * @param moodle_url $cancelurl to cancel the installation
      * @return string
      */
-    public function remote_request_permcheck_page(stdClass $data, $plugintypepath, moodle_url $continueurl, moodle_url $cancelurl) {
+    public function remote_request_permcheck_page(stdClass $data, $plugintypepath, url $continueurl, url $cancelurl) {
 
         $data->typepath = $plugintypepath;
 
@@ -176,7 +180,7 @@ class tool_installaddon_renderer extends plugin_renderer_base {
      * @param moodle_url $continueurl
      * @return string
      */
-    public function remote_request_non_installable_page(stdClass $data, moodle_url $continueurl) {
+    public function remote_request_non_installable_page(stdClass $data, url $continueurl) {
 
         $out = $this->output->header();
         $out .= $this->output->heading(get_string('installfromrepo', 'tool_installaddon'));

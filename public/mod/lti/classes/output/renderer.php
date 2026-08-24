@@ -25,7 +25,7 @@ namespace mod_lti\output;
 
 defined('MOODLE_INTERNAL') || die;
 
-use plugin_renderer_base;
+use core\output\plugin_renderer_base;
 
 /**
  * Renderer class for template library.

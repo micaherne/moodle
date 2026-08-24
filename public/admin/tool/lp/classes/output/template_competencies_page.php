@@ -24,13 +24,13 @@
 namespace tool_lp\output;
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use templatable;
-use renderer_base;
+use core\output\renderable;
+use core\output\templatable;
+use core\output\renderer_base;
 use stdClass;
-use context;
-use context_system;
-use moodle_url;
+use core\context;
+use core\context\system;
+use core\url;
 use core_competency\external\template_exporter;
 use core_competency\template;
 use core_competency\api;
@@ -84,7 +84,7 @@ class template_competencies_page implements renderable, templatable {
         $this->competencies = api::list_competencies_in_template($template);
         $this->canmanagecompetencyframeworks = has_capability('moodle/competency:competencymanage', $this->pagecontext);
         $this->canmanagetemplatecompetencies = has_capability('moodle/competency:templatemanage', $this->pagecontext);
-        $this->manageurl = new moodle_url('/admin/tool/lp/competencyframeworks.php',
+        $this->manageurl = new url('/admin/tool/lp/competencyframeworks.php',
             array('pagecontextid' => $this->pagecontext->id));
     }
 
@@ -120,7 +120,7 @@ class template_competencies_page implements renderable, templatable {
             array_push($data->competencies, $record);
         }
 
-        $data->pluginbaseurl = (new moodle_url('/admin/tool/lp'))->out(false);
+        $data->pluginbaseurl = (new url('/admin/tool/lp'))->out(false);
         $data->canmanagecompetencyframeworks = $this->canmanagecompetencyframeworks;
         $data->canmanagetemplatecompetencies = $this->canmanagetemplatecompetencies;
         $data->manageurl = $this->manageurl->out(true);

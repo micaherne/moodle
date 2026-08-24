@@ -24,9 +24,9 @@
 namespace block_recentlyaccessedcourses\output;
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use renderer_base;
-use templatable;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 
 /**
  * Class containing data for Recently accessed courses block.

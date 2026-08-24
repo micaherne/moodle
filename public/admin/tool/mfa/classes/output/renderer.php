@@ -17,9 +17,15 @@
 namespace tool_mfa\output;
 
 use core\context\system;
+use core\output\actions\confirm_action;
+use core\output\plugin_renderer_base;
+use core\output\single_button;
+use core\url;
+use core_table\output\html_table;
+use core_table\output\html_table_row;
 use tool_mfa\local\factor\object_factor;
 use tool_mfa\local\form\login_form;
-use \html_writer;
+use core\output\html_writer;
 use tool_mfa\plugininfo\factor;
 
 /**
@@ -30,7 +36,7 @@ use tool_mfa\plugininfo\factor;
  * @copyright   Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class renderer extends \plugin_renderer_base {
+class renderer extends plugin_renderer_base {
 
     /**
      * Returns the state of the factor as a badge.
@@ -96,11 +102,11 @@ class renderer extends \plugin_renderer_base {
 
                 if ($factor->show_setup_buttons()) {
                     $params['action'] = 'setup';
-                    $button = new \single_button(
-                        url: new \moodle_url('action.php', $params),
+                    $button = new single_button(
+                        url: new url('action.php', $params),
                         label: $factor->get_setup_string(),
                         method: 'post',
-                        type: \single_button::BUTTON_PRIMARY,
+                        type: single_button::BUTTON_PRIMARY,
                         attributes: [
                             'aria-label' => get_string('setupfactor', 'factor_' . $factor->name),
                         ],
@@ -115,11 +121,11 @@ class renderer extends \plugin_renderer_base {
 
                 if ($factor->show_setup_buttons()) {
                     $params['action'] = 'manage';
-                    $button = new \single_button(
-                        url: new \moodle_url('action.php', $params),
+                    $button = new single_button(
+                        url: new url('action.php', $params),
                         label: $factor->get_manage_string(),
                         method: 'post',
-                        type: \single_button::BUTTON_PRIMARY,
+                        type: single_button::BUTTON_PRIMARY,
                         attributes: [
                             'aria-label' => get_string('managefactor', 'factor_' . $factor->name),
                         ],
@@ -164,7 +170,7 @@ class renderer extends \plugin_renderer_base {
             'remove',
         ], 'tool_mfa');
 
-        $table = new \html_table();
+        $table = new html_table();
         $table->id = 'active_factors';
         $table->attributes['class'] = 'generaltable table table-bordered table-hover';
         $table->head  = [
@@ -213,7 +219,7 @@ class renderer extends \plugin_renderer_base {
                         'aria-label' => get_string('revokefactor', 'tool_mfa'),
                         'class' => 'btn btn-primary mfa-action-button',
                     ];
-                    $revokebutton = \html_writer::tag('button', $content, $attributes);
+                    $revokebutton = html_writer::tag('button', $content, $attributes);
                 } else {
                     $revokebutton = get_string('statusna');
                 }
@@ -230,7 +236,7 @@ class renderer extends \plugin_renderer_base {
                         'aria-label' => get_string('replacefactor', 'tool_mfa'),
                         'class' => 'btn btn-primary mfa-action-button',
                     ];
-                    $replacebutton = \html_writer::tag('button', $content, $attributes);
+                    $replacebutton = html_writer::tag('button', $content, $attributes);
                 } else {
                     $replacebutton = get_string('statusna');
                 }
@@ -246,7 +252,7 @@ class renderer extends \plugin_renderer_base {
                     $lastverified .= get_string('ago', 'core_message', format_time(time() - $userfactor->lastverified));
                 }
 
-                $row = new \html_table_row([
+                $row = new html_table_row([
                     $userfactor->label,
                     $timecreated,
                     $lastverified,
@@ -260,7 +266,7 @@ class renderer extends \plugin_renderer_base {
         if (count($table->data) == 0) {
             return '';
         }
-        $html .= \html_writer::table($table);
+        $html .= html_writer::table($table);
         $html .= '<br>';
 
         return $html;
@@ -274,30 +280,30 @@ class renderer extends \plugin_renderer_base {
     public function not_enough_factors(): string {
         global $CFG, $SITE;
 
-        $notification = \html_writer::tag('h4', get_string('error:notenoughfactors', 'tool_mfa'));
-        $notification .= \html_writer::tag('p', get_string('error:reauth', 'tool_mfa'));
+        $notification = html_writer::tag('h4', get_string('error:notenoughfactors', 'tool_mfa'));
+        $notification .= html_writer::tag('p', get_string('error:reauth', 'tool_mfa'));
 
         // Support link.
         $supportemail = $CFG->supportemail;
         if (!empty($supportemail)) {
             $subject = get_string('email:subject', 'tool_mfa',
                 format_string($SITE->fullname, true, ['context' => system::instance()]));
-            $maillink = \html_writer::link("mailto:$supportemail?Subject=$subject", $supportemail);
+            $maillink = html_writer::link("mailto:$supportemail?Subject=$subject", $supportemail);
             $notification .= get_string('error:support', 'tool_mfa');
-            $notification .= \html_writer::tag('p', $maillink);
+            $notification .= html_writer::tag('p', $maillink);
         }
 
         // Support page link.
         $supportpage = $CFG->supportpage;
         if (!empty($supportpage)) {
-            $linktext = \html_writer::link($supportpage, $supportpage);
+            $linktext = html_writer::link($supportpage, $supportpage);
             $notification .= $linktext;
         }
         $return = $this->output->notification($notification, 'notifyerror', false);
 
         // Logout button.
-        $url = new \moodle_url('/admin/tool/mfa/auth.php', ['logout' => 1]);
-        $btn = new \single_button($url, get_string('logout'), 'post', \single_button::BUTTON_PRIMARY);
+        $url = new url('/admin/tool/mfa/auth.php', ['logout' => 1]);
+        $btn = new single_button($url, get_string('logout'), 'post', single_button::BUTTON_PRIMARY);
         $return .= $this->render($btn);
 
         $return .= $this->get_support_link();
@@ -337,7 +343,7 @@ class renderer extends \plugin_renderer_base {
         $displaynames[] = get_string('total');
         $colclasses[] = 'center';
 
-        $table = new \html_table();
+        $table = new html_table();
         $table->head = $displaynames;
         $table->align = $colclasses;
         $table->attributes['class'] = 'generaltable table table-bordered w-auto table-hover';
@@ -394,7 +400,7 @@ class renderer extends \plugin_renderer_base {
         $authtypes = \core\di::get(\core\authentication::class)->get_enabled_plugins();
         foreach ($authtypes as $authtype) {
             $row = [];
-            $row[] = \html_writer::tag('b', $authtype);
+            $row[] = html_writer::tag('b', $authtype);
 
             // Setup the overall totals columns.
             $row[] = $allusersinfo[$authtype] ?? '-';
@@ -438,7 +444,7 @@ class renderer extends \plugin_renderer_base {
         $table->data[] = $totals;
 
         // Wrap in a div to cleanly scroll.
-        return \html_writer::div(\html_writer::table($table), '', ['style' => 'overflow:auto;']);
+        return html_writer::div(html_writer::table($table), '', ['style' => 'overflow:auto;']);
     }
 
     /**
@@ -451,7 +457,7 @@ class renderer extends \plugin_renderer_base {
 
         $factors = factor::get_factors();
 
-        $table = new \html_table();
+        $table = new html_table();
 
         $table->attributes['class'] = 'generaltable table table-bordered w-auto table-hover';
         $table->attributes['style'] = 'width: auto; min-width: 50%';
@@ -478,11 +484,11 @@ class renderer extends \plugin_renderer_base {
                        AND lockcounter >= ?
                        AND revoked = 0";
             $lockedusers = $DB->count_records_sql($sql, [$factor->name, $locklevel]);
-            $enabled = $factor->is_enabled() ? \html_writer::tag('b', get_string('yes')) : get_string('no');
+            $enabled = $factor->is_enabled() ? html_writer::tag('b', get_string('yes')) : get_string('no');
 
-            $actions = \html_writer::link( new \moodle_url($this->page->url,
+            $actions = html_writer::link( new url($this->page->url,
                 ['reset' => $factor->name, 'sesskey' => sesskey()]), get_string('performbulk', 'tool_mfa'));
-            $lockedusers = \html_writer::link(new \moodle_url($this->page->url, ['view' => $factor->name]), $lockedusers);
+            $lockedusers = html_writer::link(new url($this->page->url, ['view' => $factor->name]), $lockedusers);
 
             $table->data[] = [
                 $factor->get_display_name(),
@@ -492,7 +498,7 @@ class renderer extends \plugin_renderer_base {
             ];
         }
 
-        return \html_writer::table($table);
+        return html_writer::table($table);
     }
 
     /**
@@ -504,7 +510,7 @@ class renderer extends \plugin_renderer_base {
     public function factor_locked_users_table(object_factor $factor): string {
         global $DB;
 
-        $table = new \html_table();
+        $table = new html_table();
         $table->attributes['class'] = 'generaltable table table-bordered w-auto table-hover';
         $table->attributes['style'] = 'width: auto; min-width: 50%';
         $table->head = [
@@ -536,25 +542,25 @@ class renderer extends \plugin_renderer_base {
 
         foreach ($records as $record) {
             // Construct profile link.
-            $proflink = \html_writer::link(new \moodle_url('/user/profile.php',
+            $proflink = html_writer::link(new url('/user/profile.php',
                 ['id' => $record->id]), fullname($record));
 
             // IP link.
-            $creatediplink = \html_writer::link(new \moodle_url('/iplookup/index.php',
+            $creatediplink = html_writer::link(new url('/iplookup/index.php',
                 ['ip' => $record->createdfromip]), $record->createdfromip);
-            $lastiplink = \html_writer::link(new \moodle_url('/iplookup/index.php',
+            $lastiplink = html_writer::link(new url('/iplookup/index.php',
                 ['ip' => $record->lastip]), $record->lastip);
 
             // Deep link to logs.
             $logicon = $this->pix_icon('i/report', get_string('userlogs', 'tool_mfa'));
-            $actions = \html_writer::link(new \moodle_url('/report/log/index.php', [
+            $actions = html_writer::link(new url('/report/log/index.php', [
                 'id' => 1, // Site.
                 'user' => $record->id,
             ]), $logicon);
 
-            $action = new \confirm_action(get_string('resetfactorconfirm', 'tool_mfa', fullname($record)));
+            $action = new confirm_action(get_string('resetfactorconfirm', 'tool_mfa', fullname($record)));
             $actions .= $this->action_link(
-                new \moodle_url($this->page->url, ['reset' => $factor->name, 'id' => $record->id, 'sesskey' => sesskey()]),
+                new url($this->page->url, ['reset' => $factor->name, 'id' => $record->id, 'sesskey' => sesskey()]),
                 $this->pix_icon('t/delete', get_string('resetconfirm', 'tool_mfa')),
                 $action
             );
@@ -569,7 +575,7 @@ class renderer extends \plugin_renderer_base {
             ];
         }
 
-        return \html_writer::table($table);
+        return html_writer::table($table);
     }
 
     /**
@@ -658,7 +664,7 @@ class renderer extends \plugin_renderer_base {
         // We merge the additional factors placing the disabled ones last.
         $alladitionalfactors = array_merge($additionalfactors, $disabledfactors);
         $hasadditionalfactors = $displaycount > 0;
-        $authurl = new \moodle_url('/admin/tool/mfa/auth.php');
+        $authurl = new url('/admin/tool/mfa/auth.php');
 
         // Set the form to better display vertically.
         $form->set_display_vertical();

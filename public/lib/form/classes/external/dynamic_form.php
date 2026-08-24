@@ -16,6 +16,7 @@
 
 namespace core_form\external;
 
+use core\exception\moodle_exception;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
@@ -64,7 +65,7 @@ class dynamic_form extends external_api {
 
         if (!class_exists($formclass) || !is_subclass_of($formclass, \core_form\dynamic_form::class)) {
             // For security reason we don't throw exception "class does not exist" but rather an access exception.
-            throw new \moodle_exception('nopermissionform', 'core_form');
+            throw new moodle_exception('nopermissionform', 'core_form');
         }
 
         /** @var \core_form\dynamic_form $form */

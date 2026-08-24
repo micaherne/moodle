@@ -24,17 +24,17 @@
 namespace tool_lp\output;
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use templatable;
-use renderer_base;
+use core\output\renderable;
+use core\output\templatable;
+use core\output\renderer_base;
 use stdClass;
-use single_button;
-use moodle_url;
+use core\output\single_button;
+use core\url;
 use core_competency\api;
 use core_competency\external\plan_exporter;
 use core_competency\plan;
 use core_competency\user_evidence;
-use context_user;
+use core\context\user;
 
 /**
  * Class containing data for a user learning plans list page.
@@ -64,11 +64,11 @@ class plans_page implements renderable, templatable {
     public function __construct($userid) {
         $this->userid = $userid;
         $this->plans = api::list_user_plans($userid);
-        $this->context = context_user::instance($userid);
+        $this->context = user::instance($userid);
 
         if (plan::can_manage_user($userid) || plan::can_manage_user_draft($userid)) {
             $addplan = new single_button(
-                new moodle_url('/admin/tool/lp/editplan.php', array('userid' => $userid)),
+                new url('/admin/tool/lp/editplan.php', array('userid' => $userid)),
                 get_string('addnewplan', 'tool_lp'), 'get'
             );
             $this->navigation[] = $addplan;
@@ -84,7 +84,7 @@ class plans_page implements renderable, templatable {
     public function export_for_template(renderer_base $output) {
         $data = new stdClass();
         $data->userid = $this->userid;
-        $data->pluginbaseurl = (new moodle_url('/admin/tool/lp'))->out(true);
+        $data->pluginbaseurl = (new url('/admin/tool/lp'))->out(true);
         $data->canreaduserevidence = user_evidence::can_read_user($this->userid);
         $data->canmanageuserplans = plan::can_manage_user($this->userid);
 

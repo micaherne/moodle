@@ -25,13 +25,17 @@ declare(strict_types=1);
 
 namespace core_user\table;
 
+use core\context\course;
+use core\context\system;
+use core\user;
+use core_table\sql_table;
 use DateTime;
-use context;
+use core\context;
 use core_table\dynamic as dynamic_table;
 use core_table\local\filter\filterset;
 use core_user\output\status_field;
 use core_user\table\participants_search;
-use moodle_url;
+use core\url;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -47,7 +51,7 @@ require_once($CFG->dirroot . '/user/lib.php');
  * @copyright  2017 Mark Nelson <markn@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class participants extends \table_sql implements dynamic_table {
+class participants extends sql_table implements dynamic_table {
 
     /**
      * @var int $courseid The course id
@@ -251,7 +255,7 @@ class participants extends \table_sql implements dynamic_table {
     public function col_fullname($data) {
         global $OUTPUT;
 
-        return $OUTPUT->render(\core_user::get_profile_picture(
+        return $OUTPUT->render(user::get_profile_picture(
             $data,
             null,
             [
@@ -487,7 +491,7 @@ class participants extends \table_sql implements dynamic_table {
         // Get the context.
         $this->courseid = $filterset->get_filter('courseid')->current();
         $this->course = get_course($this->courseid);
-        $this->context = \context_course::instance($this->courseid, MUST_EXIST);
+        $this->context = course::instance($this->courseid, MUST_EXIST);
 
         // Process the filterset.
         parent::set_filterset($filterset);
@@ -497,7 +501,7 @@ class participants extends \table_sql implements dynamic_table {
      * Guess the base url for the participants table.
      */
     public function guess_base_url(): void {
-        $this->baseurl = new moodle_url('/user/index.php', ['id' => $this->courseid]);
+        $this->baseurl = new url('/user/index.php', ['id' => $this->courseid]);
     }
 
     /**
@@ -520,7 +524,7 @@ class participants extends \table_sql implements dynamic_table {
         global $CFG;
         require_once($CFG->dirroot . '/course/lib.php');
 
-        $context = $this->course->id == SITEID ? \context_system::instance() : $this->get_context();
+        $context = $this->course->id == SITEID ? system::instance() : $this->get_context();
         return course_can_view_participants($context);
     }
 }

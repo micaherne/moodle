@@ -16,13 +16,15 @@
 
 namespace mod_h5pactivity\xapi;
 
+use core\context\course;
+use core_course\modinfo;
 use \core_xapi\local\statement;
 use \core_xapi\local\statement\item_agent;
 use \core_xapi\local\statement\item_activity;
 use \core_xapi\local\statement\item_definition;
 use \core_xapi\local\statement\item_verb;
 use \core_xapi\local\statement\item_result;
-use context_module;
+use core\context\module;
 use core_xapi\test_helper;
 use stdClass;
 
@@ -66,7 +68,7 @@ final class handler_test extends \advanced_testcase {
 
         // H5P activity.
         $data->activity = $this->getDataGenerator()->create_module('h5pactivity', ['course' => $data->course]);
-        $data->context = context_module::instance($data->activity->cmid);
+        $data->context = module::instance($data->activity->cmid);
 
         $data->xapihandler = handler::create('mod_h5pactivity');
         $this->assertNotEmpty($data->xapihandler);
@@ -351,7 +353,7 @@ final class handler_test extends \advanced_testcase {
      * @param stdClass $user user record
      * @return statement[] array of xAPI statements
      */
-    private function generate_statements(context_module $context, stdClass $user): array {
+    private function generate_statements(module $context, stdClass $user): array {
         $statements = [];
 
         $statement = new statement();
@@ -405,8 +407,8 @@ final class handler_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_and_enrol($course, 'student');
         $this->setUser($user);
         $activity = $this->getDataGenerator()->create_module('h5pactivity', ['course' => $course]);
-        $coursecontext = \context_course::instance($course->id);
-        $activitycontext = \context_module::instance($activity->cmid);
+        $coursecontext = course::instance($course->id);
+        $activitycontext = module::instance($activity->cmid);
         $component = 'mod_h5pactivity';
         $filerecord = [
             'contextid' => $activitycontext->id,
@@ -451,7 +453,7 @@ final class handler_test extends \advanced_testcase {
 
         // So, when tracking is disabled, the state won't be considered valid.
         $activity2 = $this->getDataGenerator()->create_module('h5pactivity', ['course' => $course, 'enabletracking' => 0]);
-        $activitycontext2 = \context_module::instance($activity2->cmid);
+        $activitycontext2 = module::instance($activity2->cmid);
         $state = test_helper::create_state([
             'activity' => item_activity::create_from_id($activitycontext2->id),
             'component' => $component,
@@ -464,7 +466,7 @@ final class handler_test extends \advanced_testcase {
         assign_capability('mod/h5pactivity:submit', CAP_PROHIBIT, $studentrole->id, $coursecontext->id);
         // Empty all the caches that may be affected by this change.
         accesslib_clear_all_caches_for_unit_testing();
-        \course_modinfo::clear_instance_cache();
+        modinfo::clear_instance_cache();
         $state = test_helper::create_state([
             'activity' => item_activity::create_from_id($activitycontext->id),
             'component' => $component,

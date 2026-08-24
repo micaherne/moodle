@@ -16,6 +16,8 @@
 
 namespace mod_imscp;
 
+use core\context\user;
+
 /**
  * Genarator tests class for mod_imscp.
  *
@@ -59,7 +61,7 @@ final class generator_test extends \advanced_testcase {
             'course' => $course->id,
             'package' => file_get_unused_draft_itemid()
         );
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $filerecord = array('component' => 'user', 'filearea' => 'draft',
                 'contextid' => $usercontext->id, 'itemid' => $params['package'],
                 'filename' => 'singlescobasic.zip', 'filepath' => '/');

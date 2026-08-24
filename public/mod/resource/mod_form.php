@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\user;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
@@ -202,7 +204,7 @@ class mod_resource_mod_form extends moodleform_mod {
 
         $errors = parent::validation($data, $files);
 
-        $usercontext = context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $fs = get_file_storage();
         if (!$files = $fs->get_area_files($usercontext->id, 'user', 'draft', $data['files'], 'sortorder, id', false)) {
             $errors['files'] = get_string('required');

@@ -24,7 +24,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\user;
 use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\output\renderable;
 use core\url;
 
 class block_private_files_renderer extends plugin_renderer_base {
@@ -105,7 +108,7 @@ class private_files_tree implements renderable {
     public $dir;
     public function __construct() {
         global $USER;
-        $this->context = context_user::instance($USER->id);
+        $this->context = user::instance($USER->id);
         $fs = get_file_storage();
         $this->dir = $fs->get_area_tree($this->context->id, 'user', 'private', 0);
     }

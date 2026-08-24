@@ -16,8 +16,10 @@
 
 namespace mod_data\output;
 
-use templatable;
-use renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\output\renderable;
+use core\url;
 
 /**
  * Renderable class for the action bar elements in the fields mapping page in the database activity.
@@ -46,12 +48,12 @@ class fields_mappings_action_bar implements templatable, renderable {
      * @param \renderer_base $output The renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         return [
             'tertiarytitle' => get_string('fieldmappings', 'mod_data'),
             'hasback' => true,
             'backtitle' => get_string('back'),
-            'backurl' => new \moodle_url('/mod/data/preset.php', ['d' => $this->id]),
+            'backurl' => new url('/mod/data/preset.php', ['d' => $this->id]),
         ];
     }
 }

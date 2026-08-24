@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\context\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/formslib.php");
@@ -104,7 +108,7 @@ class enrol_self_enrol_form extends moodleform {
             // Change the id of self enrolment key input as there can be multiple self enrolment methods.
             $mform->addElement('password', 'enrolpassword', get_string('password', 'enrol_self'),
                     array('id' => 'enrolpassword_'.$instance->id));
-            $context = context_course::instance($this->instance->courseid);
+            $context = course::instance($this->instance->courseid);
             $userfieldsapi = \core_user\fields::for_userpic();
             $ufields = $userfieldsapi->get_sql('u', false, '', '', false)->selects;
             $keyholders = get_users_by_capability($context, 'enrol/self:holdkey', $ufields);
@@ -114,8 +118,8 @@ class enrol_self_enrol_form extends moodleform {
                 if ($keyholdercount === 1) {
                     $mform->addElement('static', 'keyholder', '', get_string('keyholder', 'enrol_self'));
                 }
-                $keyholdercontext = context_user::instance($keyholder->id);
-                if ($USER->id == $keyholder->id || has_capability('moodle/user:viewdetails', context_system::instance()) ||
+                $keyholdercontext = user::instance($keyholder->id);
+                if ($USER->id == $keyholder->id || has_capability('moodle/user:viewdetails', system::instance()) ||
                         has_coursecontact_role($keyholder->id)) {
                     $profilelink = '<a href="' . $CFG->wwwroot . '/user/view.php?id=' . $keyholder->id . '&amp;course=' .
                     $this->instance->courseid . '">' . fullname($keyholder) . '</a>';

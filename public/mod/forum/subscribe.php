@@ -31,6 +31,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
+
 require(__DIR__.'/../../config.php');
 require_once($CFG->dirroot.'/mod/forum/lib.php');
 
@@ -42,7 +46,7 @@ $sesskey        = optional_param('sesskey', null, PARAM_RAW);
 $returnurl      = optional_param('returnurl', null, PARAM_LOCALURL);
 $edit           = optional_param('edit', 'off', PARAM_ALPHANUM);
 
-$url = new moodle_url('/mod/forum/subscribe.php', array('id'=>$id));
+$url = new url('/mod/forum/subscribe.php', array('id'=>$id));
 if (!is_null($mode)) {
     $url->param('mode', $mode);
 }
@@ -55,7 +59,7 @@ if (!is_null($sesskey)) {
 if (!is_null($discussionid)) {
     $url->param('d', $discussionid);
     if (!$discussion = $DB->get_record('forum_discussions', array('id' => $discussionid, 'forum' => $id))) {
-        throw new \moodle_exception('invaliddiscussionid', 'forum');
+        throw new moodle_exception('invaliddiscussionid', 'forum');
     }
 }
 $PAGE->set_url($url);
@@ -64,12 +68,12 @@ $PAGE->set_show_navigation_footer(false);
 $forum   = $DB->get_record('forum', array('id' => $id), '*', MUST_EXIST);
 $course  = $DB->get_record('course', array('id' => $forum->course), '*', MUST_EXIST);
 $cm      = get_coursemodule_from_instance('forum', $forum->id, $course->id, false, MUST_EXIST);
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 
 if ($user) {
     require_sesskey();
     if (!has_capability('mod/forum:managesubscriptions', $context)) {
-        throw new \moodle_exception('nopermissiontosubscribe', 'forum');
+        throw new moodle_exception('nopermissiontosubscribe', 'forum');
     }
     $user = $DB->get_record('user', array('id' => $user), '*', MUST_EXIST);
 } else {
@@ -87,7 +91,7 @@ $issubscribed = \mod_forum\subscriptions::is_subscribed($user->id, $forum, $disc
 // For a user to subscribe when a groupmode is set, they must have access to at least one group.
 if ($groupmode && !$issubscribed && !has_capability('moodle/site:accessallgroups', $context)) {
     if (!groups_get_all_groups($course->id, $USER->id)) {
-        throw new \moodle_exception('cannotsubscribe', 'forum');
+        throw new moodle_exception('cannotsubscribe', 'forum');
     }
 }
 
@@ -99,13 +103,13 @@ if (is_null($mode) and !is_enrolled($context, $USER, '', true)) {   // Guests an
     if (isguestuser()) {
         echo $OUTPUT->header();
         echo $OUTPUT->confirm(get_string('subscribeenrolledonly', 'forum').'<br /><br />'.get_string('liketologin'),
-                     get_login_url(), new moodle_url('/mod/forum/view.php', array('f'=>$id)));
+                     get_login_url(), new url('/mod/forum/view.php', array('f'=>$id)));
         echo $OUTPUT->footer();
         exit;
     } else {
         // There should not be any links leading to this place, just redirect.
         redirect(
-                new moodle_url('/mod/forum/view.php', array('f'=>$id)),
+                new url('/mod/forum/view.php', array('f'=>$id)),
                 get_string('subscribeenrolledonly', 'forum'),
                 null,
                 \core\output\notification::NOTIFY_ERROR
@@ -121,7 +125,7 @@ if ($returnurl) {
     $returnto = $returnurl;
 }
 
-$subscribersurl = new moodle_url('/mod/forum/subscribers.php', ['id' => $id, 'edit' => $edit]);
+$subscribersurl = new url('/mod/forum/subscribers.php', ['id' => $id, 'edit' => $edit]);
 
 if (!is_null($mode) and has_capability('mod/forum:managesubscriptions', $context)) {
     require_sesskey();
@@ -171,7 +175,7 @@ if (!is_null($mode) and has_capability('mod/forum:managesubscriptions', $context
             );
             break;
         default:
-            throw new \moodle_exception(get_string('invalidforcesubscribe', 'forum'));
+            throw new moodle_exception(get_string('invalidforcesubscribe', 'forum'));
     }
 }
 
@@ -191,7 +195,7 @@ if ($issubscribed) {
         $PAGE->set_heading($course->fullname);
         echo $OUTPUT->header();
 
-        $viewurl = new moodle_url('/mod/forum/view.php', array('f' => $id));
+        $viewurl = new url('/mod/forum/view.php', array('f' => $id));
         if ($discussionid) {
             $a = new stdClass();
             $a->forum = format_string($forum->name);
@@ -215,7 +219,7 @@ if ($issubscribed) {
                 \core\output\notification::NOTIFY_SUCCESS
             );
         } else {
-            throw new \moodle_exception('cannotunsubscribe', 'forum', get_local_referer(false));
+            throw new moodle_exception('cannotunsubscribe', 'forum', get_local_referer(false));
         }
     } else {
         if (\mod_forum\subscriptions::unsubscribe_user_from_discussion($user->id, $discussion, $context)) {
@@ -227,16 +231,16 @@ if ($issubscribed) {
                 \core\output\notification::NOTIFY_SUCCESS
             );
         } else {
-            throw new \moodle_exception('cannotunsubscribe', 'forum', get_local_referer(false));
+            throw new moodle_exception('cannotunsubscribe', 'forum', get_local_referer(false));
         }
     }
 
 } else {  // subscribe
     if (\mod_forum\subscriptions::subscription_disabled($forum) && !has_capability('mod/forum:managesubscriptions', $context)) {
-        throw new \moodle_exception('disallowsubscribe', 'forum', get_local_referer(false));
+        throw new moodle_exception('disallowsubscribe', 'forum', get_local_referer(false));
     }
     if (!has_capability('mod/forum:viewdiscussion', $context)) {
-        throw new \moodle_exception('noviewdiscussionspermission', 'forum', get_local_referer(false));
+        throw new moodle_exception('noviewdiscussionspermission', 'forum', get_local_referer(false));
     }
     if (is_null($sesskey)) {
         // We came here via link in email.
@@ -244,7 +248,7 @@ if ($issubscribed) {
         $PAGE->set_heading($course->fullname);
         echo $OUTPUT->header();
 
-        $viewurl = new moodle_url('/mod/forum/view.php', array('f' => $id));
+        $viewurl = new url('/mod/forum/view.php', array('f' => $id));
         if ($discussionid) {
             $a = new stdClass();
             $a->forum = format_string($forum->name);

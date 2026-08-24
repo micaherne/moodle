@@ -25,6 +25,9 @@
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/badgeslib.php');
 
+use \core_badges\badge;
+use core\context\system;
+use core\exception\coding_exception;
 use core_badges\local\backpack\helper;
 
 require_login();
@@ -37,7 +40,7 @@ if (badges_open_badges_backpack_api($userbackpack->id) != OPEN_BADGES_V2) {
 $assertionhash = required_param('hash', PARAM_ALPHANUM);
 
 $PAGE->set_url('/badges/backpack-add.php', ['hash' => $assertionhash]);
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $output = $PAGE->get_renderer('core', 'badges');
 
 $issuedbadge = new \core_badges\output\issued_badge($assertionhash);

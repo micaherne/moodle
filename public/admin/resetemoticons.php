@@ -23,6 +23,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require(__DIR__ . '/../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
@@ -34,12 +36,12 @@ if (!$confirm or !confirm_sesskey()) {
     echo $OUTPUT->header();
     echo $OUTPUT->heading(get_string('confirmation', 'admin'));
     echo $OUTPUT->confirm(get_string('emoticonsreset', 'admin'),
-        new moodle_url($PAGE->url, array('confirm' => 1)),
-        new moodle_url('/admin/settings.php', array('section' => 'htmlsettings')));
+        new url($PAGE->url, array('confirm' => 1)),
+        new url('/admin/settings.php', array('section' => 'htmlsettings')));
     echo $OUTPUT->footer();
     die();
 }
 
 $manager = get_emoticon_manager();
 set_config('emoticons', $manager->encode_stored_config($manager->default_emoticons()));
-redirect(new moodle_url('/admin/settings.php', array('section' => 'htmlsettings')));
+redirect(new url('/admin/settings.php', array('section' => 'htmlsettings')));

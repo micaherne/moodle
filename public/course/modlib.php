@@ -27,8 +27,15 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+use core\context\course;
+use core\context\module;
+use core\context_helper;
 use core\di;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use core\hook;
+use core_course\cm_info;
+use core_course\modinfo;
 use core_courseformat\formatactions;
 use core_grades\component_gradeitems;
 
@@ -73,7 +80,7 @@ function add_moduleinfo($moduleinfo, $course, $mform = null) {
     if (isset($moduleinfo->downloadcontent)) {
         $newcm->downloadcontent = $moduleinfo->downloadcontent;
     }
-    if (has_capability('moodle/course:setforcedlanguage', context_course::instance($course->id))) {
+    if (has_capability('moodle/course:setforcedlanguage', course::instance($course->id))) {
         $newcm->lang = $moduleinfo->lang ?? null;
     } else {
         $newcm->lang = null;
@@ -139,7 +146,7 @@ function add_moduleinfo($moduleinfo, $course, $mform = null) {
     $transaction = $DB->start_delegated_transaction();
 
     if (!$moduleinfo->coursemodule = add_course_module($newcm)) {
-        throw new \moodle_exception('cannotaddcoursemodule');
+        throw new moodle_exception('cannotaddcoursemodule');
     }
 
     if (plugin_supports('mod', $moduleinfo->modulename, FEATURE_MOD_INTRO, true) &&
@@ -165,9 +172,9 @@ function add_moduleinfo($moduleinfo, $course, $mform = null) {
         if ($returnfromfunc instanceof moodle_exception) {
             throw $returnfromfunc;
         } else if (!is_number($returnfromfunc)) {
-            throw new \moodle_exception('invalidfunction', '', course_get_url($course, $moduleinfo->section));
+            throw new moodle_exception('invalidfunction', '', course_get_url($course, $moduleinfo->section));
         } else {
-            throw new \moodle_exception('cannotaddnewmodule', '', course_get_url($course, $moduleinfo->section),
+            throw new moodle_exception('cannotaddnewmodule', '', course_get_url($course, $moduleinfo->section),
                 $moduleinfo->modulename);
         }
     }
@@ -177,7 +184,7 @@ function add_moduleinfo($moduleinfo, $course, $mform = null) {
     $DB->set_field('course_modules', 'instance', $returnfromfunc, array('id'=>$moduleinfo->coursemodule));
 
     // Update embedded links and save files.
-    $modcontext = context_module::instance($moduleinfo->coursemodule);
+    $modcontext = module::instance($moduleinfo->coursemodule);
     if (!empty($introeditor)) {
         // This will respect a module that has set a value for intro in it's modname_add_instance() function.
         $introeditor['text'] = $moduleinfo->intro;
@@ -249,7 +256,7 @@ function edit_module_post_actions($moduleinfo, $course) {
     global $CFG, $USER;
     require_once($CFG->libdir.'/gradelib.php');
 
-    $modcontext = context_module::instance($moduleinfo->coursemodule);
+    $modcontext = module::instance($moduleinfo->coursemodule);
     $hasgrades = plugin_supports('mod', $moduleinfo->modulename, FEATURE_GRADE_HAS_GRADE, false);
     $hasoutcomes = plugin_supports('mod', $moduleinfo->modulename, FEATURE_GRADE_OUTCOMES, true);
 
@@ -407,7 +414,7 @@ function edit_module_post_actions($moduleinfo, $course) {
         $moduleinfo->showgradingmanagement = $showgradingmanagement;
     }
 
-    \course_modinfo::purge_course_module_cache($course->id, $moduleinfo->coursemodule);
+    modinfo::purge_course_module_cache($course->id, $moduleinfo->coursemodule);
     rebuild_course_cache($course->id, true, true);
 
     if ($hasgrades) {
@@ -521,7 +528,7 @@ function set_moduleinfo_defaults($moduleinfo) {
     }
 
     // Module types with this flag set to false must always be in section number 0.
-    if (!course_modinfo::is_mod_type_visible_on_course($moduleinfo->modulename)) {
+    if (!modinfo::is_mod_type_visible_on_course($moduleinfo->modulename)) {
         $moduleinfo->section = 0;
     }
 
@@ -576,7 +583,7 @@ function can_add_moduleinfo($course, $modulename, $sectionnum) {
 
     $module = $DB->get_record('modules', ['name' => $modulename], '*', MUST_EXIST);
 
-    $context = context_course::instance($course->id);
+    $context = course::instance($course->id);
     require_capability('moodle/course:manageactivities', $context);
 
     // If the $sectionnum is a delegated section, we cannot execute create_if_missing
@@ -589,7 +596,7 @@ function can_add_moduleinfo($course, $modulename, $sectionnum) {
     }
 
     if (!course_allowed_module($course, $module->name)) {
-        throw new \moodle_exception('moduledisable', 'error', '', $module->name);
+        throw new moodle_exception('moduledisable', 'error', '', $module->name);
     }
 
     return [$module, $context, $sectioninfo];
@@ -606,7 +613,7 @@ function can_update_moduleinfo($cm) {
     global $DB;
 
     // Check the $USER has the right capability.
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
     require_capability('moodle/course:manageactivities', $context);
 
     // Check module exists.
@@ -647,7 +654,7 @@ function update_moduleinfo($cm, $moduleinfo, $course, $mform = null) {
     $moduleinfo->course = $course->id;
     $moduleinfo = set_moduleinfo_defaults($moduleinfo);
 
-    $modcontext = context_module::instance($moduleinfo->coursemodule);
+    $modcontext = module::instance($moduleinfo->coursemodule);
     if (has_capability('moodle/course:setforcedlanguage', $modcontext)) {
         $cm->lang = $moduleinfo->lang ?? null;
     } else {
@@ -751,7 +758,7 @@ function update_moduleinfo($cm, $moduleinfo, $course, $mform = null) {
 
     $updateinstancefunction = $moduleinfo->modulename."_update_instance";
     if (!$updateinstancefunction($moduleinfo, $mform)) {
-        throw new \moodle_exception('cannotupdatemod', '', course_get_url($course, $cm->section), $moduleinfo->modulename);
+        throw new moodle_exception('cannotupdatemod', '', course_get_url($course, $cm->section), $moduleinfo->modulename);
     }
 
     // This needs to happen AFTER the grademin/grademax have already been updated.
@@ -772,7 +779,7 @@ function update_moduleinfo($cm, $moduleinfo, $course, $mform = null) {
                 $newgradeitem->grademax
             );
             if (!component_callback('mod_' . $moduleinfo->modulename, 'rescale_activity_grades', $params)) {
-                throw new \moodle_exception('cannotreprocessgrades', '', course_get_url($course, $cm->section),
+                throw new moodle_exception('cannotreprocessgrades', '', course_get_url($course, $cm->section),
                     $moduleinfo->modulename);
             }
         }
@@ -802,7 +809,7 @@ function update_moduleinfo($cm, $moduleinfo, $course, $mform = null) {
     // (this will wipe all user completion data and recalculate it)
     if ($completion->is_enabled() && !empty($moduleinfo->completionunlocked)) {
         // Rebuild course cache before resetting completion states to ensure that the cm_info attributes are up to date.
-        course_modinfo::build_course_cache($course);
+        modinfo::build_course_cache($course);
         // Fetch this course module's info.
         $cminfo = cm_info::create($cm);
         $completion->reset_all_state($cminfo);
@@ -961,7 +968,7 @@ function prepare_new_moduleinfo_data($course, $modulename, $section, string $suf
     global $CFG;
 
     // Module types with this flag set to false must always be in section number 0.
-    if ($section != 0 && !course_modinfo::is_mod_type_visible_on_course($modulename)) {
+    if ($section != 0 && !modinfo::is_mod_type_visible_on_course($modulename)) {
         throw new coding_exception("Modules with feature flag FEATURE_CAN_DISPLAY set to false can only be in section 0");
     }
 

@@ -24,6 +24,10 @@
 
 namespace core_h5p\output;
 
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -32,7 +36,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2020 Victor Deniz <victor@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class h5peditor implements \renderable, \templatable {
+class h5peditor implements renderable, templatable {
 
     /** @var \stdClass Context in which the H5P Editor is being used. */
     protected $context;
@@ -52,7 +56,7 @@ class h5peditor implements \renderable, \templatable {
      * @param \renderer_base $output
      * @return \stdClass
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
 
         return $this->context;
     }

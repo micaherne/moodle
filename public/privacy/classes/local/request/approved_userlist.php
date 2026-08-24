@@ -24,6 +24,8 @@
 
 namespace core_privacy\local\request;
 
+use core\context;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -41,7 +43,7 @@ class approved_userlist extends userlist_base {
      * @param   string          $component the frankenstyle component name.
      * @param   \int[]          $userids The list of userids present in this list.
      */
-    public function __construct(\context $context, string $component, array $userids) {
+    public function __construct(context $context, string $component, array $userids) {
         parent::__construct($context, $component);
 
         $this->set_userids($userids);

@@ -16,13 +16,13 @@
 
 namespace core_course;
 
-use cm_info;
+use core_course\cm_info;
 use core\context\course as context_course;
 use core\exception\coding_exception;
 use core\exception\moodle_exception;
 use core_text;
-use course_modinfo;
-use navigation_cache;
+use core_course\modinfo;
+use core\navigation\navigation_cache;
 use repository;
 use stdClass;
 
@@ -282,7 +282,7 @@ class dndupload_ajax_processor {
 
         $DB->set_field('course_modules', 'instance', $instanceid, ['id' => $this->cm->id]);
 
-        course_modinfo::purge_course_module_cache($this->course->id, $this->cm->id);
+        modinfo::purge_course_module_cache($this->course->id, $this->cm->id);
         // Rebuild the course cache after update action.
         rebuild_course_cache($this->course->id, true, true);
 

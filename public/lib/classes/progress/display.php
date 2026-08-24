@@ -16,6 +16,10 @@
 
 namespace core\progress;
 
+use core\exception\coding_exception;
+use core\output\html_writer;
+use core\output\progress_bar;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -77,11 +81,11 @@ class display extends base {
      */
     public function start_html() {
         if ($this->bar) {
-            throw new \coding_exception('Already started');
+            throw new coding_exception('Already started');
         }
-        $this->bar = new \progress_bar();
+        $this->bar = new progress_bar();
         $this->bar->create();
-        echo \html_writer::start_div('wibbler');
+        echo html_writer::start_div('wibbler');
     }
 
     /**
@@ -96,7 +100,7 @@ class display extends base {
         $this->bar = null;
 
         // End wibbler div.
-        echo \html_writer::end_div();
+        echo html_writer::end_div();
     }
 
     /**
@@ -118,7 +122,7 @@ class display extends base {
             // (up to once per second).
             if (time() != $this->lastwibble) {
                 $this->lastwibble = time();
-                echo \html_writer::div('', 'wibble state' . $this->currentstate);
+                echo html_writer::div('', 'wibble state' . $this->currentstate);
 
                 // Go on to next colour.
                 $this->currentstate += $this->direction;

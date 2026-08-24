@@ -20,6 +20,7 @@ use core\context;
 use core\output\inplace_editable;
 use core\output\named_templatable;
 use core\output\renderable;
+use core\output\renderer_base;
 use core\url;
 use core_external\external_api;
 use core_question\category_manager;
@@ -57,7 +58,7 @@ class editable_name extends inplace_editable implements named_templatable, rende
     }
 
     #[\Override]
-    public function get_template_name(\renderer_base $renderer): string {
+    public function get_template_name(renderer_base $renderer): string {
         return 'core/inplace_editable';
     }
 

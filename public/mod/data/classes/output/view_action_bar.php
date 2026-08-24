@@ -17,12 +17,16 @@
 namespace mod_data\output;
 
 use core\output\action_link;
+use core\output\action_menu;
+use core\output\action_menu\link;
+use core\output\renderer_base;
+use core\output\url_select;
 use data_portfolio_caller;
 use mod_data\manager;
-use moodle_url;
+use core\url;
 use portfolio_add_button;
-use templatable;
-use renderable;
+use core\output\templatable;
+use core\output\renderable;
 
 /**
  * Renderable class for the action bar elements in the view pages in the database activity.
@@ -59,7 +63,7 @@ class view_action_bar implements templatable, renderable {
      */
     public function __construct(
         int $id,
-        \url_select $urlselect,
+        url_select $urlselect,
         bool $hasentries,
         string $mode,
         ?action_link $addentrylink = null
@@ -77,7 +81,7 @@ class view_action_bar implements templatable, renderable {
      * @param \renderer_base $output The renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         global $PAGE, $DB, $CFG;
 
         $data = [
@@ -90,11 +94,11 @@ class view_action_bar implements templatable, renderable {
         $actionsselect = null;
         // Import entries.
         if (has_capability('mod/data:manageentries', $manager->get_context())) {
-            $actionsselect = new \action_menu();
+            $actionsselect = new action_menu();
             $actionsselect->set_menu_trigger(get_string('actions'), 'btn btn-secondary');
 
-            $importentrieslink = new moodle_url('/mod/data/import.php', ['d' => $this->id, 'backto' => $PAGE->url->out(false)]);
-            $actionsselect->add(new \action_menu_link(
+            $importentrieslink = new url('/mod/data/import.php', ['d' => $this->id, 'backto' => $PAGE->url->out(false)]);
+            $actionsselect->add(new link(
                 $importentrieslink,
                 null,
                 get_string('importentries', 'mod_data'),
@@ -105,11 +109,11 @@ class view_action_bar implements templatable, renderable {
         // Export entries.
         if (has_capability(DATA_CAP_EXPORT, $manager->get_context()) && $this->hasentries) {
             if (!$actionsselect) {
-                $actionsselect = new \action_menu();
+                $actionsselect = new action_menu();
                 $actionsselect->set_menu_trigger(get_string('actions'), 'btn btn-secondary');
             }
-            $exportentrieslink = new moodle_url('/mod/data/export.php', ['d' => $this->id, 'backto' => $PAGE->url->out(false)]);
-            $actionsselect->add(new \action_menu_link(
+            $exportentrieslink = new url('/mod/data/export.php', ['d' => $this->id, 'backto' => $PAGE->url->out(false)]);
+            $actionsselect->add(new link(
                 $exportentrieslink,
                 null,
                 get_string('exportentries', 'mod_data'),
@@ -138,10 +142,10 @@ class view_action_bar implements templatable, renderable {
                 $exporturl = $button->to_html(PORTFOLIO_ADD_MOODLE_URL);
                 if (!is_null($exporturl)) {
                     if (!$actionsselect) {
-                        $actionsselect = new \action_menu();
+                        $actionsselect = new action_menu();
                         $actionsselect->set_menu_trigger(get_string('actions'), 'btn btn-secondary');
                     }
-                    $actionsselect->add(new \action_menu_link(
+                    $actionsselect->add(new link(
                         $exporturl,
                         null,
                         get_string('addtoportfolio', 'portfolio'),

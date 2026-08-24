@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+
 require_once(__DIR__ . '/../../config.php');
 
 require_login();
@@ -29,7 +32,7 @@ require_login();
 $actionvisiblename = required_param('actionvisiblename', PARAM_NOTAGS);
 
 $PAGE->set_pagelayout('popup');
-$PAGE->set_context(\context_system::instance());
+$PAGE->set_context(system::instance());
 
 if (!\core_analytics\manager::is_analytics_enabled()) {
     $renderer = $PAGE->get_renderer('report_insights');
@@ -38,7 +41,7 @@ if (!\core_analytics\manager::is_analytics_enabled()) {
 }
 
 $PAGE->set_title(get_string('insights', 'report_insights'));
-$PAGE->set_url(new \moodle_url('/report/insights/done.php'));
+$PAGE->set_url(new url('/report/insights/done.php'));
 
 echo $OUTPUT->header();
 

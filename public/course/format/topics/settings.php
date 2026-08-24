@@ -22,12 +22,18 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core\output\html_writer;
+use core\url;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configselect;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
-    $url = new moodle_url('/admin/course/resetindentation.php', ['format' => 'topics']);
+    $url = new url('/admin/course/resetindentation.php', ['format' => 'topics']);
     $link = html_writer::link($url, get_string('resetindentation', 'admin'));
-    $settings->add(new admin_setting_configcheckbox(
+    $settings->add(new configcheckbox(
         'format_topics/indentation',
         new lang_string('indentation', 'format_topics'),
         new lang_string('indentation_help', 'format_topics').'<br />'.$link,
@@ -39,7 +45,7 @@ if ($ADMIN->fulltree) {
         1 => get_string('yes'),
         0 => get_string('no'),
     ];
-    $settings->add(new admin_setting_configselect(
+    $settings->add(new configselect(
         'format_topics/enablelinearnav',
         new lang_string('linearnavigationsettings', 'core_courseformat'),
         new lang_string('linearnavigationsettings_help', 'core_courseformat'),

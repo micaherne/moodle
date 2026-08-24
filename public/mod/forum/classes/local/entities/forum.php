@@ -31,7 +31,7 @@ require_once($CFG->dirroot . '/mod/forum/lib.php');
 require_once($CFG->dirroot . '/rating/lib.php');
 
 use mod_forum\local\entities\discussion as discussion_entity;
-use context;
+use core\context;
 use stdClass;
 
 /**

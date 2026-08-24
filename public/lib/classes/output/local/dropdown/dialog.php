@@ -16,8 +16,10 @@
 
 namespace core\output\local\dropdown;
 
+use core\output\html_writer;
 use core\output\named_templatable;
 use core\output\renderable;
+use core\output\renderer_base;
 
 /**
  * Class to render a dropdown dialog element.
@@ -235,10 +237,10 @@ class dialog implements named_templatable, renderable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return array data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         $extras = [];
         // Id is required to add JS controls to the dropdown.
-        $dropdownid = $this->extras['id'] ?? \html_writer::random_id('dropdownDialog_');
+        $dropdownid = $this->extras['id'] ?? html_writer::random_id('dropdownDialog_');
         if (isset($this->extras['id'])) {
             unset($this->extras['id']);
         }
@@ -251,7 +253,7 @@ class dialog implements named_templatable, renderable {
         $data = [
             // Id is required for the correct HTML labelling.
             'dropdownid' => $dropdownid,
-            'buttonid' => $this->extras['buttonid'] ?? \html_writer::random_id('dropwdownbutton_'),
+            'buttonid' => $this->extras['buttonid'] ?? html_writer::random_id('dropwdownbutton_'),
             'buttoncontent' => (string) $this->buttoncontent,
             'dialogcontent' => (string) $this->dialogcontent,
             'classes' => $this->classes,
@@ -281,7 +283,7 @@ class dialog implements named_templatable, renderable {
      * @param \renderer_base $renderer The renderer requesting the template name
      * @return string the template name
      */
-    public function get_template_name(\renderer_base $renderer): string {
+    public function get_template_name(renderer_base $renderer): string {
         return 'core/local/dropdown/dialog';
     }
 }

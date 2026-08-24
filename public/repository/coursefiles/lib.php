@@ -22,6 +22,10 @@
  * @copyright  2010 Dongsheng Cai {@link http://dongsheng.org}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context;
+use core\context\course;
+use core\url;
+
 require_once($CFG->dirroot . '/repository/lib.php');
 
 /**
@@ -74,7 +78,7 @@ class repository_coursefiles extends repository {
             $filepath = null;
             list($context, $course, $cm) = get_context_info_array($this->context->id);
             $courseid = is_object($course) ? $course->id : SITEID;
-            $context = context_course::instance($courseid);
+            $context = course::instance($courseid);
         }
 
         if ($fileinfo = $browser->get_file_info($context, $component, $filearea, $itemid, $filepath, $filename)) {
@@ -129,7 +133,7 @@ class repository_coursefiles extends repository {
                         $node['originalmissing'] = true;
                     }
                     if ($imageinfo = $child->get_imageinfo()) {
-                        $fileurl = new moodle_url($child->get_url());
+                        $fileurl = new url($child->get_url());
                         $node['realthumbnail'] = $fileurl->out(false, array('preview' => 'thumb', 'oid' => $child->get_timemodified()));
                         $node['realicon'] = $fileurl->out(false, array('preview' => 'tinyicon', 'oid' => $child->get_timemodified()));
                         $node['image_width'] = $imageinfo['width'];

@@ -16,6 +16,9 @@
 
 namespace qtype_essay;
 
+use core\context\system;
+use core\context\user;
+use core\exception\coding_exception;
 use question_bank;
 use question_engine;
 use question_state;
@@ -244,7 +247,7 @@ final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
         $this->setAdminUser();
         // Required to init a text editor.
         $PAGE->set_url('/');
-        $usercontextid = \context_user::instance($USER->id)->id;
+        $usercontextid = user::instance($USER->id)->id;
         $fs = get_file_storage();
 
         // Create an essay question in the DB.
@@ -264,11 +267,11 @@ final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
         // First we need to get the draft item ids.
         $this->render();
         if (!preg_match('/env=editor&amp;.*?itemid=(\d+)&amp;/', $this->currentoutput, $matches)) {
-            throw new \coding_exception('Editor draft item id not found.');
+            throw new coding_exception('Editor draft item id not found.');
         }
         $editordraftid = $matches[1];
         if (!preg_match('/env=filemanager&amp;action=browse&amp;.*?itemid=(\d+)&amp;/', $this->currentoutput, $matches)) {
-            throw new \coding_exception('File manager draft item id not found.');
+            throw new coding_exception('File manager draft item id not found.');
         }
         $attachementsdraftid = $matches[1];
 
@@ -292,11 +295,11 @@ final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
 
         $this->render();
         if (!preg_match('/env=editor&amp;.*?itemid=(\d+)&amp;/', $this->currentoutput, $matches)) {
-            throw new \coding_exception('Editor draft item id not found.');
+            throw new coding_exception('Editor draft item id not found.');
         }
         $editordraftid = $matches[1];
         if (!preg_match('/env=filemanager&amp;action=browse&amp;.*?itemid=(\d+)&amp;/', $this->currentoutput, $matches)) {
-            throw new \coding_exception('File manager draft item id not found.');
+            throw new coding_exception('File manager draft item id not found.');
         }
         $attachementsdraftid = $matches[1];
 
@@ -325,7 +328,7 @@ final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
 
         $q = question_bank::load_question($question->id);
         $this->quba = question_engine::make_questions_usage_by_activity('unit_test',
-                \context_system::instance());
+                system::instance());
         $this->quba->set_preferred_behaviour('deferredfeedback');
         $this->slot = $this->quba->add_question($q, 1);
         $this->quba->start_question_based_on($this->slot, $oldqa);
@@ -340,11 +343,11 @@ final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
 
         $this->render();
         if (!preg_match('/env=editor&amp;.*?itemid=(\d+)&amp;/', $this->currentoutput, $matches)) {
-            throw new \coding_exception('Editor draft item id not found.');
+            throw new coding_exception('Editor draft item id not found.');
         }
         $editordraftid = $matches[1];
         if (!preg_match('/env=filemanager&amp;action=browse&amp;.*?itemid=(\d+)&amp;/', $this->currentoutput, $matches)) {
-            throw new \coding_exception('File manager draft item id not found.');
+            throw new coding_exception('File manager draft item id not found.');
         }
         $attachementsdraftid = $matches[1];
 
@@ -368,7 +371,7 @@ final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
         $this->setAdminUser();
         // Required to init a text editor.
         $PAGE->set_url('/');
-        $usercontextid = \context_user::instance($USER->id)->id;
+        $usercontextid = user::instance($USER->id)->id;
         $fs = get_file_storage();
 
         // Create an essay question in the DB.
@@ -388,11 +391,11 @@ final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
         // First we need to get the draft item ids.
         $this->render();
         if (!preg_match('/env=editor&amp;.*?itemid=(\d+)&amp;/', $this->currentoutput, $matches)) {
-            throw new \coding_exception('Editor draft item id not found.');
+            throw new coding_exception('Editor draft item id not found.');
         }
         $editordraftid = $matches[1];
         if (!preg_match('/env=filemanager&amp;action=browse&amp;.*?itemid=(\d+)&amp;/', $this->currentoutput, $matches)) {
-            throw new \coding_exception('File manager draft item id not found.');
+            throw new coding_exception('File manager draft item id not found.');
         }
         $attachementsdraftid = $matches[1];
 
@@ -420,7 +423,7 @@ final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
 
         $q = question_bank::load_question($question->id);
         $this->quba = question_engine::make_questions_usage_by_activity('unit_test',
-                \context_system::instance());
+                system::instance());
         $this->quba->set_preferred_behaviour('deferredfeedback');
         $this->slot = $this->quba->add_question($q, 1);
         $this->quba->start_question_based_on($this->slot, $oldqa);
@@ -441,7 +444,7 @@ final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
-        $usercontextid = \context_user::instance($USER->id)->id;
+        $usercontextid = user::instance($USER->id)->id;
 
         // Create an essay question in the DB.
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
@@ -481,7 +484,7 @@ final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
 
         $q = question_bank::load_question($question->id);
         $this->quba = question_engine::make_questions_usage_by_activity('unit_test',
-                \context_system::instance());
+                system::instance());
         $this->quba->set_preferred_behaviour('deferredfeedback');
         $this->slot = $this->quba->add_question($q, 1);
         $this->quba->start_question_based_on($this->slot, $oldqa);
@@ -508,7 +511,7 @@ final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
         $this->setAdminUser();
         // Required to init a text editor.
         $PAGE->set_url('/');
-        $usercontextid = \context_user::instance($USER->id)->id;
+        $usercontextid = user::instance($USER->id)->id;
         $fs = get_file_storage();
 
         // Create an essay question in the DB.
@@ -529,11 +532,11 @@ final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
         // First we need to get the draft item ids.
         $this->render();
         if (!preg_match('/env=editor&amp;.*?itemid=(\d+)&amp;/', $this->currentoutput, $matches)) {
-            throw new \coding_exception('Editor draft item id not found.');
+            throw new coding_exception('Editor draft item id not found.');
         }
         $editordraftid = $matches[1];
         if (!preg_match('/env=filemanager&amp;action=browse&amp;.*?itemid=(\d+)&amp;/', $this->currentoutput, $matches)) {
-            throw new \coding_exception('File manager draft item id not found.');
+            throw new coding_exception('File manager draft item id not found.');
         }
         $attachementsdraftid = $matches[1];
 
@@ -567,7 +570,7 @@ final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
         $this->setAdminUser();
         // Required to init a text editor.
         $PAGE->set_url('/');
-        $usercontextid = \context_user::instance($USER->id)->id;
+        $usercontextid = user::instance($USER->id)->id;
         $fs = get_file_storage();
 
         // Create an essay question in the DB.
@@ -588,11 +591,11 @@ final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
         // First we need to get the draft item ids.
         $this->render();
         if (!preg_match('/env=editor&amp;.*?itemid=(\d+)&amp;/', $this->currentoutput, $matches)) {
-            throw new \coding_exception('Editor draft item id not found.');
+            throw new coding_exception('Editor draft item id not found.');
         }
         $editordraftid = $matches[1];
         if (!preg_match('/env=filemanager&amp;action=browse&amp;.*?itemid=(\d+)&amp;/', $this->currentoutput, $matches)) {
-            throw new \coding_exception('File manager draft item id not found.');
+            throw new coding_exception('File manager draft item id not found.');
         }
         $attachementsdraftid = $matches[1];
 

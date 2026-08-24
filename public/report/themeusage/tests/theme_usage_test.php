@@ -16,6 +16,7 @@
 
 namespace report_themeusage;
 
+use core_cache\cache;
 use testing_data_generator;
 use core\output\theme_usage;
 
@@ -71,7 +72,7 @@ final class theme_usage_test extends \advanced_testcase {
         $this->assertEquals(theme_usage::THEME_IS_USED, $usedinanycontext);
 
         // Double-check the the cache is set for the theme.
-        $cache = \cache::make('core', 'theme_usedincontext')->get($theme);
+        $cache = cache::make('core', 'theme_usedincontext')->get($theme);
         $this->assertEquals(theme_usage::THEME_IS_USED, $cache);
     }
 
@@ -90,12 +91,12 @@ final class theme_usage_test extends \advanced_testcase {
 
         // Check for theme usage. This will create a cached result.
         theme_usage::is_theme_used_in_any_context($theme);
-        $cache = \cache::make('core', 'theme_usedincontext')->get($theme);
+        $cache = cache::make('core', 'theme_usedincontext')->get($theme);
         $this->assertEquals(theme_usage::THEME_IS_USED, $cache);
 
         // Delete the cache by switching themes.
         theme_delete_used_in_context_cache('classic', $user->theme);
-        $cache = \cache::make('core', 'theme_usedincontext')->get($theme);
+        $cache = cache::make('core', 'theme_usedincontext')->get($theme);
         $this->assertFalse($cache);
     }
 }

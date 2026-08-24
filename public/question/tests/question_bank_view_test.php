@@ -16,6 +16,8 @@
 
 namespace core_question;
 
+use core\context\module;
+use core\url;
 use core_question\local\bank\question_edit_contexts;
 
 defined('MOODLE_INTERNAL') || die();
@@ -43,7 +45,7 @@ final class question_bank_view_test extends \advanced_testcase {
         // Create a course and a quiz.
         $course = $generator->create_course();
         $quiz = $this->getDataGenerator()->create_module('quiz', ['course' => $course->id]);
-        $context = \context_module::instance($quiz->cmid);
+        $context = module::instance($quiz->cmid);
         $cm = get_coursemodule_from_instance('quiz', $quiz->id);
 
         // Create a question in the default category.
@@ -65,7 +67,7 @@ final class question_bank_view_test extends \advanced_testcase {
             'tabname' => 'editq',
         ];
         $extraparams = ['cmid' => $cm->id];
-        $view = new \core_question\local\bank\view($contexts, new \moodle_url('/'), $course, $cm, $params, $extraparams);
+        $view = new \core_question\local\bank\view($contexts, new url('/'), $course, $cm, $params, $extraparams);
         ob_start();
         $view->display();
         $html = ob_get_clean();
@@ -97,7 +99,7 @@ final class question_bank_view_test extends \advanced_testcase {
                 'filteroptions' => [],
             ],
         ];
-        $view = new \core_question\local\bank\view($contexts, new \moodle_url('/'), $course, $cm, $params, $extraparams);
+        $view = new \core_question\local\bank\view($contexts, new url('/'), $course, $cm, $params, $extraparams);
         ob_start();
         $view->display();
         $html = ob_get_clean();

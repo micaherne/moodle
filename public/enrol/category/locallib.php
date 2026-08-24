@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\output\progress_trace;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -38,7 +42,7 @@ function enrol_category_sync_course($course) {
 
     $plugin = enrol_get_plugin('category');
 
-    $syscontext = context_system::instance();
+    $syscontext = system::instance();
     $roles = get_roles_with_capability('enrol/category:synchronised', CAP_ALLOW, $syscontext);
 
     if (!$roles) {
@@ -52,7 +56,7 @@ function enrol_category_sync_course($course) {
     }
 
     // First find out if any parent category context contains interesting role assignments.
-    $coursecontext = context_course::instance($course->id);
+    $coursecontext = course::instance($course->id);
     $contextids = $coursecontext->get_parent_context_ids();
     array_pop($contextids); // Remove system context, we are interested in categories only.
 
@@ -145,7 +149,7 @@ function enrol_category_sync_full(progress_trace $trace) {
 
     $plugin = enrol_get_plugin('category');
 
-    $syscontext = context_system::instance();
+    $syscontext = system::instance();
 
     // Any interesting roles worth synchronising?
     if (!$roles = get_roles_with_capability('enrol/category:synchronised', CAP_ALLOW, $syscontext)) {

@@ -25,7 +25,7 @@
 namespace qbank_editquestion;
 
 use core_question\local\bank\question_action_base;
-use moodle_url;
+use core\url;
 
 /**
  * Class for question bank edit question column.
@@ -58,7 +58,7 @@ class edit_action extends question_action_base {
         parent::init();
         $this->stredit = get_string('editquestion', 'question');
         $this->strview = get_string('view');
-        $this->editquestionurl = new \moodle_url('/question/bank/editquestion/question.php',
+        $this->editquestionurl = new url('/question/bank/editquestion/question.php',
                 array('returnurl' => $this->qbank->returnurl));
         $this->editquestionurl->param('cmid', $this->qbank->cm->id);
     }
@@ -73,8 +73,8 @@ class edit_action extends question_action_base {
      * @param int $questionid the question id.
      * @return moodle_url the URL, HTML-escaped.
      */
-    public function edit_question_moodle_url($questionid): moodle_url {
-        return new moodle_url($this->editquestionurl, ['id' => $questionid]);
+    public function edit_question_moodle_url($questionid): url {
+        return new url($this->editquestionurl, ['id' => $questionid]);
     }
 
     protected function get_url_icon_and_label(\stdClass $question): array {

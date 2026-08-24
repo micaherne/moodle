@@ -16,6 +16,8 @@
 
 namespace core\event;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -65,6 +67,6 @@ class antivirus_scan_file_error extends \core\event\base {
      * @throws \moodle_exception
      */
     public function get_url() {
-        return new \moodle_url('/report/infectedfiles/index.php');
+        return new url('/report/infectedfiles/index.php');
     }
 }

@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+
 require_once(__DIR__ . '/../../config.php');
 
 $predictionid = required_param('predictionid', PARAM_INT);
@@ -29,7 +32,7 @@ $actionname = required_param('action', PARAM_ALPHANUMEXT);
 $forwardurl = required_param('forwardurl', PARAM_LOCALURL);
 
 if (!\core_analytics\manager::is_analytics_enabled()) {
-    $PAGE->set_context(\context_system::instance());
+    $PAGE->set_context(system::instance());
     $renderer = $PAGE->get_renderer('report_insights');
     echo $renderer->render_analytics_disabled();
     exit(0);
@@ -43,11 +46,11 @@ if ($context->contextlevel < CONTEXT_COURSE) {
 
 if (empty($forwardurl)) {
     $params = array('modelid' => $model->get_id(), 'contextid' => $context->id);
-    $forwardurl = new \moodle_url('/report/insights/insights.php', $params);
+    $forwardurl = new url('/report/insights/insights.php', $params);
 }
 
 $params = array('predictionid' => $prediction->get_prediction_data()->id, 'action' => $actionname, 'forwardurl' => $forwardurl);
-$url = new \moodle_url('/report/insights/action.php', $params);
+$url = new url('/report/insights/action.php', $params);
 $PAGE->set_url($url);
 
 $modelready = $model->is_enabled() && $model->is_trained() && $model->predictions_exist($context);

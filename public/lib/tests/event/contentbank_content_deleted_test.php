@@ -25,6 +25,8 @@
 
 namespace core\event;
 
+use core\context\system;
+
 /**
  * Test for content bank deleted event.
  *
@@ -59,7 +61,7 @@ final class contentbank_content_deleted_test extends \advanced_testcase {
         $this->setAdminUser();
 
         // Save the system context.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
 
         // Create a content bank content.
         /** @var \core_contentbank_generator $generator */
@@ -80,6 +82,6 @@ final class contentbank_content_deleted_test extends \advanced_testcase {
         // Check that the content was deleted and the event data is valid.
         $this->assertEquals(2, $DB->count_records('contentbank_content'));
         $this->assertInstanceOf('\core\event\contentbank_content_deleted', $event);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
     }
 }

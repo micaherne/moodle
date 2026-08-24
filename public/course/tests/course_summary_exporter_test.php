@@ -17,8 +17,8 @@
 namespace core_course;
 
 use core_course\external\course_summary_exporter;
-use context_user;
-use context_course;
+use core\context\user;
+use core\context\course;
 
 /**
  * Functional test for class course_summary_exporter
@@ -55,7 +55,7 @@ final class course_summary_exporter_test extends \advanced_testcase {
         $filerecord = [
             'component' => 'user',
             'filearea' => 'draft',
-            'contextid' => context_user::instance($USER->id)->id,
+            'contextid' => user::instance($USER->id)->id,
             'itemid' => $draftid,
             'filename' => 'image.jpg',
             'filepath' => '/',
@@ -63,7 +63,7 @@ final class course_summary_exporter_test extends \advanced_testcase {
         $fs = get_file_storage();
         $fs->create_file_from_string($filerecord, file_get_contents(self::get_fixture_path(__NAMESPACE__, 'image.jpg')));
         $course = $this->getDataGenerator()->create_course(['overviewfiles_filemanager' => $draftid]);
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $expected = 'https://www.example.com/moodle/pluginfile.php/' . $coursecontext->id . '/course/overviewfiles/image.jpg';
         $actual = course_summary_exporter::get_course_image($course);

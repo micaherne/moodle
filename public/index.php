@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\navigation\navigation_node;
+use core\url;
+
 if (!file_exists('./config.php')) {
     header('Location: install.php');
     die;
@@ -55,14 +60,14 @@ $PAGE->set_cacheable(false);
 
 require_course_login($SITE);
 
-$hasmaintenanceaccess = has_capability('moodle/site:maintenanceaccess', context_system::instance());
+$hasmaintenanceaccess = has_capability('moodle/site:maintenanceaccess', system::instance());
 
 // If the site is currently under maintenance, then print a message.
 if (!empty($CFG->maintenance_enabled) and !$hasmaintenanceaccess) {
     print_maintenance_message();
 }
 
-$hassiteconfig = has_capability('moodle/site:config', context_system::instance());
+$hassiteconfig = has_capability('moodle/site:config', system::instance());
 
 if ($hassiteconfig && moodle_needs_upgrading()) {
     redirect($CFG->wwwroot .'/'. $CFG->admin .'/index.php');
@@ -109,7 +114,7 @@ if ($homepage != HOMEPAGE_SITE) {
         if ($frontpagenode) {
             $frontpagenode->add(
                 get_string('makethismyhome'),
-                new moodle_url('/', ['setdefaulthome' => 1, 'sesskey' => sesskey()]),
+                new url('/', ['setdefaulthome' => 1, 'sesskey' => sesskey()]),
                 navigation_node::TYPE_SETTING,
             );
         } else {
@@ -117,7 +122,7 @@ if ($homepage != HOMEPAGE_SITE) {
             $frontpagenode->force_open();
             $frontpagenode->add(
                 get_string('makethismyhome'),
-                new moodle_url('/', ['setdefaulthome' => 1, 'sesskey' => sesskey()]),
+                new url('/', ['setdefaulthome' => 1, 'sesskey' => sesskey()]),
                 navigation_node::TYPE_SETTING,
             );
         }
@@ -125,7 +130,7 @@ if ($homepage != HOMEPAGE_SITE) {
 }
 
 // Trigger event.
-course_view(context_course::instance(SITEID));
+course_view(course::instance(SITEID));
 
 $PAGE->set_pagetype('site-index');
 $PAGE->set_docs_path('');
@@ -145,7 +150,7 @@ include_course_ajax($SITE, $modnamesused);
 $courserenderer = $PAGE->get_renderer('core', 'course');
 
 if ($hassiteconfig) {
-    $editurl = new moodle_url('/course/view.php', ['id' => SITEID, 'sesskey' => sesskey()]);
+    $editurl = new url('/course/view.php', ['id' => SITEID, 'sesskey' => sesskey()]);
     $editbutton = $OUTPUT->edit_button($editurl);
     $PAGE->set_button($editbutton);
 }
@@ -167,7 +172,7 @@ if (!empty($CFG->customfrontpageinclude)) {
 
 echo $courserenderer->frontpage();
 
-if ($editing && has_capability('moodle/course:create', context_system::instance())) {
+if ($editing && has_capability('moodle/course:create', system::instance())) {
     echo $courserenderer->add_new_course_button();
 }
 echo $OUTPUT->footer();

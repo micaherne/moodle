@@ -16,7 +16,7 @@
 
 namespace core_admin\table;
 
-use moodle_url;
+use core\url;
 use stdClass;
 
 /**
@@ -34,8 +34,8 @@ class media_management_table extends \core_admin\table\plugin_management_table {
         return 'media';
     }
 
-    protected function get_action_url(array $params = []): moodle_url {
-        return new moodle_url('/admin/media.php', $params);
+    protected function get_action_url(array $params = []): url {
+        return new url('/admin/media.php', $params);
     }
 
     protected function get_column_list(): array {

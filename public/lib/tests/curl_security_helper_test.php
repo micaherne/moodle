@@ -16,6 +16,8 @@
 
 namespace core;
 
+use core\exception\coding_exception;
+
 /**
  * cURL security test suite.
  *
@@ -315,7 +317,7 @@ final class curl_security_helper_test extends \advanced_testcase {
         $helper = new \core\files\curl_security_helper();
 
         // Throw an exception if url_is_blocked() has not been called yet.
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage(
             'In the curl_security_helper class, url_is_blocked() must be called before get_resolve_info() is called.'
         );

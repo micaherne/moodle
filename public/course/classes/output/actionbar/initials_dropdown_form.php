@@ -19,7 +19,7 @@ namespace core_course\output\actionbar;
 use core\output\renderable;
 use core\output\renderer_base;
 use stdClass;
-use templatable;
+use core\output\templatable;
 
 /**
  * Renderable class for the initial_dropdown_form.

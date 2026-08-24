@@ -24,9 +24,9 @@
 namespace tool_lp\output;
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use templatable;
-use renderer_base;
+use core\output\renderable;
+use core\output\templatable;
+use core\output\renderer_base;
 use stdClass;
 use core_competency\api;
 use tool_lp\external\competency_summary_exporter;

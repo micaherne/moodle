@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\user;
 use core\output\html_writer;
 use core\url;
 
@@ -77,7 +78,7 @@ class data_field_picture extends data_field_base {
             file_prepare_draft_area($itemid, $this->context->id, 'mod_data', 'content', $content->id);
             if (!empty($content->content)) {
                 if ($file = $fs->get_file($this->context->id, 'mod_data', 'content', $content->id, '/', $content->content)) {
-                    $usercontext = context_user::instance($USER->id);
+                    $usercontext = user::instance($USER->id);
 
                     if ($thumbfile = $fs->get_file($usercontext->id, 'user', 'draft', $itemid, '/', 'thumb_'.$content->content)) {
                         $thumbfile->delete();
@@ -234,12 +235,12 @@ class data_field_picture extends data_field_base {
             // Thumbnails are already converted to the correct width and height.
             $width = '';
             $height = '';
-            $url = new moodle_url('/mod/data/view.php', ['d' => $this->field->dataid, 'rid' => $recordid]);
+            $url = new url('/mod/data/view.php', ['d' => $this->field->dataid, 'rid' => $recordid]);
         } else {
             $filename = $content->content;
             $url = null;
         }
-        $imgurl = moodle_url::make_pluginfile_url($this->context->id, 'mod_data', 'content', $content->id, '/', $filename);
+        $imgurl = url::make_pluginfile_url($this->context->id, 'mod_data', 'content', $content->id, '/', $filename);
 
         if (!$url) {
             $url = $imgurl;
@@ -298,7 +299,7 @@ class data_field_picture extends data_field_base {
             case 'file':
                 $fs = get_file_storage();
                 file_save_draft_area_files($value, $this->context->id, 'mod_data', 'content', $content->id);
-                $usercontext = context_user::instance($USER->id);
+                $usercontext = user::instance($USER->id);
                 $files = $fs->get_area_files(
                     $this->context->id,
                     'mod_data', 'content',
@@ -318,7 +319,7 @@ class data_field_picture extends data_field_base {
                     }
 
                     if ($file->get_imageinfo() === false) {
-                        $url = new moodle_url('/mod/data/edit.php', array('d' => $this->field->dataid));
+                        $url = new url('/mod/data/edit.php', array('d' => $this->field->dataid));
                         redirect($url, get_string('invalidfiletype', 'error', $file->get_filename()));
                     }
                     $content->content = $file->get_filename();
@@ -438,7 +439,7 @@ class data_field_picture extends data_field_base {
 
         $names = explode('_', $name);
         if ($names[2] == 'file') {
-            $usercontext = context_user::instance($USER->id);
+            $usercontext = user::instance($USER->id);
             $fs = get_file_storage();
             $files = $fs->get_area_files($usercontext->id, 'user', 'draft', $value);
             return count($files) >= 2;

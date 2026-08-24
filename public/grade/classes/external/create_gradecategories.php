@@ -16,6 +16,7 @@
 
 namespace core_grades\external;
 
+use core\context\course;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
@@ -95,7 +96,7 @@ class create_gradecategories extends external_api {
         $categories = $params['categories'];
 
         // Check that the context and permissions are OK.
-        $context = \context_course::instance($courseid);
+        $context = course::instance($courseid);
         self::validate_context($context);
         require_capability('moodle/grade:manage', $context);
 

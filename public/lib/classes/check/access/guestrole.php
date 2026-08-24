@@ -30,6 +30,8 @@ defined('MOODLE_INTERNAL') || die();
 
 use core\check\check;
 use core\check\result;
+use core\output\action_link;
+use core\url;
 
 /**
  * Verifies sanity of guest role
@@ -54,9 +56,9 @@ class guestrole extends check {
      *
      * @return \action_link|null
      */
-    public function get_action_link(): ?\action_link {
-        return new \action_link(
-            new \moodle_url('/admin/settings.php?section=userpolicies'),
+    public function get_action_link(): ?action_link {
+        return new action_link(
+            new url('/admin/settings.php?section=userpolicies'),
             get_string('userpolicies', 'admin'));
     }
 

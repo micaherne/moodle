@@ -16,6 +16,8 @@
 
 namespace theme_classic;
 
+use core\output\theme_config;
+
 /**
  * Unit tests for scss compilation.
  *
@@ -37,7 +39,7 @@ final class scss_test extends \advanced_testcase {
         set_config('pathtosassc', PHPUNIT_PATH_TO_SASSC);
 
         $this->assertNotEmpty(
-            \theme_config::load('classic')->get_css_content_debug('scss', null, null)
+            theme_config::load('classic')->get_css_content_debug('scss', null, null)
         );
     }
 }

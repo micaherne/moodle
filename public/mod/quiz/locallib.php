@@ -35,9 +35,17 @@ require_once($CFG->libdir . '/completionlib.php');
 require_once($CFG->libdir . '/filelib.php');
 require_once($CFG->libdir . '/questionlib.php');
 
+use core\context\course;
+use core\context\module;
 use core\di;
+use core\exception\moodle_exception;
 use core\hook;
 use core\exception\coding_exception;
+use core\output\html_writer;
+use core\output\user_picture;
+use core\url;
+use core\user;
+use core_course\cm_info;
 use core_question\local\bank\condition;
 use mod_quiz\access_manager;
 use mod_quiz\event\attempt_submitted;
@@ -109,7 +117,7 @@ function quiz_create_attempt(quiz_settings $quizobj, $attemptnumber, $lastattemp
     $quiz = $quizobj->get_quiz();
     if ($quiz->sumgrades < grade_calculator::ALMOST_ZERO && $quiz->grade > grade_calculator::ALMOST_ZERO) {
         throw new moodle_exception('cannotstartgradesmismatch', 'quiz',
-                new moodle_url('/mod/quiz/view.php', ['q' => $quiz->id]),
+                new url('/mod/quiz/view.php', ['q' => $quiz->id]),
                     ['grade' => quiz_format_grade($quiz, $quiz->grade)]);
     }
 
@@ -123,7 +131,7 @@ function quiz_create_attempt(quiz_settings $quizobj, $attemptnumber, $lastattemp
     } else {
         // Build on last attempt.
         if (empty($lastattempt)) {
-            throw new \moodle_exception('cannotfindprevattempt', 'quiz');
+            throw new moodle_exception('cannotfindprevattempt', 'quiz');
         }
         $attempt = $lastattempt;
     }
@@ -490,7 +498,7 @@ function quiz_delete_attempt($attempt, $quiz) {
         $params = [
             'objectid' => $attempt->id,
             'relateduserid' => $attempt->userid,
-            'context' => context_module::instance($quiz->cmid),
+            'context' => module::instance($quiz->cmid),
             'other' => [
                 'quizid' => $quiz->id
             ]
@@ -584,7 +592,7 @@ function quiz_repaginate_questions($quizid, $slotsperpage) {
     // Log quiz re-paginated event.
     $cm = get_coursemodule_from_instance('quiz', $quizid);
     $event = \mod_quiz\event\quiz_repaginated::create([
-        'context' => \context_module::instance($cm->id),
+        'context' => module::instance($cm->id),
         'objectid' => $quizid,
         'other' => [
             'slotsperpage' => $slotsperpage
@@ -724,7 +732,7 @@ function quiz_override_summary(stdClass $quiz, cm_info|stdClass $cm, int $curren
 
     $quizgroupmode = groups_get_activity_groupmode($cm);
     $accessallgroups = ($quizgroupmode == NOGROUPS) ||
-            has_capability('moodle/site:accessallgroups', context_module::instance($cm->id));
+            has_capability('moodle/site:accessallgroups', module::instance($cm->id));
 
     if ($accessallgroups) {
         // User can see all groups.
@@ -961,7 +969,7 @@ function quiz_get_user_timeclose($courseid) {
     global $DB, $USER;
 
     // For teacher and manager/admins return timeclose.
-    if (has_capability('moodle/course:update', context_course::instance($courseid))) {
+    if (has_capability('moodle/course:update', course::instance($courseid))) {
         $sql = "SELECT quiz.id, quiz.timeclose AS usertimeclose
                   FROM {quiz} quiz
                  WHERE quiz.course = :courseid";
@@ -1080,11 +1088,11 @@ function quiz_question_edit_button($cmid, $question, $returnurl, $contentafteric
 
     // Build the icon.
     if ($action) {
-        if ($returnurl instanceof moodle_url) {
+        if ($returnurl instanceof url) {
             $returnurl = $returnurl->out_as_local_url(false);
         }
         $questionparams = ['returnurl' => $returnurl, 'cmid' => $cmid, 'id' => $question->id];
-        $questionurl = new moodle_url("$CFG->wwwroot/question/bank/editquestion/question.php", $questionparams);
+        $questionurl = new url("$CFG->wwwroot/question/bank/editquestion/question.php", $questionparams);
         return '<a title="' . $action . '" href="' . $questionurl->out() . '" class="questioneditbutton">' .
                 $OUTPUT->pix_icon($icon, $action) . $contentaftericon .
                 '</a>';
@@ -1192,7 +1200,7 @@ function quiz_get_review_options($quiz, $attempt, $context) {
     $options->readonly = true;
     $options->flags = quiz_get_flag_option($attempt, $context);
     if (!empty($attempt->id)) {
-        $options->questionreviewlink = new moodle_url('/mod/quiz/reviewquestion.php',
+        $options->questionreviewlink = new url('/mod/quiz/reviewquestion.php',
                 ['attempt' => $attempt->id]);
     }
 
@@ -1200,7 +1208,7 @@ function quiz_get_review_options($quiz, $attempt, $context) {
     if (!empty($attempt->id) && $attempt->state == quiz_attempt::FINISHED && !$attempt->preview &&
             !is_null($context) && has_capability('mod/quiz:grade', $context)) {
         $options->manualcomment = question_display_options::VISIBLE;
-        $options->manualcommentlink = new moodle_url('/mod/quiz/comment.php',
+        $options->manualcommentlink = new url('/mod/quiz/comment.php',
                 ['attempt' => $attempt->id]);
     }
 
@@ -1294,7 +1302,7 @@ function quiz_send_confirmation($recipient, $a, $studentisonline) {
     $eventdata->name              = 'confirmation';
     $eventdata->notification      = 1;
 
-    $eventdata->userfrom          = core_user::get_noreply_user();
+    $eventdata->userfrom          = user::get_noreply_user();
     $eventdata->userto            = $recipient;
     $eventdata->subject           = get_string('emailconfirmsubject', 'quiz', $a);
 
@@ -1523,7 +1531,7 @@ function quiz_send_overdue_message($attemptobj) {
     $eventdata->name              = 'attempt_overdue';
     $eventdata->notification      = 1;
 
-    $eventdata->userfrom          = core_user::get_noreply_user();
+    $eventdata->userfrom          = user::get_noreply_user();
     $eventdata->userto            = $submitter;
     $eventdata->subject           = get_string('emailoverduesubject', 'quiz', $a);
     $eventdata->fullmessage       = get_string('emailoverduebody', 'quiz', $a);
@@ -1570,7 +1578,7 @@ function quiz_attempt_submitted_handler($event) {
         $completion->update_state($cm, COMPLETION_COMPLETE, $event->userid);
     }
     return quiz_send_notification_messages($course, $quiz, $attempt,
-            context_module::instance($cm->id), $cm, $eventdata['other']['studentisonline']);
+            module::instance($cm->id), $cm, $eventdata['other']['studentisonline']);
 }
 
 /**
@@ -1602,7 +1610,7 @@ function quiz_send_notify_manual_graded_message(quiz_attempt $attemptobj, object
     $eventdata = new \core\message\message();
     $eventdata->component = 'mod_quiz';
     $eventdata->name = 'attempt_grading_complete';
-    $eventdata->userfrom = core_user::get_noreply_user();
+    $eventdata->userfrom = user::get_noreply_user();
     $eventdata->userto = $userto;
 
     $eventdata->subject = get_string('emailmanualgradedsubject', 'quiz', $a);
@@ -1766,7 +1774,7 @@ function quiz_add_quiz_question($questionid, $quiz, $page = 0, $maxmark = null) 
                AND qr.usingcontextid = ?";
 
     $questionslots = $DB->get_records_sql($sql, [$quiz->id, 'mod_quiz', 'slot',
-            context_module::instance($quiz->cmid)->id]);
+            module::instance($quiz->cmid)->id]);
 
     $currententry = get_question_bank_entry($questionid);
 
@@ -1851,7 +1859,7 @@ function quiz_add_quiz_question($questionid, $quiz, $page = 0, $maxmark = null) 
     if (!$qreferenceitem) {
         // Create a new reference record for questions created already.
         $questionreferences = new stdClass();
-        $questionreferences->usingcontextid = context_module::instance($quiz->cmid)->id;
+        $questionreferences->usingcontextid = module::instance($quiz->cmid)->id;
         $questionreferences->component = 'mod_quiz';
         $questionreferences->questionarea = 'slot';
         $questionreferences->itemid = $slotid;
@@ -1867,7 +1875,7 @@ function quiz_add_quiz_question($questionid, $quiz, $page = 0, $maxmark = null) 
     } else {
         // If the reference record exits for another quiz.
         $questionreferences = new stdClass();
-        $questionreferences->usingcontextid = context_module::instance($quiz->cmid)->id;
+        $questionreferences->usingcontextid = module::instance($quiz->cmid)->id;
         $questionreferences->component = 'mod_quiz';
         $questionreferences->questionarea = 'slot';
         $questionreferences->itemid = $slotid;
@@ -1879,7 +1887,7 @@ function quiz_add_quiz_question($questionid, $quiz, $page = 0, $maxmark = null) 
     // Log slot created event.
     $cm = get_coursemodule_from_instance('quiz', $quiz->id);
     $event = \mod_quiz\event\slot_created::create([
-        'context' => context_module::instance($cm->id),
+        'context' => module::instance($cm->id),
         'objectid' => $slotid,
         'other' => [
             'quizid' => $quiz->id,
@@ -2152,8 +2160,8 @@ function quiz_create_attempt_handling_errors($attemptid, $cmid = null) {
     } catch (moodle_exception $e) {
         if (!empty($cmid)) {
             list($course, $cm) = get_course_and_cm_from_cmid($cmid, 'quiz');
-            $continuelink = new moodle_url('/mod/quiz/view.php', ['id' => $cmid]);
-            $context = context_module::instance($cm->id);
+            $continuelink = new url('/mod/quiz/view.php', ['id' => $cmid]);
+            $context = module::instance($cm->id);
             if (has_capability('mod/quiz:preview', $context)) {
                 throw new moodle_exception('attempterrorcontentchange', 'quiz', $continuelink);
             } else {

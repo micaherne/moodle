@@ -16,7 +16,9 @@
 
 namespace core_grades\output;
 
-use moodle_url;
+use core\context;
+use core\output\renderer_base;
+use core\url;
 
 /**
  * Renderable class for the action bar elements in the gradebook import pages.
@@ -37,7 +39,7 @@ class import_action_bar extends action_bar {
      * @param null $unused This parameter has been deprecated since 4.1 and should not be used anymore.
      * @param string $activeplugin The plugin of the current import grades page (xml, csv, ...).
      */
-    public function __construct(\context $context, $unused, string $activeplugin) {
+    public function __construct(context $context, $unused, string $activeplugin) {
         if ($unused !== null) {
             debugging('Deprecated argument passed to ' . __FUNCTION__, DEBUG_DEVELOPER);
         }
@@ -60,14 +62,14 @@ class import_action_bar extends action_bar {
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         if ($this->context->contextlevel !== CONTEXT_COURSE) {
             return [];
         }
         $courseid = $this->context->instanceid;
         // Get the data used to output the general navigation selector.
         $generalnavselector = new general_action_bar($this->context,
-            new moodle_url('/grade/import/index.php', ['id' => $courseid]), 'import', $this->activeplugin);
+            new url('/grade/import/index.php', ['id' => $courseid]), 'import', $this->activeplugin);
         $data = $generalnavselector->export_for_template($output);
 
         // Get all grades import plugins. If there isn't any available import plugins there is no need to create and

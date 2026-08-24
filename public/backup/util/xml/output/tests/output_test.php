@@ -25,6 +25,7 @@
 
 namespace core_backup;
 
+use core\exception\moodle_exception;
 use file_xml_output;
 use memory_xml_output;
 use xml_output;
@@ -234,7 +235,7 @@ final class output_test extends \advanced_testcase {
         @remove_dir(dirname($file));
         // Recreate test dir
         if (!check_dir_exists(dirname($file), true, true)) {
-            throw new \moodle_exception('error_creating_temp_dir', 'error', dirname($file));
+            throw new moodle_exception('error_creating_temp_dir', 'error', dirname($file));
         }
 
         // Instantiate xml_output

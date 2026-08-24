@@ -24,6 +24,7 @@
 
 namespace core_calendar;
 
+use core\url;
 use core_calendar\local\event\mappers\event_mapper;
 use core_calendar\local\event\value_objects\action;
 use core_calendar\local\event\value_objects\event_description;
@@ -130,7 +131,7 @@ final class event_mapper_test extends \advanced_testcase {
 
         $this->assertInstanceOf(\calendar_event::class, $legacyevent);
         $this->assertEquals($legacyevent->actionname, 'test action');
-        $this->assertInstanceOf(\moodle_url::class, $legacyevent->actionurl);
+        $this->assertInstanceOf(url::class, $legacyevent->actionurl);
         $this->assertEquals($legacyevent->actionnum, 1729);
         $this->assertEquals($legacyevent->actionactionable, $event->get_action()->is_actionable());
     }
@@ -253,7 +254,7 @@ class event_mapper_test_action_event implements action_event_interface {
     public function get_action() {
         return new action(
             'test action',
-            new \moodle_url('http://example.com'),
+            new url('http://example.com'),
             1729,
             true
         );

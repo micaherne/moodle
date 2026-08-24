@@ -16,6 +16,8 @@
 
 namespace tool_admin_presets\local\action;
 
+use core\exception\moodle_exception;
+
 /**
  * Tests for the rollback class.
  *
@@ -142,7 +144,7 @@ final class rollback_test extends \advanced_testcase {
 
         // Create the rollback class and execute it.
         $action = new rollback();
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $action->execute();
     }
 }

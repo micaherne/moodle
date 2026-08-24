@@ -16,6 +16,7 @@
 
 namespace core_editor\privacy;
 
+use core\context\system;
 use core_privacy\local\request\writer;
 use core_editor\privacy\provider;
 
@@ -38,7 +39,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         provider::export_user_preferences($USER->id);
         /** @var \core_privacy\tests\request\content_writer $writer */
-        $writer = writer::with_context(\context_system::instance());
+        $writer = writer::with_context(system::instance());
         $this->assertFalse($writer->has_any_data());
     }
 
@@ -60,7 +61,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         // Export test users preferences.
         provider::export_user_preferences($user->id);
         /** @var \core_privacy\tests\request\content_writer $writer */
-        $writer = writer::with_context(\context_system::instance());
+        $writer = writer::with_context(system::instance());
         $this->assertFalse($writer->has_any_data());
     }
 
@@ -82,7 +83,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         // Export test users preferences.
         provider::export_user_preferences($user->id);
         /** @var \core_privacy\tests\request\content_writer $writer */
-        $writer = writer::with_context(\context_system::instance());
+        $writer = writer::with_context(system::instance());
         $this->assertTrue($writer->has_any_data());
 
         $prefs = $writer->get_user_preferences('core_editor');

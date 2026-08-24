@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir .'/simplepie/moodle_simplepie.php');
@@ -179,7 +181,7 @@ class block_rss_client_edit_form extends block_edit_form {
                         $errors['config_feedurl'] = get_string('couldnotfindloadrssfeed', 'block_rss_client');
                     } else {
                         // Return URL without quoting.
-                        $discoveredurl = new moodle_url($rss->subscribe_url());
+                        $discoveredurl = new url($rss->subscribe_url());
                         $theurl = $discoveredurl->out(false);
                         // Save the RSS to the database.
                         $this->newrss = new stdClass;

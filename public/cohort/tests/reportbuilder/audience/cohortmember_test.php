@@ -19,7 +19,7 @@ declare(strict_types=1);
 namespace core_cohort\reportbuilder\audience;
 
 use advanced_testcase;
-use context;
+use core\context;
 use core_reportbuilder_generator;
 use core_user\reportbuilder\datasource\users;
 

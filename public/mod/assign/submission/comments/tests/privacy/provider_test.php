@@ -16,6 +16,7 @@
 
 namespace assignsubmission_comments\privacy;
 
+use core_comment\manager;
 use mod_assign\privacy\useridlist;
 
 /**
@@ -52,7 +53,7 @@ final class provider_test extends \mod_assign\tests\provider_testcase {
         $options->showcount = true;
         $options->displaycancel = true;
 
-        $comment = new \comment($options);
+        $comment = new manager($options);
         $comment->set_post_permission(true);
 
         $this->setUser($student);

@@ -17,8 +17,8 @@
 namespace core_question\local\statistics;
 
 use advanced_testcase;
-use context;
-use context_module;
+use core\context;
+use core\context\module;
 use core_question\statistics\questions\all_calculated_for_qubaid_condition;
 use quiz_statistics\tests\statistics_helper;
 use core_question_generator;
@@ -67,21 +67,21 @@ final class statistics_bulk_loader_test extends advanced_testcase {
             'grade' => 100.0, 'sumgrades' => 2,
             'layout' => '1,2,0',
         ]);
-        $quiz1context = context_module::instance($quiz1->cmid);
+        $quiz1context = module::instance($quiz1->cmid);
 
         $quiz2 = $quizgenerator->create_instance([
             'course' => $course->id,
             'grade' => 100.0, 'sumgrades' => 2,
             'layout' => '1,2,0',
         ]);
-        $quiz2context = context_module::instance($quiz2->cmid);
+        $quiz2context = module::instance($quiz2->cmid);
 
         $quiz3 = $quizgenerator->create_instance([
             'course' => $course->id,
             'grade' => 100.0, 'sumgrades' => 2,
             'layout' => '1,2,0',
         ]);
-        $quiz3context = context_module::instance($quiz3->cmid);
+        $quiz3context = module::instance($quiz3->cmid);
 
         // Create questions.
         /** @var core_question_generator $questiongenerator */
@@ -127,7 +127,7 @@ final class statistics_bulk_loader_test extends advanced_testcase {
 
         // Simulate the situation where the context for quiz3 is gone from the database, without
         // the corresponding attempt data being properly cleaned up. Ensure this does not cause errors.
-        $DB->delete_records('context', ['id' => context_module::instance($quiz3->cmid)->id]);
+        $DB->delete_records('context', ['id' => module::instance($quiz3->cmid)->id]);
         accesslib_clear_all_caches_for_unit_testing();
         // Same asserts as above, before we added quiz3.
         $q1places = $rcm->invoke(null, [$question1->id]);
@@ -353,7 +353,7 @@ final class statistics_bulk_loader_test extends advanced_testcase {
         [$quiz1, $quiz2, $questions] = $this->prepare_and_submit_quizzes($quiz1attempts, $quiz2attempts);
 
         // Quiz 1 facilities.
-        $stats = $this->load_quiz_statistics_for_place(context_module::instance($quiz1->cmid));
+        $stats = $this->load_quiz_statistics_for_place(module::instance($quiz1->cmid));
         $quiz1facility1 = $this->extract_item_value($stats, $questions[1]->id, 'facility');
         $quiz1facility2 = $this->extract_item_value($stats, $questions[2]->id, 'facility');
         $quiz1facility3 = $this->extract_item_value($stats, $questions[3]->id, 'facility');
@@ -365,7 +365,7 @@ final class statistics_bulk_loader_test extends advanced_testcase {
         $this->assertEqualsWithDelta($expectedquiz1facilities[3], $quiz1facility4, self::DELTA);
 
         // Quiz 2 facilities.
-        $stats = $this->load_quiz_statistics_for_place(context_module::instance($quiz2->cmid));
+        $stats = $this->load_quiz_statistics_for_place(module::instance($quiz2->cmid));
         $quiz2facility1 = $this->extract_item_value($stats, $questions[1]->id, 'facility');
         $quiz2facility2 = $this->extract_item_value($stats, $questions[2]->id, 'facility');
         $quiz2facility3 = $this->extract_item_value($stats, $questions[3]->id, 'facility');
@@ -456,7 +456,7 @@ final class statistics_bulk_loader_test extends advanced_testcase {
         [$quiz1, $quiz2, $questions] = $this->prepare_and_submit_quizzes($quiz1attempts, $quiz2attempts);
 
         // Quiz 1 discriminative efficiency.
-        $stats = $this->load_quiz_statistics_for_place(context_module::instance($quiz1->cmid));
+        $stats = $this->load_quiz_statistics_for_place(module::instance($quiz1->cmid));
         $discriminativeefficiency1 = $this->extract_item_value($stats, $questions[1]->id, 'discriminativeefficiency');
         $discriminativeefficiency2 = $this->extract_item_value($stats, $questions[2]->id, 'discriminativeefficiency');
         $discriminativeefficiency3 = $this->extract_item_value($stats, $questions[3]->id, 'discriminativeefficiency');
@@ -484,7 +484,7 @@ final class statistics_bulk_loader_test extends advanced_testcase {
         );
 
         // Quiz 2 discriminative efficiency.
-        $stats = $this->load_quiz_statistics_for_place(context_module::instance($quiz2->cmid));
+        $stats = $this->load_quiz_statistics_for_place(module::instance($quiz2->cmid));
         $discriminativeefficiency1 = $this->extract_item_value($stats, $questions[1]->id, 'discriminativeefficiency');
         $discriminativeefficiency2 = $this->extract_item_value($stats, $questions[2]->id, 'discriminativeefficiency');
         $discriminativeefficiency3 = $this->extract_item_value($stats, $questions[3]->id, 'discriminativeefficiency');
@@ -591,7 +591,7 @@ final class statistics_bulk_loader_test extends advanced_testcase {
         [$quiz1, $quiz2, $questions] = $this->prepare_and_submit_quizzes($quiz1attempts, $quiz2attempts);
 
         // Quiz 1 discrimination index.
-        $stats = $this->load_quiz_statistics_for_place(context_module::instance($quiz1->cmid));
+        $stats = $this->load_quiz_statistics_for_place(module::instance($quiz1->cmid));
         $discriminationindex1 = $this->extract_item_value($stats, $questions[1]->id, 'discriminationindex');
         $discriminationindex2 = $this->extract_item_value($stats, $questions[2]->id, 'discriminationindex');
         $discriminationindex3 = $this->extract_item_value($stats, $questions[3]->id, 'discriminationindex');
@@ -619,7 +619,7 @@ final class statistics_bulk_loader_test extends advanced_testcase {
         );
 
         // Quiz 2 discrimination index.
-        $stats = $this->load_quiz_statistics_for_place(context_module::instance($quiz2->cmid));
+        $stats = $this->load_quiz_statistics_for_place(module::instance($quiz2->cmid));
         $discriminationindex1 = $this->extract_item_value($stats, $questions[1]->id, 'discriminationindex');
         $discriminationindex2 = $this->extract_item_value($stats, $questions[2]->id, 'discriminationindex');
         $discriminationindex3 = $this->extract_item_value($stats, $questions[3]->id, 'discriminationindex');

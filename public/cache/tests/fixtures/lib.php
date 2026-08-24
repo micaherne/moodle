@@ -28,6 +28,16 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core_cache\application_cache;
+use core_cache\cache;
+use core_cache\cacheable_object_interface;
+use core_cache\config_writer;
+use core_cache\data_source_interface;
+use core_cache\definition;
+use core_cache\exception\cache_exception;
+use core_cache\factory;
+use core_cache\request_cache;
+use core_cache\session_cache;
 use core_cache\store;
 
 /**
@@ -40,7 +50,7 @@ use core_cache\store;
  * @copyright 2012 Sam Hemelryk
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class cache_config_testing extends cache_config_writer {
+class cache_config_testing extends config_writer {
     /**
      * Creates the default configuration and saves it.
      *
@@ -109,13 +119,13 @@ class cache_config_testing extends cache_config_writer {
             ],
         ];
 
-        $factory = cache_factory::instance();
+        $factory = factory::instance();
         // We expect the cache to be initialising presently. If its not then something has gone wrong and likely
         // we are now in a loop.
-        if (!$forcesave && $factory->get_state() !== cache_factory::STATE_INITIALISING) {
+        if (!$forcesave && $factory->get_state() !== factory::STATE_INITIALISING) {
             return $writer->generate_configuration_array();
         }
-        $factory->set_state(cache_factory::STATE_SAVING);
+        $factory->set_state(factory::STATE_SAVING);
         $writer->config_save();
         return true;
     }
@@ -330,7 +340,7 @@ class cache_config_testing extends cache_config_writer {
  * @copyright  2012 Sam Hemelryk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class cache_phpunit_dummy_object extends stdClass implements cacheable_object {
+class cache_phpunit_dummy_object extends stdClass implements cacheable_object_interface {
     /**
      * Test property 1
      * @var string
@@ -386,14 +396,14 @@ class cache_phpunit_dummy_object extends stdClass implements cacheable_object {
  * @copyright  2012 Sam Hemelryk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class cache_phpunit_dummy_datasource implements cache_data_source {
+class cache_phpunit_dummy_datasource implements data_source_interface {
     /**
      * Returns an instance of this object for use with the cache.
      *
      * @param cache_definition $definition
      * @return cache_phpunit_dummy_datasource
      */
-    public static function get_instance_for_cache(cache_definition $definition) {
+    public static function get_instance_for_cache(definition $definition) {
         return new cache_phpunit_dummy_datasource();
     }
 
@@ -430,7 +440,7 @@ class cache_phpunit_dummy_datasource implements cache_data_source {
  * @copyright  2012 Sam Hemelryk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class cache_phpunit_application extends cache_application {
+class cache_phpunit_application extends application_cache {
     #[\Override]
     public function get_store() {
         return parent::get_store();
@@ -482,7 +492,7 @@ class cache_phpunit_application extends cache_application {
  * @copyright  2012 Sam Hemelryk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class cache_phpunit_session extends cache_session {
+class cache_phpunit_session extends session_cache {
     /** @var Static member used for emulating the behaviour of session_id() during the tests. */
     protected static $sessionidmockup = 'phpunitmockupsessionid';
 
@@ -541,7 +551,7 @@ class cache_phpunit_session extends cache_session {
  * @copyright  2012 Sam Hemelryk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class cache_phpunit_request extends cache_request {
+class cache_phpunit_request extends request_cache {
     #[\Override]
     public function get_store() {
         return parent::get_store();
@@ -570,7 +580,7 @@ class cache_phpunit_request extends cache_request {
  * @copyright  2012 Sam Hemelryk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class cache_phpunit_dummy_overrideclass extends cache_application {
+class cache_phpunit_dummy_overrideclass extends application_cache {
     // Satisfying the code pre-checker is just part of my day job.
 }
 
@@ -580,7 +590,7 @@ class cache_phpunit_dummy_overrideclass extends cache_application {
  * @copyright  2012 Sam Hemelryk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class cache_phpunit_factory extends cache_factory {
+class cache_phpunit_factory extends factory {
     /**
      * Exposes the cache_factory's disable method.
      *

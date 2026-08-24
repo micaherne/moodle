@@ -16,6 +16,7 @@
 
 namespace mod_assign;
 
+use core\context\module;
 use core\task\task_trait;
 use mod_assign\task\queue_assignment_due_soon_notification_tasks_for_users;
 use mod_assign\task\queue_assignment_overdue_notification_tasks_for_users;
@@ -177,7 +178,7 @@ final class notification_helper_test extends \advanced_testcase {
         $completion->set_module_viewed($assigncm, $user6->id);
 
         // User7 will exclude themselves b/c they already have a grade.
-        $context = \context_module::instance($assigncm->id);
+        $context = module::instance($assigncm->id);
         $assign = new \assign($context, $assigncm, $course);
         $this->setUser($user8);
         $gradedata = new \stdClass();
@@ -237,7 +238,7 @@ final class notification_helper_test extends \advanced_testcase {
 
         // Get the assignment object.
         [$course, $assigncm] = get_course_and_cm_from_instance($assignment->id, 'assign');
-        $cmcontext = \context_module::instance($assigncm->id);
+        $cmcontext = module::instance($assigncm->id);
         $assignmentobj = new \assign($cmcontext, $assigncm, $course);
         $duedate = $assignmentobj->get_instance($user1->id)->duedate;
 
@@ -579,7 +580,7 @@ final class notification_helper_test extends \advanced_testcase {
         $completion->set_module_viewed($assigncm, $user1->id);
 
         // Submit a grade for User2, excluding them from the notification, even though they don't have a submission.
-        $context = \context_module::instance($assigncm->id);
+        $context = module::instance($assigncm->id);
         $assign = new \assign($context, $assigncm, $course);
         $this->setUser($user7);
         $gradedata = new \stdClass();

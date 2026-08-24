@@ -30,6 +30,9 @@ defined('MOODLE_INTERNAL') || die();
 
 use core\check\check;
 use core\check\result;
+use core\output\action_link;
+use core\output\html_writer;
+use core\url;
 
 /**
  * Lists all admins.
@@ -54,9 +57,9 @@ class riskadmin extends check {
      *
      * @return \action_link|null
      */
-    public function get_action_link(): ?\action_link {
-        return new \action_link(
-            new \moodle_url('/admin/roles/admins.php'),
+    public function get_action_link(): ?action_link {
+        return new action_link(
+            new url('/admin/roles/admins.php'),
             get_string('siteadministrators', 'role'));
     }
 
@@ -77,10 +80,10 @@ class riskadmin extends check {
 
         foreach ($admins as $uid => $user) {
             $url = "$CFG->wwwroot/user/view.php?id=$user->id";
-            $link = \html_writer::link($url, fullname($user, true) . ' (' . s($user->email) . ')');
-            $admins[$uid] = \html_writer::tag('li' , $link);
+            $link = html_writer::link($url, fullname($user, true) . ' (' . s($user->email) . ')');
+            $admins[$uid] = html_writer::tag('li' , $link);
         }
-        $admins = \html_writer::tag('ul', implode('', $admins));
+        $admins = html_writer::tag('ul', implode('', $admins));
         $status  = result::INFO;
         $summary = get_string('check_riskadmin_ok', 'report_security', $admincount);
         $details = get_string('check_riskadmin_detailsok', 'report_security', $admins);

@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context;
+use core\context\course;
+
 defined('MOODLE_INTERNAL') || die();
 
 // Include all the needed stuff.
@@ -42,7 +45,7 @@ final class roles_backup_restore_test extends advanced_testcase {
         $course = $generator->create_course();
         $teacher = $generator->create_user();
 
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $generator->enrol_user($teacher->id, $course->id, 'teacher');
 
         $editingteacherrole = $this->get_role('teacher');
@@ -152,7 +155,7 @@ final class roles_backup_restore_test extends advanced_testcase {
 
         // Verify.
         $overrides = $this->get_overrides_for_role_on_context('teacher',
-                context_course::instance($newcourseid));
+                course::instance($newcourseid));
         $this->assertArrayHasKey('moodle/user:loginas', $overrides);
         $this->assertEquals(CAP_ALLOW, $overrides['moodle/user:loginas']);
         $this->assertArrayHasKey('moodle/site:accessallgroups', $overrides);
@@ -172,7 +175,7 @@ final class roles_backup_restore_test extends advanced_testcase {
 
         // Verify.
         $overrides = $this->get_overrides_for_role_on_context('teacher',
-                context_course::instance($newcourseid));
+                course::instance($newcourseid));
         $this->assertArrayNotHasKey('moodle/user:loginas', $overrides);
         $this->assertArrayHasKey('moodle/site:accessallgroups', $overrides);
         $this->assertEquals(CAP_ALLOW, $overrides['moodle/site:accessallgroups']);

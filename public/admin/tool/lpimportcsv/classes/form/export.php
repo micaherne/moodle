@@ -27,7 +27,7 @@ namespace tool_lpimportcsv\form;
 defined('MOODLE_INTERNAL') || die('Direct access to this script is forbidden.');
 
 use moodleform;
-use context_system;
+use core\context\system;
 use core_competency\api;
 
 require_once($CFG->libdir.'/formslib.php');
@@ -47,7 +47,7 @@ class export extends moodleform {
     public function definition() {
         $mform = $this->_form;
 
-        $context = context_system::instance();
+        $context = system::instance();
         $frameworks = api::list_frameworks('shortname', 'ASC', null, null, $context);
         $options = array();
         foreach ($frameworks as $framework) {

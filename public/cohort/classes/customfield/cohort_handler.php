@@ -16,6 +16,9 @@
 
 namespace core_cohort\customfield;
 
+use core\context;
+use core\context\system;
+use core\url;
 use core_customfield\handler;
 use core_customfield\field_controller;
 
@@ -63,8 +66,8 @@ class cohort_handler extends handler {
      *
      * @return \context the context for configuration
      */
-    public function get_configuration_context(): \context {
-        return \context_system::instance();
+    public function get_configuration_context(): context {
+        return system::instance();
     }
 
     /**
@@ -72,8 +75,8 @@ class cohort_handler extends handler {
      *
      * @return \moodle_url The URL to configure custom fields for this component
      */
-    public function get_configuration_url(): \moodle_url {
-        return new \moodle_url('/cohort/customfield.php');
+    public function get_configuration_url(): url {
+        return new url('/cohort/customfield.php');
     }
 
     /**
@@ -82,13 +85,13 @@ class cohort_handler extends handler {
      * @param int $instanceid id of the record to get the context for
      * @return \context the context for the given record
      */
-    public function get_instance_context(int $instanceid = 0): \context {
+    public function get_instance_context(int $instanceid = 0): context {
         global $DB;
         if ($instanceid > 0) {
             $cohort = $DB->get_record('cohort', ['id' => $instanceid], '*', MUST_EXIST);
-            return \context::instance_by_id($cohort->contextid, MUST_EXIST);
+            return context::instance_by_id($cohort->contextid, MUST_EXIST);
         } else {
-            return \context_system::instance();
+            return system::instance();
         }
     }
 }

@@ -22,9 +22,9 @@ use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
 use core_external\external_warnings;
-use context_system;
-use context_course;
-use moodle_exception;
+use core\context\system;
+use core\context\course;
+use core\exception\moodle_exception;
 
 /**
  * This is the external method for preparing a blog entry to be edited.
@@ -78,13 +78,13 @@ class prepare_entry_for_edition extends external_api {
         }
 
         $courseid = !empty($entry->courseid) ? $entry->courseid : SITEID;
-        $context = context_course::instance($courseid);
-        $sitecontext = context_system::instance();
+        $context = course::instance($courseid);
+        $sitecontext = system::instance();
 
         self::validate_context($context);
 
         if (!blog_user_can_edit_entry($entry)) {
-            throw new \moodle_exception('cannoteditentryorblog', 'blog');
+            throw new moodle_exception('cannoteditentryorblog', 'blog');
         }
 
         [$summaryoptions, $attachmentoptions] = blog_get_editor_options($entry);

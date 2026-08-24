@@ -21,7 +21,7 @@ use mod_bigbluebuttonbn\local\config;
 use mod_bigbluebuttonbn\local\exceptions\bigbluebutton_exception;
 use mod_bigbluebuttonbn\local\exceptions\server_not_available_exception;
 use mod_bigbluebuttonbn\plugin;
-use moodle_url;
+use core\url;
 
 /**
  * The abstract proxy base class.
@@ -83,7 +83,7 @@ abstract class proxy_base {
     protected static function sanitized_url(): string {
         $serverurl = trim(config::get('server_url'));
         if (PHPUNIT_TEST) {
-            $serverurl = (new moodle_url(TEST_MOD_BIGBLUEBUTTONBN_MOCK_SERVER))->out(false);
+            $serverurl = (new url(TEST_MOD_BIGBLUEBUTTONBN_MOCK_SERVER))->out(false);
         }
         if (substr($serverurl, -1) == '/') {
             $serverurl = rtrim($serverurl, '/');
@@ -121,7 +121,7 @@ abstract class proxy_base {
             throw new server_not_available_exception(
                 $errorcode,
                 plugin::COMPONENT,
-                (new moodle_url('/admin/settings.php?section=modsettingbigbluebuttonbn'))->out(),
+                (new url('/admin/settings.php?section=modsettingbigbluebuttonbn'))->out(),
             );
         }
         // If it is a checksum error, this is equivalent to the server not being available.

@@ -25,6 +25,10 @@
  */
 namespace mod_wiki;
 
+use core\context\course;
+use core\context\module;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -59,7 +63,7 @@ final class lib_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course(array('enablecompletion' => COMPLETION_ENABLED));
         $options = array('completion' => COMPLETION_TRACKING_AUTOMATIC, 'completionview' => COMPLETION_VIEW_REQUIRED);
         $wiki = $this->getDataGenerator()->create_module('wiki', array('course' => $course->id), $options);
-        $context = \context_module::instance($wiki->cmid);
+        $context = module::instance($wiki->cmid);
         $cm = get_coursemodule_from_instance('wiki', $wiki->id);
 
         // Trigger and capture the event.
@@ -75,7 +79,7 @@ final class lib_test extends \advanced_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_wiki\event\course_module_viewed', $event);
         $this->assertEquals($context, $event->get_context());
-        $moodleurl = new \moodle_url('/mod/wiki/view.php', array('id' => $cm->id));
+        $moodleurl = new url('/mod/wiki/view.php', array('id' => $cm->id));
         $this->assertEquals($moodleurl, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -103,7 +107,7 @@ final class lib_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course(array('enablecompletion' => COMPLETION_ENABLED));
         $options = array('completion' => COMPLETION_TRACKING_AUTOMATIC, 'completionview' => COMPLETION_VIEW_REQUIRED);
         $wiki = $this->getDataGenerator()->create_module('wiki', array('course' => $course->id), $options);
-        $context = \context_module::instance($wiki->cmid);
+        $context = module::instance($wiki->cmid);
         $cm = get_coursemodule_from_instance('wiki', $wiki->id);
         $firstpage = $this->getDataGenerator()->get_plugin_generator('mod_wiki')->create_first_page($wiki);
 
@@ -120,7 +124,7 @@ final class lib_test extends \advanced_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_wiki\event\page_viewed', $event);
         $this->assertEquals($context, $event->get_context());
-        $pageurl = new \moodle_url('/mod/wiki/view.php', array('pageid' => $firstpage->id));
+        $pageurl = new url('/mod/wiki/view.php', array('pageid' => $firstpage->id));
         $this->assertEquals($pageurl, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -726,7 +730,7 @@ final class lib_test extends \advanced_testcase {
         $this->assertDoesNotMatchRegularExpression('/'.$page31->title.'/', $res->content);
 
         // User can search wiki pages inside a course.
-        $coursecontext = \context_course::instance($course1->id);
+        $coursecontext = course::instance($course1->id);
         $res = mod_wiki_get_tagged_pages($tag, /*$exclusivemode = */false,
                 /*$fromctx = */0, /*$ctx = */$coursecontext->id, /*$rec = */1, /*$page = */0);
         $this->assertMatchesRegularExpression('/'.$page11->title.'/', $res->content);

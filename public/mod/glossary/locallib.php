@@ -24,6 +24,14 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\context_helper;
+use core\output\html_writer;
+use core\url;
+
 require_once($CFG->libdir . '/portfolio/caller.php');
 require_once($CFG->libdir . '/filelib.php');
 
@@ -72,7 +80,7 @@ class glossary_full_portfolio_caller extends portfolio_module_caller_base {
 
         $this->exportdata = array('entries' => $entries, 'aliases' => $aliases, 'categoryentries' => $categoryentries);
         $fs = get_file_storage();
-        $context = context_module::instance($this->cm->id);
+        $context = module::instance($this->cm->id);
         $this->multifiles = array();
         foreach (array_keys($entries) as $entry) {
             $this->keyedfiles[$entry] = array_merge(
@@ -186,7 +194,7 @@ class glossary_full_portfolio_caller extends portfolio_module_caller_base {
      * @return boolean
      */
     public function check_permissions() {
-        return has_capability('mod/glossary:export', context_module::instance($this->cm->id));
+        return has_capability('mod/glossary:export', module::instance($this->cm->id));
     }
 
     /**
@@ -261,10 +269,10 @@ class glossary_entry_portfolio_caller extends portfolio_module_caller_base {
             JOIN {glossary_categories} c
             ON c.id = ec.categoryid
             WHERE ec.entryid = ?', array($this->entryid));
-        $context = context_module::instance($this->cm->id);
+        $context = module::instance($this->cm->id);
         if ($this->entry->sourceglossaryid == $this->cm->instance) {
             if ($maincm = get_coursemodule_from_instance('glossary', $this->entry->glossaryid)) {
-                $context = context_module::instance($maincm->id);
+                $context = module::instance($maincm->id);
             }
         }
         $this->aliases = $DB->get_records('glossary_alias', ['entryid' => $this->entryid]);
@@ -296,7 +304,7 @@ class glossary_entry_portfolio_caller extends portfolio_module_caller_base {
      * @return boolean
      */
     public function check_permissions() {
-        $context = context_module::instance($this->cm->id);
+        $context = module::instance($this->cm->id);
         return has_capability('mod/glossary:exportentry', $context)
             || ($this->entry->userid == $this->user->id && has_capability('mod/glossary:exportownentry', $context));
     }
@@ -402,7 +410,7 @@ class glossary_entry_portfolio_caller extends portfolio_module_caller_base {
     public static function entry_content($course, $cm, $glossary, $entry, $aliases, $format) {
         global $OUTPUT, $DB;
         $entry = clone $entry;
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $options = portfolio_format_text_options();
         $options->trusted = $entry->definitiontrust;
         $options->context = $context;
@@ -439,7 +447,7 @@ class glossary_entry_portfolio_caller extends portfolio_module_caller_base {
             if (!$maincm = get_coursemodule_from_instance('glossary', $entry->glossaryid)) {
                 return '';
             }
-            $filecontext = context_module::instance($maincm->id);
+            $filecontext = module::instance($maincm->id);
 
         } else {
             $filecontext = $context;
@@ -681,7 +689,7 @@ function mod_glossary_get_tagged_entries($tag, $exclusivemode = false, $fromctx 
                     'coursemodulecontextlevel' => CONTEXT_MODULE);
 
     if ($ctx) {
-        $context = $ctx ? context::instance_by_id($ctx) : context_system::instance();
+        $context = $ctx ? context::instance_by_id($ctx) : system::instance();
         $query .= $rec ? ' AND (ctx.id = :contextid OR ctx.path LIKE :path)' : ' AND ctx.id = :contextid';
         $params['contextid'] = $context->id;
         $params['path'] = $context->path.'/%';
@@ -720,7 +728,7 @@ function mod_glossary_get_tagged_entries($tag, $exclusivemode = false, $fromctx 
                     } else if ($taggeditem->userid == $USER->id) {
                         $accessible = true;
                     } else {
-                        $accessible = has_capability('mod/glossary:approve', context_module::instance($cm->id));
+                        $accessible = has_capability('mod/glossary:approve', module::instance($cm->id));
                     }
                 }
                 $builder->set_accessible($taggeditem, $accessible);
@@ -741,12 +749,12 @@ function mod_glossary_get_tagged_entries($tag, $exclusivemode = false, $fromctx 
             context_helper::preload_from_record($item);
             $modinfo = get_fast_modinfo($item->courseid);
             $cm = $modinfo->get_cm($item->cmid);
-            $pageurl = new moodle_url('/mod/glossary/showentry.php', array('eid' => $item->id, 'displayformat' => 'dictionary'));
-            $pagename = format_string($item->concept, true, array('context' => context_module::instance($item->cmid)));
+            $pageurl = new url('/mod/glossary/showentry.php', array('eid' => $item->id, 'displayformat' => 'dictionary'));
+            $pagename = format_string($item->concept, true, array('context' => module::instance($item->cmid)));
             $pagename = html_writer::link($pageurl, $pagename);
             $courseurl = course_get_url($item->courseid, $cm->sectionnum);
             $cmname = html_writer::link($cm->url, $cm->get_formatted_name());
-            $coursename = format_string($item->fullname, true, array('context' => context_course::instance($item->courseid)));
+            $coursename = format_string($item->fullname, true, array('context' => course::instance($item->courseid)));
             $coursename = html_writer::link($courseurl, $coursename);
             $icon = html_writer::link($pageurl, html_writer::empty_tag('img', array('src' => $cm->get_icon_url())));
 

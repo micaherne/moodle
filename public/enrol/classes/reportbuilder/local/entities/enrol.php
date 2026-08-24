@@ -17,7 +17,7 @@
 namespace core_enrol\reportbuilder\local\entities;
 
 use enrol_plugin;
-use lang_string;
+use core\lang_string;
 use stdClass;
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\filters\{boolean_select, date, duration, select, text};

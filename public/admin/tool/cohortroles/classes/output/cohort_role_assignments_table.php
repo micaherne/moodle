@@ -27,11 +27,13 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/tablelib.php');
 
-use context_helper;
-use context_system;
-use html_writer;
-use moodle_url;
-use table_sql;
+use core\context_helper;
+use core\context\system;
+use core\output\actions\confirm_action;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\url;
+use core_table\sql_table;
 
 /**
  * Cohort role assignments table.
@@ -40,10 +42,10 @@ use table_sql;
  * @copyright  2015 Damyon Wiese
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class cohort_role_assignments_table extends table_sql {
+class cohort_role_assignments_table extends sql_table {
 
     /** @var context_system */
-    protected ?context_system $context = null;
+    protected ?system $context = null;
 
     /** @var array */
     protected array $rolenames = [];
@@ -57,7 +59,7 @@ class cohort_role_assignments_table extends table_sql {
     public function __construct($uniqueid, $url) {
         global $CFG;
         parent::__construct($uniqueid);
-        $context = context_system::instance();
+        $context = system::instance();
 
         $this->context = $context;
 
@@ -121,10 +123,10 @@ class cohort_role_assignments_table extends table_sql {
     protected function col_actions($data) {
         global $OUTPUT;
 
-        $action = new \confirm_action(get_string('removecohortroleassignmentconfirm', 'tool_cohortroles'));
-        $url = new moodle_url($this->baseurl);
+        $action = new confirm_action(get_string('removecohortroleassignmentconfirm', 'tool_cohortroles'));
+        $url = new url($this->baseurl);
         $url->params(array('removecohortroleassignment' => $data->id, 'sesskey' => sesskey()));
-        $pix = new \pix_icon('t/delete', get_string('removecohortroleassignment', 'tool_cohortroles'));
+        $pix = new pix_icon('t/delete', get_string('removecohortroleassignment', 'tool_cohortroles'));
         return $OUTPUT->action_link($url, '', $action, null, $pix);
     }
 

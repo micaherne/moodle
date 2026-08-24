@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -145,7 +148,7 @@ class tool_monitor_generator extends testing_module_generator {
         global $DB, $CFG;
 
         $record = (object)(array)$record;
-        $context = \context_system::instance();
+        $context = system::instance();
 
         if (!isset($record->eventname)) {
             $record->eventname = '\core\event\user_loggedin';

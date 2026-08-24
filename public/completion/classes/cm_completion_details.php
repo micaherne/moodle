@@ -26,7 +26,8 @@ declare(strict_types = 1);
 
 namespace core_completion;
 
-use cm_info;
+use core\exception\coding_exception;
+use core_course\cm_info;
 use completion_info;
 
 /**
@@ -178,7 +179,7 @@ class cm_completion_details {
         if (count($sorteddetails) < count($details)) {
             $exceptiontext = get_class($this->cmcompletion) .'::get_sort_order() is missing one or more completion conditions.' .
                 ' All custom and standard conditions that apply to this activity must be listed.';
-            throw new \coding_exception($exceptiontext);
+            throw new coding_exception($exceptiontext);
         }
 
         return $sorteddetails;

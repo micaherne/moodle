@@ -21,6 +21,15 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\context_helper;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/mod/data/lib.php');
@@ -96,7 +105,7 @@ class data_portfolio_caller extends portfolio_module_caller_base {
             $this->records[] = $tmp;
         } else {
             $where = array('dataid' => $this->data->id);
-            if (!has_capability('mod/data:exportallentries', context_module::instance($this->cm->id))) {
+            if (!has_capability('mod/data:exportallentries', module::instance($this->cm->id))) {
                 $where['userid'] = $USER->id; // get them all in case, we'll unset ones that aren't ours later if necessary
             }
             $tmp = $DB->get_records('data_records', $where);
@@ -236,14 +245,14 @@ class data_portfolio_caller extends portfolio_module_caller_base {
     public function check_permissions() {
         if ($this->recordid) {
             if (data_isowner($this->recordid)) {
-                return has_capability('mod/data:exportownentry', context_module::instance($this->cm->id));
+                return has_capability('mod/data:exportownentry', module::instance($this->cm->id));
             }
-            return has_capability('mod/data:exportentry', context_module::instance($this->cm->id));
+            return has_capability('mod/data:exportentry', module::instance($this->cm->id));
         }
         if ($this->has_export_config() && !$this->get_export_config('mineonly')) {
-            return has_capability('mod/data:exportallentries', context_module::instance($this->cm->id));
+            return has_capability('mod/data:exportallentries', module::instance($this->cm->id));
         }
-        return has_capability('mod/data:exportownentry', context_module::instance($this->cm->id));
+        return has_capability('mod/data:exportownentry', module::instance($this->cm->id));
     }
 
     /**
@@ -392,7 +401,7 @@ class data_portfolio_caller extends portfolio_module_caller_base {
         return (empty($this->recordid) // multi-entry export
             && $this->minecount > 0    // some of them are mine
             && $this->minecount != count($this->records) // not all of them are mine
-            && has_capability('mod/data:exportallentries', context_module::instance($this->cm->id))); // they actually have a choice in the matter
+            && has_capability('mod/data:exportallentries', module::instance($this->cm->id))); // they actually have a choice in the matter
     }
 
     public function export_config_form(&$mform, $instance) {
@@ -829,7 +838,7 @@ function mod_data_get_tagged_records($tag, $exclusivemode = false, $fromctx = 0,
     );
 
     if ($ctx) {
-        $context = $ctx ? context::instance_by_id($ctx) : context_system::instance();
+        $context = $ctx ? context::instance_by_id($ctx) : system::instance();
         $query .= $rec ? ' AND (ctx.id = :contextid OR ctx.path LIKE :path)' : ' AND ctx.id = :contextid';
         $params['contextid'] = $context->id;
         $params['path'] = $context->path . '/%';
@@ -858,7 +867,7 @@ function mod_data_get_tagged_records($tag, $exclusivemode = false, $fromctx = 0,
         context_helper::preload_from_record($item);
         $modinfo = get_fast_modinfo($item->courseid);
         $cm = $modinfo->get_cm($item->cmid);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $courseid = $item->courseid;
 
         if (!$builder->can_access_course($courseid)) {
@@ -924,7 +933,7 @@ function mod_data_get_tagged_records($tag, $exclusivemode = false, $fromctx = 0,
             context_helper::preload_from_record($item);
             $modinfo = get_fast_modinfo($item->courseid);
             $cm = $modinfo->get_cm($item->cmid);
-            $pageurl = new moodle_url('/mod/data/view.php', array(
+            $pageurl = new url('/mod/data/view.php', array(
                     'rid' => $item->id,
                     'd' => $item->dataid
             ));
@@ -937,7 +946,7 @@ function mod_data_get_tagged_records($tag, $exclusivemode = false, $fromctx = 0,
             $pagename = html_writer::link($pageurl, $pagename);
             $courseurl = course_get_url($item->courseid, $cm->sectionnum);
             $cmname = html_writer::link($cm->url, $cm->get_formatted_name());
-            $coursename = format_string($item->fullname, true, array('context' => context_course::instance($item->courseid)));
+            $coursename = format_string($item->fullname, true, array('context' => course::instance($item->courseid)));
             $coursename = html_writer::link($courseurl, $coursename);
             $icon = html_writer::link($pageurl, html_writer::empty_tag('img', array('src' => $cm->get_icon_url())));
             $tagfeed->add($icon, $pagename, $cmname . '<br>' . $coursename);

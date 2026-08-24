@@ -24,9 +24,11 @@
 namespace core_competency;
 defined('MOODLE_INTERNAL') || die();
 
-use context_user;
+use core\context\user;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use dml_missing_record_exception;
-use lang_string;
+use core\lang_string;
 
 /**
  * Class for loading/storing plans from the DB.
@@ -190,7 +192,7 @@ class plan extends persistent {
      */
     public function get_comment_object() {
         if (!$this->get('id')) {
-            throw new \coding_exception('The plan must exist.');
+            throw new coding_exception('The plan must exist.');
         }
 
         $comment = new \core_comment\manager((object) [
@@ -257,7 +259,7 @@ class plan extends persistent {
      * @return context_user
      */
     public function get_context() {
-        return context_user::instance($this->get('userid'));
+        return user::instance($this->get('userid'));
     }
 
     /**
@@ -286,7 +288,7 @@ class plan extends persistent {
                 $strname = 'complete';
                 break;
             default:
-                throw new \moodle_exception('errorplanstatus', 'core_competency', '', $status);
+                throw new moodle_exception('errorplanstatus', 'core_competency', '', $status);
                 break;
         }
 
@@ -371,7 +373,7 @@ class plan extends persistent {
             $capabilities[] = 'moodle/competency:plancommentown';
         }
 
-        return has_any_capability($capabilities, context_user::instance($planuserid));
+        return has_any_capability($capabilities, user::instance($planuserid));
     }
 
     /**
@@ -382,7 +384,7 @@ class plan extends persistent {
      */
     public static function can_manage_user($planuserid) {
         global $USER;
-        $context = context_user::instance($planuserid);
+        $context = user::instance($planuserid);
 
         $capabilities = array('moodle/competency:planmanage');
         if ($context->instanceid == $USER->id) {
@@ -400,7 +402,7 @@ class plan extends persistent {
      */
     public static function can_manage_user_draft($planuserid) {
         global $USER;
-        $context = context_user::instance($planuserid);
+        $context = user::instance($planuserid);
 
         $capabilities = array('moodle/competency:planmanagedraft');
         if ($context->instanceid == $USER->id) {
@@ -429,7 +431,7 @@ class plan extends persistent {
      */
     public static function can_read_user($planuserid) {
         global $USER;
-        $context = context_user::instance($planuserid);
+        $context = user::instance($planuserid);
 
         $capabilities = array('moodle/competency:planview');
         if ($context->instanceid == $USER->id) {
@@ -448,7 +450,7 @@ class plan extends persistent {
      */
     public static function can_read_user_draft($planuserid) {
         global $USER;
-        $context = context_user::instance($planuserid);
+        $context = user::instance($planuserid);
 
         $capabilities = array('moodle/competency:planviewdraft');
         if ($context->instanceid == $USER->id) {
@@ -473,7 +475,7 @@ class plan extends persistent {
             $capabilities[] = 'moodle/competency:planrequestreviewown';
         }
 
-        return has_any_capability($capabilities, context_user::instance($planuserid));
+        return has_any_capability($capabilities, user::instance($planuserid));
     }
 
     /**
@@ -485,7 +487,7 @@ class plan extends persistent {
      * @return bool
      */
     public static function can_review_user($planuserid) {
-        return has_capability('moodle/competency:planreview', context_user::instance($planuserid))
+        return has_capability('moodle/competency:planreview', user::instance($planuserid))
             || self::can_manage_user($planuserid);
     }
 
@@ -582,7 +584,7 @@ class plan extends persistent {
         global $DB;
         if (!$template->is_valid()) {
             // As we will bypass this model's validation we rely on the template being validated.
-            throw new \coding_exception('The template must be validated before updating plans.');
+            throw new coding_exception('The template must be validated before updating plans.');
         }
 
         $params = array(

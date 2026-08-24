@@ -16,6 +16,8 @@
 
 namespace enrol_lti\local\ltiadvantage\lib;
 
+use core\exception\coding_exception;
+use core\url;
 use enrol_lti\local\ltiadvantage\entity\application_registration;
 use enrol_lti\local\ltiadvantage\repository\application_registration_repository;
 use enrol_lti\local\ltiadvantage\repository\deployment_repository;
@@ -43,11 +45,11 @@ final class issuer_database_test extends \advanced_testcase {
         $appreg = application_registration::create(
             'My platform',
             'a2c94a2c94',
-            new \moodle_url('https://lms.example.com'),
+            new url('https://lms.example.com'),
             'client-id-123',
-            new \moodle_url('https://lms.example.com/lti/auth'),
-            new \moodle_url('https://lms.example.com/lti/jwks'),
-            new \moodle_url('https://lms.example.com/lti/token')
+            new url('https://lms.example.com/lti/auth'),
+            new url('https://lms.example.com/lti/jwks'),
+            new url('https://lms.example.com/lti/token')
         );
         $appregrepo->save($appreg);
 
@@ -62,7 +64,7 @@ final class issuer_database_test extends \advanced_testcase {
 
         $this->assertNull($issuerdb->findRegistrationByIssuer('https://lms.example.com', 'client-id-456'));
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessageMatches('/The param \'clientid\' is required. /');
         $issuerdb->findRegistrationByIssuer('https://lms.example.com');
     }
@@ -78,11 +80,11 @@ final class issuer_database_test extends \advanced_testcase {
         $appreg = application_registration::create(
             'My platform',
             'a2c94a2c94',
-            new \moodle_url('https://lms.example.com'),
+            new url('https://lms.example.com'),
             'client-id-123',
-            new \moodle_url('https://lms.example.com/lti/auth'),
-            new \moodle_url('https://lms.example.com/lti/jwks'),
-            new \moodle_url('https://lms.example.com/lti/token')
+            new url('https://lms.example.com/lti/auth'),
+            new url('https://lms.example.com/lti/jwks'),
+            new url('https://lms.example.com/lti/token')
         );
         $appreg = $appregrepo->save($appreg);
         $dep = $appreg->add_tool_deployment('Site wide tool deployment', 'deployment-id-1');
@@ -97,7 +99,7 @@ final class issuer_database_test extends \advanced_testcase {
         $this->assertNull($issuerdb->findDeployment('https://lms.example.com', 'deployment-id-1', 'client-id-456'));
         $this->assertNull($issuerdb->findDeployment('https://lms.example.com', 'deployment-id-2', 'client-id-123'));
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessageMatches('/Both issuer and client id are required to identify platform registrations /');
         $issuerdb->findDeployment('https://lms.example.com', 'deployment-id-2');
     }

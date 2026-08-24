@@ -17,6 +17,7 @@
 namespace core;
 
 use core\session\redis as redis_session;
+use core_cache\helper;
 use RedisClusterException;
 
 /**
@@ -47,7 +48,7 @@ final class session_redis_cluster_test extends \advanced_testcase {
         global $CFG;
         parent::setUp();
 
-        if (!\cache_helper::is_cluster_available()) {
+        if (!helper::is_cluster_available()) {
             $this->markTestSkipped('Could not test core_session with cluster, class RedisCluster is not available.');
         } else if (!defined('TEST_SESSION_REDIS_HOSTCLUSTER')) {
             $this->markTestSkipped('Could not test session_redis_cluster_test with cluster, missing configuration. ' .

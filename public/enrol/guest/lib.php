@@ -25,6 +25,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\output\pix_icon;
 use core\output\single_button;
 use core_enrol\output\enrol_page;
 
@@ -119,7 +121,7 @@ class enrol_guest_plugin extends enrol_plugin {
 
         if ($allow) {
             // Temporarily assign them some guest role for this context
-            $context = context_course::instance($instance->courseid);
+            $context = course::instance($instance->courseid);
             load_temp_course_role($context, $CFG->guestroleid);
             return ENROL_MAX_TIMESTAMP;
         }
@@ -135,7 +137,7 @@ class enrol_guest_plugin extends enrol_plugin {
     public function can_add_instance($courseid) {
         global $DB;
 
-        $context = context_course::instance($courseid, MUST_EXIST);
+        $context = course::instance($courseid, MUST_EXIST);
 
         if (!has_capability('moodle/course:enrolconfig', $context) or !has_capability('enrol/guest:config', $context)) {
             return false;
@@ -252,7 +254,7 @@ class enrol_guest_plugin extends enrol_plugin {
                     \core\event\enrol_instance_updated::create_from_record($instance)->trigger();
 
                     if ($reset) {
-                        $context = context_course::instance($course->id);
+                        $context = course::instance($course->id);
                         $context->mark_dirty();
                     }
                 }
@@ -317,7 +319,7 @@ class enrol_guest_plugin extends enrol_plugin {
      * @return bool
      */
     public function can_delete_instance($instance) {
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         return has_capability('enrol/guest:config', $context);
     }
 
@@ -328,7 +330,7 @@ class enrol_guest_plugin extends enrol_plugin {
      * @return bool
      */
     public function can_hide_show_instance($instance) {
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         if (!has_capability('enrol/guest:config', $context)) {
             return false;
         }

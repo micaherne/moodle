@@ -26,6 +26,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core_cache\cache;
+
 defined('MOODLE_INTERNAL') || die();
 
 class license_manager {
@@ -208,7 +212,7 @@ class license_manager {
     public static function get_licenses() {
         global $DB;
 
-        $cache = \cache::make('core', 'license');
+        $cache = cache::make('core', 'license');
         $licenses = $cache->get('licenses');
 
         if ($licenses === false) {
@@ -307,7 +311,7 @@ class license_manager {
         global $CFG;
         // Site default license cannot be disabled!
         if ($license == $CFG->sitedefaultlicense) {
-            throw new \moodle_exception('error');
+            throw new moodle_exception('error');
         }
         if ($license = self::get_license_by_shortname($license)) {
             $license->enabled = self::LICENSE_DISABLED;
@@ -385,7 +389,7 @@ class license_manager {
      * Reset the license cache so it rebuilds next time licenses are fetched.
      */
     public static function reset_license_cache() {
-        $cache = \cache::make('core', 'license');
+        $cache = cache::make('core', 'license');
         $cache->delete('licenses');
     }
 }

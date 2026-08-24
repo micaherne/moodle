@@ -14,7 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\output\html_writer;
+use core\plugin_manager;
+use core\url;
 use core_admin\admin_search;
+use core_table\output\html_table;
 
 /**
  * Store management setting.
@@ -83,7 +87,7 @@ class tool_log_setting_managestores extends \core_admin\setting {
         $struninstall = get_string('uninstallplugin', 'core_admin');
         $strversion = get_string('version');
 
-        $pluginmanager = core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $logmanager = new \tool_log\log\manager();
         $available = $logmanager->get_store_plugins();
         $enabled = get_config('tool_log', 'enabled_stores');
@@ -118,7 +122,7 @@ class tool_log_setting_managestores extends \core_admin\setting {
         // Iterate through store plugins and add to the display table.
         $updowncount = 1;
         $storecount = count($enabled);
-        $url = new moodle_url('/admin/tool/log/stores.php', ['sesskey' => sesskey()]);
+        $url = new url('/admin/tool/log/stores.php', ['sesskey' => sesskey()]);
         $printed = [];
         foreach ($allstores as $store => $unused) {
             $plugininfo = $pluginmanager->get_plugin_info($store);
@@ -142,14 +146,14 @@ class tool_log_setting_managestores extends \core_admin\setting {
 
             // Hide/show links.
             if (isset($enabled[$store])) {
-                $aurl = new moodle_url($url, ['action' => 'disable', 'store' => $store]);
+                $aurl = new url($url, ['action' => 'disable', 'store' => $store]);
                 $hideshow = "<a href=\"$aurl\">";
                 $hideshow .= $OUTPUT->pix_icon('t/hide', $strdisable) . '</a>';
                 $isenabled = true;
                 $displayname = "<span>$name</span>";
             } else {
                 if (isset($available[$store])) {
-                    $aurl = new moodle_url($url, ['action' => 'enable', 'store' => $store]);
+                    $aurl = new url($url, ['action' => 'enable', 'store' => $store]);
                     $hideshow = "<a href=\"$aurl\">";
                     $hideshow .= $OUTPUT->pix_icon('t/show', $strenable) . '</a>';
                     $isenabled = false;
@@ -170,14 +174,14 @@ class tool_log_setting_managestores extends \core_admin\setting {
             $updown = '';
             if ($isenabled) {
                 if ($updowncount > 1) {
-                    $aurl = new moodle_url($url, ['action' => 'up', 'store' => $store]);
+                    $aurl = new url($url, ['action' => 'up', 'store' => $store]);
                     $updown .= "<a href=\"$aurl\">";
                     $updown .= $OUTPUT->pix_icon('t/up', $strup) . '</a>&nbsp;';
                 } else {
                     $updown .= $OUTPUT->spacer();
                 }
                 if ($updowncount < $storecount) {
-                    $aurl = new moodle_url($url, ['action' => 'down', 'store' => $store]);
+                    $aurl = new url($url, ['action' => 'down', 'store' => $store]);
                     $updown .= "<a href=\"$aurl\">";
                     $updown .= $OUTPUT->pix_icon('t/down', $strdown) . '</a>&nbsp;';
                 } else {
@@ -199,7 +203,7 @@ class tool_log_setting_managestores extends \core_admin\setting {
 
             // Add uninstall info.
             $uninstall = '';
-            if ($uninstallurl = core_plugin_manager::instance()->get_uninstall_url($store, 'manage')) {
+            if ($uninstallurl = plugin_manager::instance()->get_uninstall_url($store, 'manage')) {
                 $uninstall = html_writer::link($uninstallurl, $struninstall);
             }
 

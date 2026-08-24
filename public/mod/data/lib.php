@@ -20,6 +20,19 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\navigation\settings_navigation;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\url;
+use core_comment\comment_exception;
+use core_course\cached_cm_info;
+use core_course\cm_info;
 use mod_data\manager;
 
 defined('MOODLE_INTERNAL') || die();
@@ -99,18 +112,18 @@ class data_field_base {     // Base class for Database Field Types (see field/*/
         global $DB;
 
         if (empty($field) && empty($data)) {
-            throw new \moodle_exception('missingfield', 'data');
+            throw new moodle_exception('missingfield', 'data');
         }
 
         if (!empty($field)) {
             if (is_object($field)) {
                 $this->field = $field;  // Programmer knows what they are doing, we hope
             } else if (!$this->field = $DB->get_record('data_fields', array('id'=>$field))) {
-                throw new \moodle_exception('invalidfieldid', 'data');
+                throw new moodle_exception('invalidfieldid', 'data');
             }
             if (empty($data)) {
                 if (!$this->data = $DB->get_record('data', array('id'=>$this->field->dataid))) {
-                    throw new \moodle_exception('invalidid', 'data');
+                    throw new moodle_exception('invalidid', 'data');
                 }
             }
         }
@@ -120,10 +133,10 @@ class data_field_base {     // Base class for Database Field Types (see field/*/
                 if (is_object($data)) {
                     $this->data = $data;  // Programmer knows what they are doing, we hope
                 } else if (!$this->data = $DB->get_record('data', array('id'=>$data))) {
-                    throw new \moodle_exception('invalidid', 'data');
+                    throw new moodle_exception('invalidid', 'data');
                 }
             } else {                      // No way to define it!
-                throw new \moodle_exception('missingdata', 'data');
+                throw new moodle_exception('missingdata', 'data');
             }
         }
 
@@ -137,7 +150,7 @@ class data_field_base {     // Base class for Database Field Types (see field/*/
             $this->define_default_field();
         }
 
-        $this->context = context_module::instance($this->cm->id);
+        $this->context = module::instance($this->cm->id);
     }
 
     /**
@@ -409,7 +422,7 @@ class data_field_base {     // Base class for Database Field Types (see field/*/
 
         // Throw an exception if field type doen't exist. Anyway user should never access to edit a field with an unknown fieldtype.
         if ($this->type === 'unknown') {
-            throw new \moodle_exception(get_string('missingfieldtype', 'data', (object)['name' => $this->field->name]));
+            throw new moodle_exception(get_string('missingfieldtype', 'data', (object)['name' => $this->field->name]));
         }
 
         echo $OUTPUT->box_start('generalbox boxaligncenter boxwidthwide');
@@ -436,7 +449,7 @@ class data_field_base {     // Base class for Database Field Types (see field/*/
         } catch (moodle_exception $e) {
             if (!file_exists($filepath)) {
                 // Neither file exists.
-                throw new \moodle_exception(get_string('missingfieldtype', 'data', (object)['name' => $this->field->name]));
+                throw new moodle_exception(get_string('missingfieldtype', 'data', (object)['name' => $this->field->name]));
             }
             $templatefileexists = false;
         }
@@ -884,8 +897,8 @@ function data_generate_tag_form($recordid = false, $selected = []) {
     }
     $str .= '</select>';
 
-    if (has_capability('moodle/tag:manage', context_system::instance()) && $showstandard) {
-        $url = new moodle_url('/tag/manage.php', array('tc' => core_tag_area::get_collection('mod_data',
+    if (has_capability('moodle/tag:manage', system::instance()) && $showstandard) {
+        $url = new url('/tag/manage.php', array('tc' => core_tag_area::get_collection('mod_data',
             'data_records')));
         $str .= ' ' . $OUTPUT->action_link($url, get_string('managestandardtags', 'tag'));
     }
@@ -1051,7 +1064,7 @@ function data_get_field_new($type, $data) {
     $filepath = $CFG->dirroot.'/mod/data/field/'.$type.'/field.class.php';
     // It should never access this method if the subfield class doesn't exist.
     if (!file_exists($filepath)) {
-        throw new \moodle_exception('invalidfieldtype', 'data');
+        throw new moodle_exception('invalidfieldtype', 'data');
     }
     require_once($filepath);
     $newfield = 'data_field_'.$type;
@@ -1160,7 +1173,7 @@ function data_add_record($data, $groupid = 0, $userid = null, bool $approved = t
     global $USER, $DB;
 
     $cm = get_coursemodule_from_instance('data', $data->id);
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     $record = new stdClass();
     $record->userid = $userid ?? $USER->id;
@@ -1310,7 +1323,7 @@ function data_delete_instance($id) {    // takes the dataid
     }
 
     $cm = get_coursemodule_from_instance('data', $data->id);
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     // Delete all information related to fields.
     $fields = $DB->get_records('data_fields', ['dataid' => $id]);
@@ -1366,7 +1379,7 @@ function data_user_outline($course, $user, $mod, $data) {
                                            ORDER BY timemodified DESC', array($data->id, $user->id), true);
         $result->time = $lastrecord->timemodified;
         if ($grade) {
-            if (!$grade->hidden || has_capability('moodle/grade:viewhidden', context_course::instance($course->id))) {
+            if (!$grade->hidden || has_capability('moodle/grade:viewhidden', course::instance($course->id))) {
                 $result->info .= ', ' . get_string('gradenoun') . ': ' . $grade->str_long_grade;
             } else {
                 $result->info = get_string('gradenoun') . ': ' . get_string('hidden', 'grades');
@@ -1377,7 +1390,7 @@ function data_user_outline($course, $user, $mod, $data) {
         $result = (object) [
             'time' => grade_get_date_for_user_grade($grade, $user),
         ];
-        if (!$grade->hidden || has_capability('moodle/grade:viewhidden', context_course::instance($course->id))) {
+        if (!$grade->hidden || has_capability('moodle/grade:viewhidden', course::instance($course->id))) {
             $result->info = get_string('gradenoun') . ': ' . $grade->str_long_grade;
         } else {
             $result->info = get_string('gradenoun') . ': ' . get_string('hidden', 'grades');
@@ -1404,7 +1417,7 @@ function data_user_complete($course, $user, $mod, $data) {
     $grades = grade_get_grades($course->id, 'mod', 'data', $data->id, $user->id);
     if (!empty($grades->items[0]->grades)) {
         $grade = reset($grades->items[0]->grades);
-        if (!$grade->hidden || has_capability('moodle/grade:viewhidden', context_course::instance($course->id))) {
+        if (!$grade->hidden || has_capability('moodle/grade:viewhidden', course::instance($course->id))) {
             echo $OUTPUT->container(get_string('gradenoun') . ': ' . $grade->str_long_grade);
             if ($grade->str_feedback) {
                 echo $OUTPUT->container(get_string('feedback').': '.$grade->str_feedback);
@@ -1637,7 +1650,7 @@ function data_rating_validate($params) {
 
     $course = $DB->get_record('course', array('id'=>$info->course), '*', MUST_EXIST);
     $cm = get_coursemodule_from_instance('data', $info->dataid, $course->id, false, MUST_EXIST);
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     // if the supplied context doesnt match the item's context
     if ($context->id != $params['context']->id) {
@@ -1702,7 +1715,7 @@ function mod_data_rating_can_see_item_ratings($params) {
 
     $course = $DB->get_record('course', array('id' => $info->course), '*', MUST_EXIST);
     $cm = get_coursemodule_from_instance('data', $info->dataid, $course->id, false, MUST_EXIST);
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     if (!empty($info->userid)) {
         $ratingpermissions = data_rating_permissions($context->id, 'mod_data', 'entry');
@@ -1746,7 +1759,7 @@ function data_print_preference_form($data, $perpage, $search, $sort='', $order='
     global $DB, $PAGE, $OUTPUT;
 
     $cm = get_coursemodule_from_instance('data', $data->id);
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
     echo '<div class="datapreferences my-5">';
     echo '<form id="options" action="view.php" method="get">';
     echo '<div class="d-flex flex-wrap align-items-center gap-1">';
@@ -2076,7 +2089,7 @@ function data_convert_to_roles($data, $teacherroles=array(), $studentroles=array
             $cmid = $cm->id;
         }
     }
-    $context = context_module::instance($cmid);
+    $context = module::instance($cmid);
 
 
     // $data->participants:
@@ -2226,7 +2239,7 @@ function data_user_can_add_entry($data, $currentgroup, $groupmode, $context = nu
 
     if (empty($context)) {
         $cm = get_coursemodule_from_instance('data', $data->id, 0, false, MUST_EXIST);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
     }
 
     if (has_capability('mod/data:manageentries', $context)) {
@@ -2323,7 +2336,7 @@ function data_in_readonly_period($data) {
 function data_preset_path($course, $userid, $shortname) {
     global $USER, $CFG;
 
-    $context = context_course::instance($course->id);
+    $context = course::instance($course->id);
 
     $userid = (int)$userid;
 
@@ -2438,7 +2451,7 @@ function data_reset_userdata($data) {
                 if (!$cm = get_coursemodule_from_instance('data', $dataid)) {
                     continue;
                 }
-                $datacontext = context_module::instance($cm->id);
+                $datacontext = module::instance($cm->id);
 
                 // Delete any files that may exist.
                 $fs->delete_area_files($datacontext->id, 'mod_data', 'content');
@@ -2469,7 +2482,7 @@ function data_reset_userdata($data) {
                               LEFT JOIN {user} u ON r.userid = u.id
                         WHERE d.course = ? AND r.userid > 0";
 
-        $course_context = context_course::instance($data->courseid);
+        $course_context = course::instance($data->courseid);
         $notenrolled = [];
         $fields = [];
         $rs = $DB->get_recordset_sql($recordssql, [$data->courseid]);
@@ -2480,7 +2493,7 @@ function data_reset_userdata($data) {
                 if (!$cm = get_coursemodule_from_instance('data', $record->dataid)) {
                     continue;
                 }
-                $datacontext = context_module::instance($cm->id);
+                $datacontext = module::instance($cm->id);
                 $ratingdeloptions->contextid = $datacontext->id;
                 $ratingdeloptions->itemid = $record->id;
                 $rm->delete_ratings($ratingdeloptions);
@@ -2515,7 +2528,7 @@ function data_reset_userdata($data) {
                 if (!$cm = get_coursemodule_from_instance('data', $dataid)) {
                     continue;
                 }
-                $datacontext = context_module::instance($cm->id);
+                $datacontext = module::instance($cm->id);
 
                 $ratingdeloptions->contextid = $datacontext->id;
                 $rm->delete_ratings($ratingdeloptions);
@@ -2552,7 +2565,7 @@ function data_reset_userdata($data) {
                     continue;
                 }
 
-                $context = context_module::instance($cm->id);
+                $context = module::instance($cm->id);
                 core_tag_tag::delete_instances('mod_data', null, $context->id);
 
             }
@@ -2821,20 +2834,20 @@ function data_extend_navigation($navigation, $course, $module, $cm) {
     $groupmode = groups_get_activity_groupmode($cm);
 
      $numentries = data_numentries($data);
-    $canmanageentries = has_capability('mod/data:manageentries', context_module::instance($cm->id));
+    $canmanageentries = has_capability('mod/data:manageentries', module::instance($cm->id));
 
     if ($data->entriesleft = data_get_entries_left_to_add($data, $numentries, $canmanageentries)) {
         $entriesnode = $navigation->add(get_string('entrieslefttoadd', 'data', $data));
         $entriesnode->add_class('note');
     }
 
-    $navigation->add(get_string('list', 'data'), new moodle_url('/mod/data/view.php', array('d'=>$cm->instance)));
+    $navigation->add(get_string('list', 'data'), new url('/mod/data/view.php', array('d'=>$cm->instance)));
     if (!empty($rid)) {
-        $navigation->add(get_string('single', 'data'), new moodle_url('/mod/data/view.php', array('d'=>$cm->instance, 'rid'=>$rid)));
+        $navigation->add(get_string('single', 'data'), new url('/mod/data/view.php', array('d'=>$cm->instance, 'rid'=>$rid)));
     } else {
-        $navigation->add(get_string('single', 'data'), new moodle_url('/mod/data/view.php', array('d'=>$cm->instance, 'mode'=>'single')));
+        $navigation->add(get_string('single', 'data'), new url('/mod/data/view.php', array('d'=>$cm->instance, 'mode'=>'single')));
     }
-    $navigation->add(get_string('search', 'data'), new moodle_url('/mod/data/view.php', array('d'=>$cm->instance, 'mode'=>'asearch')));
+    $navigation->add(get_string('search', 'data'), new url('/mod/data/view.php', array('d'=>$cm->instance, 'mode'=>'asearch')));
 }
 
 /**
@@ -2859,7 +2872,7 @@ function data_extend_settings_navigation(settings_navigation $settings, navigati
             $addstring = get_string('editentry', 'data');
         }
         $addentrynode = $datanode->add($addstring,
-            new moodle_url('/mod/data/edit.php', array('d' => $settings->get_page()->cm->instance)));
+            new url('/mod/data/edit.php', array('d' => $settings->get_page()->cm->instance)));
         $addentrynode->set_show_in_secondary_navigation(false);
     }
 
@@ -2867,12 +2880,12 @@ function data_extend_settings_navigation(settings_navigation $settings, navigati
         // The capability required to Export database records is centrally defined in 'lib.php'
         // and should be weaker than those required to edit Templates, Fields and Presets.
         $exportentriesnode = $datanode->add(get_string('exportentries', 'data'),
-            new moodle_url('/mod/data/export.php', array('d' => $data->id)));
+            new url('/mod/data/export.php', array('d' => $data->id)));
         $exportentriesnode->set_show_in_secondary_navigation(false);
     }
     if (has_capability('mod/data:manageentries', $settings->get_page()->cm->context)) {
         $importentriesnode = $datanode->add(get_string('importentries', 'data'),
-            new moodle_url('/mod/data/import.php', array('d' => $data->id)));
+            new url('/mod/data/import.php', array('d' => $data->id)));
         $importentriesnode->set_show_in_secondary_navigation(false);
     }
 
@@ -2888,11 +2901,11 @@ function data_extend_settings_navigation(settings_navigation $settings, navigati
             $defaultemplate = 'singletemplate';
         }
 
-        $datanode->add(get_string('presets', 'data'), new moodle_url('/mod/data/preset.php', array('d' => $data->id)));
+        $datanode->add(get_string('presets', 'data'), new url('/mod/data/preset.php', array('d' => $data->id)));
         $datanode->add(get_string('fields', 'data'),
-            new moodle_url('/mod/data/field.php', array('d' => $data->id)));
+            new url('/mod/data/field.php', array('d' => $data->id)));
         $datanode->add(get_string('templates', 'data'),
-            new moodle_url('/mod/data/templates.php', array('d' => $data->id)));
+            new url('/mod/data/templates.php', array('d' => $data->id)));
     }
 
     if (!empty($CFG->enablerssfeeds) && !empty($CFG->data_enablerssfeeds) && $data->rssarticles > 0) {
@@ -2900,7 +2913,7 @@ function data_extend_settings_navigation(settings_navigation $settings, navigati
 
         $string = get_string('rsstype', 'data');
 
-        $url = new moodle_url(rss_get_url($settings->get_page()->cm->context->id, $USER->id, 'mod_data', $data->id));
+        $url = new url(rss_get_url($settings->get_page()->cm->context->id, $USER->id, 'mod_data', $data->id));
         $datanode->add($string, $url, settings_navigation::TYPE_SETTING, null, null, new pix_icon('i/rss', ''));
     }
 }
@@ -2977,7 +2990,7 @@ function data_comment_validate($comment_param) {
     if (!$data->comments) {
         throw new comment_exception('commentsoff', 'data');
     }
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     //check if approved
     if ($data->approval and !$record->approved and !data_isowner($record) and !has_capability('mod/data:approve', $context)) {
@@ -3273,7 +3286,7 @@ function data_delete_record($recordid, $data, $courseid, $cmid) {
                 // Trigger an event for deleting this record.
                 $event = \mod_data\event\record_deleted::create(array(
                     'objectid' => $deleterecord->id,
-                    'context' => context_module::instance($cmid),
+                    'context' => module::instance($cmid),
                     'courseid' => $courseid,
                     'other' => array(
                         'dataid' => $deleterecord->dataid
@@ -3610,7 +3623,7 @@ function mod_data_core_calendar_provide_event_action(calendar_event $event,
 
     return $factory->create_instance(
         get_string('add', 'data'),
-        new \moodle_url('/mod/data/view.php', array('id' => $cm->id)),
+        new url('/mod/data/view.php', array('id' => $cm->id)),
         1,
         $actionable
     );
@@ -3767,7 +3780,7 @@ function mod_data_core_calendar_event_timestart_updated(\calendar_event $event, 
     $modified = false;
 
     $coursemodule = get_fast_modinfo($courseid)->instances[$modulename][$instanceid];
-    $context = context_module::instance($coursemodule->id);
+    $context = module::instance($coursemodule->id);
 
     // The user does not have the capability to modify this activity.
     if (!has_capability('moodle/course:manageactivities', $context)) {

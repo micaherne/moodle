@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\navigation\navigation_node;
+use core\navigation\settings_navigation;
+use core\output\pix_icon;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -32,7 +37,7 @@ defined('MOODLE_INTERNAL') || die;
  */
 function booktool_exportimscp_extend_settings_navigation(settings_navigation $settings, navigation_node $node) {
     if (has_capability('booktool/exportimscp:export', $settings->get_page()->cm->context)) {
-        $url = new moodle_url('/mod/book/tool/exportimscp/index.php', array('id' => $settings->get_page()->cm->id));
+        $url = new url('/mod/book/tool/exportimscp/index.php', array('id' => $settings->get_page()->cm->id));
         $icon = new pix_icon('generate', '', 'booktool_exportimscp', array('class'=>'icon'));
         $umscpnode = $node->add(get_string('generateimscp', 'booktool_exportimscp'), $url,
             navigation_node::TYPE_SETTING, null, null, $icon);

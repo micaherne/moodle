@@ -16,6 +16,7 @@
 
 namespace core_question;
 
+use core\context\module;
 use core_question\local\bank\question_version_status;
 use core_question\output\question_version_info;
 use question_bank;
@@ -63,7 +64,7 @@ final class version_test extends \advanced_testcase {
         $this->course = $datagenerator->create_course();
         $this->quiz = $datagenerator->create_module('quiz', ['course' => $this->course->id]);
         $this->qgenerator = $datagenerator->get_plugin_generator('core_question');
-        $this->context = \context_module::instance($this->quiz->cmid);
+        $this->context = module::instance($this->quiz->cmid);
     }
 
     protected function tearDown(): void {
@@ -204,7 +205,7 @@ final class version_test extends \advanced_testcase {
         $qcategorychild = $this->qgenerator->create_question_category(['contextid' => $this->context->id,
             'parent' => $qcategory->id]);
         $qbank = self::getDataGenerator()->create_module('qbank', ['course' => $this->course->id]);
-        $bankcontext = \context_module::instance($qbank->cmid);
+        $bankcontext = module::instance($qbank->cmid);
         $qcategorysys = $this->qgenerator->create_question_category(['contextid' => $bankcontext->id]);
         $question = $this->qgenerator->create_question('shortanswer', null, ['category' => $qcategorychild->id]);
         $questiondefinition = question_bank::load_question($question->id);

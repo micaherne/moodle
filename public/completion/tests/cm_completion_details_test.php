@@ -27,7 +27,7 @@ declare(strict_types = 1);
 namespace core_completion;
 
 use advanced_testcase;
-use cm_info;
+use core_course\cm_info;
 use completion_info;
 
 defined('MOODLE_INTERNAL') || die();

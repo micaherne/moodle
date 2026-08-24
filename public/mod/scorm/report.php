@@ -16,6 +16,11 @@
 
 // This script uses installed report plugins to print scorm reports.
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once("../../config.php");
 require_once($CFG->libdir.'/tablelib.php');
 require_once($CFG->dirroot.'/mod/scorm/locallib.php');
@@ -38,16 +43,16 @@ $cm = get_coursemodule_from_id('scorm', $id, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 $scorm = $DB->get_record('scorm', array('id' => $cm->instance), '*', MUST_EXIST);
 
-$contextmodule = context_module::instance($cm->id);
+$contextmodule = module::instance($cm->id);
 $reportlist = scorm_report_list($contextmodule);
 
-$url = new moodle_url('/mod/scorm/report.php');
+$url = new url('/mod/scorm/report.php');
 
 $url->param('id', $id);
 if (empty($mode)) {
     $mode = reset($reportlist);
 } else if (!in_array($mode, $reportlist)) {
-    throw new \moodle_exception('erroraccessingreport', 'scorm');
+    throw new moodle_exception('erroraccessingreport', 'scorm');
 }
 $url->param('mode', $mode);
 
@@ -66,10 +71,10 @@ if ($action == 'delete' && has_capability('mod/scorm:deleteresponses', $contextm
 }
 
 // Activate the secondary nav tab.
-navigation_node::override_active_url(new moodle_url('/mod/scorm/report.php', ['id' => $id]));
+navigation_node::override_active_url(new url('/mod/scorm/report.php', ['id' => $id]));
 
 if (count($reportlist) < 1) {
-    throw new \moodle_exception('erroraccessingreport', 'scorm');
+    throw new moodle_exception('erroraccessingreport', 'scorm');
 }
 
 // Trigger a report viewed event.
@@ -99,7 +104,7 @@ if (empty($noheader)) {
         'hidecompletion' => true,
         'description' => ''
     ]);
-    $PAGE->navbar->add($strreport, new moodle_url('/mod/scorm/report.php', array('id' => $cm->id)));
+    $PAGE->navbar->add($strreport, new url('/mod/scorm/report.php', array('id' => $cm->id)));
 
     echo $OUTPUT->header();
 }

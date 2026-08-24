@@ -14,6 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+use core\context\module;
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
+use core\exception\required_capability_exception;
 use mod_feedback\external\feedback_summary_exporter;
 use mod_feedback\external\feedback_completedtmp_exporter;
 use mod_feedback\external\feedback_item_exporter;
@@ -91,7 +96,7 @@ class mod_feedback_external extends external_api {
             $feedbacks = get_all_instances_in_courses("feedback", $courses);
             foreach ($feedbacks as $feedback) {
 
-                $context = context_module::instance($feedback->coursemodule);
+                $context = module::instance($feedback->coursemodule);
 
                 // Remove fields that are not from the feedback (added by get_all_instances_in_courses).
                 unset($feedback->coursemodule, $feedback->context, $feedback->visible, $feedback->section, $feedback->groupmode,
@@ -152,14 +157,14 @@ class mod_feedback_external extends external_api {
         $feedback = $DB->get_record('feedback', array('id' => $feedbackid), '*', MUST_EXIST);
         list($feedbackcourse, $cm) = get_course_and_cm_from_instance($feedback, 'feedback');
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         // Set default completion course.
         $completioncourse = (object) array('id' => 0);
         if ($feedbackcourse->id == SITEID && $courseid) {
             $completioncourse = get_course($courseid);
-            self::validate_context(context_course::instance($courseid));
+            self::validate_context(course::instance($courseid));
 
             $feedbackcompletion = new mod_feedback_completion($feedback, $cm, $courseid);
             if (!$feedbackcompletion->check_course_is_mapped()) {

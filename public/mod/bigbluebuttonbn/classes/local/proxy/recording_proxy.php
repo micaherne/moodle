@@ -16,8 +16,8 @@
 
 namespace mod_bigbluebuttonbn\local\proxy;
 
-use cache;
-use cache_helper;
+use core_cache\cache;
+use core_cache\helper;
 use SimpleXMLElement;
 
 /**
@@ -40,7 +40,7 @@ class recording_proxy extends proxy_base {
      * @param string $recordid
      */
     protected static function invalidate_cache_for_recording(string $recordid): void {
-        cache_helper::invalidate_by_event('mod_bigbluebuttonbn/recordingchanged', [$recordid]);
+        helper::invalidate_by_event('mod_bigbluebuttonbn/recordingchanged', [$recordid]);
     }
 
     /**

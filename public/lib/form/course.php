@@ -25,6 +25,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context_helper;
+
 global $CFG;
 require_once($CFG->libdir . '/form/autocomplete.php');
 
@@ -152,7 +155,7 @@ class MoodleQuickForm_course extends MoodleQuickForm_autocomplete {
         $coursestoselect = array();
         foreach ($list as $course) {
             context_helper::preload_from_record($course);
-            $context = context_course::instance($course->id);
+            $context = course::instance($course->id);
             // Make sure we can see the course.
             if (!array_key_exists($course->id, $mycourses) && !core_course_category::can_view_course_info($course)) {
                 continue;

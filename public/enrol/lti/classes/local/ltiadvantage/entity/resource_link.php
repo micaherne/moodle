@@ -16,6 +16,9 @@
 
 namespace enrol_lti\local\ltiadvantage\entity;
 
+use core\exception\coding_exception;
+use core\url;
+
 /**
  * Class resource_link.
  *
@@ -62,7 +65,7 @@ class resource_link {
             ?int $id = null) {
 
         if (empty($resourcelinkid)) {
-            throw new \coding_exception('Error: resourcelinkid cannot be an empty string');
+            throw new coding_exception('Error: resourcelinkid cannot be an empty string');
         }
         $this->resourcelinkid = $resourcelinkid;
         $this->deploymentid = $deploymentid;
@@ -143,7 +146,7 @@ class resource_link {
      */
     public function set_contextid(int $contextid): void {
         if ($contextid <= 0) {
-            throw new \coding_exception('Context id must be a positive int');
+            throw new coding_exception('Context id must be a positive int');
         }
         $this->contextid = $contextid;
     }
@@ -155,7 +158,7 @@ class resource_link {
      */
     public function set_resourceid(int $resourceid): void {
         if ($resourceid <= 0) {
-            throw new \coding_exception('Resource id must be a positive int');
+            throw new coding_exception('Resource id must be a positive int');
         }
         $this->resourceid = $resourceid;
     }
@@ -167,7 +170,7 @@ class resource_link {
      * @param \moodle_url|null $lineitemurl the service URL if only a single line item is present in the platform.
      * @param string[] $scopes the string array of grade service scopes which may be used by the service.
      */
-    public function add_grade_service(?\moodle_url $lineitemsurl = null, ?\moodle_url $lineitemurl = null, array $scopes = []) {
+    public function add_grade_service(?url $lineitemsurl = null, ?url $lineitemurl = null, array $scopes = []) {
         $this->gradeservice = ags_info::create($lineitemsurl, $lineitemurl, $scopes);
     }
 
@@ -186,7 +189,7 @@ class resource_link {
      * @param \moodle_url $contextmembershipurl the service URL for memberships.
      * @param string[] $serviceversions the string array of supported service versions.
      */
-    public function add_names_and_roles_service(\moodle_url $contextmembershipurl, array $serviceversions): void {
+    public function add_names_and_roles_service(url $contextmembershipurl, array $serviceversions): void {
         $this->namesrolesservice = nrps_info::create($contextmembershipurl, $serviceversions);
     }
 
@@ -221,7 +224,7 @@ class resource_link {
             ?int $maildisplay = null): user {
 
         if (empty($this->get_id())) {
-            throw new \coding_exception('Can\'t add user to a resource_link that hasn\'t first been saved');
+            throw new coding_exception('Can\'t add user to a resource_link that hasn\'t first been saved');
         }
 
         return user::create_from_resource_link($this->get_id(), $this->get_resourceid(), $userid,

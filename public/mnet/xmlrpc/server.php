@@ -11,6 +11,8 @@
 // Make certain that config.php doesn't display any errors, and that it doesn't
 // override our do-not-display-errors setting:
 // disable moodle specific debug messages and any errors in output
+use core\exception\moodle_exception;
+
 define('NO_DEBUG_DISPLAY', true);
 // cookies are not used, makes sure there is empty global $USER
 define('NO_MOODLE_COOKIES', true);
@@ -27,7 +29,7 @@ require_once $CFG->dirroot.'/mnet/xmlrpc/serverlib.php';
 
 
 if ($CFG->mnet_dispatcher_mode === 'off') {
-    throw new \moodle_exception('mnetdisabled', 'mnet');
+    throw new moodle_exception('mnetdisabled', 'mnet');
 }
 
 // Content type for output is not html:

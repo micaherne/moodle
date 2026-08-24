@@ -25,8 +25,10 @@
 /**
  * Perform the post-install procedures.
  */
+use core\plugin_manager;
+
 function xmldb_format_social_install() {
     // Disable the Social course format on new installs by default.
-    $manager = \core_plugin_manager::resolve_plugininfo_class('format');
+    $manager = plugin_manager::resolve_plugininfo_class('format');
     $manager::enable_plugin('social', 0);
 }

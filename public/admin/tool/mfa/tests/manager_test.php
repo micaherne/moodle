@@ -16,6 +16,9 @@
 
 namespace tool_mfa;
 
+use core\context\system;
+use core\url;
+
 /**
  * Tests for MFA manager class.
  *
@@ -161,12 +164,12 @@ final class manager_test extends \advanced_testcase {
         set_config('redir_exclusions', $config, 'tool_mfa');
 
         // Cast URLs to string for simpler comparison.
-        $noredirecturls = array_map(fn(\moodle_url $url) => (string) $url, manager::get_no_redirect_urls());
+        $noredirecturls = array_map(fn(url $url) => (string) $url, manager::get_no_redirect_urls());
 
-        $this->assertContains((string) (new \moodle_url('/user/profile.php')), $noredirecturls);
-        $this->assertContains((string) (new \moodle_url('/course/index.php')), $noredirecturls);
-        $this->assertContains((string) (new \moodle_url('/admin/settings.php')), $noredirecturls);
-        $this->assertContains((string) (new \moodle_url('/mod/bar/view.php')), $noredirecturls);
+        $this->assertContains((string) (new url('/user/profile.php')), $noredirecturls);
+        $this->assertContains((string) (new url('/course/index.php')), $noredirecturls);
+        $this->assertContains((string) (new url('/admin/settings.php')), $noredirecturls);
+        $this->assertContains((string) (new url('/mod/bar/view.php')), $noredirecturls);
     }
 
     /**
@@ -175,9 +178,9 @@ final class manager_test extends \advanced_testcase {
      * @return  array
      */
     public static function should_redirect_urls_provider(): array {
-        $badurl1 = new \moodle_url('/');
+        $badurl1 = new url('/');
         $badparam1 = $badurl1->out();
-        $badurl2 = new \moodle_url('admin/tool/mfa/auth.php');
+        $badurl2 = new url('admin/tool/mfa/auth.php');
         $badparam2 = $badurl2->out();
         return [
             ['/', 'http://test.server', true],
@@ -208,7 +211,7 @@ final class manager_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
         $CFG->wwwroot = $webroot;
-        $url = new \moodle_url($urlstring, $params);
+        $url = new url($urlstring, $params);
         $this->assertEquals($status, \tool_mfa\manager::should_require_mfa($url, false));
     }
 
@@ -221,7 +224,7 @@ final class manager_test extends \advanced_testcase {
         $this->resetAfterTest(true);
         $user = $this->getDataGenerator()->create_user();
 
-        $badurl = new \moodle_url('/');
+        $badurl = new url('/');
 
         // Upgrade checks.
         $this->setAdminUser();
@@ -232,7 +235,7 @@ final class manager_test extends \advanced_testcase {
         $CFG->allversionshash = 'abc';
         $this->assertEquals(\tool_mfa\manager::NO_REDIRECT, \tool_mfa\manager::should_require_mfa($badurl, false));
         $CFG->allversionshash = $oldhash;
-        $upgradesettings = new \moodle_url('/admin/upgradesettings.php');
+        $upgradesettings = new url('/admin/upgradesettings.php');
         $this->assertEquals(\tool_mfa\manager::NO_REDIRECT, \tool_mfa\manager::should_require_mfa($upgradesettings, false));
         $this->assertEquals(\tool_mfa\manager::REDIRECT, \tool_mfa\manager::should_require_mfa($badurl, false));
 
@@ -269,7 +272,7 @@ final class manager_test extends \advanced_testcase {
 
         // Login as check.
         $user2 = $this->getDataGenerator()->create_user();
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $this->assertEquals(\tool_mfa\manager::REDIRECT, \tool_mfa\manager::should_require_mfa($badurl, false));
         $this->setAdminUser();
         \core\session\manager::loginas($user2->id, $syscontext, false);
@@ -277,32 +280,32 @@ final class manager_test extends \advanced_testcase {
         $this->setUser($user);
 
         // Access logocompact via pluginfile.
-        $logourl = new \moodle_url('/pluginfile.php/1/core_admin/logocompact/');
+        $logourl = new url('/pluginfile.php/1/core_admin/logocompact/');
         $this->assertEquals(\tool_mfa\manager::NO_REDIRECT, \tool_mfa\manager::should_require_mfa($logourl, false));
 
         // Access logo via pluginfile.
-        $logourl = new \moodle_url('/pluginfile.php/1/core_admin/logo/');
+        $logourl = new url('/pluginfile.php/1/core_admin/logo/');
         $this->assertEquals(\tool_mfa\manager::NO_REDIRECT, \tool_mfa\manager::should_require_mfa($logourl, false));
 
         // Access favicon via pluginfile.
-        $logourl = new \moodle_url('/pluginfile.php/1/core_admin/favicon/');
+        $logourl = new url('/pluginfile.php/1/core_admin/favicon/');
         $this->assertEquals(\tool_mfa\manager::NO_REDIRECT, \tool_mfa\manager::should_require_mfa($logourl, false));
 
         // Access guidance files.
-        $guideurl = new \moodle_url('/pluginfile.php/1/tool_mfa/guidance/0/capybara.png');
+        $guideurl = new url('/pluginfile.php/1/tool_mfa/guidance/0/capybara.png');
         $this->assertEquals(\tool_mfa\manager::NO_REDIRECT, \tool_mfa\manager::should_require_mfa($guideurl, false));
 
         // Access the allowed theme pluginfile area via wildcard component rules.
-        $themeurl = new \moodle_url('/pluginfile.php/1/theme_boost/loginbackgroundimage/0/background.jpg');
+        $themeurl = new url('/pluginfile.php/1/theme_boost/loginbackgroundimage/0/background.jpg');
         $this->assertEquals(\tool_mfa\manager::NO_REDIRECT, \tool_mfa\manager::should_require_mfa($themeurl, false));
 
         // Access a different theme pluginfile area which is not explicitly allowed.
-        $themeurl = new \moodle_url('/pluginfile.php/1/theme_classic/customfield/0/example.txt');
+        $themeurl = new url('/pluginfile.php/1/theme_classic/customfield/0/example.txt');
         $this->assertEquals(\tool_mfa\manager::REDIRECT, \tool_mfa\manager::should_require_mfa($themeurl, false));
 
         // Access private area.
         $user3 = $this->getDataGenerator()->create_user();
-        $privateurl = new \moodle_url("/pluginfile.php/{$user3->id}/user/private/privatefile.png");
+        $privateurl = new url("/pluginfile.php/{$user3->id}/user/private/privatefile.png");
         $this->assertEquals(\tool_mfa\manager::REDIRECT, \tool_mfa\manager::should_require_mfa($privateurl, false));
     }
 
@@ -319,7 +322,7 @@ final class manager_test extends \advanced_testcase {
 
         // Set first referer url.
         $_SERVER['HTTP_REFERER'] = 'http://phpunit.test';
-        $url = new \moodle_url('/');
+        $url = new url('/');
 
         // Test you get three redirs then exception.
         $this->assertEquals(\tool_mfa\manager::REDIRECT, \tool_mfa\manager::should_require_mfa($url, false));
@@ -465,7 +468,7 @@ final class manager_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
 
-        $confirmurl = new \moodle_url('/login/confirm.php');
+        $confirmurl = new url('/login/confirm.php');
         $this->assertEquals(
             \tool_mfa\manager::NO_REDIRECT,
             \tool_mfa\manager::should_require_mfa($confirmurl, false),
@@ -485,7 +488,7 @@ final class manager_test extends \advanced_testcase {
 
         // Spoof the referrer for the redirect check.
         $_SERVER['HTTP_REFERER'] = '/admin/tool/mfa/auth.php';
-        $baseurl = new \moodle_url('/my/naughty/page.php');
+        $baseurl = new url('/my/naughty/page.php');
 
         // After a single check, we should redirect.
         $this->assertEquals(\tool_mfa\manager::REDIRECT,

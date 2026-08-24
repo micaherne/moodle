@@ -22,6 +22,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir .'/simplepie/moodle_simplepie.php');
 
@@ -39,7 +43,7 @@ if ($courseid) {
     $PAGE->set_course($course);
     $context = $PAGE->context;
 } else {
-    $context = context_system::instance();
+    $context = system::instance();
     $PAGE->set_context($context);
 }
 
@@ -72,7 +76,7 @@ $rssrecord = $DB->get_record_select('block_rss_client', $select, [
 $rss = new moodle_simplepie($rssrecord->url);
 if ($rss->error()) {
     debugging($rss->error());
-    throw new \moodle_exception('errorfetchingrssfeed');
+    throw new moodle_exception('errorfetchingrssfeed');
 }
 
 $strviewfeed = get_string('viewfeed', 'block_rss_client');
@@ -80,7 +84,7 @@ $strviewfeed = get_string('viewfeed', 'block_rss_client');
 $PAGE->set_title($strviewfeed);
 $PAGE->set_heading($strviewfeed);
 
-$managefeeds = new moodle_url('/blocks/rss_client/managefeeds.php', $urlparams);
+$managefeeds = new url('/blocks/rss_client/managefeeds.php', $urlparams);
 $PAGE->navbar->add(get_string('blocks'));
 $PAGE->navbar->add(get_string('pluginname', 'block_rss_client'));
 $PAGE->navbar->add(get_string('managefeeds', 'block_rss_client'), $managefeeds);

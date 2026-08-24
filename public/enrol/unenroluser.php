@@ -25,6 +25,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require('../config.php');
 require_once("$CFG->dirroot/enrol/locallib.php");
 require_once("$CFG->dirroot/enrol/renderer.php");
@@ -38,7 +43,7 @@ $user = $DB->get_record('user', array('id'=>$ue->userid), '*', MUST_EXIST);
 $instance = $DB->get_record('enrol', array('id'=>$ue->enrolid), '*', MUST_EXIST);
 $course = $DB->get_record('course', array('id'=>$instance->courseid), '*', MUST_EXIST);
 
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 
 // set up PAGE url first!
 $PAGE->set_url('/enrol/unenroluser.php', array('ue'=>$ueid, 'ifilter'=>$filter));
@@ -46,19 +51,19 @@ $PAGE->set_url('/enrol/unenroluser.php', array('ue'=>$ueid, 'ifilter'=>$filter))
 require_login($course);
 
 if (!enrol_is_enabled($instance->enrol)) {
-    throw new \moodle_exception('erroreditenrolment', 'enrol');
+    throw new moodle_exception('erroreditenrolment', 'enrol');
 }
 
 $plugin = enrol_get_plugin($instance->enrol);
 
 if (!$plugin->allow_unenrol_user($instance, $ue) or !has_capability("enrol/$instance->enrol:unenrol", $context)) {
-    throw new \moodle_exception('erroreditenrolment', 'enrol');
+    throw new moodle_exception('erroreditenrolment', 'enrol');
 }
 
 $manager = new course_enrolment_manager($PAGE, $course, $filter);
 $table = new course_enrolment_users_table($manager, $PAGE);
 
-$usersurl = new moodle_url('/user/index.php', array('id' => $course->id));
+$usersurl = new url('/user/index.php', array('id' => $course->id));
 
 $PAGE->set_pagelayout('admin');
 navigation_node::override_active_url($usersurl);
@@ -69,7 +74,7 @@ if ($confirm && confirm_sesskey()) {
     redirect($usersurl);
 }
 
-$yesurl = new moodle_url($PAGE->url, array('confirm'=>1, 'sesskey'=>sesskey()));
+$yesurl = new url($PAGE->url, array('confirm'=>1, 'sesskey'=>sesskey()));
 $message = get_string('unenrolconfirm', 'core_enrol',
     [
         'user' => fullname($user, true),

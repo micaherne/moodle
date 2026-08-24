@@ -25,6 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+use core\context\course;
 use core_group\visibility;
 
 require_once($CFG->dirroot.'/lib/formslib.php');
@@ -43,7 +44,7 @@ class group_form extends moodleform {
      */
     function definition() {
         global $USER, $CFG, $COURSE;
-        $coursecontext = context_course::instance($COURSE->id);
+        $coursecontext = course::instance($COURSE->id);
 
         $mform =& $this->_form;
         $editoroptions = $this->_customdata['editoroptions'];
@@ -121,7 +122,7 @@ class group_form extends moodleform {
 
         $mform = $this->_form;
         $groupid = $mform->getElementValue('id');
-        $coursecontext = context_course::instance($COURSE->id);
+        $coursecontext = course::instance($COURSE->id);
 
         if ($group = $DB->get_record('groups', array('id' => $groupid))) {
             // If can create group conversation then get if a conversation area exists and it is enabled.

@@ -24,6 +24,8 @@
 
 namespace tool_monitor\event;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -80,7 +82,7 @@ class subscription_criteria_met extends \core\event\base {
         parent::validate_data();
 
         if (!isset($this->other['subscriptionid'])) {
-            throw new \coding_exception('The \'subscriptionid\' value must be set in other.');
+            throw new coding_exception('The \'subscriptionid\' value must be set in other.');
         }
     }
 

@@ -25,8 +25,8 @@
 namespace gradereport_singleview\local\screen;
 
 use gradereport_singleview\local\ui\be_readonly;
-use html_table;
-use html_writer;
+use core_table\output\html_table;
+use core\output\html_writer;
 use stdClass;
 use grade_grade;
 use gradereport_singleview\local\ui\bulk_insert;

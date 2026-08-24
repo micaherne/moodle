@@ -33,10 +33,10 @@ use mod_forum\local\entities\discussion as discussion_entity;
 use mod_forum\local\entities\forum as forum_entity;
 use mod_forum\local\entities\post as post_entity;
 use mod_forum\subscriptions;
-use context;
-use context_system;
+use core\context;
+use core\context\system;
 use stdClass;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 require_once($CFG->dirroot . '/mod/forum/lib.php');
 
@@ -676,7 +676,7 @@ class capability {
      * @return bool
      */
     public function can_manage_tags(stdClass $user): bool {
-        return has_capability('moodle/tag:manage', context_system::instance(), $user);
+        return has_capability('moodle/tag:manage', system::instance(), $user);
     }
 
     /**

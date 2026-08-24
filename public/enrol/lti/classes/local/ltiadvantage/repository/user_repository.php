@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace enrol_lti\local\ltiadvantage\repository;
+use core\exception\coding_exception;
+use core\user as core_user;
 use enrol_lti\local\ltiadvantage\entity\user;
 
 /**
@@ -144,7 +146,7 @@ class user_repository {
         $id = $user->get_id();
         $exists = !is_null($id) && $this->exists($id);
         if ($id && !$exists) {
-            throw new \coding_exception("Cannot save lti user with id '{$id}'. The record does not exist.");
+            throw new coding_exception("Cannot save lti user with id '{$id}'. The record does not exist.");
         }
 
         $userrecord = $this->user_record_from_user($user);
@@ -158,12 +160,12 @@ class user_repository {
             // Warn about localid vs ltiuser->userid mismatches here. Callers shouldn't be able to force updates using
             // localid. Only new user associations can be created that way.
             if (!empty($userrecord->id) && $userid != $userrecord->id) {
-                throw new \coding_exception("Cannot update user mapping. LTI user '{$ltiuser->id}' is already mapped " .
+                throw new coding_exception("Cannot update user mapping. LTI user '{$ltiuser->id}' is already mapped " .
                     "to user '{$ltiuser->userid}' and can't be associated with another user '{$userrecord->id}'.");
             }
 
             // Only update the Moodle user record if something has changed.
-            $rawuser = \core_user::get_user($userrecord->id);
+            $rawuser = core_user::get_user($userrecord->id);
             $userfieldstocompare = array_intersect_key(
                 (array) $rawuser,
                 (array) $userrecord
@@ -178,13 +180,13 @@ class user_repository {
         } else {
             // Validate uniqueness of the lti user, in the case of a stale object coming in to be saved.
             if ($this->user_exists_for_tool($user)) {
-                throw new \coding_exception("Cannot create duplicate LTI user '{$user->get_localid()}' for resource " .
+                throw new coding_exception("Cannot create duplicate LTI user '{$user->get_localid()}' for resource " .
                     "'{$user->get_resourceid()}'.");
             }
 
             // Only update the Moodle user record if something has changed.
             $userid = $userrecord->id;
-            $rawuser = \core_user::get_user($userid);
+            $rawuser = core_user::get_user($userid);
             $userfieldstocompare = array_intersect_key(
                 (array) $rawuser,
                 (array) $userrecord

@@ -21,6 +21,8 @@
  * @package mod_glossary
  * @copyright 2021 Peter Dias
  */
+use core\output\html_writer;
+
 defined('MOODLE_INTERNAL') || die;
 
     echo html_writer::start_div('entrybox');

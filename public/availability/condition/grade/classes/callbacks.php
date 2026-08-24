@@ -24,6 +24,8 @@
 
 namespace availability_grade;
 
+use core_cache\cache;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -43,7 +45,7 @@ class callbacks {
      * @param int $userid User ID
      */
     public static function grade_changed($userid) {
-        \cache::make('availability_grade', 'scores')->delete($userid);
+        cache::make('availability_grade', 'scores')->delete($userid);
     }
 
     /**
@@ -52,6 +54,6 @@ class callbacks {
      * @param int $courseid Course id
      */
     public static function grade_item_changed($courseid) {
-        \cache::make('availability_grade', 'items')->delete($courseid);
+        cache::make('availability_grade', 'items')->delete($courseid);
     }
 }

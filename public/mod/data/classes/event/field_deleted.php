@@ -24,6 +24,9 @@
 
 namespace mod_data\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -79,7 +82,7 @@ class field_deleted extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/data/field.php', array('d' => $this->other['dataid']));
+        return new url('/mod/data/field.php', array('d' => $this->other['dataid']));
     }
 
     /**
@@ -92,11 +95,11 @@ class field_deleted extends \core\event\base {
         parent::validate_data();
 
         if (!isset($this->other['fieldname'])) {
-            throw new \coding_exception('The \'fieldname\' value must be set in other.');
+            throw new coding_exception('The \'fieldname\' value must be set in other.');
         }
 
         if (!isset($this->other['dataid'])) {
-            throw new \coding_exception('The \'dataid\' value must be set in other.');
+            throw new coding_exception('The \'dataid\' value must be set in other.');
         }
     }
 

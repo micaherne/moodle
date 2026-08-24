@@ -27,9 +27,9 @@ namespace core_contentbank;
 use core_text;
 use stored_file;
 use stdClass;
-use coding_exception;
-use context;
-use moodle_url;
+use core\exception\coding_exception;
+use core\context;
+use core\url;
 use core\event\contentbank_content_updated;
 
 /**
@@ -371,7 +371,7 @@ abstract class content {
         if (!$file = $this->get_file()) {
             return '';
         }
-        $fileurl = moodle_url::make_pluginfile_url(
+        $fileurl = url::make_pluginfile_url(
             $this->content->contextid,
             'contentbank',
             'public',
@@ -391,7 +391,7 @@ abstract class content {
     public function is_view_allowed(): bool {
         // Plugins can overwrite this method in case they want to check something related to content properties.
         global $USER;
-        $context = \context::instance_by_id($this->get_contextid());
+        $context = context::instance_by_id($this->get_contextid());
 
         $displaypreference = get_user_preferences('core_contentbank_displayunlisted', 1);
 

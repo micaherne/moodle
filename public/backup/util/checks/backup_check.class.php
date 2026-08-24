@@ -30,6 +30,9 @@
  *
  * TODO: Finish phpdocs
  */
+use core\context\course;
+use core\context\module;
+
 abstract class backup_check {
 
     public static function check_format_and_type($format, $type) {
@@ -95,7 +98,7 @@ abstract class backup_check {
         $type     = $backup_controller->get_type();
         $mode     = $backup_controller->get_mode();
         $courseid = $backup_controller->get_courseid();
-        $coursectx= context_course::instance($courseid);
+        $coursectx= course::instance($courseid);
         $userid   = $backup_controller->get_userid();
         $id       = $backup_controller->get_id(); // courseid / sectionid / cmid
 
@@ -118,7 +121,7 @@ abstract class backup_check {
                 break;
             case backup::TYPE_1ACTIVITY :
                 get_coursemodule_from_id(null, $id, $courseid, false, MUST_EXIST); // cm exists
-                $modulectx = context_module::instance($id);
+                $modulectx = module::instance($id);
                 $typecapstocheck['moodle/backup:backupactivity'] = $modulectx;
                 break;
             default :

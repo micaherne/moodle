@@ -22,6 +22,10 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\user;
+use core\exception\require_login_exception;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 
 require_login(null, false);
@@ -32,7 +36,7 @@ if (isguestuser()) {
 $action = optional_param('action', '', PARAM_TEXT);
 $factorid = optional_param('factorid', 0, PARAM_INT);
 
-$context = context_user::instance($USER->id);
+$context = user::instance($USER->id);
 $PAGE->set_context($context);
 $PAGE->set_url('/admin/tool/mfa/user_preferences.php');
 $PAGE->set_pagelayout('standard');
@@ -42,7 +46,7 @@ $PAGE->set_cacheable(false);
 if ($node = $PAGE->settingsnav->find('usercurrentsettings', null)) {
     $PAGE->navbar->add($node->get_content(), $node->action());
 }
-$PAGE->navbar->add(get_string('preferences:header', 'tool_mfa'), new \moodle_url('/admin/tool/mfa/user_preferences.php'));
+$PAGE->navbar->add(get_string('preferences:header', 'tool_mfa'), new url('/admin/tool/mfa/user_preferences.php'));
 $OUTPUT = $PAGE->get_renderer('tool_mfa');
 
 echo $OUTPUT->header();

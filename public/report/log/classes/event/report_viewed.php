@@ -23,6 +23,9 @@
  */
 namespace report_log\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -79,7 +82,7 @@ class report_viewed extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/report/log/index.php', array('id' => $this->courseid));
+        return new url('/report/log/index.php', array('id' => $this->courseid));
     }
 
     /**
@@ -91,27 +94,27 @@ class report_viewed extends \core\event\base {
     protected function validate_data() {
         parent::validate_data();
         if (!isset($this->other['groupid'])) {
-            throw new \coding_exception('The \'groupid\' value must be set in other.');
+            throw new coding_exception('The \'groupid\' value must be set in other.');
         }
 
         if (!isset($this->other['date'])) {
-            throw new \coding_exception('The \'date\' value must be set in other.');
+            throw new coding_exception('The \'date\' value must be set in other.');
         }
 
         if (!isset($this->other['modid'])) {
-            throw new \coding_exception('The \'modid\' value must be set in other.');
+            throw new coding_exception('The \'modid\' value must be set in other.');
         }
 
         if (!isset($this->other['modaction'])) {
-            throw new \coding_exception('The \'modaction\' value must be set in other.');
+            throw new coding_exception('The \'modaction\' value must be set in other.');
         }
 
         if (!isset($this->other['logformat'])) {
-            throw new \coding_exception('The \'logformat\' value must be set in other.');
+            throw new coding_exception('The \'logformat\' value must be set in other.');
         }
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
     }
 

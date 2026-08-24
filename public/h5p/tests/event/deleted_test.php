@@ -16,6 +16,7 @@
 
 namespace core_h5p\event;
 
+use core\context\module;
 use core_h5p\local\library\autoloader;
 
 /**
@@ -47,7 +48,7 @@ final class deleted_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
         $page = $this->getDataGenerator()->create_module('page', array('course' => $course->id));
-        $pagecontext = \context_module::instance($page->cmid);
+        $pagecontext = module::instance($page->cmid);
 
         // Dummy H5P id for testing proposal. We don't need a real h5p.
         $dummyh5pid = 111;

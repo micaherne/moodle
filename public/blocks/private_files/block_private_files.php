@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\html_writer;
+use core\url;
+
 class block_private_files extends block_base {
 
     function init() {
@@ -61,7 +64,7 @@ class block_private_files extends block_base {
             $this->content->text = $renderer->private_files_tree();
             if (has_capability('moodle/user:manageownfiles', $this->context)) {
                 $this->content->footer = html_writer::link(
-                    new moodle_url('/user/files.php'),
+                    new url('/user/files.php'),
                     get_string('privatefilesmanage') . '...',
                     ['data-action' => 'manageprivatefiles']);
                 $this->page->requires->js_call_amd(

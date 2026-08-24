@@ -23,6 +23,8 @@
  */
 namespace mod_choice\privacy;
 
+use core\context\module;
+use core\context\system;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\deletion_criteria;
 use mod_choice\privacy\provider;
@@ -115,7 +117,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $contextlist = provider::get_contexts_for_userid($this->student->id);
         $this->assertCount(1, $contextlist);
         $contextforuser = $contextlist->current();
-        $cmcontext = \context_module::instance($cm->id);
+        $cmcontext = module::instance($cm->id);
         $this->assertEquals($cmcontext->id, $contextforuser->id);
     }
 
@@ -124,7 +126,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
      */
     public function test_export_for_context(): void {
         $cm = get_coursemodule_from_instance('choice', $this->choice->id);
-        $cmcontext = \context_module::instance($cm->id);
+        $cmcontext = module::instance($cm->id);
 
         // Export all of the data for the context.
         $this->export_context_data_for_user($this->student->id, $cmcontext, 'mod_choice');
@@ -157,7 +159,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->assertEquals(2, $count);
 
         // Delete data based on context.
-        $cmcontext = \context_module::instance($cm->id);
+        $cmcontext = module::instance($cm->id);
         provider::delete_data_for_all_users_in_context($cmcontext);
 
         // After deletion, the choice answers for that choice activity should have been deleted.
@@ -207,10 +209,10 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $count = $DB->count_records('choice_answers', ['choiceid' => $choice->id]);
         $this->assertEquals(2, $count);
 
-        $context1 = \context_module::instance($cm1->id);
-        $context2 = \context_module::instance($cm2->id);
+        $context1 = module::instance($cm1->id);
+        $context2 = module::instance($cm2->id);
         $contextlist = new \core_privacy\local\request\approved_contextlist($this->student, 'choice',
-            [\context_system::instance()->id, $context1->id, $context2->id]);
+            [system::instance()->id, $context1->id, $context2->id]);
         provider::delete_data_for_user($contextlist);
 
         // After deletion, the choice answers for the first student should have been deleted.
@@ -230,7 +232,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
      */
     public function test_get_users_in_context(): void {
         $cm = get_coursemodule_from_instance('choice', $this->choice->id);
-        $cmcontext = \context_module::instance($cm->id);
+        $cmcontext = module::instance($cm->id);
 
         $userlist = new \core_privacy\local\request\userlist($cmcontext, 'mod_choice');
         \mod_choice\privacy\provider::get_users_in_context($userlist);
@@ -245,7 +247,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
      * Test for provider::get_users_in_context() with invalid context type.
      */
     public function test_get_users_in_context_invalid_context_type(): void {
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
 
         $userlist = new \core_privacy\local\request\userlist($systemcontext, 'mod_choice');
         \mod_choice\privacy\provider::get_users_in_context($userlist);
@@ -295,7 +297,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $count = $DB->count_records('choice_answers', ['choiceid' => $choice->id]);
         $this->assertEquals(3, $count);
 
-        $context1 = \context_module::instance($cm1->id);
+        $context1 = module::instance($cm1->id);
         $approveduserlist = new \core_privacy\local\request\approved_userlist($context1, 'choice',
                 [$this->student->id, $otherstudent->id]);
         provider::delete_data_for_users($approveduserlist);

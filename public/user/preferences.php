@@ -22,6 +22,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\user as context_user;
+use core\exception\moodle_exception;
+use core\exception\require_login_exception;
+use core\output\preferences_group;
+use core\output\preferences_groups;
+use core\url;
+use core\user as core_user;
+
 require_once(__DIR__ . '/../config.php');
 
 require_login(null, false);
@@ -52,7 +60,7 @@ if (!$currentuser) {
     if ($settings = $PAGE->settingsnav->find('userviewingsettings' . $user->id, null)) {
         $settings->make_active();
     }
-    $url = new moodle_url('/user/preferences.php', array('userid' => $userid));
+    $url = new url('/user/preferences.php', array('userid' => $userid));
     $navbar = $PAGE->navbar->add(get_string('preferences', 'moodle'), $url);
     // Show an error if there are no preferences that this user has access to.
     if (!$PAGE->settingsnav->can_view_user_preferences($userid)) {

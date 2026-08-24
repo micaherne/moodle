@@ -27,6 +27,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->dirroot . '/my/lib.php');
 require_once($CFG->dirroot . '/course/lib.php');
@@ -41,21 +44,21 @@ if (empty($CFG->enablemycourses)) {
     if ($defaultpage == HOMEPAGE_URL) {
         redirect(get_default_home_page_url());
     } else if ($defaultpage == HOMEPAGE_MY) {
-        redirect(new moodle_url('/my/'));
+        redirect(new url('/my/'));
     } else if ($defaultpage == HOMEPAGE_USER) {
         // All homepage options disabled - redirect to user preferences page.
-        redirect(new moodle_url('/user/preferences.php'));
+        redirect(new url('/user/preferences.php'));
     } else {
-        redirect(new moodle_url('/'));
+        redirect(new url('/'));
     }
 }
 
-$hassiteconfig = has_capability('moodle/site:config', context_system::instance());
+$hassiteconfig = has_capability('moodle/site:config', system::instance());
 if ($hassiteconfig && moodle_needs_upgrading()) {
-    redirect(new moodle_url('/admin/index.php'));
+    redirect(new url('/admin/index.php'));
 }
 
-$context = context_system::instance();
+$context = system::instance();
 
 // Get the My Moodle page info.  Should always return something unless the database is broken.
 if (!$currentpage = my_get_page(null, MY_PAGE_PUBLIC, MY_PAGE_COURSES)) {

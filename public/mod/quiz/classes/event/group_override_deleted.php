@@ -23,6 +23,9 @@
  */
 namespace mod_quiz\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -76,7 +79,7 @@ class group_override_deleted extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/quiz/overrides.php', ['cmid' => $this->contextinstanceid]);
+        return new url('/mod/quiz/overrides.php', ['cmid' => $this->contextinstanceid]);
     }
 
     /**
@@ -89,11 +92,11 @@ class group_override_deleted extends \core\event\base {
         parent::validate_data();
 
         if (!isset($this->other['quizid'])) {
-            throw new \coding_exception('The \'quizid\' value must be set in other.');
+            throw new coding_exception('The \'quizid\' value must be set in other.');
         }
 
         if (!isset($this->other['groupid'])) {
-            throw new \coding_exception('The \'groupid\' value must be set in other.');
+            throw new coding_exception('The \'groupid\' value must be set in other.');
         }
     }
 

@@ -16,10 +16,10 @@
 
 namespace gradepenalty_duedate;
 
-use cm_info;
-use context_course;
-use context_module;
-use context_system;
+use core_course\cm_info;
+use core\context\course;
+use core\context\module;
+use core\context\system;
 use core_grades\penalty_container;
 
 /**
@@ -95,9 +95,9 @@ class penalty_calculator extends \core_grades\penalty_calculator {
      */
     private static function find_effective_penalty_rules(cm_info $cm): array {
         // Course module context id.
-        $modulecontext = context_module::instance($cm->id);
-        $coursecontext = context_course::instance($cm->course);
-        $systemcontext = context_system::instance();
+        $modulecontext = module::instance($cm->id);
+        $coursecontext = course::instance($cm->course);
+        $systemcontext = system::instance();
 
         $contextids = [
             $modulecontext->id,

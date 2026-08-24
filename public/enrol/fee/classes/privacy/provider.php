@@ -25,6 +25,9 @@
 
 namespace enrol_fee\privacy;
 
+use core\context;
+use core\context\course;
+use core\context\system;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
 use core_privacy\local\request\transform;
@@ -72,7 +75,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if ($context instanceof \context_course) {
+        if ($context instanceof course) {
             $sql = "SELECT p.userid
                       FROM {payments} p
                       JOIN {enrol} e ON (p.component = :component AND p.itemid = e.id)
@@ -82,7 +85,7 @@ class provider implements
                 'courseid' => $context->instanceid,
             ];
             $userlist->add_from_sql('userid', $sql, $params);
-        } else if ($context instanceof \context_system) {
+        } else if ($context instanceof system) {
             // If context is system, then the enrolment belongs to a deleted enrolment.
             $sql = "SELECT p.userid
                       FROM {payments} p
@@ -107,7 +110,7 @@ class provider implements
             get_string('pluginname', 'enrol_fee'),
         ];
         foreach ($contextlist as $context) {
-            if (!$context instanceof \context_course) {
+            if (!$context instanceof course) {
                 continue;
             }
             $feeplugins = $DB->get_records('enrol', ['courseid' => $context->instanceid, 'enrol' => 'fee']);
@@ -138,7 +141,7 @@ class provider implements
             $orphanedpayments = $DB->get_recordset_sql($sql, $params);
             foreach ($orphanedpayments as $payment) {
                 \core_payment\privacy\provider::export_payment_data_for_user_in_context(
-                    \context_system::instance(),
+                    system::instance(),
                     $subcontext,
                     $payment->userid,
                     $payment->component,
@@ -155,8 +158,8 @@ class provider implements
      *
      * @param \context $context The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
-        if ($context instanceof \context_course) {
+    public static function delete_data_for_all_users_in_context(context $context) {
+        if ($context instanceof course) {
             $sql = "SELECT p.id
                       FROM {payments} p
                       JOIN {enrol} e ON (p.component = :component AND p.itemid = e.id)
@@ -167,7 +170,7 @@ class provider implements
             ];
 
             \core_payment\privacy\provider::delete_data_for_payment_sql($sql, $params);
-        } else if ($context instanceof \context_system) {
+        } else if ($context instanceof system) {
             // If context is system, then the enrolment belongs to a deleted enrolment.
             $sql = "SELECT p.id
                       FROM {payments} p
@@ -197,7 +200,7 @@ class provider implements
 
         $courseids = [];
         foreach ($contexts as $context) {
-            if ($context instanceof \context_course) {
+            if ($context instanceof course) {
                 $courseids[] = $context->instanceid;
             }
         }
@@ -240,7 +243,7 @@ class provider implements
 
         $context = $userlist->get_context();
 
-        if ($context instanceof \context_course) {
+        if ($context instanceof course) {
             [$usersql, $userparams] = $DB->get_in_or_equal($userlist->get_userids(), SQL_PARAMS_NAMED);
             $sql = "SELECT p.id
                       FROM {payments} p
@@ -252,7 +255,7 @@ class provider implements
             ];
 
             \core_payment\privacy\provider::delete_data_for_payment_sql($sql, $params);
-        } else if ($context instanceof \context_system) {
+        } else if ($context instanceof system) {
             // Orphaned payments.
             [$usersql, $userparams] = $DB->get_in_or_equal($userlist->get_userids(), SQL_PARAMS_NAMED);
             $sql = "SELECT p.id

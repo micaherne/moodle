@@ -16,6 +16,10 @@
 
 namespace core_competency;
 
+use core\context\system;
+use core\context\user;
+use core\lang_string;
+
 /**
  * Plan persistent testcase.
  *
@@ -35,10 +39,10 @@ final class plan_test extends \advanced_testcase {
         $u2 = $this->getDataGenerator()->create_user();
         $u3 = $this->getDataGenerator()->create_user();
 
-        $syscontext = \context_system::instance();
-        $u1context = \context_user::instance($u1->id);
-        $u2context = \context_user::instance($u2->id);
-        $u3context = \context_user::instance($u3->id);
+        $syscontext = system::instance();
+        $u1context = user::instance($u1->id);
+        $u2context = user::instance($u2->id);
+        $u3context = user::instance($u3->id);
 
         assign_capability('moodle/competency:planmanage', CAP_ALLOW, $manage, $syscontext->id);
         assign_capability('moodle/competency:planmanageown', CAP_ALLOW, $manageown, $u2context->id);
@@ -78,12 +82,12 @@ final class plan_test extends \advanced_testcase {
         $u4 = $this->getDataGenerator()->create_user();
         $u5 = $this->getDataGenerator()->create_user();
 
-        $syscontext = \context_system::instance();
-        $u1context = \context_user::instance($u1->id);
-        $u2context = \context_user::instance($u2->id);
-        $u3context = \context_user::instance($u3->id);
-        $u4context = \context_user::instance($u4->id);
-        $u5context = \context_user::instance($u5->id);
+        $syscontext = system::instance();
+        $u1context = user::instance($u1->id);
+        $u2context = user::instance($u2->id);
+        $u3context = user::instance($u3->id);
+        $u4context = user::instance($u4->id);
+        $u5context = user::instance($u5->id);
 
         assign_capability('moodle/competency:planmanage', CAP_ALLOW, $manage, $syscontext->id);
         assign_capability('moodle/competency:planmanageown', CAP_ALLOW, $manageown, $syscontext->id);
@@ -143,10 +147,10 @@ final class plan_test extends \advanced_testcase {
         $u2 = $this->getDataGenerator()->create_user();
         $u3 = $this->getDataGenerator()->create_user();
 
-        $syscontext = \context_system::instance();
-        $u1context = \context_user::instance($u1->id);
-        $u2context = \context_user::instance($u2->id);
-        $u3context = \context_user::instance($u3->id);
+        $syscontext = system::instance();
+        $u1context = user::instance($u1->id);
+        $u2context = user::instance($u2->id);
+        $u3context = user::instance($u3->id);
 
         assign_capability('moodle/competency:planview', CAP_ALLOW, $read, $syscontext->id);
         assign_capability('moodle/competency:planviewown', CAP_ALLOW, $readown, $u2context->id);
@@ -186,12 +190,12 @@ final class plan_test extends \advanced_testcase {
         $u4 = $this->getDataGenerator()->create_user();
         $u5 = $this->getDataGenerator()->create_user();
 
-        $syscontext = \context_system::instance();
-        $u1context = \context_user::instance($u1->id);
-        $u2context = \context_user::instance($u2->id);
-        $u3context = \context_user::instance($u3->id);
-        $u4context = \context_user::instance($u4->id);
-        $u5context = \context_user::instance($u5->id);
+        $syscontext = system::instance();
+        $u1context = user::instance($u1->id);
+        $u2context = user::instance($u2->id);
+        $u3context = user::instance($u3->id);
+        $u4context = user::instance($u4->id);
+        $u5context = user::instance($u5->id);
 
         assign_capability('moodle/competency:planview', CAP_ALLOW, $read, $syscontext->id);
         assign_capability('moodle/competency:planviewown', CAP_ALLOW, $readown, $syscontext->id);
@@ -263,21 +267,21 @@ final class plan_test extends \advanced_testcase {
 
         // Draft to active with duedate in the past.
         $expected = array(
-            'duedate' => new \lang_string('errorcannotsetduedateinthepast', 'core_competency'),
+            'duedate' => new lang_string('errorcannotsetduedateinthepast', 'core_competency'),
         );
         $this->assertEquals($expected, $plan->validate());
 
         // Draft to active: past date => past date(fail).
         $plan->set('duedate', time() - 100);
         $expected = array(
-            'duedate' => new \lang_string('errorcannotsetduedateinthepast', 'core_competency'),
+            'duedate' => new lang_string('errorcannotsetduedateinthepast', 'core_competency'),
         );
         $this->assertEquals($expected, $plan->validate());
 
         // Draft to active: past date => too soon (fail).
         $plan->set('duedate', time() + 100);
         $expected = array(
-            'duedate' => new \lang_string('errorcannotsetduedatetoosoon', 'core_competency'),
+            'duedate' => new lang_string('errorcannotsetduedatetoosoon', 'core_competency'),
         );
         $this->assertEquals($expected, $plan->validate());
 
@@ -312,14 +316,14 @@ final class plan_test extends \advanced_testcase {
         // Active to active: unset date => past date(fail).
         $plan->set('duedate', time() - 100);
         $expected = array(
-            'duedate' => new \lang_string('errorcannotsetduedateinthepast', 'core_competency'),
+            'duedate' => new lang_string('errorcannotsetduedateinthepast', 'core_competency'),
         );
         $this->assertEquals($expected, $plan->validate());
 
         // Active to active: unset date => too soon (fail).
         $plan->set('duedate', time() + 100);
         $expected = array(
-            'duedate' => new \lang_string('errorcannotsetduedatetoosoon', 'core_competency'),
+            'duedate' => new lang_string('errorcannotsetduedatetoosoon', 'core_competency'),
         );
         $this->assertEquals($expected, $plan->validate());
 
@@ -341,14 +345,14 @@ final class plan_test extends \advanced_testcase {
         // Active to active: future date => past date(fail).
         $plan->set('duedate', time() - 100);
         $expected = array(
-            'duedate' => new \lang_string('errorcannotsetduedateinthepast', 'core_competency'),
+            'duedate' => new lang_string('errorcannotsetduedateinthepast', 'core_competency'),
         );
         $this->assertEquals($expected, $plan->validate());
 
         // Active to active: future date => too soon (fail).
         $plan->set('duedate', time() + 100);
         $expected = array(
-            'duedate' => new \lang_string('errorcannotsetduedatetoosoon', 'core_competency'),
+            'duedate' => new lang_string('errorcannotsetduedatetoosoon', 'core_competency'),
         );
         $this->assertEquals($expected, $plan->validate());
 

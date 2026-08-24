@@ -24,6 +24,10 @@
 
 namespace availability_date;
 
+use core\output\html_writer;
+use core_course\cm_info;
+use core_course\section_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -84,8 +88,8 @@ class frontend extends \core_availability\frontend {
                 'hour' => $wrongfields['hours'], 'minute' => $wrongfields['minutes']);
     }
 
-    protected function get_javascript_init_params($course, ?\cm_info $cm = null,
-            ?\section_info $section = null) {
+    protected function get_javascript_init_params($course, ?cm_info $cm = null,
+            ?section_info $section = null) {
         global $CFG, $OUTPUT;
         require_once($CFG->libdir . '/formslib.php');
 
@@ -135,7 +139,7 @@ class frontend extends \core_availability\frontend {
                 // code from form to ensure consistency.
                 if ($calendartype->get_name() === 'gregorian' && self::DATE_SELECTOR_SUPPORTED) {
                     $image = $OUTPUT->pix_icon('i/calendar', get_string('calendar', 'calendar'), 'moodle');
-                    $html .= ' ' . \html_writer::link('#', $image, array('name' => 'x[calendar]'));
+                    $html .= ' ' . html_writer::link('#', $image, array('name' => 'x[calendar]'));
                     form_init_date_js();
                 }
 
@@ -146,21 +150,21 @@ class frontend extends \core_availability\frontend {
                 $html .= ': ';
                 continue;
             }
-            $html .= \html_writer::start_tag('label');
-            $html .= \html_writer::span(get_string($field) . ' ', 'accesshide');
+            $html .= html_writer::start_tag('label');
+            $html .= html_writer::span(get_string($field) . ' ', 'accesshide');
             // NOTE: The fields need to have these weird names in order that they
             // match the standard Moodle form control, otherwise the date selector
             // won't find them.
-            $html .= \html_writer::start_tag('select', ['name' => 'x[' . $field . ']', 'class' => 'form-select']);
+            $html .= html_writer::start_tag('select', ['name' => 'x[' . $field . ']', 'class' => 'form-select']);
             foreach ($options as $key => $value) {
                 $params = array('value' => $key);
                 if ($current[$field] == $key) {
                     $params['selected'] = 'selected';
                 }
-                $html .= \html_writer::tag('option', s($value), $params);
+                $html .= html_writer::tag('option', s($value), $params);
             }
-            $html .= \html_writer::end_tag('select');
-            $html .= \html_writer::end_tag('label');
+            $html .= html_writer::end_tag('select');
+            $html .= html_writer::end_tag('label');
             $html .= ' ';
         }
         $html = rtrim($html) . '</span>';

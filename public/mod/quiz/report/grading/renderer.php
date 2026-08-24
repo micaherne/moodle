@@ -28,6 +28,11 @@
  * @copyright  2018 Huong Nguyen <huongnv13@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\url;
+use core_table\output\html_table;
+
 class quiz_grading_renderer extends plugin_renderer_base {
 
     /**
@@ -156,7 +161,7 @@ class quiz_grading_renderer extends plugin_renderer_base {
                 'id' => 'manualgradingform'
         ]);
         $output .= html_writer::start_tag('div');
-        $output .= html_writer::input_hidden_params(new moodle_url('', $hiddeninputs));
+        $output .= html_writer::input_hidden_params(new url('', $hiddeninputs));
 
         $output .= $gradequestioncontent;
 

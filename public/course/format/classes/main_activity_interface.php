@@ -16,6 +16,8 @@
 
 namespace core_courseformat;
 
+use core_course\cm_info;
+
 /**
  * Contains the interface that any course format plugin should implement
  * when it wants to only display a single activity in the course page.
@@ -31,5 +33,5 @@ interface main_activity_interface {
      *
      * @return \cm_info|null The main activity object or null if main activity is not set.
      */
-    public function get_main_activity(): ?\cm_info;
+    public function get_main_activity(): ?cm_info;
 }

@@ -19,7 +19,7 @@ namespace core;
 use ReflectionClass;
 use mysqli;
 use moodle_database, mysqli_native_moodle_database;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 /**
  * Test specific features of the MySql dml.

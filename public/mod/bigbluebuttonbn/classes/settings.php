@@ -27,8 +27,8 @@ use core_admin\setting\setting\heading;
 use core_admin\setting\settingpage\settingpage;
 use core_admin\setting\tree\category as admin_category;
 use core_cache\helper as cache_helper;
-use core_plugin_manager;
-use lang_string;
+use core\plugin_manager;
+use core\lang_string;
 use mod_bigbluebuttonbn\local\config;
 use mod_bigbluebuttonbn\local\helpers\roles;
 use mod_bigbluebuttonbn\local\plugins\admin_page_manage_extensions;
@@ -121,7 +121,7 @@ class settings {
             !$this->moduleenabled
         ));
         $this->admin->add($this->parent, new admin_page_manage_extensions());
-        foreach (core_plugin_manager::instance()->get_plugins_of_type(extension::BBB_EXTENSION_PLUGIN_NAME) as $plugin) {
+        foreach (plugin_manager::instance()->get_plugins_of_type(extension::BBB_EXTENSION_PLUGIN_NAME) as $plugin) {
             $plugin->load_settings($this->admin, extension::BBB_EXTENSION_PLUGIN_NAME, $this->hassiteconfig);
         }
     }

@@ -22,10 +22,14 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once(__DIR__ . '../../config.php');
 
 require_login(autologinguest: false);
-require_capability('moodle/site:config', context_system::instance());
+require_capability('moodle/site:config', system::instance());
 
 require_sesskey();
 
@@ -37,7 +41,7 @@ $id = optional_param('id', '', PARAM_INT);
 $manager = \core\di::get(\core_ai\manager::class);
 $providerrecord = $manager->get_provider_records(filter: ['id' => $id]);
 
-$returnurl = new moodle_url('/admin/settings.php?section=aiprovider');
+$returnurl = new url('/admin/settings.php?section=aiprovider');
 
 if (empty($providerrecord) || !$providerrecord) {
     throw new moodle_exception('error:providernotfound', 'core_ai', $returnurl);

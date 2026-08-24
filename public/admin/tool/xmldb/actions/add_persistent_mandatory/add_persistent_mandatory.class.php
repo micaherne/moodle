@@ -27,6 +27,9 @@
  * @copyright  2019 Michael Aherne
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\output\html_writer;
+use core\url;
+
 class add_persistent_mandatory extends XMLDBAction {
 
     function init() {
@@ -89,7 +92,7 @@ class add_persistent_mandatory extends XMLDBAction {
             }
         }
 
-        $returnurl = new \moodle_url('/admin/tool/xmldb/index.php', [
+        $returnurl = new url('/admin/tool/xmldb/index.php', [
             'table' => $tableparam,
             'dir' => $dir,
             'action' => 'edit_table'
@@ -112,7 +115,7 @@ class add_persistent_mandatory extends XMLDBAction {
                 }
             }
 
-            $confirmurl = new \moodle_url('/admin/tool/xmldb/index.php', [
+            $confirmurl = new url('/admin/tool/xmldb/index.php', [
                 'table' => $tableparam,
                 'dir' => $dir,
                 'action' => 'add_persistent_mandatory',

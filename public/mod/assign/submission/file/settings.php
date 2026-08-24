@@ -24,15 +24,21 @@
 
 
 // Note: This is on by default.
-$settings->add(new admin_setting_configcheckbox('assignsubmission_file/default',
+use core\lang_string;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\filetypes;
+
+$settings->add(new configcheckbox('assignsubmission_file/default',
                    new lang_string('default', 'assignsubmission_file'),
                    new lang_string('default_help', 'assignsubmission_file'), 1));
 
-$settings->add(new admin_setting_configtext('assignsubmission_file/maxfiles',
+$settings->add(new configtext('assignsubmission_file/maxfiles',
                    new lang_string('maxfiles', 'assignsubmission_file'),
                    new lang_string('maxfiles_help', 'assignsubmission_file'), 20, PARAM_INT));
 
-$settings->add(new admin_setting_filetypes('assignsubmission_file/filetypes',
+$settings->add(new filetypes('assignsubmission_file/filetypes',
                    new lang_string('defaultacceptedfiletypes', 'assignsubmission_file'),
                    new lang_string('acceptedfiletypes_help', 'assignsubmission_file'), ''));
 
@@ -42,7 +48,7 @@ if (isset($CFG->maxbytes)) {
     $description = new lang_string('configmaxbytes', 'assignsubmission_file');
 
     $maxbytes = get_config('assignsubmission_file', 'maxbytes');
-    $element = new admin_setting_configselect('assignsubmission_file/maxbytes',
+    $element = new configselect('assignsubmission_file/maxbytes',
                                               $name,
                                               $description,
                                               $CFG->maxbytes,

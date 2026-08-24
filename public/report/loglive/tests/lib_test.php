@@ -23,6 +23,8 @@
  */
 namespace report_loglive;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -73,7 +75,7 @@ final class lib_test extends \advanced_testcase {
         $DB->delete_records('logstore_standard_log');
 
         // Build the report.
-        $url = new \moodle_url("/report/loglive/index.php");
+        $url = new url("/report/loglive/index.php");
         $renderable = new \report_loglive_renderable('logstore_standard', 0, $url);
         $table = $renderable->get_table();
         $table->query_db(100);

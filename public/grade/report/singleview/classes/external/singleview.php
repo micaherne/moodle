@@ -16,7 +16,7 @@
 
 namespace gradereport_singleview\external;
 
-use context_course;
+use core\context\course;
 use core_course_external;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
@@ -72,7 +72,7 @@ class singleview extends core_course_external {
         );
 
         $warnings = [];
-        $coursecontext = context_course::instance($params['courseid']);
+        $coursecontext = course::instance($params['courseid']);
         parent::validate_context($coursecontext);
 
         $gtree = new grade_tree($params['courseid'], false, true, null, !$CFG->enableoutcomes);

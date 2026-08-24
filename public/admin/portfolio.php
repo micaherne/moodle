@@ -1,5 +1,12 @@
 <?php
 
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\single_select;
+use core\plugin_manager;
+use core\url;
+use core_table\output\html_table;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/portfoliolib.php');
 require_once($CFG->libdir . '/portfolio/forms.php');
@@ -47,7 +54,7 @@ $return = true; // direct back to the main page
  */
 function portfolio_action_url($portfolio) {
     global $baseurl;
-    return new moodle_url($baseurl, array('sesskey'=>sesskey(), 'pf'=>$portfolio));
+    return new url($baseurl, array('sesskey'=>sesskey(), 'pf'=>$portfolio));
 }
 
 if (($action == 'edit') || ($action == 'new')) {
@@ -86,7 +93,7 @@ if (($action == 'edit') || ($action == 'new')) {
         } else {
             portfolio_static_function($plugin, 'create_instance', $plugin, $fromform->name, $fromform);
         }
-        core_plugin_manager::reset_caches();
+        plugin_manager::reset_caches();
         $savedstr = get_string('instancesaved', 'portfolio');
         redirect($baseurl, $savedstr, 1);
         exit;
@@ -109,20 +116,20 @@ if (($action == 'edit') || ($action == 'new')) {
         $visible = 0;
     }
 
-    $class = \core_plugin_manager::resolve_plugininfo_class('portfolio');
+    $class = plugin_manager::resolve_plugininfo_class('portfolio');
     $class::enable_plugin($plugin, $visible);
     $return = true;
 } else if ($action == 'delete') {
     $instance = portfolio_instance($portfolio);
     if ($sure) {
         if (!confirm_sesskey()) {
-            throw new \moodle_exception('confirmsesskeybad', '', $baseurl);
+            throw new moodle_exception('confirmsesskeybad', '', $baseurl);
         }
         if ($instance->delete()) {
             $deletedstr = get_string('instancedeleted', 'portfolio');
             redirect($baseurl, $deletedstr, 1);
         } else {
-            throw new \moodle_exception('instancenotdeleted', 'portfolio', $baseurl);
+            throw new moodle_exception('instancenotdeleted', 'portfolio', $baseurl);
         }
         exit;
     } else {

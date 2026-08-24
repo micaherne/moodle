@@ -16,8 +16,11 @@
 
 namespace core_adminpresets;
 
+use core\plugin_manager;
+use core_admin\setting\setting\configexecutable;
+use core_admin\setting\setting\configfile;
 use memory_xml_output;
-use moodle_exception;
+use core\exception\moodle_exception;
 use stdClass;
 use xml_writer;
 
@@ -533,11 +536,11 @@ class manager {
 
         // Store plugins visibility (enabled/disabled).
         $pluginsfound = false;
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $types = $pluginmanager->get_plugin_types();
         foreach ($types as $plugintype => $notused) {
             $plugins = $pluginmanager->get_present_plugins($plugintype);
-            $pluginclass = \core_plugin_manager::resolve_plugininfo_class($plugintype);
+            $pluginclass = plugin_manager::resolve_plugininfo_class($plugintype);
             if (!empty($plugins)) {
                 foreach ($plugins as $pluginname => $plugin) {
                     $entry = new stdClass();
@@ -738,7 +741,7 @@ class manager {
                     // When $CFG->preventexecpath is set, executable paths are managed through
                     // config.php and cannot be changed via presets.
                     $settingdata = $sitesettings[$plugin][$name]->get_settingdata();
-                    if ($settingdata instanceof \admin_setting_configfile && !empty($CFG->preventexecpath)) {
+                    if ($settingdata instanceof configfile && !empty($CFG->preventexecpath)) {
                         continue;
                     }
 
@@ -1000,9 +1003,9 @@ class manager {
         // Plugins.
         $plugins = $DB->get_records('adminpresets_app_plug', ['adminpresetapplyid' => $presetappid]);
         if ($plugins) {
-            $pluginmanager = \core_plugin_manager::instance();
+            $pluginmanager = plugin_manager::instance();
             foreach ($plugins as $plugin) {
-                $pluginclass = \core_plugin_manager::resolve_plugininfo_class($plugin->plugin);
+                $pluginclass = plugin_manager::resolve_plugininfo_class($plugin->plugin);
                 $pluginclass::enable_plugin($plugin->name, (int) $plugin->oldvalue);
 
                 // Get the plugininfo object for this plugin, to get its proper visible name.
@@ -1106,13 +1109,13 @@ class manager {
                 if ($updatesetting) {
                     // Do not overwrite executable/directory paths when $CFG->preventexecpath is enabled.
                     $settingdata = $presetsetting->get_settingdata();
-                    if ($settingdata instanceof \admin_setting_configfile && !empty($CFG->preventexecpath)) {
+                    if ($settingdata instanceof configfile && !empty($CFG->preventexecpath)) {
                         $skipped[] = $data;
                         continue;
                     }
 
                     // Ensure executable-path settings point to a valid executable file before saving.
-                    if ($settingdata instanceof \admin_setting_configexecutable) {
+                    if ($settingdata instanceof configexecutable) {
                         $execpath = $presetsetting->get_value();
                         if (!empty($execpath)) {
                             require_once($CFG->libdir . '/filelib.php');
@@ -1184,9 +1187,9 @@ class manager {
         $strdisabled = get_string('disabled', 'core_adminpresets');
 
         $plugins = $DB->get_records('adminpresets_plug', ['adminpresetid' => $presetid]);
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         foreach ($plugins as $plugin) {
-            $pluginclass = \core_plugin_manager::resolve_plugininfo_class($plugin->plugin);
+            $pluginclass = plugin_manager::resolve_plugininfo_class($plugin->plugin);
             $oldvalue = $pluginclass::get_enabled_plugin($plugin->name);
 
             // Get the plugininfo object for this plugin, to get its proper visible name.

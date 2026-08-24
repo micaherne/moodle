@@ -21,6 +21,10 @@
  * @copyright 2014 The Open University
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 require(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 require_once('edit_form.php');
@@ -65,7 +69,7 @@ if ($oldextension) {
     $title = get_string('editfiletypes', 'tool_filetypes');
 }
 
-$backurl = new \moodle_url('/admin/tool/filetypes/index.php');
+$backurl = new url('/admin/tool/filetypes/index.php');
 if ($mform->is_cancelled()) {
     redirect($backurl);
 } else if ($data = $mform->get_data()) {
@@ -98,8 +102,8 @@ if ($mform->is_cancelled()) {
 }
 
 // Page settings.
-$context = context_system::instance();
-$PAGE->set_url(new \moodle_url('/admin/tool/filetypes/edit.php', array('oldextension' => $oldextension)));
+$context = system::instance();
+$PAGE->set_url(new url('/admin/tool/filetypes/edit.php', array('oldextension' => $oldextension)));
 
 $PAGE->set_primary_active_tab('siteadminnode');
 $PAGE->set_secondary_active_tab('server');

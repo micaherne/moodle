@@ -23,6 +23,14 @@
  * @package    core_group
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\output\single_select;
+use core\url;
+use core_table\output\html_table;
+
 require_once('../config.php');
 require_once($CFG->libdir . '/filelib.php');
 
@@ -39,10 +47,10 @@ $returnurl = $CFG->wwwroot.'/group/index.php?id='.$courseid;
 $rooturl   = $CFG->wwwroot.'/group/overview.php?id='.$courseid;
 
 if (!$course = $DB->get_record('course', array('id'=>$courseid))) {
-    throw new \moodle_exception('invalidcourse');
+    throw new moodle_exception('invalidcourse');
 }
 
-$url = new moodle_url('/group/overview.php', array('id'=>$courseid));
+$url = new url('/group/overview.php', array('id'=>$courseid));
 if ($groupid !== 0) {
     $url->param('group', $groupid);
 }
@@ -54,7 +62,7 @@ $PAGE->set_url($url);
 // Make sure that the user has permissions to manage groups.
 require_login($course);
 
-$context = context_course::instance($courseid);
+$context = course::instance($courseid);
 require_capability('moodle/course:managegroups', $context);
 
 $strgroups           = get_string('groups');
@@ -271,7 +279,7 @@ if ($dataformat !== '') {
 }
 
 // Main page content.
-navigation_node::override_active_url(new moodle_url('/group/index.php', array('id'=>$courseid)));
+navigation_node::override_active_url(new url('/group/index.php', array('id'=>$courseid)));
 $PAGE->navbar->add(get_string('overview', 'group'));
 
 /// Print header
@@ -289,7 +297,7 @@ $options[0] = get_string('all');
 foreach ($groupings as $grouping) {
     $options[$grouping->id] = strip_tags($grouping->formattedname);
 }
-$popupurl = new moodle_url($rooturl.'&group='.$groupid);
+$popupurl = new url($rooturl.'&group='.$groupid);
 $select = new single_select($popupurl, 'grouping', $options, $groupingid, array());
 $select->label = $strgrouping;
 $select->formid = 'selectgrouping';
@@ -300,7 +308,7 @@ $options[0] = get_string('all');
 foreach ($groups as $group) {
     $options[$group->id] = $group->formattedname;
 }
-$popupurl = new moodle_url($rooturl.'&grouping='.$groupingid);
+$popupurl = new url($rooturl.'&grouping='.$groupingid);
 $select = new single_select($popupurl, 'group', $options, $groupid, array());
 $select->label = $strgroup;
 $select->formid = 'selectgroup';
@@ -343,7 +351,7 @@ foreach ($members as $gpgid=>$groupdata) {
                 $displayname .= ' (' . implode(', ', $extrafieldsdisplay) . ')';
             }
 
-            $fullnames[] = html_writer::link(new moodle_url('/user/view.php', ['id' => $user->id, 'course' => $course->id]),
+            $fullnames[] = html_writer::link(new url('/user/view.php', ['id' => $user->id, 'course' => $course->id]),
                 $displayname);
         }
         $line[] = implode(', ', $fullnames);

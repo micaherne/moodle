@@ -17,6 +17,7 @@
 namespace core_calendar\external;
 
 use core\external\exporter;
+use core\output\renderer_base;
 use core_calendar\output\humandate;
 
 /**
@@ -105,7 +106,7 @@ class humandate_exporter extends exporter {
     }
 
     #[\Override]
-    protected function get_other_values(\renderer_base $output) {
+    protected function get_other_values(renderer_base $output) {
         /** @var humandate $source */
         $source = $this->data;
         $templatedata = $source->export_for_template($output);

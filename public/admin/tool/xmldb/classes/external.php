@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\system;
+use core\exception\coding_exception;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
@@ -70,8 +72,8 @@ class tool_xmldb_external extends external_api {
             'position' => $position
         ]);
 
-        self::validate_context(context_system::instance());
-        require_capability('moodle/site:config', context_system::instance());
+        self::validate_context(system::instance());
+        require_capability('moodle/site:config', system::instance());
 
         if (!in_array($action, ['move_updown_table', 'move_updown_field', 'move_updown_key', 'move_updown_index'])) {
             throw new coding_exception('Unsupported action');

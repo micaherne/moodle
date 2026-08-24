@@ -25,6 +25,8 @@ namespace core_enrol\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context as core_context;
+use core\context\course;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\context;
@@ -101,7 +103,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_course) {
+        if (!$context instanceof course) {
             return;
         }
 
@@ -153,7 +155,7 @@ class provider implements
         $lastenrol = null;
         $path = [get_string('privacy:metadata:user_enrolments', 'core_enrol')];
         $flush = function($lastcontextid, $lastenrol, $data) use ($path) {
-            $context = \context::instance_by_id($lastcontextid);
+            $context = core_context::instance_by_id($lastcontextid);
             writer::with_context($context)->export_related_data(
                 $path,
                 $lastenrol,
@@ -187,7 +189,7 @@ class provider implements
      *
      * @param   \context $context The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(core_context $context) {
         global $DB;
 
         // Sanity check that context is at the User context level.
@@ -215,7 +217,7 @@ class provider implements
 
         $context = $userlist->get_context();
 
-        if ($context instanceof \context_course) {
+        if ($context instanceof course) {
             list($usersql, $userparams) = $DB->get_in_or_equal($userlist->get_userids(), SQL_PARAMS_NAMED);
 
             $sql = "SELECT ue.id

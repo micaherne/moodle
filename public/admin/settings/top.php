@@ -27,6 +27,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core\url;
 use core_admin\setting\settingpage\settingpage;
 use core_admin\setting\tree\category;
 use core_admin\setting\tree\externalpage;
@@ -42,7 +44,7 @@ $ADMIN->add('root', new externalpage('adminnotifications', new lang_string('noti
 $ADMIN->add('root', new externalpage(
     'registrationmoodleorg',
     new lang_string('registration', 'admin'),
-    new moodle_url("/admin/registration/index.php")
+    new url("/admin/registration/index.php")
 ));
 // Hidden upgrade script.
 $ADMIN->add('root', new externalpage(

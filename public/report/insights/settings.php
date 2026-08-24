@@ -24,11 +24,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die;
 
 if (\core_analytics\manager::is_analytics_enabled()) {
     // Just a link to course report.
-    $ADMIN->add('reports', new admin_externalpage('reportinsights', get_string('insights', 'report_insights'),
+    $ADMIN->add('reports', new externalpage('reportinsights', get_string('insights', 'report_insights'),
             $CFG->wwwroot . "/report/insights/insights.php?contextid=" . SYSCONTEXTID, 'moodle/analytics:listinsights'));
 
     // No report settings.

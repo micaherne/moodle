@@ -26,6 +26,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\help_icon;
+use core\output\html_writer;
+
 global $CFG;
 require_once "$CFG->libdir/form/select.php";
 require_once("HTML/QuickForm/element.php");

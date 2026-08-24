@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\exception\required_capability_exception;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
@@ -34,7 +38,7 @@ if (!\core_competency\template::can_read_context($context)) {
     throw new required_capability_exception($context, 'moodle/competency:templateview', 'nopermissions', '');
 }
 
-$url = new moodle_url('/admin/tool/lp/learningplans.php', array('pagecontextid' => $pagecontextid));
+$url = new url('/admin/tool/lp/learningplans.php', array('pagecontextid' => $pagecontextid));
 list($title, $subtitle) = \tool_lp\page_helper::setup_for_template($pagecontextid, $url);
 
 $output = $PAGE->get_renderer('tool_lp');

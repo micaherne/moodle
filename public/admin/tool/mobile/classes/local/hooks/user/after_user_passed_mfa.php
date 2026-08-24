@@ -16,6 +16,8 @@
 
 namespace tool_mobile\local\hooks\user;
 
+use core\url;
+
 /**
  * Handles mobile app launches when third-party auth plugins are put in front of MFA.
  *
@@ -38,7 +40,7 @@ class after_user_passed_mfa {
             if (empty($SESSION->wantsurl) || strpos($SESSION->wantsurl, '/tool/mobile/launch.php') === false) {
 
                 $params = json_decode($_COOKIE['tool_mobile_launch'], true);
-                $SESSION->wantsurl = (new \moodle_url("/$CFG->admin/tool/mobile/launch.php", $params))->out(false);
+                $SESSION->wantsurl = (new url("/$CFG->admin/tool/mobile/launch.php", $params))->out(false);
                 $SESSION->tool_mfa_has_been_redirected = true;  // Indicate MFA that they need to follow $SESSION->wantsurl.
             }
             // Invalidate cookie as we won't be needing it anymore.

@@ -25,7 +25,8 @@
 
 namespace quizaccess_seb\privacy;
 
-use context;
+use core\context;
+use core\context\module;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -216,7 +217,7 @@ class provider implements
      *
      * @param context $context The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         global $DB;
 
         // Sanity check that context is at the module context level, then get the quizid.
@@ -260,7 +261,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_module) {
+        if (!$context instanceof module) {
             return;
         }
 

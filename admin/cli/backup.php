@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+
 define('CLI_SCRIPT', 1);
 
 require(__DIR__.'/../../config.php');
@@ -95,7 +97,7 @@ if (!empty($course)) {
     $bc = new backup_controller(backup::TYPE_1ACTIVITY, $cm->id, backup::FORMAT_MOODLE,
         backup::INTERACTIVE_YES, backup::MODE_GENERAL, $admin->id);
 } else {
-    throw new \moodle_exception('invalidoption');
+    throw new moodle_exception('invalidoption');
 }
 
 // Set the default filename.

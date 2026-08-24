@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/behat/lib.php');
@@ -91,12 +93,12 @@ $headercontent = $header->export_for_template($renderer);
 $coursefullname = ($PAGE->course?->fullname) ? format_string(
     $PAGE->course->fullname,
     true,
-    ['context' => context_course::instance($PAGE->course->id), 'escape' => false],
+    ['context' => course::instance($PAGE->course->id), 'escape' => false],
 ) : '';
 $courseurl = $PAGE->course ? new \core\url('/course/view.php', ['id' => $PAGE->course->id]) : null;
 
 $templatecontext = [
-    'sitename' => format_string($SITE->shortname, true, ['context' => context_course::instance(SITEID), "escape" => false]),
+    'sitename' => format_string($SITE->shortname, true, ['context' => course::instance(SITEID), "escape" => false]),
     'coursefullname' => $coursefullname,
     'courseurl' => $courseurl ? $courseurl->out(false) : null,
     'output' => $OUTPUT,

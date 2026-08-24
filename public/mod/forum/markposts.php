@@ -23,6 +23,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\url;
+
 require_once("../../config.php");
 require_once("lib.php");
 
@@ -31,7 +34,7 @@ $mark       = required_param('mark',PARAM_ALPHA); // Read or unread?
 $d          = optional_param('d',0,PARAM_INT); // Discussion to mark.
 $return     = optional_param('return', null, PARAM_LOCALURL);    // Page to return to.
 
-$url = new moodle_url('/mod/forum/markposts.php', array('f'=>$f, 'mark'=>$mark));
+$url = new url('/mod/forum/markposts.php', array('f'=>$f, 'mark'=>$mark));
 if ($d !== 0) {
     $url->param('d', $d);
 }
@@ -41,15 +44,15 @@ if (null !== $return) {
 $PAGE->set_url($url);
 
 if (! $forum = $DB->get_record("forum", array("id" => $f))) {
-    throw new \moodle_exception('invalidforumid', 'forum');
+    throw new moodle_exception('invalidforumid', 'forum');
 }
 
 if (! $course = $DB->get_record("course", array("id" => $forum->course))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 
 if (!$cm = get_coursemodule_from_instance("forum", $forum->id, $course->id)) {
-    throw new \moodle_exception('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 
 $user = $USER;
@@ -58,9 +61,9 @@ require_login($course, false, $cm);
 require_sesskey();
 
 if (null === $return) {
-    $returnto = new moodle_url("/mod/forum/index.php", ['id' => $course->id]);
+    $returnto = new url("/mod/forum/index.php", ['id' => $course->id]);
 } else {
-    $returnto = new moodle_url($return);
+    $returnto = new url($return);
 }
 
 if (isguestuser()) {   // Guests can't change forum
@@ -79,7 +82,7 @@ $info->forum = format_string($forum->name);
 if ($mark == 'read') {
     if (!empty($d)) {
         if (! $discussion = $DB->get_record('forum_discussions', array('id'=> $d, 'forum'=> $forum->id))) {
-            throw new \moodle_exception('invaliddiscussionid', 'forum');
+            throw new moodle_exception('invaliddiscussionid', 'forum');
         }
 
         forum_tp_mark_discussion_read($user, $d);

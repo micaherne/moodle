@@ -27,6 +27,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\block;
+use core\context\system;
+use core\context\user;
+use core\output\progress_bar;
+
 define('MY_PAGE_PUBLIC', 0);
 define('MY_PAGE_PRIVATE', 1);
 define('MY_PAGE_DEFAULT', '__default');
@@ -103,8 +108,8 @@ function my_copy_page(
     $page->id = $DB->insert_record('my_pages', $page);
 
     // Clone ALL the associated blocks as well
-    $systemcontext = context_system::instance();
-    $usercontext = context_user::instance($userid);
+    $systemcontext = system::instance();
+    $usercontext = user::instance($userid);
 
     $blockinstances = $DB->get_records('block_instances', array('parentcontextid' => $systemcontext->id,
                                                                 'pagetypepattern' => $pagetype,
@@ -113,7 +118,7 @@ function my_copy_page(
     $newblockinstanceids = [];
     foreach ($blockinstances as $instance) {
         $originalid = $instance->id;
-        $originalcontext = context_block::instance($originalid);
+        $originalcontext = block::instance($originalid);
         unset($instance->id);
         $instance->parentcontextid = $usercontext->id;
         $instance->subpagepattern = $page->id;
@@ -121,7 +126,7 @@ function my_copy_page(
         $instance->timemodified = $instance->timecreated;
         $instance->id = $DB->insert_record('block_instances', $instance);
         $newblockinstanceids[$originalid] = $instance->id;
-        $blockcontext = context_block::instance($instance->id);  // Just creates the context record
+        $blockcontext = block::instance($instance->id);  // Just creates the context record
         $block = block_instance($instance->blockname, $instance);
         if (empty($block) || !$block->instance_copy($originalid)) {
             debugging("Unable to copy block-specific data for original block
@@ -184,7 +189,7 @@ function my_reset_page(
 
     $page = my_get_page($userid, $private, $pagename);
     if ($page->userid == $userid) {
-        $context = context_user::instance($userid);
+        $context = user::instance($userid);
         if ($blocks = $DB->get_records('block_instances', array('parentcontextid' => $context->id,
                 'pagetypepattern' => $pagetype))) {
             foreach ($blocks as $block) {
@@ -209,7 +214,7 @@ function my_reset_page(
 
     // Trigger dashboard has been reset event.
     $eventparams = array(
-        'context' => context_user::instance($userid),
+        'context' => user::instance($userid),
         'other' => array(
             'private' => $private,
             'pagetype' => $pagetype,
@@ -300,7 +305,7 @@ function my_reset_page_for_all_users(
 
     // Trigger dashboard has been reset event.
     $eventparams = array(
-        'context' => context_system::instance(),
+        'context' => system::instance(),
         'other' => array(
             'private' => $private,
             'pagetype' => $pagetype,
@@ -326,7 +331,7 @@ class my_syspage_block_manager extends block_manager {
      */
     public function load_blocks($includeinvisible = null) {
         $origcontext = $this->page->context;
-        $this->page->context = context_system::instance();
+        $this->page->context = system::instance();
         parent::load_blocks($includeinvisible);
         $this->page->context = $origcontext;
     }

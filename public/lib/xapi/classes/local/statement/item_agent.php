@@ -25,7 +25,7 @@
 namespace core_xapi\local\statement;
 
 use core_xapi\xapi_exception;
-use core_user;
+use core\user;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
@@ -79,14 +79,14 @@ class item_agent extends item_actor {
             if (!is_numeric($data->account->name)) {
                 throw new xapi_exception("Agent account name must be integer '{$data->account->name}' found");
             }
-            $user = core_user::get_user($data->account->name);
+            $user = user::get_user($data->account->name);
             if (empty($user)) {
                 throw new xapi_exception("Inexistent agent '{$data->account->name}'");
             }
         }
         if (!empty($data->mbox)) {
             $mbox = str_replace('mailto:', '', $data->mbox);
-            $user = core_user::get_user_by_email($mbox);
+            $user = user::get_user_by_email($mbox);
             if (empty($user)) {
                 throw new xapi_exception("Inexistent agent '{$data->mbox}'");
             }

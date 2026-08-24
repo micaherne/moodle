@@ -22,6 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\coding_exception;
+use core\navigation\global_navigation;
+use core\navigation\navigation_node;
+use core\navigation\settings_navigation;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -162,7 +169,7 @@ abstract class gradingform_controller {
      * @return boolean
      */
     public function is_shared_template() {
-        return ($this->get_context()->id == context_system::instance()->id
+        return ($this->get_context()->id == system::instance()->id
             and $this->get_component() == 'core_grading');
     }
 
@@ -205,7 +212,7 @@ abstract class gradingform_controller {
      * @param moodle_url $returnurl optional URL of a page where the user should be sent once they are finished with editing
      * @return moodle_url
      */
-    public function get_editor_url(?moodle_url $returnurl = null) {
+    public function get_editor_url(?url $returnurl = null) {
 
         $params = array('areaid' => $this->areaid);
 
@@ -213,7 +220,7 @@ abstract class gradingform_controller {
             $params['returnurl'] = $returnurl->out(false);
         }
 
-        return new moodle_url('/grade/grading/form/'.$this->get_method_name().'/edit.php', $params);
+        return new url('/grade/grading/form/'.$this->get_method_name().'/edit.php', $params);
     }
 
     /**

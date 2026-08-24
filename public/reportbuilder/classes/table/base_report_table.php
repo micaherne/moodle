@@ -18,11 +18,11 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\table;
 
-use context;
-use moodle_url;
-use renderable;
-use table_sql;
-use html_writer;
+use core\context;
+use core\url;
+use core\output\renderable;
+use core_table\sql_table;
+use core\output\html_writer;
 use core_table\dynamic;
 use core_reportbuilder\local\helpers\database;
 use core_reportbuilder\local\filters\base;
@@ -42,7 +42,7 @@ require_once("{$CFG->libdir}/tablelib.php");
  * @copyright   2021 David Matamoros <davidmc@moodle.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class base_report_table extends table_sql implements dynamic, renderable {
+abstract class base_report_table extends sql_table implements dynamic, renderable {
 
     /** @var report $persistent */
     protected $persistent;
@@ -284,7 +284,7 @@ abstract class base_report_table extends table_sql implements dynamic, renderabl
      * Set the base URL of the table to the current page URL
      */
     public function guess_base_url(): void {
-        $this->baseurl = new moodle_url('/');
+        $this->baseurl = new url('/');
     }
 
     /**

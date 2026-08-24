@@ -24,6 +24,16 @@
 
 namespace tool_analytics\output;
 
+use core\output\action_menu;
+use core\output\action_menu\link;
+use core\output\action_menu\link_secondary;
+use core\output\help_icon;
+use core\output\pix_icon;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -33,7 +43,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2016 David Monllao {@link http://www.davidmonllao.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class models_list implements \renderable, \templatable {
+class models_list implements renderable, templatable {
 
     /**
      * models
@@ -58,32 +68,32 @@ class models_list implements \renderable, \templatable {
      * @param \renderer_base $output
      * @return \stdClass
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         global $PAGE;
 
         $data = new \stdClass();
 
-        $newmodelmenu = new \action_menu();
+        $newmodelmenu = new action_menu();
         $newmodelmenu->set_menu_trigger(get_string('newmodel', 'tool_analytics'), 'btn btn-secondary');
         $newmodelmenu->set_menu_left();
 
-        $newmodelmenu->add(new \action_menu_link(
-            new \moodle_url('/admin/tool/analytics/createmodel.php'),
-            new \pix_icon('i/edit', ''),
+        $newmodelmenu->add(new link(
+            new url('/admin/tool/analytics/createmodel.php'),
+            new pix_icon('i/edit', ''),
             get_string('createmodel', 'tool_analytics'),
             false
         ));
 
-        $newmodelmenu->add(new \action_menu_link(
-            new \moodle_url('/admin/tool/analytics/importmodel.php'),
-            new \pix_icon('i/import', ''),
+        $newmodelmenu->add(new link(
+            new url('/admin/tool/analytics/importmodel.php'),
+            new pix_icon('i/import', ''),
             get_string('importmodel', 'tool_analytics'),
             false
         ));
 
-        $newmodelmenu->add(new \action_menu_link(
-            new \moodle_url('/admin/tool/analytics/restoredefault.php'),
-            new \pix_icon('i/reload', ''),
+        $newmodelmenu->add(new link(
+            new url('/admin/tool/analytics/restoredefault.php'),
+            new pix_icon('i/reload', ''),
             get_string('restoredefault', 'tool_analytics'),
             false
         ));
@@ -108,7 +118,7 @@ class models_list implements \renderable, \templatable {
             $identifier = $modeldata->target->get_identifier();
             $component = $modeldata->target->get_component();
             if (get_string_manager()->string_exists($identifier . '_help', $component)) {
-                $helpicon = new \help_icon($identifier, $component);
+                $helpicon = new help_icon($identifier, $component);
                 $modeldata->targethelp = $helpicon->export_for_template($output);
             } else {
                 // We really want to encourage developers to add help to their targets.
@@ -130,7 +140,7 @@ class models_list implements \renderable, \templatable {
                     $identifier = $ind->get_identifier();
                     $component = $ind->get_component();
                     if (get_string_manager()->string_exists($identifier . '_help', $component)) {
-                        $helpicon = new \help_icon($identifier, $component);
+                        $helpicon = new help_icon($identifier, $component);
                         $indicator->help = $helpicon->export_for_template($output);
                     } else {
                         // We really want to encourage developers to add help to their indicators.
@@ -149,7 +159,7 @@ class models_list implements \renderable, \templatable {
                 $identifier = $modeldata->timesplitting->get_identifier();
                 $component = $modeldata->timesplitting->get_component();
                 if (get_string_manager()->string_exists($identifier . '_help', $component)) {
-                    $helpicon = new \help_icon($identifier, $component);
+                    $helpicon = new help_icon($identifier, $component);
                     $modeldata->timesplittinghelp = $helpicon->export_for_template($output);
                 } else {
                     // We really want to encourage developers to add help to their time splitting methods.
@@ -157,7 +167,7 @@ class models_list implements \renderable, \templatable {
                         string to describe its purpose.", DEBUG_DEVELOPER);
                 }
             } else {
-                $helpicon = new \help_icon('timesplittingnotdefined', 'tool_analytics');
+                $helpicon = new help_icon('timesplittingnotdefined', 'tool_analytics');
                 $modeldata->timesplittinghelp = $helpicon->export_for_template($output);
             }
 
@@ -170,7 +180,7 @@ class models_list implements \renderable, \templatable {
                 $modeldata->noinsights = get_string('disabledmodel', 'analytics');
             } else if ($model->uses_insights()) {
                 if ($predictioncontexts) {
-                    $url = new \moodle_url('/report/insights/insights.php', array('modelid' => $model->get_id()));
+                    $url = new url('/report/insights/insights.php', array('modelid' => $model->get_id()));
                     $modeldata->insights = \tool_analytics\output\helper::prediction_context_selector($predictioncontexts,
                         $url, $output);
                 }
@@ -188,7 +198,7 @@ class models_list implements \renderable, \templatable {
             }
 
             // Actions.
-            $actionsmenu = new \action_menu();
+            $actionsmenu = new action_menu();
             $actionsmenu->set_menu_trigger(get_string('actions'));
             $actionsmenu->set_owner_selector('model-actions-' . $model->get_id());
 
@@ -197,9 +207,9 @@ class models_list implements \renderable, \templatable {
             // Get predictions.
             if (!$onlycli && $modeldata->enabled && !empty($modeldata->timesplitting)) {
                 $urlparams['action'] = 'scheduledanalysis';
-                $url = new \moodle_url('/admin/tool/analytics/model.php', $urlparams);
-                $icon = new \action_menu_link_secondary($url,
-                    new \pix_icon('i/notifications', get_string('executescheduledanalysis', 'tool_analytics')),
+                $url = new url('/admin/tool/analytics/model.php', $urlparams);
+                $icon = new link_secondary($url,
+                    new pix_icon('i/notifications', get_string('executescheduledanalysis', 'tool_analytics')),
                     get_string('executescheduledanalysis', 'tool_analytics'));
                 $actionsmenu->add($icon);
             }
@@ -224,8 +234,8 @@ class models_list implements \renderable, \templatable {
                 $evaluateparams = [$actionid, $trainedonlyexternally];
                 $PAGE->requires->js_call_amd('tool_analytics/model', 'selectEvaluationOptions', $evaluateparams);
                 $urlparams['action'] = 'evaluate';
-                $url = new \moodle_url('/admin/tool/analytics/model.php', $urlparams);
-                $icon = new \action_menu_link_secondary($url, new \pix_icon('i/calc', get_string('evaluate', 'tool_analytics')),
+                $url = new url('/admin/tool/analytics/model.php', $urlparams);
+                $icon = new link_secondary($url, new pix_icon('i/calc', get_string('evaluate', 'tool_analytics')),
                     get_string('evaluate', 'tool_analytics'), ['data-action-id' => $actionid,
                     'data-timesplitting-methods' => json_encode($modeltimesplittingmethods)]);
                 $actionsmenu->add($icon);
@@ -234,16 +244,16 @@ class models_list implements \renderable, \templatable {
             // Machine-learning-based models evaluation log.
             if (!$model->is_static() && $model->get_logs()) {
                 $urlparams['action'] = 'log';
-                $url = new \moodle_url('/admin/tool/analytics/model.php', $urlparams);
-                $icon = new \action_menu_link_secondary($url, new \pix_icon('i/report', get_string('viewlog', 'tool_analytics')),
+                $url = new url('/admin/tool/analytics/model.php', $urlparams);
+                $icon = new link_secondary($url, new pix_icon('i/report', get_string('viewlog', 'tool_analytics')),
                     get_string('viewlog', 'tool_analytics'));
                 $actionsmenu->add($icon);
             }
 
             // Edit model.
             $urlparams['action'] = 'edit';
-            $url = new \moodle_url('/admin/tool/analytics/model.php', $urlparams);
-            $icon = new \action_menu_link_secondary($url, new \pix_icon('t/edit', get_string('edit')), get_string('edit'));
+            $url = new url('/admin/tool/analytics/model.php', $urlparams);
+            $icon = new link_secondary($url, new pix_icon('t/edit', get_string('edit')), get_string('edit'));
             $actionsmenu->add($icon);
 
             // Enable / disable.
@@ -259,8 +269,8 @@ class models_list implements \renderable, \templatable {
                     $icontype = 'i/checked';
                 }
                 $urlparams['action'] = $action;
-                $url = new \moodle_url('/admin/tool/analytics/model.php', $urlparams);
-                $icon = new \action_menu_link_secondary($url, new \pix_icon($icontype, $text), $text);
+                $url = new url('/admin/tool/analytics/model.php', $urlparams);
+                $icon = new link_secondary($url, new pix_icon($icontype, $text), $text);
                 $actionsmenu->add($icon);
             }
 
@@ -272,7 +282,7 @@ class models_list implements \renderable, \templatable {
 
                 if ($fullysetup || $istrained) {
 
-                    $url = new \moodle_url('/admin/tool/analytics/model.php', $urlparams);
+                    $url = new url('/admin/tool/analytics/model.php', $urlparams);
                     // Clear the previous action param from the URL, we will set it in JS.
                     $url->remove_params('action');
 
@@ -280,7 +290,7 @@ class models_list implements \renderable, \templatable {
                     $PAGE->requires->js_call_amd('tool_analytics/model', 'selectExportOptions',
                         [$actionid, $istrained]);
 
-                    $icon = new \action_menu_link_secondary($url, new \pix_icon('i/export',
+                    $icon = new link_secondary($url, new pix_icon('i/export',
                         get_string('export', 'tool_analytics')), get_string('export', 'tool_analytics'),
                         ['data-action-id' => $actionid]);
                     $actionsmenu->add($icon);
@@ -290,9 +300,9 @@ class models_list implements \renderable, \templatable {
             // Insights report.
             if (!empty($anypredictionobtained) && $model->uses_insights()) {
                 $urlparams['action'] = 'insightsreport';
-                $url = new \moodle_url('/admin/tool/analytics/model.php', $urlparams);
-                $pix = new \pix_icon('i/report', get_string('insightsreport', 'tool_analytics'));
-                $icon = new \action_menu_link_secondary($url, $pix, get_string('insightsreport', 'tool_analytics'));
+                $url = new url('/admin/tool/analytics/model.php', $urlparams);
+                $pix = new pix_icon('i/report', get_string('insightsreport', 'tool_analytics'));
+                $icon = new link_secondary($url, $pix, get_string('insightsreport', 'tool_analytics'));
                 $actionsmenu->add($icon);
             }
 
@@ -300,9 +310,9 @@ class models_list implements \renderable, \templatable {
             $analyser = $model->get_analyser(['notimesplitting' => true]);
             if (!$analyser instanceof \core_analytics\local\analyser\sitewide) {
                 $urlparams['action'] = 'invalidanalysables';
-                $url = new \moodle_url('/admin/tool/analytics/model.php', $urlparams);
-                $pix = new \pix_icon('i/report', get_string('invalidanalysables', 'tool_analytics'));
-                $icon = new \action_menu_link_secondary($url, $pix, get_string('invalidanalysables', 'tool_analytics'));
+                $url = new url('/admin/tool/analytics/model.php', $urlparams);
+                $pix = new pix_icon('i/report', get_string('invalidanalysables', 'tool_analytics'));
+                $icon = new link_secondary($url, $pix, get_string('invalidanalysables', 'tool_analytics'));
                 $actionsmenu->add($icon);
             }
 
@@ -311,8 +321,8 @@ class models_list implements \renderable, \templatable {
                 $actionid = 'clear-' . $model->get_id();
                 $PAGE->requires->js_call_amd('tool_analytics/model', 'confirmAction', [$actionid, 'clear']);
                 $urlparams['action'] = 'clear';
-                $url = new \moodle_url('/admin/tool/analytics/model.php', $urlparams);
-                $icon = new \action_menu_link_secondary($url, new \pix_icon('e/cleanup_messy_code',
+                $url = new url('/admin/tool/analytics/model.php', $urlparams);
+                $icon = new link_secondary($url, new pix_icon('e/cleanup_messy_code',
                     get_string('clearpredictions', 'tool_analytics')), get_string('clearpredictions', 'tool_analytics'),
                     ['data-action-id' => $actionid]);
                 $actionsmenu->add($icon);
@@ -322,8 +332,8 @@ class models_list implements \renderable, \templatable {
             $actionid = 'delete-' . $model->get_id();
             $PAGE->requires->js_call_amd('tool_analytics/model', 'confirmAction', [$actionid, 'delete']);
             $urlparams['action'] = 'delete';
-            $url = new \moodle_url('/admin/tool/analytics/model.php', $urlparams);
-            $icon = new \action_menu_link_secondary($url, new \pix_icon('t/delete',
+            $url = new url('/admin/tool/analytics/model.php', $urlparams);
+            $icon = new link_secondary($url, new pix_icon('t/delete',
                 get_string('delete', 'tool_analytics')), get_string('delete', 'tool_analytics'),
                 ['data-action-id' => $actionid]);
             $actionsmenu->add($icon);
@@ -338,7 +348,7 @@ class models_list implements \renderable, \templatable {
         if (!$onlycli) {
             $data->warnings[] = (object)array('message' => get_string('bettercli', 'tool_analytics'), 'closebutton' => true);
         } else {
-            $url = new \moodle_url('/admin/settings.php', array('section' => 'analyticssettings'),
+            $url = new url('/admin/settings.php', array('section' => 'analyticssettings'),
                 'id_s_analytics_onlycli');
 
             $langstrid = 'clievaluationandpredictionsnoadmin';

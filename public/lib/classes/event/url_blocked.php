@@ -16,6 +16,10 @@
 
 namespace core\event;
 
+use core\context\system;
+use core\context\user;
+use core\exception\coding_exception;
+
 /**
  * URL blocked event class.
  *
@@ -66,7 +70,7 @@ class url_blocked extends base {
 
         $this->data['crud'] = 'c';
         $this->data['edulevel'] = self::LEVEL_OTHER;
-        $this->context = empty($USER->id) ? \context_system::instance() : \context_user::instance($USER->id);
+        $this->context = empty($USER->id) ? system::instance() : user::instance($USER->id);
     }
 
     /**
@@ -87,7 +91,7 @@ class url_blocked extends base {
     protected function validate_data() {
         parent::validate_data();
         if (!isset($this->other['url'])) {
-            throw new \coding_exception("The 'url' value must be set in other.");
+            throw new coding_exception("The 'url' value must be set in other.");
         }
     }
 

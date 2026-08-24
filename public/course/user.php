@@ -22,6 +22,11 @@
  * @package course
  */
 
+use core\context\course;
+use core\context\user;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once("../config.php");
 require_once("lib.php");
 
@@ -29,31 +34,31 @@ $id      = required_param('id',PARAM_INT);       // course id
 $user    = required_param('user',PARAM_INT);     // user id
 $mode    = optional_param('mode', "todaylogs", PARAM_ALPHA);
 
-$url = new moodle_url('/course/user.php', array('id'=>$id,'user'=>$user, 'mode'=>$mode));
+$url = new url('/course/user.php', array('id'=>$id,'user'=>$user, 'mode'=>$mode));
 
 $course = $DB->get_record('course', array('id'=>$id), '*', MUST_EXIST);
 $user = $DB->get_record("user", array("id"=>$user, 'deleted'=>0), '*', MUST_EXIST);
 
 if ($mode === 'outline' or $mode === 'complete') {
-    $url = new moodle_url('/report/outline/user.php', array('id'=>$user->id, 'course'=>$course->id, 'mode'=>$mode));
+    $url = new url('/report/outline/user.php', array('id'=>$user->id, 'course'=>$course->id, 'mode'=>$mode));
     redirect($url);
 }
 if ($mode === 'todaylogs' or $mode === 'alllogs') {
     $logmode = ($mode === 'todaylogs') ? 'today' : 'all';
-    $url = new moodle_url('/report/log/user.php', array('id'=>$user->id, 'course'=>$course->id, 'mode'=>$logmode));
+    $url = new url('/report/log/user.php', array('id'=>$user->id, 'course'=>$course->id, 'mode'=>$logmode));
     redirect($url);
 }
 if ($mode === 'stats') {
-    $url = new moodle_url('/report/stats/user.php', array('id'=>$user->id, 'course'=>$course->id));
+    $url = new url('/report/stats/user.php', array('id'=>$user->id, 'course'=>$course->id));
     redirect($url);
 }
 if ($mode === 'coursecompletions' or $mode === 'coursecompletion') {
-    $url = new moodle_url('/report/completion/user.php', array('id'=>$user->id, 'course'=>$course->id));
+    $url = new url('/report/completion/user.php', array('id'=>$user->id, 'course'=>$course->id));
     redirect($url);
 }
 
-$coursecontext   = context_course::instance($course->id);
-$personalcontext = context_user::instance($user->id);
+$coursecontext   = course::instance($course->id);
+$personalcontext = user::instance($user->id);
 
 if ($id == SITEID) {
     $PAGE->set_context($personalcontext);
@@ -149,12 +154,12 @@ switch ($mode) {
             $coursenode->make_inactive();
 
             if (!preg_match('/^user\d{0,}$/', $activenode->key ?? '')) { // No user name found.
-                $userurl = new moodle_url('/user/view.php', array('id' => $user->id, 'course' => $course->id));
+                $userurl = new url('/user/view.php', array('id' => $user->id, 'course' => $course->id));
                 // Add the user name.
                 $usernode = $activenode->add(fullname($user), $userurl, navigation_node::TYPE_SETTING);
                 $usernode->add(get_string('grades'));
             } else {
-                $url = new moodle_url('/course/user.php', array('id' => $id, 'user' => $user->id, 'mode' => $mode));
+                $url = new url('/course/user.php', array('id' => $id, 'user' => $user->id, 'mode' => $mode));
                 $reportnode = $activenode->add(get_string('pluginname', 'gradereport_user'), $url);
             }
         } else {
@@ -167,12 +172,12 @@ switch ($mode) {
 
             // Check to see if the active node is a user name.
             if (!preg_match('/^user\d{0,}$/', $activenode->key)) { // No user name found.
-                $userurl = new moodle_url('/user/view.php', array('id' => $user->id, 'course' => $course->id));
+                $userurl = new url('/user/view.php', array('id' => $user->id, 'course' => $course->id));
                 // Add the user name.
                 $PAGE->navbar->add(fullname($user), $userurl, navigation_node::TYPE_SETTING);
             }
             $PAGE->navbar->add(get_string('report'));
-            $gradeurl = new moodle_url('/course/user.php', array('id' => $id, 'user' => $user->id, 'mode' => $mode));
+            $gradeurl = new url('/course/user.php', array('id' => $id, 'user' => $user->id, 'mode' => $mode));
             // Add the 'grades' node to the navbar.
             $navbar = $PAGE->navbar->add(get_string('grades', 'grades'), $gradeurl, navigation_node::TYPE_SETTING);
         }

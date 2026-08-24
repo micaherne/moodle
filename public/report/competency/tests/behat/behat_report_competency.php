@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+use Facebook\WebDriver\WebDriverKeys;
+
 require_once(__DIR__ . '/../../../../lib/behat/behat_base.php');
 
 /**
@@ -47,11 +50,11 @@ class behat_report_competency extends behat_base {
      * @return moodle_url the corresponding URL.
      * @throws Exception with a meaningful error message if the specified page cannot be found.
      */
-    protected function resolve_page_instance_url(string $page, string $identifier): moodle_url {
+    protected function resolve_page_instance_url(string $page, string $identifier): url {
         switch (strtolower($page)) {
             case 'breakdown':
                 $courseid = $this->get_course_id($identifier);
-                return new moodle_url('/report/competency/index.php', [
+                return new url('/report/competency/index.php', [
                     'id' => $courseid,
                 ]);
             default:
@@ -98,7 +101,7 @@ class behat_report_competency extends behat_base {
 
         // Remove any existing text.
         do {
-            behat_base::type_keys($session, [behat_keys::BACKSPACE, behat_keys::DELETE]);
+            behat_base::type_keys($session, [WebDriverKeys::BACKSPACE, WebDriverKeys::DELETE]);
         } while (strlen($field->getValue()) > 0);
         $this->wait_for_pending_js();
 

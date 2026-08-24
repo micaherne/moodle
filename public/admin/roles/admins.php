@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\html_writer;
+use core\url;
+
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
@@ -63,7 +66,7 @@ if ($addusersaction) {
 
         echo $OUTPUT->header();
         echo $OUTPUT->confirm(get_string('confirmaddadmins', 'core_role') . html_writer::alist($usernames),
-            new moodle_url('/admin/roles/admins.php', ['addusers' => $userids, 'sesskey' => sesskey()]), $PAGE->url);
+            new url('/admin/roles/admins.php', ['addusers' => $userids, 'sesskey' => sesskey()]), $PAGE->url);
         echo $OUTPUT->footer();
         die;
     }
@@ -86,7 +89,7 @@ if ($addusersaction) {
 
             echo $OUTPUT->header();
             echo $OUTPUT->confirm(get_string('confirmremoveadmins', 'core_role') . html_writer::alist($usernames),
-                new moodle_url('/admin/roles/admins.php', ['removeusers' => $userids, 'sesskey' => sesskey()]), $PAGE->url);
+                new url('/admin/roles/admins.php', ['removeusers' => $userids, 'sesskey' => sesskey()]), $PAGE->url);
             echo $OUTPUT->footer();
             die;
         }

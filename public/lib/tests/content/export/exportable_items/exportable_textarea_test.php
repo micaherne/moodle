@@ -19,11 +19,11 @@ declare(strict_types=1);
 namespace core\content\export\exportable_items;
 
 use advanced_testcase;
-use context;
-use context_module;
-use context_system;
+use core\context;
+use core\context\module;
+use core\context\system;
 use core\content\export\zipwriter;
-use moodle_url;
+use core\url;
 use stdClass;
 
 /**
@@ -45,7 +45,7 @@ final class exportable_textarea_test extends advanced_testcase {
 
         $user = $this->getDataGenerator()->create_user();
 
-        $context = context_system::instance();
+        $context = system::instance();
         $component = 'page';
         $uservisiblename = 'Page content';
         $tablename = 'page';
@@ -85,7 +85,7 @@ final class exportable_textarea_test extends advanced_testcase {
             'contentformat' => FORMAT_HTML,
         ]);
 
-        $context = context_module::instance($page->cmid);
+        $context = module::instance($page->cmid);
         $expectedfiles = $this->create_files($context, 'mod_page', 'content', (int) $page->id, 5);
 
         // Unexpected files.
@@ -132,7 +132,7 @@ final class exportable_textarea_test extends advanced_testcase {
             'contentformat' => FORMAT_HTML,
         ]);
 
-        $context = context_module::instance($page->cmid);
+        $context = module::instance($page->cmid);
         $expectedfiles = $this->create_files($context, 'mod_page', 'content', (int) $page->id, 5);
 
         // Unexpected files.
@@ -186,7 +186,7 @@ EOF;
 
         $this->setUser($user);
 
-        $context = context_module::instance($page->cmid);
+        $context = module::instance($page->cmid);
         $expectedfiles = $this->create_files(
             $context,
             'mod_page',
@@ -228,7 +228,7 @@ EOF;
 
         $this->assertInstanceOf(exportable_textarea::class, $exportable);
 
-        $pluginfilebase = moodle_url::make_pluginfile_url(
+        $pluginfilebase = url::make_pluginfile_url(
             $context->id, $component, $filearea, null, '', '', false, true
         )->out(false);
         $expectedcontent = <<<EOF

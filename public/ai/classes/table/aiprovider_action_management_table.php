@@ -16,10 +16,12 @@
 
 namespace core_ai\table;
 
+use core\context\system;
+use core\output\html_writer;
 use core_ai\manager;
 use core_table\dynamic as dynamic_table;
-use flexible_table;
-use moodle_url;
+use core_table\flexible_table;
+use core\url;
 use stdClass;
 
 /**
@@ -64,8 +66,8 @@ class aiprovider_action_management_table extends flexible_table implements dynam
     }
 
     #[\Override]
-    public function get_context(): \context_system {
-        return \context_system::instance();
+    public function get_context(): system {
+        return system::instance();
     }
 
     /**
@@ -197,8 +199,8 @@ class aiprovider_action_management_table extends flexible_table implements dynam
                 'action' => $row->action,
                 'providerid' => $this->providerid,
             ];
-            $url = new \moodle_url('/ai/configure_actions.php', $urlparams);
-            return \html_writer::link($url, get_string('settings'));
+            $url = new url('/ai/configure_actions.php', $urlparams);
+            return html_writer::link($url, get_string('settings'));
         } else {
             return '';
         }
@@ -257,7 +259,7 @@ class aiprovider_action_management_table extends flexible_table implements dynam
 
     #[\Override]
     public function guess_base_url(): void {
-        $url = new moodle_url('/');
+        $url = new url('/');
         $this->define_baseurl($url);
     }
 

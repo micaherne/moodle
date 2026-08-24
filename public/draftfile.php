@@ -25,6 +25,9 @@
  */
 
 // disable moodle specific debug messages and any errors in output
+use core\context;
+use core\exception\moodle_exception;
+
 define('NO_DEBUG_DISPLAY', true);
 
 require_once('config.php');
@@ -32,7 +35,7 @@ require_once('lib/filelib.php');
 
 require_login();
 if (isguestuser()) {
-    throw new \moodle_exception('noguest');
+    throw new moodle_exception('noguest');
 }
 
 $relativepath = get_file_argument();
@@ -40,16 +43,16 @@ $preview = optional_param('preview', null, PARAM_ALPHANUM);
 
 // relative path must start with '/'
 if (!$relativepath) {
-    throw new \moodle_exception('invalidargorconf');
+    throw new moodle_exception('invalidargorconf');
 } else if ($relativepath[0] != '/') {
-    throw new \moodle_exception('pathdoesnotstartslash');
+    throw new moodle_exception('pathdoesnotstartslash');
 }
 
 // extract relative path components
 $args = explode('/', ltrim($relativepath, '/'));
 
 if (count($args) == 0) { // always at least user id
-    throw new \moodle_exception('invalidarguments');
+    throw new moodle_exception('invalidarguments');
 }
 
 $contextid = (int)array_shift($args);
@@ -68,7 +71,7 @@ if ($context->contextlevel != CONTEXT_USER) {
 
 $userid = $context->instanceid;
 if ($USER->id != $userid) {
-    throw new \moodle_exception('invaliduserid');
+    throw new moodle_exception('invaliduserid');
 }
 
 

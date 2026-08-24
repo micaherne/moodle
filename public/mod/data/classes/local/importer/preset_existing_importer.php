@@ -16,6 +16,7 @@
 
 namespace mod_data\local\importer;
 
+use core\exception\coding_exception;
 use mod_data\manager;
 
 /**
@@ -48,7 +49,7 @@ class preset_existing_importer extends preset_importer {
             !has_capability('mod/data:manageuserpresets', $context) &&
             !has_capability('mod/data:viewalluserpresets', $context)
         ) {
-            throw new \coding_exception('Invalid preset provided');
+            throw new coding_exception('Invalid preset provided');
         }
 
         $this->userid = intval($userid);

@@ -24,6 +24,10 @@
 
 namespace core_course\output\recommendations;
 
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+
 /**
  * Activity list renderable.
  *
@@ -31,7 +35,7 @@ namespace core_course\output\recommendations;
  * @copyright 2020 Adrian Greeve
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class activity_list implements \renderable, \templatable {
+class activity_list implements renderable, templatable {
 
     /** @var array $modules activities to display in the recommendations page. */
     protected $modules;
@@ -56,7 +60,7 @@ class activity_list implements \renderable, \templatable {
      * @param  \renderer_base $output Not actually used.
      * @return array Template context information.
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
 
         $info = array_map(function($module) {
             return [

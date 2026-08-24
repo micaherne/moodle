@@ -16,6 +16,8 @@
 
 namespace aiplacement_courseassist;
 
+use core\context;
+use core\plugin_manager;
 use core_ai\aiactions\explain_text;
 use core_ai\aiactions\summarise_text;
 use core_ai\manager;
@@ -35,7 +37,7 @@ class utils {
      */
     public static function is_course_assist_available(): bool {
         [$plugintype, $pluginname] = explode('_', \core_component::normalize_componentname('aiplacement_courseassist'), 2);
-        $pluginmanager = \core_plugin_manager::resolve_plugininfo_class($plugintype);
+        $pluginmanager = plugin_manager::resolve_plugininfo_class($plugintype);
         if (!$pluginmanager::is_plugin_enabled($pluginname)) {
             return false;
         }
@@ -50,7 +52,7 @@ class utils {
      * @param bool $checkcontext If true, check the action is available in context.
      * @return array Return the actions available with data.
      */
-    public static function get_actions_available(\context $context, bool $checkcontext = true): array {
+    public static function get_actions_available(context $context, bool $checkcontext = true): array {
         $actions = [];
         $manager = \core\di::get(manager::class);
 

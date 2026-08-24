@@ -26,11 +26,11 @@ namespace booktool_print\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-use plugin_renderer_base;
-use html_writer;
-use context_module;
-use moodle_url;
-use moodle_exception;
+use core\output\plugin_renderer_base;
+use core\output\html_writer;
+use core\context\module;
+use core\url;
+use core\exception\moodle_exception;
 
 /**
  * The renderer for the book print tool.
@@ -102,7 +102,7 @@ class renderer extends plugin_renderer_base {
 
         $first = true;
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $toc = ''; // Representation of toc (HTML).
 
@@ -151,11 +151,11 @@ class renderer extends plugin_renderer_base {
                 }
 
                 if (!$ch->subchapter) {
-                    $toc .= html_writer::link(new moodle_url('#ch' . $ch->id), $title,
+                    $toc .= html_writer::link(new url('#ch' . $ch->id), $title,
                             array('title' => s($title), 'class' => 'fw-bold text-decoration-none'));
                     $toc .= html_writer::start_tag('ul');
                 } else {
-                    $toc .= html_writer::link(new moodle_url('#ch' . $ch->id), $title,
+                    $toc .= html_writer::link(new url('#ch' . $ch->id), $title,
                             array('title' => s($title), 'class' => 'text-decoration-none'));
                     $toc .= html_writer::end_tag('li');
                 }
@@ -183,7 +183,7 @@ class renderer extends plugin_renderer_base {
      * @return array The array containing the content of the book chapter and visibility information
      */
     public function render_print_book_chapter($chapter, $chapters, $book, $cm) {
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $title = book_get_chapter_title($chapter->id, $chapters, $book, $context);
 
         $chaptervisible = $chapter->hidden ? false : true;

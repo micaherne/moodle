@@ -22,6 +22,10 @@
  * @package core_user
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->dirroot.'/user/editlib.php');
@@ -31,10 +35,10 @@ $key = required_param('key', PARAM_ALPHANUM);
 $id  = required_param('id', PARAM_INT);
 
 $PAGE->set_url('/user/emailupdate.php', array('id' => $id, 'key' => $key));
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 if (!$user = $DB->get_record('user', array('id' => $id))) {
-    throw new \moodle_exception('invaliduserid');
+    throw new moodle_exception('invaliduserid');
 }
 
 $preferences = get_user_preferences(null, null, $user->id);
@@ -79,7 +83,7 @@ if (empty($preferences['newemailattemptsleft'])) {
         );
         // If there are other user(s) that already have the same email, cancel and redirect.
         if ($DB->record_exists_select('user', $select, $params)) {
-            redirect(new moodle_url('/user/view.php', ['id' => $user->id]), get_string('emailnowexists', 'auth'));
+            redirect(new url('/user/view.php', ['id' => $user->id]), get_string('emailnowexists', 'auth'));
         }
     }
 
@@ -89,7 +93,7 @@ if (empty($preferences['newemailattemptsleft'])) {
     \core\user::update_user($user, false);
     $a->email = $user->email;
     redirect(
-        new moodle_url('/user/view.php', ['id' => $user->id]),
+        new url('/user/view.php', ['id' => $user->id]),
         get_string('emailupdatesuccess', 'auth', $a),
         null,
         \core\output\notification::NOTIFY_SUCCESS

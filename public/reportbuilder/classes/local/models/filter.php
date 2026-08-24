@@ -18,8 +18,8 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\local\models;
 
-use context;
-use lang_string;
+use core\context;
+use core\lang_string;
 use core\persistent;
 use core_reportbuilder\datasource;
 

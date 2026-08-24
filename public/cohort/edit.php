@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require('../config.php');
 require_once($CFG->dirroot.'/course/lib.php');
 require_once($CFG->dirroot.'/cohort/lib.php');
@@ -42,7 +47,7 @@ if ($id) {
 } else {
     $context = context::instance_by_id($contextid, MUST_EXIST);
     if ($context->contextlevel != CONTEXT_COURSECAT and $context->contextlevel != CONTEXT_SYSTEM) {
-        throw new \moodle_exception('invalidcontext');
+        throw new moodle_exception('invalidcontext');
     }
     $cohort = new stdClass();
     $cohort->id          = 0;
@@ -54,9 +59,9 @@ if ($id) {
 require_capability('moodle/cohort:manage', $context);
 
 if ($returnurl) {
-    $returnurl = new moodle_url($returnurl);
+    $returnurl = new url($returnurl);
 } else {
-    $returnurl = new moodle_url('/cohort/index.php', array('contextid'=>$context->id));
+    $returnurl = new url('/cohort/index.php', array('contextid'=>$context->id));
 }
 
 if (!empty($cohort->component)) {
@@ -65,7 +70,7 @@ if (!empty($cohort->component)) {
 }
 
 $PAGE->set_context($context);
-$baseurl = new moodle_url('/cohort/edit.php', array('contextid' => $context->id, 'id' => $cohort->id));
+$baseurl = new url('/cohort/edit.php', array('contextid' => $context->id, 'id' => $cohort->id));
 $PAGE->set_url($baseurl);
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('admin');
@@ -80,7 +85,7 @@ if ($context->contextlevel == CONTEXT_COURSECAT) {
     $PAGE->set_secondary_active_tab('cohort');
 
 } else {
-    navigation_node::override_active_url(new moodle_url('/cohort/index.php', array()));
+    navigation_node::override_active_url(new url('/cohort/index.php', array()));
     $PAGE->set_heading($COURSE->fullname);
 }
 
@@ -155,7 +160,7 @@ if ($editform->is_cancelled()) {
         redirect($returnurl);
     } else {
         // Use new context id, it has been changed.
-        redirect(new moodle_url('/cohort/index.php', array('contextid' => $data->contextid)));
+        redirect(new url('/cohort/index.php', array('contextid' => $data->contextid)));
     }
 }
 

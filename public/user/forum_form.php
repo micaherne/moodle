@@ -25,6 +25,8 @@
  * @package core_user
  */
 
+use core\user;
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    //  It must be included from a Moodle page.
 }
@@ -52,14 +54,14 @@ class user_edit_forum_form extends moodleform {
         $choices['1'] = get_string('emaildigestcomplete');
         $choices['2'] = get_string('emaildigestsubjects');
         $mform->addElement('select', 'maildigest', get_string('emaildigest'), $choices);
-        $mform->setDefault('maildigest', core_user::get_property_default('maildigest'));
+        $mform->setDefault('maildigest', user::get_property_default('maildigest'));
         $mform->addHelpButton('maildigest', 'emaildigest');
 
         $choices = array();
         $choices['1'] = get_string('autosubscribeyes');
         $choices['0'] = get_string('autosubscribeno');
         $mform->addElement('select', 'autosubscribe', get_string('autosubscribe'), $choices);
-        $mform->setDefault('autosubscribe', core_user::get_property_default('autosubscribe'));
+        $mform->setDefault('autosubscribe', user::get_property_default('autosubscribe'));
 
         $choices = array();
         $choices['1'] = get_string('yes');
@@ -73,7 +75,7 @@ class user_edit_forum_form extends moodleform {
             $choices['0'] = get_string('trackforumsno');
             $choices['1'] = get_string('trackforumsyes');
             $mform->addElement('select', 'trackforums', get_string('trackforums'), $choices);
-            $mform->setDefault('trackforums', core_user::get_property_default('trackforums'));
+            $mform->setDefault('trackforums', user::get_property_default('trackforums'));
 
             $choices = [
                 1   => get_string('markasreadonnotificationyes', 'mod_forum'),

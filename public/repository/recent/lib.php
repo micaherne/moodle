@@ -23,6 +23,9 @@
  * @copyright  2010 Dongsheng Cai {@link http://dongsheng.org}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context;
+use core\url;
+
 require_once($CFG->dirroot . '/repository/lib.php');
 
 /**
@@ -168,7 +171,7 @@ class repository_recent extends repository {
                         'thumbnail' => $OUTPUT->image_url(file_file_icon($fileinfo))->out(false),
                     );
                     if ($imageinfo = $fileinfo->get_imageinfo()) {
-                        $fileurl = new moodle_url($fileinfo->get_url());
+                        $fileurl = new url($fileinfo->get_url());
                         $node['realthumbnail'] = $fileurl->out(false, array('preview' => 'thumb', 'oid' => $fileinfo->get_timemodified()));
                         $node['realicon'] = $fileurl->out(false, array('preview' => 'tinyicon', 'oid' => $fileinfo->get_timemodified()));
                         $node['image_width'] = $imageinfo['width'];

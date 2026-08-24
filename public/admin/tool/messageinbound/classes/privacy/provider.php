@@ -26,8 +26,8 @@
 namespace tool_messageinbound\privacy;
 defined('MOODLE_INTERNAL') || die();
 
-use context;
-use context_user;
+use core\context;
+use core\context\user;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -94,7 +94,7 @@ class provider implements
 
         $context = $userlist->get_context();
 
-        if (!is_a($context, \context_user::class)) {
+        if (!is_a($context, user::class)) {
             return;
         }
 
@@ -121,7 +121,7 @@ class provider implements
         }
 
         $userid = $contextlist->get_user()->id;
-        $context = context_user::instance($userid);
+        $context = user::instance($userid);
         $path = [get_string('messageinbound', 'tool_messageinbound')];
 
         // Export user keys.

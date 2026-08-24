@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace aiplacement_courseassist\external;
+use core\context\course;
 use core_ai\aiactions\summarise_text;
 
 /**
@@ -36,7 +37,7 @@ final class summarise_text_test extends \advanced_testcase {
 
         // Get course context.
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Mock the manager class call.
         $response = new \core_ai\aiactions\responses\response_summarise_text(success: true);

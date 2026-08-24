@@ -14,7 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\output\html_writer;
+use core\url;
 use core_admin\admin_search;
+use core_table\output\html_table;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -121,7 +124,7 @@ class mod_glossary_admin_setting_display_formats extends \core_admin\setting {
         $table->align = array('left', 'center');
         foreach ($formats as $formatname => $format) {
             $editicon = html_writer::link(
-                new moodle_url(
+                new url(
                     '/mod/glossary/formats.php',
                     array('id' => $format->id, 'mode' => 'edit')
                 ),
@@ -137,7 +140,7 @@ class mod_glossary_admin_setting_display_formats extends \core_admin\setting {
             }
 
             $visibleicon = html_writer::link(
-                new moodle_url(
+                new url(
                     '/mod/glossary/formats.php',
                     array('id' => $format->id, 'mode' => 'visible', 'sesskey' => sesskey())
                 ),

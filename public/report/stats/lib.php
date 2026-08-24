@@ -25,6 +25,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\user;
+use core\navigation\navigation_node;
+use core\output\pix_icon;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -40,7 +46,7 @@ function report_stats_extend_navigation_course($navigation, $course, $context) {
         return;
     }
     if (has_capability('report/stats:view', $context)) {
-        $url = new moodle_url('/report/stats/index.php', array('course'=>$course->id));
+        $url = new url('/report/stats/index.php', array('course'=>$course->id));
         $navigation->add(get_string('pluginname', 'report_stats'), $url, navigation_node::TYPE_SETTING, null, null, new pix_icon('i/report', ''));
     }
 }
@@ -58,7 +64,7 @@ function report_stats_extend_navigation_user($navigation, $user, $course) {
         return;
     }
     if (report_stats_can_access_user_report($user, $course)) {
-        $url = new moodle_url('/report/stats/user.php', array('id'=>$user->id, 'course'=>$course->id));
+        $url = new url('/report/stats/user.php', array('id'=>$user->id, 'course'=>$course->id));
         $navigation->add(get_string('stats'), $url);
     }
 }
@@ -75,8 +81,8 @@ function report_stats_extend_navigation_user($navigation, $user, $course) {
 function report_stats_can_access_user_report($user, $course) {
     global $USER;
 
-    $coursecontext = context_course::instance($course->id);
-    $personalcontext = context_user::instance($user->id);
+    $coursecontext = course::instance($course->id);
+    $personalcontext = user::instance($user->id);
 
     if ($user->id == $USER->id) {
         if ($course->showreports and (is_viewing($coursecontext, $USER) or is_enrolled($coursecontext, $USER))) {
@@ -151,7 +157,7 @@ function report_stats_myprofile_navigation(core_user\output\myprofile\tree $tree
         $course = get_fast_modinfo(SITEID)->get_course();
     }
     if (report_stats_can_access_user_report($user, $course)) {
-        $url = new moodle_url('/report/stats/user.php', array('id' => $user->id, 'course' => $course->id));
+        $url = new url('/report/stats/user.php', array('id' => $user->id, 'course' => $course->id));
         $node = new core_user\output\myprofile\node('reports', 'stats', get_string('stats'), null, $url);
         $tree->add_node($node);
     }

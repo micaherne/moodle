@@ -16,6 +16,8 @@
 
 namespace qbank_managecategories;
 
+use core\url;
+
 /**
  * Class navigation.
  *
@@ -36,7 +38,7 @@ class navigation extends \core_question\local\bank\navigation_node_base {
         return 'categories';
     }
 
-    public function get_navigation_url(): \moodle_url {
-        return new \moodle_url('/question/bank/managecategories/category.php');
+    public function get_navigation_url(): url {
+        return new url('/question/bank/managecategories/category.php');
     }
 }

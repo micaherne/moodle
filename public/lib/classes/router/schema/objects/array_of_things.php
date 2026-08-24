@@ -16,6 +16,7 @@
 
 namespace core\router\schema\objects;
 
+use core\exception\invalid_parameter_exception;
 use core\param;
 use core\router\schema\specification;
 
@@ -66,7 +67,7 @@ class array_of_things extends type_base {
     #[\Override]
     public function validate_data(mixed $data) {
         if (!is_array($data)) {
-            throw new \invalid_parameter_exception('Invalid data type, expected array.');
+            throw new invalid_parameter_exception('Invalid data type, expected array.');
         }
 
         if ($this->thingtype === null) {

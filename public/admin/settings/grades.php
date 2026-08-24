@@ -2,12 +2,32 @@
 
 // This file defines settingpages and externalpages under the "grades" section
 
+use core\lang_string;
 use core\plugininfo\gradepenalty;
+use core\url;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configmultiselect;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\grade_profilereport;
+use core_admin\setting\setting\gradecat_combo;
+use core_admin\setting\setting\my_grades_report;
+use core_admin\setting\setting\regradingcheckbox;
+use core_admin\setting\setting\special_gradebookroles;
+use core_admin\setting\setting\special_gradeexport;
+use core_admin\setting\setting\special_gradeexportdefault;
+use core_admin\setting\setting\special_gradelimiting;
+use core_admin\setting\setting\special_grademinmaxtouse;
+use core_admin\setting\setting\special_gradepointdefault;
+use core_admin\setting\setting\special_gradepointmax;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\category;
+use core_admin\setting\tree\externalpage;
 
-$ADMIN->add('grades', new admin_category('gradereports', new lang_string('reportsettings', 'grades')));
-$ADMIN->add('grades', new admin_category('gradeimports', new lang_string('importsettings', 'grades')));
-$ADMIN->add('grades', new admin_category('gradeexports', new lang_string('exportsettings', 'grades')));
-$ADMIN->add('grades', new admin_category('gradepenalty', new lang_string('gradepenalty', 'grades')));
+$ADMIN->add('grades', new category('gradereports', new lang_string('reportsettings', 'grades')));
+$ADMIN->add('grades', new category('gradeimports', new lang_string('importsettings', 'grades')));
+$ADMIN->add('grades', new category('gradeexports', new lang_string('exportsettings', 'grades')));
+$ADMIN->add('grades', new category('gradepenalty', new lang_string('gradepenalty', 'grades')));
 
 if (has_capability('moodle/grade:manage', $systemcontext)
  or has_capability('moodle/grade:manageletters', $systemcontext)) { // speedup for non-admins, add all caps used on this page
@@ -27,35 +47,35 @@ if (has_capability('moodle/grade:manage', $systemcontext)
 
     // General settings
 
-    $temp = new admin_settingpage('gradessettings', new lang_string('generalsettings', 'grades'), 'moodle/grade:manage');
+    $temp = new settingpage('gradessettings', new lang_string('generalsettings', 'grades'), 'moodle/grade:manage');
     if ($ADMIN->fulltree) {
 
         // new CFG variable for gradebook (what roles to display)
-        $temp->add(new admin_setting_special_gradebookroles());
+        $temp->add(new special_gradebookroles());
 
         // enable outcomes checkbox now in subsystems area
 
-        $temp->add(new admin_setting_grade_profilereport());
+        $temp->add(new grade_profilereport());
 
-        $temp->add(new admin_setting_configselect('grade_aggregationposition', new lang_string('aggregationposition', 'grades'),
+        $temp->add(new configselect('grade_aggregationposition', new lang_string('aggregationposition', 'grades'),
                                                   new lang_string('aggregationposition_help', 'grades'), GRADE_REPORT_AGGREGATION_POSITION_LAST,
                                                   array(GRADE_REPORT_AGGREGATION_POSITION_FIRST => new lang_string('positionfirst', 'grades'),
                                                         GRADE_REPORT_AGGREGATION_POSITION_LAST => new lang_string('positionlast', 'grades'))));
 
-        $temp->add(new admin_setting_regradingcheckbox('grade_includescalesinaggregation', new lang_string('includescalesinaggregation', 'grades'), new lang_string('includescalesinaggregation_help', 'grades'), 1));
+        $temp->add(new regradingcheckbox('grade_includescalesinaggregation', new lang_string('includescalesinaggregation', 'grades'), new lang_string('includescalesinaggregation_help', 'grades'), 1));
 
-        $temp->add(new admin_setting_configcheckbox('grade_hiddenasdate', new lang_string('hiddenasdate', 'grades'), new lang_string('hiddenasdate_help', 'grades'), 0));
+        $temp->add(new configcheckbox('grade_hiddenasdate', new lang_string('hiddenasdate', 'grades'), new lang_string('hiddenasdate_help', 'grades'), 0));
 
         // enable publishing in exports/imports
-        $temp->add(new admin_setting_configcheckbox('gradepublishing', new lang_string('gradepublishing', 'grades'), new lang_string('gradepublishing_help', 'grades'), 0));
+        $temp->add(new configcheckbox('gradepublishing', new lang_string('gradepublishing', 'grades'), new lang_string('gradepublishing_help', 'grades'), 0));
 
-        $temp->add(new admin_setting_configcheckbox('grade_export_exportfeedback', new lang_string('exportfeedback', 'grades'),
+        $temp->add(new configcheckbox('grade_export_exportfeedback', new lang_string('exportfeedback', 'grades'),
                                                   new lang_string('exportfeedback_desc', 'grades'), 0));
 
-        $temp->add(new admin_setting_configselect('grade_export_displaytype', new lang_string('gradeexportdisplaytype', 'grades'),
+        $temp->add(new configselect('grade_export_displaytype', new lang_string('gradeexportdisplaytype', 'grades'),
                                                   new lang_string('gradeexportdisplaytype_desc', 'grades'), GRADE_DISPLAY_TYPE_REAL, $display_types));
 
-        $temp->add(new admin_setting_configselect('grade_export_decimalpoints', new lang_string('gradeexportdecimalpoints', 'grades'),
+        $temp->add(new configselect('grade_export_decimalpoints', new lang_string('gradeexportdecimalpoints', 'grades'),
                                                   new lang_string('gradeexportdecimalpoints_desc', 'grades'), 2,
                                                   array( '0' => '0',
                                                          '1' => '1',
@@ -64,48 +84,48 @@ if (has_capability('moodle/grade:manage', $systemcontext)
                                                          '4' => '4',
                                                          '5' => '5')));
 
-        $setting = new admin_setting_configtext('grade_export_userprofilefields',
+        $setting = new configtext('grade_export_userprofilefields',
             new lang_string('gradeexportuserprofilefields', 'grades'),
             new lang_string('gradeexportuserprofilefields_desc', 'grades'),
             'firstname,lastname,idnumber,institution,department,email', PARAM_TEXT);
         $setting->set_force_ltr(true);
         $temp->add($setting);
 
-        $setting = new admin_setting_configtext('grade_export_customprofilefields',
+        $setting = new configtext('grade_export_customprofilefields',
             new lang_string('gradeexportcustomprofilefields', 'grades'),
             new lang_string('gradeexportcustomprofilefields_desc', 'grades'), '', PARAM_TEXT);
         $setting->set_force_ltr(true);
         $temp->add($setting);
 
-        $temp->add(new admin_setting_configcheckbox('recovergradesdefault', new lang_string('recovergradesdefault', 'grades'), new lang_string('recovergradesdefault_help', 'grades'), 0));
+        $temp->add(new configcheckbox('recovergradesdefault', new lang_string('recovergradesdefault', 'grades'), new lang_string('recovergradesdefault_help', 'grades'), 0));
 
-        $temp->add(new admin_setting_special_gradeexport());
+        $temp->add(new special_gradeexport());
 
-        $temp->add(new admin_setting_special_gradeexportdefault());
+        $temp->add(new special_gradeexportdefault());
 
-        $temp->add(new admin_setting_special_gradelimiting());
+        $temp->add(new special_gradelimiting());
 
-        $temp->add(new admin_setting_configcheckbox('grade_report_showmin',
+        $temp->add(new configcheckbox('grade_report_showmin',
                                                     get_string('minimum_show', 'grades'),
                                                     get_string('minimum_show_help', 'grades'), '1'));
 
-        $temp->add(new admin_setting_special_gradepointmax());
+        $temp->add(new special_gradepointmax());
 
-        $temp->add(new admin_setting_special_gradepointdefault());
+        $temp->add(new special_gradepointdefault());
 
-        $temp->add(new admin_setting_special_grademinmaxtouse());
+        $temp->add(new special_grademinmaxtouse());
 
-        $temp->add(new admin_setting_my_grades_report());
+        $temp->add(new my_grades_report());
 
-        $temp->add(new admin_setting_configtext('gradereport_mygradeurl', new lang_string('externalurl', 'grades'),
+        $temp->add(new configtext('gradereport_mygradeurl', new lang_string('externalurl', 'grades'),
             new lang_string('externalurl_desc', 'grades'), ''));
     }
     $ADMIN->add('grades', $temp);
 
     /// Grade category settings
-    $temp = new admin_settingpage('gradecategorysettings', new lang_string('gradecategorysettings', 'grades'), 'moodle/grade:manage');
+    $temp = new settingpage('gradecategorysettings', new lang_string('gradecategorysettings', 'grades'), 'moodle/grade:manage');
     if ($ADMIN->fulltree) {
-        $temp->add(new admin_setting_configcheckbox('grade_hideforcedsettings', new lang_string('hideforcedsettings', 'grades'), new lang_string('hideforcedsettings_help', 'grades'), '1'));
+        $temp->add(new configcheckbox('grade_hideforcedsettings', new lang_string('hideforcedsettings', 'grades'), new lang_string('hideforcedsettings_help', 'grades'), '1'));
 
         $strnoforce = new lang_string('noforce', 'grades');
 
@@ -123,18 +143,18 @@ if (has_capability('moodle/grade:manage', $systemcontext)
         $defaultvisible = array(GRADE_AGGREGATE_SUM);
 
         $defaults = array('value' => GRADE_AGGREGATE_SUM, 'forced' => false);
-        $temp->add(new admin_setting_gradecat_combo('grade_aggregation', new lang_string('aggregation', 'grades'), new lang_string('aggregation_help', 'grades'), $defaults, $options));
+        $temp->add(new gradecat_combo('grade_aggregation', new lang_string('aggregation', 'grades'), new lang_string('aggregation_help', 'grades'), $defaults, $options));
 
-        $temp->add(new admin_setting_configmultiselect('grade_aggregations_visible', new lang_string('aggregationsvisible', 'grades'),
+        $temp->add(new configmultiselect('grade_aggregations_visible', new lang_string('aggregationsvisible', 'grades'),
                                                        new lang_string('aggregationsvisiblehelp', 'grades'), $defaultvisible, $options));
 
         $options = array(0 => new lang_string('no'), 1 => new lang_string('yes'));
 
         $defaults = array('value' => 1, 'forced' => false);
-        $temp->add(new admin_setting_gradecat_combo('grade_aggregateonlygraded', new lang_string('aggregateonlygraded', 'grades'),
+        $temp->add(new gradecat_combo('grade_aggregateonlygraded', new lang_string('aggregateonlygraded', 'grades'),
                     new lang_string('aggregateonlygraded_help', 'grades'), $defaults, $options));
         $defaults = array('value' => 0, 'forced' => false);
-        $temp->add(new admin_setting_gradecat_combo('grade_aggregateoutcomes', new lang_string('aggregateoutcomes', 'grades'),
+        $temp->add(new gradecat_combo('grade_aggregateoutcomes', new lang_string('aggregateoutcomes', 'grades'),
                     new lang_string('aggregateoutcomes_help', 'grades'), $defaults, $options));
 
         $options = array(0 => new lang_string('none'));
@@ -144,25 +164,25 @@ if (has_capability('moodle/grade:manage', $systemcontext)
 
         $defaults['value'] = 0;
         $defaults['forced'] = true;
-        $temp->add(new admin_setting_gradecat_combo('grade_keephigh', new lang_string('keephigh', 'grades'),
+        $temp->add(new gradecat_combo('grade_keephigh', new lang_string('keephigh', 'grades'),
                     new lang_string('keephigh_help', 'grades'), $defaults, $options));
         $defaults['forced'] = false;
-        $temp->add(new admin_setting_gradecat_combo('grade_droplow', new lang_string('droplow', 'grades'),
+        $temp->add(new gradecat_combo('grade_droplow', new lang_string('droplow', 'grades'),
                     new lang_string('droplow_help', 'grades'), $defaults, $options));
 
-        $temp->add(new admin_setting_configcheckbox('grade_overridecat', new lang_string('overridecat', 'grades'),
+        $temp->add(new configcheckbox('grade_overridecat', new lang_string('overridecat', 'grades'),
                    new lang_string('overridecat_help', 'grades'), 1));
     }
     $ADMIN->add('grades', $temp);
 
 
     /// Grade item settings
-    $temp = new admin_settingpage('gradeitemsettings', new lang_string('gradeitemsettings', 'grades'), 'moodle/grade:manage');
+    $temp = new settingpage('gradeitemsettings', new lang_string('gradeitemsettings', 'grades'), 'moodle/grade:manage');
     if ($ADMIN->fulltree) {
-        $temp->add(new admin_setting_configselect('grade_displaytype', new lang_string('gradedisplaytype', 'grades'),
+        $temp->add(new configselect('grade_displaytype', new lang_string('gradedisplaytype', 'grades'),
                                                   new lang_string('gradedisplaytype_help', 'grades'), GRADE_DISPLAY_TYPE_REAL, $display_types));
 
-        $temp->add(new admin_setting_configselect('grade_decimalpoints', new lang_string('decimalpoints', 'grades'),
+        $temp->add(new configselect('grade_decimalpoints', new lang_string('decimalpoints', 'grades'),
                                                   new lang_string('decimalpoints_help', 'grades'), 2,
                                                   array( '0' => '0',
                                                          '1' => '1',
@@ -176,13 +196,13 @@ if (has_capability('moodle/grade:manage', $systemcontext)
 
     /// Scales and outcomes
 
-    $scales = new admin_externalpage('scales', new lang_string('scales'), $CFG->wwwroot.'/grade/edit/scale/index.php', 'moodle/grade:manage');
+    $scales = new externalpage('scales', new lang_string('scales'), $CFG->wwwroot.'/grade/edit/scale/index.php', 'moodle/grade:manage');
     $ADMIN->add('grades', $scales);
     if (!empty($CFG->enableoutcomes)) {
-        $outcomes = new admin_externalpage('outcomes', new lang_string('outcomes', 'grades'), $CFG->wwwroot.'/grade/edit/outcome/index.php', 'moodle/grade:manage');
+        $outcomes = new externalpage('outcomes', new lang_string('outcomes', 'grades'), $CFG->wwwroot.'/grade/edit/outcome/index.php', 'moodle/grade:manage');
         $ADMIN->add('grades', $outcomes);
     }
-    $letters = new admin_externalpage('letters', new lang_string('letters', 'grades'), $CFG->wwwroot.'/grade/edit/letter/index.php', 'moodle/grade:manageletters');
+    $letters = new externalpage('letters', new lang_string('letters', 'grades'), $CFG->wwwroot.'/grade/edit/letter/index.php', 'moodle/grade:manageletters');
     $ADMIN->add('grades', $letters);
 
     // The plugins must implement a settings.php file that adds their admin settings to the $settings object
@@ -191,7 +211,7 @@ if (has_capability('moodle/grade:manage', $systemcontext)
     foreach (core_component::get_plugin_list('gradereport') as $plugin => $plugindir) {
      // Include all the settings commands for this plugin if there are any
         if (file_exists($plugindir.'/settings.php')) {
-            $settings = new admin_settingpage('gradereport'.$plugin, new lang_string('pluginname', 'gradereport_'.$plugin), 'moodle/grade:manage');
+            $settings = new settingpage('gradereport'.$plugin, new lang_string('pluginname', 'gradereport_'.$plugin), 'moodle/grade:manage');
             include($plugindir.'/settings.php');
             if ($settings) {
                 $ADMIN->add('gradereports', $settings);
@@ -204,7 +224,7 @@ if (has_capability('moodle/grade:manage', $systemcontext)
 
      // Include all the settings commands for this plugin if there are any
         if (file_exists($plugindir.'/settings.php')) {
-            $settings = new admin_settingpage('gradeimport'.$plugin, new lang_string('pluginname', 'gradeimport_'.$plugin), 'moodle/grade:manage');
+            $settings = new settingpage('gradeimport'.$plugin, new lang_string('pluginname', 'gradeimport_'.$plugin), 'moodle/grade:manage');
             include($plugindir.'/settings.php');
             if ($settings) {
                 $ADMIN->add('gradeimports', $settings);
@@ -217,7 +237,7 @@ if (has_capability('moodle/grade:manage', $systemcontext)
     foreach (core_component::get_plugin_list('gradeexport') as $plugin => $plugindir) {
      // Include all the settings commands for this plugin if there are any
         if (file_exists($plugindir.'/settings.php')) {
-            $settings = new admin_settingpage('gradeexport'.$plugin, new lang_string('pluginname', 'gradeexport_'.$plugin), 'moodle/grade:manage');
+            $settings = new settingpage('gradeexport'.$plugin, new lang_string('pluginname', 'gradeexport_'.$plugin), 'moodle/grade:manage');
             include($plugindir.'/settings.php');
             if ($settings) {
                 $ADMIN->add('gradeexports', $settings);
@@ -230,14 +250,14 @@ if (has_capability('moodle/grade:manage', $systemcontext)
     // Supported modules.
     $modules = core_grades\penalty_manager::get_supported_modules();
     if (!empty($modules)) {
-        $temp = new admin_settingpage('supportedplugins', new lang_string('gradepenalty_supportedplugins', 'grades'),
+        $temp = new settingpage('supportedplugins', new lang_string('gradepenalty_supportedplugins', 'grades'),
             'moodle/grade:manage');
 
         $options = [];
         foreach ($modules as $module) {
             $options[$module] = new lang_string('modulename', $module);
         }
-        $temp->add(new admin_setting_configmultiselect('gradepenalty_enabledmodules',
+        $temp->add(new configmultiselect('gradepenalty_enabledmodules',
             new lang_string('gradepenalty_enabledmodules', 'grades'),
             new lang_string('gradepenalty_enabledmodules_help', 'grades'), [], $options));
 
@@ -245,10 +265,10 @@ if (has_capability('moodle/grade:manage', $systemcontext)
     }
 
     // External page to manage the penalty plugins.
-    $temp = new admin_externalpage(
+    $temp = new externalpage(
         'managepenaltyplugins',
         get_string('managepenaltyplugins', 'grades'),
-        new moodle_url('/grade/penalty/manage_penalty_plugins.php'),
+        new url('/grade/penalty/manage_penalty_plugins.php'),
         'moodle/grade:manage'
     );
     $ADMIN->add('gradepenalty', $temp);

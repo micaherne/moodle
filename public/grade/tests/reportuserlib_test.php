@@ -16,6 +16,7 @@
 
 namespace core_grades;
 
+use core\context\course;
 use grade_plugin_return;
 use gradereport_user\report\user as user_report;
 
@@ -53,7 +54,7 @@ final class reportuserlib_test extends \advanced_testcase {
         // Create a course.
         $course = $this->getDataGenerator()->create_course();
         $coursecategory = \grade_category::fetch_course_category($course->id);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         // Create and enrol test users.
         $student = $this->getDataGenerator()->create_user(array('username' => 'student_sam'));

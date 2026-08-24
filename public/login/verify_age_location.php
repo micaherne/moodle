@@ -23,6 +23,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+use core_cache\cache;
+
 require('../config.php');
 require_once($CFG->libdir . '/authlib.php');
 
@@ -30,25 +35,25 @@ $authplugin = signup_is_enabled();
 
 if (!$authplugin || !\core_auth\digital_consent::is_age_digital_consent_verification_enabled()) {
     // Redirect user if signup or digital age of consent verification is disabled.
-    redirect(new moodle_url('/'), get_string('verifyagedigitalconsentnotpossible', 'error'));
+    redirect(new url('/'), get_string('verifyagedigitalconsentnotpossible', 'error'));
 }
 
-$PAGE->set_context(context_system::instance());
-$PAGE->set_url(new moodle_url('/login/verify_age_location.php'));
+$PAGE->set_context(system::instance());
+$PAGE->set_url(new url('/login/verify_age_location.php'));
 
 if (isloggedin() and !isguestuser()) {
     // Prevent signing up when already logged in.
-    redirect(new moodle_url('/'), get_string('cannotsignup', 'error', fullname($USER)));
+    redirect(new url('/'), get_string('cannotsignup', 'error', fullname($USER)));
 }
 
 $cache = cache::make('core', 'presignup');
 $isminor = $cache->get('isminor');
 if ($isminor === 'yes') {
     // The user that attempts to sign up is a digital minor.
-    redirect(new moodle_url('/login/digital_minor.php'));
+    redirect(new url('/login/digital_minor.php'));
 } else if ($isminor === 'no') {
     // The user that attempts to sign up has already verified that they are not a digital minor.
-    redirect(new moodle_url('/login/signup.php'));
+    redirect(new url('/login/signup.php'));
 }
 
 $PAGE->navbar->add(get_string('login'));
@@ -63,15 +68,15 @@ $mform = new \core_auth\form\verify_age_location_form();
 $page = new \core_auth\output\verify_age_location_page($mform);
 
 if ($mform->is_cancelled()) {
-    redirect(new moodle_url('/login/index.php'));
+    redirect(new url('/login/index.php'));
 } else if ($data = $mform->get_data()) {
     try {
         $isminor = \core_auth\digital_consent::is_minor($data->age, $data->country);
         cache::make('core', 'presignup')->set('isminor', $isminor ? 'yes' : 'no');
         if ($isminor) {
-            redirect(new moodle_url('/login/digital_minor.php'));
+            redirect(new url('/login/digital_minor.php'));
         } else {
-            redirect(new moodle_url('/login/signup.php'));
+            redirect(new url('/login/signup.php'));
         }
     } catch (moodle_exception $e) {
         // Display a user-friendly error message.

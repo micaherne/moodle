@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\output\html_writer;
+use core\url;
 use mod_quiz\local\reports\attempts_report_table;
 use mod_quiz\quiz_attempt;
 
@@ -259,7 +261,7 @@ class quiz_overview_table extends attempts_report_table {
             $grade = html_writer::tag('del', $oldsumgrade) . '/' .
                     html_writer::empty_tag('br') . $newsumgrade;
         }
-        return html_writer::link(new moodle_url('/mod/quiz/review.php',
+        return html_writer::link(new url('/mod/quiz/review.php',
                 ['attempt' => $attempt->attempt]), $grade,
                 ['title' => get_string('reviewattempt', 'quiz')]);
     }

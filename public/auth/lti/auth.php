@@ -15,6 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 use auth_lti\local\ltiadvantage\entity\user_migration_claim;
+use core\context\user as context_user;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\url;
+use core\user as core_user;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -106,7 +111,7 @@ class auth_plugin_lti extends \auth_plugin_base {
      * @throws coding_exception if the specified provisioning mode is invalid.
      * @throws \core\exception\moodle_exception if user authentication fails.
      */
-    public function complete_login(array $launchdata, moodle_url $returnurl, int $provisioningmode,
+    public function complete_login(array $launchdata, url $returnurl, int $provisioningmode,
             array $legacyconsumersecrets = []): void {
 
         // The platform user is already linked with a user account.
@@ -168,7 +173,7 @@ class auth_plugin_lti extends \auth_plugin_base {
                     'returnurl' => $returnurl,
                     'provisioningmode' => $provisioningmode
                 ];
-                redirect(new moodle_url('/auth/lti/login.php', [
+                redirect(new url('/auth/lti/login.php', [
                     'sesskey' => sesskey(),
                 ]));
                 break;
@@ -198,9 +203,9 @@ class auth_plugin_lti extends \auth_plugin_base {
         unset($member['picture']);
 
         if ($binduser = $this->get_user_binding($iss, $member['user_id'])) {
-            $user = \core_user::get_user($binduser);
+            $user = core_user::get_user($binduser);
             $this->update_user_account($user, $member, $iss);
-            return \core_user::get_user($user->id);
+            return core_user::get_user($user->id);
         } else {
             if (!empty($legacyconsumerkey)) {
                 // Consumer key is required to attempt user migration because legacy users were identified by a
@@ -209,14 +214,14 @@ class auth_plugin_lti extends \auth_plugin_base {
                 $legacyuserid = $member['lti11_legacy_user_id'] ?? $member['user_id'];
                 $username = 'enrol_lti' .
                     sha1($legacyconsumerkey . '::' . $legacyconsumerkey . ':' . $legacyuserid);
-                if ($user = \core_user::get_user_by_username($username)) {
+                if ($user = core_user::get_user_by_username($username)) {
                     $this->create_user_binding($iss, $member['user_id'], $user->id);
                     $this->update_user_account($user, $member, $iss);
-                    return \core_user::get_user($user->id);
+                    return core_user::get_user($user->id);
                 }
             }
             $user = $this->create_new_account($member, $iss);
-            return \core_user::get_user($user->id);
+            return core_user::get_user($user->id);
         }
     }
 
@@ -234,7 +239,7 @@ class auth_plugin_lti extends \auth_plugin_base {
     public function find_or_create_user_from_launch(array $launchdata, array $legacyconsumersecrets = []): stdClass {
 
         if ($binduser = $this->get_user_binding($launchdata['iss'], $launchdata['sub'])) {
-            return \core_user::get_user($binduser);
+            return core_user::get_user($binduser);
         } else {
             // Is the intent to migrate a user account used in legacy launches?
             if (!empty($legacyconsumersecrets)) {
@@ -360,7 +365,7 @@ class auth_plugin_lti extends \auth_plugin_base {
         // This stops the user from being redirected to edit their profile page.
         $email = !empty($userdata['email']) ? $userdata['email'] :
             'enrol_lti_13_' . sha1($iss . '_' . $userid) . "@example.com";
-        $email = \core_user::clean_field($email, 'email');
+        $email = core_user::clean_field($email, 'email');
         $user->email = $email;
         $user->auth = 'lti';
         $user->mnethostid = $CFG->mnet_localhost_id;
@@ -395,7 +400,7 @@ class auth_plugin_lti extends \auth_plugin_base {
         $platformuserid = !empty($userdata['sub']) ? $userdata['sub'] : $userdata['user_id'];
         $email = !empty($userdata['email']) ? $userdata['email'] :
             'enrol_lti_13_' . sha1($iss . '_' . $platformuserid) . "@example.com";
-        $email = \core_user::clean_field($email, 'email');
+        $email = core_user::clean_field($email, 'email');
         $update = [
             'id' => $user->id,
             'firstname' => $userdata['given_name'] ?? $platformuserid,
@@ -432,7 +437,7 @@ class auth_plugin_lti extends \auth_plugin_base {
 
         $fs = get_file_storage();
 
-        $context = \context_user::instance($userid, MUST_EXIST);
+        $context = context_user::instance($userid, MUST_EXIST);
         $fs->delete_area_files($context->id, 'user', 'newicon');
 
         $filerecord = array(

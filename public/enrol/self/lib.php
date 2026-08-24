@@ -22,7 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\lang_string;
+use core\output\pix_icon;
+use core\output\progress_trace;
 use core\output\single_button;
+use core\url;
 use core_enrol\output\enrol_page;
 
 /**
@@ -84,14 +90,14 @@ class enrol_self_plugin extends enrol_plugin {
         global $DB;
 
         if (!empty($instance->name)) {
-            return format_string($instance->name, true, ['context' => context_course::instance($instance->courseid)]);
+            return format_string($instance->name, true, ['context' => course::instance($instance->courseid)]);
         }
 
         $enrolname = get_string('pluginname', 'enrol_' . $this->get_name());
         if (!empty($instance->roleid)) {
             $role = $DB->get_record('role', ['id' => $instance->roleid]);
             if ($role) {
-                $rolename = role_get_name($role, context_course::instance($instance->courseid, IGNORE_MISSING));
+                $rolename = role_get_name($role, course::instance($instance->courseid, IGNORE_MISSING));
                 return get_string('enroledas', 'enrol_self', ['enrol' => $enrolname, 'role' => $rolename]);
             }
         }
@@ -130,7 +136,7 @@ class enrol_self_plugin extends enrol_plugin {
      * @return boolean
      */
     public function can_add_instance($courseid) {
-        $context = context_course::instance($courseid, MUST_EXIST);
+        $context = course::instance($courseid, MUST_EXIST);
 
         if (!has_capability('moodle/course:enrolconfig', $context) or !has_capability('enrol/self:config', $context)) {
             return false;
@@ -148,7 +154,7 @@ class enrol_self_plugin extends enrol_plugin {
     public function get_action_icons(stdClass $instance): array {
         global $OUTPUT;
 
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
 
         $icons = [];
         if (has_any_capability(['enrol/self:config', 'moodle/course:editcoursewelcomemessage'], $context)) {
@@ -157,7 +163,7 @@ class enrol_self_plugin extends enrol_plugin {
                 'id' => $instance->id,
                 'type' => $instance->enrol,
             ];
-            $editlink = new moodle_url('/enrol/editinstance.php', $linkparams);
+            $editlink = new url('/enrol/editinstance.php', $linkparams);
             $icon = new pix_icon('t/edit', get_string('edit'), 'core', ['class' => 'iconsmall']);
             $icons[] = $OUTPUT->action_icon($editlink, $icon);
         }
@@ -237,12 +243,12 @@ class enrol_self_plugin extends enrol_plugin {
                     return '';
                 }
                 $body = get_string('nopassword', 'enrol_self');
-                $buttonurl = new moodle_url($PAGE->url, ['action' => 'enrol', 'sesskey' => sesskey()]);
+                $buttonurl = new url($PAGE->url, ['action' => 'enrol', 'sesskey' => sesskey()]);
             }
             $buttontext = get_string('enrolme', 'enrol_self');
         } else if (isguestuser()) {
             // User is not logged in. Display a button to login.
-            $buttonurl = new moodle_url(get_login_url());
+            $buttonurl = new url(get_login_url());
             $body = get_string('noguestaccess', 'enrol');
             $buttontext = get_string('continue');
         } else if (!$enrolstatus) {
@@ -293,7 +299,7 @@ class enrol_self_plugin extends enrol_plugin {
         }
 
         // Check if user has the capability to enrol in this context.
-        if (!has_capability('enrol/self:enrolself', context_course::instance($instance->courseid))) {
+        if (!has_capability('enrol/self:enrolself', course::instance($instance->courseid))) {
             return get_string('canntenrol', 'enrol_self');
         }
 
@@ -578,7 +584,7 @@ class enrol_self_plugin extends enrol_plugin {
                 $lastenrollid = $ue->enrolid;
 
                 $enroller = $this->get_enroller($ue->enrolid);
-                $context = context_course::instance($ue->courseid);
+                $context = course::instance($ue->courseid);
 
                 $users[] = [
                     'fullname' => fullname($user, has_capability('moodle/site:viewfullnames', $context, $enroller)),
@@ -636,7 +642,7 @@ class enrol_self_plugin extends enrol_plugin {
         }
 
         $instance = $DB->get_record('enrol', array('id'=>$instanceid, 'enrol'=>$this->get_name()), '*', MUST_EXIST);
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
 
         if ($users = get_enrolled_users($context, 'enrol/self:manage')) {
             $users = sort_by_roleassignment_authority($users, $context);
@@ -667,7 +673,7 @@ class enrol_self_plugin extends enrol_plugin {
         if (isset($ue->inactivetime)) {
             $a->inactivetime = $ue->inactivetime;
         }
-        $a->url = new moodle_url('/course/view.php', ['id' => $ue->courseid]);
+        $a->url = new url('/course/view.php', ['id' => $ue->courseid]);
         return get_string($ue->message ?? 'expirymessageenrolledbody', 'enrol_' . $name, $a);
     }
 
@@ -743,7 +749,7 @@ class enrol_self_plugin extends enrol_plugin {
      * @return bool
      */
     public function can_delete_instance($instance) {
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         return has_capability('enrol/self:config', $context);
     }
 
@@ -754,7 +760,7 @@ class enrol_self_plugin extends enrol_plugin {
      * @return bool
      */
     public function can_hide_show_instance($instance) {
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
 
         if (!has_capability('enrol/self:config', $context)) {
             return false;
@@ -1108,7 +1114,7 @@ class enrol_self_plugin extends enrol_plugin {
             $errors['name'] = get_string('err_maxlength', 'form', 50);
         }
         $validgroupkey = array_keys($this->get_groupkey_options());
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         $validroles = array_keys($this->extend_assignable_roles($context, $instance->roleid));
         $validexpirynotify = array_keys($this->get_expirynotify_options());
         $validlongtimenosee = array_keys($this->get_longtimenosee_options());

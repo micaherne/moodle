@@ -16,6 +16,8 @@
 
 namespace qtype_calculated;
 
+use core\context\system;
+use core_filters\filter_manager;
 use qtype_calculated;
 use qtype_numerical;
 use question_bank;
@@ -69,7 +71,7 @@ final class question_type_test extends \advanced_testcase {
     public function test_load_question(): void {
         $this->resetAfterTest();
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         /** @var core_question_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $category = $generator->create_question_category(['contextid' => $syscontext->id]);
@@ -196,10 +198,10 @@ final class question_type_test extends \advanced_testcase {
         // Enable multilang filter to on content and heading.
         filter_set_global_state('multilang', TEXTFILTER_ON);
         filter_set_applies_to_strings('multilang', 1);
-        $filtermanager = \filter_manager::instance();
+        $filtermanager = filter_manager::instance();
         $filtermanager->reset_caches();
 
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $longmultilangquestionname = "<span lang=\"en\" class=\"multilang\">Lorem ipsum dolor sit amet, consetetur sadipscing elitr</span><span lang=\"fr\" class=\"multilang\">Lorem ipsum dolor sit amet, consetetur sadipscing elitr</span>";
         $shortmultilangquestionname = "<span lang=\"en\" class=\"multilang\">Lorem ipsum</span><span lang=\"fr\" class=\"multilang\">Lorem ipsum</span>";

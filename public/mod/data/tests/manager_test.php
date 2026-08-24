@@ -16,8 +16,8 @@
 
 namespace mod_data;
 
-use context_module;
-use moodle_url;
+use core\context\module;
+use core\url;
 use core_component;
 use stdClass;
 
@@ -47,7 +47,7 @@ final class manager_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $activity = $this->getDataGenerator()->create_module(manager::MODULE, ['course' => $course]);
         $cm = get_coursemodule_from_id(manager::MODULE, $activity->cmid, 0, false, MUST_EXIST);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $manager = manager::create_from_instance($activity);
         $manageractivity = $manager->get_instance();
@@ -118,7 +118,7 @@ final class manager_test extends \advanced_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_data\event\course_module_viewed', $event);
         $this->assertEquals($context, $event->get_context());
-        $moodleurl = new moodle_url('/mod/data/view.php', ['id' => $cm->id]);
+        $moodleurl = new url('/mod/data/view.php', ['id' => $cm->id]);
         $this->assertEquals($moodleurl, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -158,7 +158,7 @@ final class manager_test extends \advanced_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('mod_data\event\template_viewed', $event);
         $this->assertEquals($context, $event->get_context());
-        $moodleurl = new moodle_url('/mod/data/templates.php', ['d' => $instance->id]);
+        $moodleurl = new url('/mod/data/templates.php', ['d' => $instance->id]);
         $this->assertEquals($moodleurl, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());

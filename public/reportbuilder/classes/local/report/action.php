@@ -18,11 +18,11 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\local\report;
 
-use action_menu_link;
-use lang_string;
-use moodle_url;
-use pix_icon;
-use popup_action;
+use core\output\action_menu\link;
+use core\lang_string;
+use core\url;
+use core\output\pix_icon;
+use core\output\actions\popup_action;
 use stdClass;
 
 /**
@@ -67,7 +67,7 @@ final class action {
      * @param ?lang_string $title
      */
     public function __construct(
-        moodle_url $url,
+        url $url,
         pix_icon $icon,
         array $attributes = [],
         bool $popup = false,
@@ -101,7 +101,7 @@ final class action {
      * @param stdClass $row
      * @return action_menu_link|null
      */
-    public function get_action_link(stdClass $row): ?action_menu_link {
+    public function get_action_link(stdClass $row): ?link {
 
         foreach ($this->callbacks as $callback) {
             $row = clone $row; // Clone so we don't modify the shared row inside a callback.
@@ -111,7 +111,7 @@ final class action {
         }
 
         // Create a new moodle_url instance with our filled in placeholders for this row.
-        $url = new moodle_url(
+        $url = new url(
             $this->url->out_omit_querystring(true),
             self::replace_placeholders($this->url->params(), $row)
         );
@@ -134,7 +134,7 @@ final class action {
         $title = $attributes['title'];
         unset($attributes['title']);
 
-        return new action_menu_link($url, $this->icon, $title, null, $attributes);
+        return new link($url, $this->icon, $title, null, $attributes);
     }
 
     /**

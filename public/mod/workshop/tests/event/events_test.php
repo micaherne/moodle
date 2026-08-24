@@ -25,6 +25,8 @@
 
 namespace mod_workshop\event;
 
+use core\context\course;
+use core\context\module;
 use testable_workshop;
 
 defined('MOODLE_INTERNAL') || die();
@@ -60,7 +62,7 @@ final class events_test extends \advanced_testcase {
         $this->course = $this->getDataGenerator()->create_course();
         $this->workshop = $this->getDataGenerator()->create_module('workshop', array('course' => $this->course));
         $this->cm = get_coursemodule_from_instance('workshop', $this->workshop->id);
-        $this->context = \context_module::instance($this->cm->id);
+        $this->context = module::instance($this->cm->id);
     }
 
     protected function tearDown(): void {
@@ -119,7 +121,7 @@ final class events_test extends \advanced_testcase {
 
         $this->assertInstanceOf('\mod_workshop\event\assessment_evaluated', $event);
         $this->assertEquals('workshop_aggregations', $event->objecttable);
-        $this->assertEquals(\context_module::instance($cm->id), $event->get_context());
+        $this->assertEquals(module::instance($cm->id), $event->get_context());
         $this->assertEventContextNotUsed($event);
 
         $sink->close();
@@ -145,7 +147,7 @@ final class events_test extends \advanced_testcase {
 
         $this->assertInstanceOf('\mod_workshop\event\assessment_reevaluated', $event);
         $this->assertEquals('workshop_aggregations', $event->objecttable);
-        $this->assertEquals(\context_module::instance($cm->id), $event->get_context());
+        $this->assertEquals(module::instance($cm->id), $event->get_context());
         $this->assertEventContextNotUsed($event);
 
         $sink->close();
@@ -180,7 +182,7 @@ final class events_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
 
-        $context = \context_course::instance($this->course->id);
+        $context = course::instance($this->course->id);
 
         $event = \mod_workshop\event\course_module_instance_list_viewed::create(array('context' => $context));
 

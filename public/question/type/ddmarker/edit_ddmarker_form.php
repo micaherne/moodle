@@ -24,6 +24,8 @@
  */
 
 
+use core\context\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/question/type/ddimageortext/edit_ddtoimage_form_base.php');
@@ -274,7 +276,7 @@ class qtype_ddmarker_edit_form extends qtype_ddtoimage_edit_form_base {
      */
     public function get_image_size_in_draft_area($draftitemid) {
         global $USER;
-        $usercontext = context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $fs = get_file_storage();
         $draftfiles = $fs->get_area_files($usercontext->id, 'user', 'draft', $draftitemid, 'id');
         if ($draftfiles) {

@@ -23,15 +23,18 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configtext;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
     //--- general settings -----------------------------------------------------------------------------------
-    $settings->add(new admin_setting_configcheckbox('folder/showexpanded',
+    $settings->add(new configcheckbox('folder/showexpanded',
         get_string('showexpanded', 'folder'),
         get_string('showexpanded_help', 'folder'), 1));
 
-    $settings->add(new admin_setting_configtext('folder/maxsizetodownload',
+    $settings->add(new configtext('folder/maxsizetodownload',
         get_string('maxsizetodownload', 'folder'),
         get_string('maxsizetodownload_help', 'folder'), '', PARAM_INT));
 }

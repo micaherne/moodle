@@ -4,6 +4,8 @@
 // - https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPLogoutInitiator
 // - https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPNotify
 
+use core\exception\moodle_exception;
+
 require_once("../../config.php");
 
 require_once($CFG->dirroot."/auth/shibboleth/auth.php");

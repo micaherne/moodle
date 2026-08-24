@@ -25,6 +25,7 @@
 namespace core\event;
 
 use core\event\base;
+use core\exception\coding_exception;
 use core_competency\competency_framework;
 
 defined('MOODLE_INTERNAL') || die();
@@ -47,7 +48,7 @@ class competency_framework_viewed extends base {
      */
     public static function create_from_framework(competency_framework $framework) {
         if (!$framework->get('id')) {
-            throw new \coding_exception('The competency framework ID must be set.');
+            throw new coding_exception('The competency framework ID must be set.');
         }
         $event = static::create(array(
             'contextid' => $framework->get('contextid'),

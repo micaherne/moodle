@@ -16,11 +16,11 @@
 
 namespace core_question\local\bank;
 
-use context_course;
-use context_coursecat;
-use context_module;
-use context_system;
-use context_user;
+use core\context\course;
+use core\context\coursecat;
+use core\context\module;
+use core\context\system;
+use core\context\user;
 
 /**
  * Unit tests for the context_to_string_translator class.
@@ -38,16 +38,16 @@ final class context_to_string_translator_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
 
         // Generate a quiz in a course in a category.
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
 
         $category = $generator->create_category();
-        $categorycontext = context_coursecat::instance($category->id);
+        $categorycontext = coursecat::instance($category->id);
 
         $course = $generator->create_course(['category' => $category->id]);
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $quiz = $generator->create_module('quiz', ['course' => $course->id]);
-        $quizcontext = context_module::instance($quiz->cmid);
+        $quizcontext = module::instance($quiz->cmid);
 
         // Create the context_to_string_translator.
         $translator = new context_to_string_translator([$systemcontext, $categorycontext, $coursecontext, $quizcontext]);
@@ -70,7 +70,7 @@ final class context_to_string_translator_test extends \advanced_testcase {
         global $USER;
         $this->resetAfterTest();
         $this->setAdminUser();
-        $context = context_user::instance($USER->id);
+        $context = user::instance($USER->id);
         $this->expectExceptionMessage('Unexpected context level User for context ' .
                 $context->id . ' in generate_context_to_string_array. ' .
                 'Questions can never exist in this type of context.');

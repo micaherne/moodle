@@ -25,9 +25,9 @@ use core_reportbuilder\local\report\{action, column};
 use core_reportbuilder\system_report;
 use core_tag\output\{tagflag, tagisstandard, tagname};
 use core_tag\reportbuilder\local\entities\{instance, tag};
-use lang_string;
-use moodle_url;
-use pix_icon;
+use core\lang_string;
+use core\url;
+use core\output\pix_icon;
 use stdClass;
 
 /**
@@ -178,7 +178,7 @@ class tags extends system_report {
 
         // Edit.
         $this->add_action((new action(
-            new moodle_url('/tag/edit.php', [
+            new url('/tag/edit.php', [
                 'id' => ':id',
                 'returnurl' => ':returnurl',
             ]),
@@ -188,14 +188,14 @@ class tags extends system_report {
             new lang_string('edit'),
         ))
             ->add_callback(static function(stdClass $tag): bool {
-                $tag->returnurl = (new moodle_url('/tag/manage.php', ['tc' => $tag->tagcollid]))->out_as_local_url(false);
+                $tag->returnurl = (new url('/tag/manage.php', ['tc' => $tag->tagcollid]))->out_as_local_url(false);
                 return true;
             })
         );
 
         // Delete.
         $this->add_action(new action(
-            new moodle_url('/tag/manage.php', [
+            new url('/tag/manage.php', [
                 'tc' => ':tagcollid',
                 'tagid' => ':id',
                 'action' => 'delete',

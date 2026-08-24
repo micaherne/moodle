@@ -22,6 +22,7 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
 use mod_subsection\manager;
 use core_courseformat\formatactions;
 
@@ -41,4 +42,4 @@ $modulecontext = $manager->get_context();
 $manager->set_module_viewed($course);
 $delegatesection = $manager->get_delegated_section_info();
 
-redirect(new moodle_url('/course/section.php', ['id' => $delegatesection->id]));
+redirect(new url('/course/section.php', ['id' => $delegatesection->id]));

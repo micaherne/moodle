@@ -22,13 +22,16 @@
  * @package tool_dataprivacy
  */
 
+use core\context\system;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->dirroot . '/' . $CFG->admin . '/tool/dataprivacy/lib.php');
 
-$url = new moodle_url('/' . $CFG->admin . '/tool/dataprivacy/summary.php');
+$url = new url('/' . $CFG->admin . '/tool/dataprivacy/summary.php');
 $title = get_string('summary', 'tool_dataprivacy');
 
-$context = \context_system::instance();
+$context = system::instance();
 $PAGE->set_url($url);
 $PAGE->set_context($context);
 $PAGE->set_title($title);

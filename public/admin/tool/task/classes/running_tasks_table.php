@@ -28,7 +28,9 @@ namespace tool_task;
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/tablelib.php');
+use core\output\html_writer;
 use core\task\manager;
+use core_table\sql_table;
 
 /**
  * Table to display list of running task.
@@ -37,7 +39,7 @@ use core\task\manager;
  * @copyright  2020 Mikhail Golenkov <golenkovm@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class running_tasks_table extends \table_sql {
+class running_tasks_table extends sql_table {
 
     /**
      * Constructor for the running tasks table.
@@ -92,11 +94,11 @@ class running_tasks_table extends \table_sql {
             if (class_exists($row->classname)) {
                 $task = new $row->classname;
                 if ($task instanceof \core\task\scheduled_task) {
-                    $output .= \html_writer::tag('div', $task->get_name(), ['class' => 'task-class']);
+                    $output .= html_writer::tag('div', $task->get_name(), ['class' => 'task-class']);
                 }
             }
         } else if ($row->type == 'adhoc') {
-            $output .= \html_writer::tag('div',
+            $output .= html_writer::tag('div',
                 get_string('adhoctaskid', 'tool_task', $row->id), ['class' => 'task-class']);
         }
         return $output;
@@ -111,9 +113,9 @@ class running_tasks_table extends \table_sql {
      */
     public function col_type($row): string {
         if ($row->type == 'scheduled') {
-            $output = \html_writer::span(get_string('scheduled', 'tool_task'), 'badge bg-primary text-white');
+            $output = html_writer::span(get_string('scheduled', 'tool_task'), 'badge bg-primary text-white');
         } else if ($row->type == 'adhoc') {
-            $output = \html_writer::span(get_string('adhoc', 'tool_task'), 'badge bg-dark text-white');
+            $output = html_writer::span(get_string('adhoc', 'tool_task'), 'badge bg-dark text-white');
         } else {
             // This shouldn't ever happen.
             $output = '';

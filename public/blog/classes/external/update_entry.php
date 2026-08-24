@@ -23,10 +23,10 @@ use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
 use core_external\external_warnings;
-use context_system;
-use context_course;
-use context_module;
-use moodle_exception;
+use core\context\system;
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
 
 /**
  * This is the external method for updating a blog post entry.
@@ -97,7 +97,7 @@ class update_entry extends external_api {
         }
 
         if (!blog_user_can_edit_entry($entry)) {
-            throw new \moodle_exception('cannoteditentryorblog', 'blog');
+            throw new moodle_exception('cannoteditentryorblog', 'blog');
         }
 
         // Prepare the entry object.
@@ -147,14 +147,14 @@ class update_entry extends external_api {
             }
         }
 
-        $context = context_system::instance();
+        $context = system::instance();
 
         // Validate course association. We need to convert the course id to context.
         if (isset($entrydata->courseassoc)) {
             $entrydata->courseid = $entrydata->courseassoc;
 
             if (!empty($entrydata->courseid)) {
-                $coursecontext = context_course::instance($entrydata->courseassoc);
+                $coursecontext = course::instance($entrydata->courseassoc);
 
                 $entrydata->courseassoc = $coursecontext->id;   // Convert to context.
                 $context = $coursecontext;
@@ -166,7 +166,7 @@ class update_entry extends external_api {
             $entrydata->coursemoduleid = $entrydata->modassoc;
 
             if (!empty($entrydata->coursemoduleid)) {
-                $modcontext = context_module::instance($entrydata->modassoc);
+                $modcontext = module::instance($entrydata->modassoc);
                 if (!empty($coursecontext) && $coursecontext->id != $modcontext->get_course_context(true)->id) {
                     throw new moodle_exception('errorinvalidparam', 'webservice', '', 'modassoc');
                 }

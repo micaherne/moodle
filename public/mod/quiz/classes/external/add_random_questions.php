@@ -21,6 +21,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/question/editlib.php');
 require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 
+use core\context\module;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_value;
@@ -107,7 +108,7 @@ class add_random_questions extends \core_external\external_api {
         ]);
 
         // Validate context.
-        $thiscontext = \context_module::instance($cmid);
+        $thiscontext = module::instance($cmid);
         self::validate_context($thiscontext);
         require_capability('mod/quiz:manage', $thiscontext);
 

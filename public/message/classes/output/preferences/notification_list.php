@@ -26,9 +26,10 @@ namespace core_message\output\preferences;
 
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use templatable;
-use context_user;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\context\user;
 
 /**
  * Class to create context for the list of notifications on the message preferences page.
@@ -88,12 +89,12 @@ class notification_list implements templatable, renderable {
         return new notification_list_component($component, $readyprocessors, $providers, $preferences, $user);
     }
 
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         $processors = $this->processors;
         $providers = $this->providers;
         $preferences = $this->preferences;
         $user = $this->user;
-        $usercontext = context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
         $activitycomponents = [];
         $othercomponents = [];
 

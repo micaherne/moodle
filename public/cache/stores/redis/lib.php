@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use core_cache\configurable_cache_interface;
 use core_cache\definition;
 use core_cache\key_aware_cache_interface;
@@ -814,7 +816,7 @@ class cachestore_redis extends store implements
     public function expire_ttl(): array {
         $ttl = $this->definition->get_ttl();
         if (!$ttl) {
-            throw new \coding_exception('Cache definition ' . $this->definition->get_id() . ' does not use TTL');
+            throw new coding_exception('Cache definition ' . $this->definition->get_id() . ' does not use TTL');
         }
         $limit = self::get_time() - $ttl;
         $count = 0;
@@ -862,7 +864,7 @@ class cachestore_redis extends store implements
     public static function set_phpunit_time(int $time = 0): void {
         global $CFG;
         if (!PHPUNIT_TEST) {
-            throw new \coding_exception('Function only available during unit test');
+            throw new coding_exception('Function only available during unit test');
         }
         if ($time) {
             $CFG->phpunit_cachestore_redis_time = $time;

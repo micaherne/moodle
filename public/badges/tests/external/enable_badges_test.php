@@ -16,6 +16,7 @@
 
 namespace core_badges\external;
 
+use core\exception\moodle_exception;
 use core_badges_generator;
 use core_badges\badge;
 
@@ -74,7 +75,7 @@ final class enable_badges_test extends \core_external\tests\externallib_testcase
 
         $data = $this->prepare_test_data();
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage(get_string('badgesdisabled', 'core_badges'));
         $result = enable_badges::execute([
             $data['sitebadge']->id,
@@ -174,7 +175,7 @@ final class enable_badges_test extends \core_external\tests\externallib_testcase
         $this->setAdminUser();
 
         $badgeid = 1234;
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage(get_string('error:nosuchbadge', 'core_badges', $badgeid));
         $result = enable_badges::execute([
             $badgeid,

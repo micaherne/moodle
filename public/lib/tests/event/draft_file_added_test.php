@@ -25,7 +25,9 @@
 
 namespace core\event;
 
-use context_system;
+use core\context\system;
+use core\context\user;
+use core\exception\coding_exception;
 
 /**
  * Test for draft file added event.
@@ -44,7 +46,7 @@ final class draft_file_added_test extends \advanced_testcase {
         $this->resetAfterTest();
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         $sink = $this->redirectEvents();
         $fs = get_file_storage();
@@ -91,7 +93,7 @@ final class draft_file_added_test extends \advanced_testcase {
     public function test_avscantime_optional(): void {
         $eventdata = [
             'objectid' => 123,
-            'context' => context_system::instance(),
+            'context' => system::instance(),
             'other' => [
                 'itemid' => 789,
                 'filename' => 'test.txt',
@@ -108,11 +110,11 @@ final class draft_file_added_test extends \advanced_testcase {
     }
 
     public function test_avscantime_must_be_float(): void {
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
 
         $eventdata = [
             'objectid' => 123,
-            'context' => context_system::instance(),
+            'context' => system::instance(),
             'other' => [
                 'itemid' => 789,
                 'filename' => 'test.txt',

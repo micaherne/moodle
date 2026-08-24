@@ -16,6 +16,12 @@
 
 namespace mod_lti;
 
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\exception\required_capability_exception;
+use core\url;
+use core_course\modinfo;
 use core_external\external_api;
 use mod_lti_external;
 use mod_lti_testcase;
@@ -61,7 +67,7 @@ final class externallib_test extends mod_lti_testcase {
             'lti',
             ['course' => $course->id, 'toolurl' => 'http://localhost/not/real/tool.php']
         );
-        $context = \context_module::instance($lti->cmid);
+        $context = module::instance($lti->cmid);
         $cm = get_coursemodule_from_instance('lti', $lti->id);
 
         // Create users.
@@ -286,12 +292,12 @@ final class externallib_test extends mod_lti_testcase {
 
         // Now, prohibit capabilities.
         $this->setUser($student);
-        $contextcourse1 = \context_course::instance($course->id);
+        $contextcourse1 = course::instance($course->id);
         // Prohibit capability = mod:lti:view on Course1 for students.
         assign_capability('mod/lti:view', CAP_PROHIBIT, $studentrole->id, $contextcourse1->id);
         // Empty all the caches that may be affected by this change.
         accesslib_clear_all_caches_for_unit_testing();
-        \course_modinfo::clear_instance_cache();
+        modinfo::clear_instance_cache();
 
         $ltis = mod_lti_external::get_ltis_by_courses(array($course->id));
         $ltis = external_api::clean_returnvalue(mod_lti_external::get_ltis_by_courses_returns(), $ltis);
@@ -302,7 +308,7 @@ final class externallib_test extends mod_lti_testcase {
      * Test view_lti with an invalid instance id.
      */
     public function test_view_lti_invalid_instanceid(): void {
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         mod_lti_external::view_lti(0);
     }
 
@@ -318,7 +324,7 @@ final class externallib_test extends mod_lti_testcase {
         $usernotenrolled = self::getDataGenerator()->create_user();
         $this->setUser($usernotenrolled);
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         mod_lti_external::view_lti($lti->id);
     }
 
@@ -339,9 +345,9 @@ final class externallib_test extends mod_lti_testcase {
         assign_capability('mod/lti:view', CAP_PROHIBIT, $studentrole->id, $context->id);
         // Empty all the caches that may be affected by this change.
         accesslib_clear_all_caches_for_unit_testing();
-        \course_modinfo::clear_instance_cache();
+        modinfo::clear_instance_cache();
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         mod_lti_external::view_lti($lti->id);
     }
 
@@ -373,7 +379,7 @@ final class externallib_test extends mod_lti_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_lti\event\course_module_viewed', $event);
         $this->assertEquals($context, $event->get_context());
-        $moodlelti = new \moodle_url('/mod/lti/view.php', array('id' => $cm->id));
+        $moodlelti = new url('/mod/lti/view.php', array('id' => $cm->id));
         $this->assertEquals($moodlelti, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -401,7 +407,7 @@ final class externallib_test extends mod_lti_testcase {
         $this->setAdminUser();
         mod_lti_external::create_tool_proxy('Test proxy 1', $this->getExternalTestFileUrl('/test.html'), array(), array());
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         mod_lti_external::create_tool_proxy('Test proxy 2', $this->getExternalTestFileUrl('/test.html'), array(), array());
     }
 
@@ -412,7 +418,7 @@ final class externallib_test extends mod_lti_testcase {
         $course = $this->getDataGenerator()->create_course();
         $teacher = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
         $this->setUser($teacher);
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         mod_lti_external::create_tool_proxy('Test proxy', $this->getExternalTestFileUrl('/test.html'), array(), array());
     }
 
@@ -501,7 +507,7 @@ final class externallib_test extends mod_lti_testcase {
      * Test create_tool_type failure from non existent file.
      */
     public function test_mod_lti_create_tool_type_nonexistant_file(): void {
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         mod_lti_external::create_tool_type($this->getExternalTestFileUrl('/doesntexist.xml'), '', '');
     }
 
@@ -509,7 +515,7 @@ final class externallib_test extends mod_lti_testcase {
      * Test create_tool_type failure from xml that is not a cartridge.
      */
     public function test_mod_lti_create_tool_type_bad_file(): void {
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         mod_lti_external::create_tool_type($this->getExternalTestFileUrl('/rsstest.xml'), '', '');
     }
 
@@ -520,7 +526,7 @@ final class externallib_test extends mod_lti_testcase {
         $course = $this->getDataGenerator()->create_course();
         $teacher = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
         $this->setUser($teacher);
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         mod_lti_external::create_tool_type($this->getExternalTestFileUrl('/ims_cartridge_basic_lti_link.xml'), '', '');
     }
 
@@ -566,7 +572,7 @@ final class externallib_test extends mod_lti_testcase {
         $course = $this->getDataGenerator()->create_course();
         $teacher = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
         $this->setUser($teacher);
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         mod_lti_external::delete_tool_type($type['id']);
     }
 

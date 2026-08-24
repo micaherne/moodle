@@ -21,23 +21,26 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-    require_once("../config.php");
+    use core\context\course;
+use core\exception\moodle_exception;
+
+require_once("../config.php");
     require_once("lib.php");
 
     $id   = optional_param('id', false, PARAM_INT); // Course id
     $name = optional_param('name', false, PARAM_RAW); // Course short name
 
     if (!$id and !$name) {
-        throw new \moodle_exception("unspecifycourseid");
+        throw new moodle_exception("unspecifycourseid");
     }
 
     if ($name) {
         if (!$course = $DB->get_record("course", array("shortname"=>$name))) {
-            throw new \moodle_exception("invalidshortname");
+            throw new moodle_exception("invalidshortname");
         }
     } else {
         if (!$course = $DB->get_record("course", array("id"=>$id))) {
-            throw new \moodle_exception("invalidcourseid");
+            throw new moodle_exception("invalidcourseid");
         }
     }
 
@@ -47,9 +50,9 @@
         require_login();
     }
 
-    $context = context_course::instance($course->id);
+    $context = course::instance($course->id);
     if (!core_course_category::can_view_course_info($course) && !is_enrolled($context, null, '', true)) {
-        throw new \moodle_exception('cannotviewcategory', '', $CFG->wwwroot .'/');
+        throw new moodle_exception('cannotviewcategory', '', $CFG->wwwroot .'/');
     }
 
     $PAGE->set_course($course);

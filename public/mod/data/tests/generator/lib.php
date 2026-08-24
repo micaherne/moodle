@@ -14,6 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\module;
+use core\context\user as context_user;
+use core\exception\coding_exception;
+use core\user as core_user;
 use mod_data\manager;
 use mod_data\preset;
 use mod_data\local\importer\preset_importer;
@@ -241,7 +245,7 @@ class mod_data_generator extends testing_module_generator {
         // Set current user if defined.
         if (!empty($userid)) {
             $currentuser = $USER;
-            $user = \core_user::get_user($userid);
+            $user = core_user::get_user($userid);
             $this->set_user($user);
         }
 
@@ -391,7 +395,7 @@ class mod_data_generator extends testing_module_generator {
         if (!empty($tags)) {
             $cm = get_coursemodule_from_instance('data', $data->id);
             core_tag_tag::set_item_tags('mod_data', 'data_records', $recordid,
-                context_module::instance($cm->id), $tags);
+                module::instance($cm->id), $tags);
         }
 
         if (isset($currentuser)) {
@@ -418,7 +422,7 @@ class mod_data_generator extends testing_module_generator {
         // Set current user if defined.
         if (isset($record->userid) && $record->userid != $USER->id) {
             $currentuser = $USER;
-            $user = \core_user::get_user($record->userid);
+            $user = core_user::get_user($record->userid);
             $this->set_user($user);
         }
 

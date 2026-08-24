@@ -24,6 +24,8 @@
 
 namespace core_analytics;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -123,7 +125,7 @@ abstract class action {
 
         if ($type !== self::TYPE_POSITIVE && $type !== self::TYPE_NEUTRAL &&
                 $type !== self::TYPE_NEGATIVE) {
-            throw new \coding_exception('The provided type must be ' . self::TYPE_POSITIVE . ', ' . self::TYPE_NEUTRAL .
+            throw new coding_exception('The provided type must be ' . self::TYPE_POSITIVE . ', ' . self::TYPE_NEUTRAL .
                 ' or ' . self::TYPE_NEGATIVE);
         }
         $this->type = $type;

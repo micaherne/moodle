@@ -24,6 +24,8 @@
 
 namespace gradereport_singleview\event;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -54,7 +56,7 @@ class grade_report_viewed extends \core\event\grade_report_viewed {
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' value must be set.');
+            throw new coding_exception('The \'relateduserid\' value must be set.');
         }
     }
 }

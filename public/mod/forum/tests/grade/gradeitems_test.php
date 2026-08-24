@@ -20,7 +20,7 @@ namespace mod_forum\grade;
 
 use advanced_testcase;
 use core_grades\component_gradeitems;
-use coding_exception;
+use core\exception\coding_exception;
 
 /**
  * Unit tests for mod_forum\grades\gradeitems.

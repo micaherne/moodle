@@ -25,6 +25,7 @@
 namespace core_payment;
 
 use core\persistent;
+use core\url;
 
 /**
  * Class account_gateway
@@ -79,10 +80,10 @@ class account_gateway extends persistent {
      *
      * @return \moodle_url
      */
-    public function get_edit_url(): \moodle_url {
+    public function get_edit_url(): url {
         $params = $this->get('id') ? ['id' => $this->get('id')] :
             ['accountid' => $this->get('accountid'), 'gateway' => $this->get('gateway')];
-        return new \moodle_url('/payment/manage_gateway.php', $params);
+        return new url('/payment/manage_gateway.php', $params);
     }
 
     /**

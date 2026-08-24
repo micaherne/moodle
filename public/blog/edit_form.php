@@ -14,6 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context;
+use core\context\course;
+use core\context\module;
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    //  It must be included from a Moodle page.
 }
@@ -77,7 +81,7 @@ class blog_edit_form extends moodleform {
             if ((!empty($entry->courseassoc) || (!empty($courseid) && empty($modid)))) {
                 if (!empty($courseid)) {
                     $course = $DB->get_record('course', array('id' => $courseid));
-                    $context = context_course::instance($courseid);
+                    $context = course::instance($courseid);
                     $a = new stdClass();
                     $a->coursename = format_string($course->fullname, true, array('context' => $context));
                     $contextid = $context->id;
@@ -104,7 +108,7 @@ class blog_edit_form extends moodleform {
                     $a = new stdClass();
                     $a->modtype = get_string('modulename', $mod->modname);
                     $a->modname = $mod->name;
-                    $context = context_module::instance($modid);
+                    $context = module::instance($modid);
                 } else {
                     $context = context::instance_by_id($entry->modassoc);
                     $cm = $DB->get_record('course_modules', array('id' => $context->instanceid));

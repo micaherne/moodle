@@ -16,6 +16,7 @@
 
 namespace core_sms\privacy;
 
+use core\context;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_userlist;
 use core_privacy\local\request\userlist;
@@ -117,7 +118,7 @@ class provider implements
     }
 
     #[\Override]
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         global $DB;
 
         if (!$context instanceof \core\context\user) {

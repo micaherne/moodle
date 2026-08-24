@@ -27,6 +27,8 @@
 
 namespace core\task;
 
+use core\exception\coding_exception;
+
 /**
  * Abstract class defining an adhoc task.
  * @copyright  2013 Damyon Wiese
@@ -145,7 +147,7 @@ abstract class adhoc_task extends task_base {
      */
     public function set_soft_retry_delay(?int $softretrydelay = null): void {
         if ($softretrydelay !== null && $softretrydelay <= 0) {
-            throw new \coding_exception('Soft retry delay must be a positive integer or null.');
+            throw new coding_exception('Soft retry delay must be a positive integer or null.');
         }
         $this->isdelayed = true;
 

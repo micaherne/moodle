@@ -16,6 +16,7 @@
 
 namespace core_admin\admin;
 
+use core\exception\coding_exception;
 use core_admin\admin_search;
 use core_text;
 use core\plugin_manager;
@@ -128,7 +129,7 @@ class admin_setting_plugin_manager extends \core_admin\setting {
     public function output_html($data, $query = ''): string {
         $table = new $this->tableclass();
         if (!($table instanceof \core_admin\table\plugin_management_table)) {
-            throw new \coding_exception("{$this->tableclass} must be an instance of \\core_admin\\table\\plugin_management_table");
+            throw new coding_exception("{$this->tableclass} must be an instance of \\core_admin\\table\\plugin_management_table");
         }
         return highlight($query, $table->get_content());
     }

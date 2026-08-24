@@ -16,6 +16,8 @@
 
 namespace core_availability;
 
+use core\context\course;
+
 /**
  * Unit tests for the capability checker class.
  *
@@ -41,7 +43,7 @@ final class capability_checker_test extends \advanced_testcase {
         $generator->enrol_user($student->id, $course->id, $roleids['student']);
 
         // Check a capability which they both have.
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $checker = new capability_checker($context);
         $result = array_keys($checker->get_users_by_capability('mod/forum:replypost'));
         sort($result);

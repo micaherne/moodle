@@ -23,6 +23,8 @@
  */
 namespace core_privacy\local\request;
 
+use core\context;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -47,7 +49,7 @@ interface content_writer {
      * @param   \context        $context    The context to use
      * @return  content_writer
      */
-    public function set_context(\context $context): content_writer ;
+    public function set_context(context $context): content_writer ;
 
     /**
      * Export the supplied data within the current context, at the supplied subcontext.

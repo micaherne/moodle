@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\url;
+
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/locallib.php');
 
@@ -37,7 +42,7 @@ $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST)
 
 require_login($course, false, $cm);
 if (isguestuser()) {
-    throw new \moodle_exception('guestsarenotallowed');
+    throw new moodle_exception('guestsarenotallowed');
 }
 
 $workshoprecord = $DB->get_record('workshop', array('id' => $cm->instance), '*', MUST_EXIST);
@@ -121,7 +126,7 @@ if ($submission->id and ($ownsubmission or $canviewall or $isreviewer)) {
 } elseif (is_null($submission->id) and $cansubmit) {
     // ok you can go
 } else {
-    throw new \moodle_exception('nopermissions', 'error', $workshop->view_url(), 'view or create submission');
+    throw new moodle_exception('nopermissions', 'error', $workshop->view_url(), 'view or create submission');
 }
 
 if ($submission->id) {
@@ -229,7 +234,7 @@ if ($deletable and $delete) {
             $prompt = get_string('submissiondeleteconfirmassess', 'workshop', ['count' => $count]);
         }
     }
-    echo $output->confirm($prompt, new moodle_url($PAGE->url, ['delete' => 1, 'confirm' => 1]), $workshop->view_url());
+    echo $output->confirm($prompt, new url($PAGE->url, ['delete' => 1, 'confirm' => 1]), $workshop->view_url());
 }
 
 // else display the submission
@@ -250,10 +255,10 @@ if (!$delete) {
     // Display create/edit button.
     if ($editable) {
         if ($submission->id) {
-            $btnurl = new moodle_url($PAGE->url, array('edit' => 'on', 'id' => $submission->id));
+            $btnurl = new url($PAGE->url, array('edit' => 'on', 'id' => $submission->id));
             $btntxt = get_string('editsubmission', 'workshop');
         } else {
-            $btnurl = new moodle_url($PAGE->url, array('edit' => 'on'));
+            $btnurl = new url($PAGE->url, array('edit' => 'on'));
             $btntxt = get_string('createsubmission', 'workshop');
         }
         echo $output->box($output->single_button($btnurl, $btntxt, 'get'), 'me-1 inline');
@@ -261,13 +266,13 @@ if (!$delete) {
 
     // Display delete button.
     if ($submission->id and $deletable) {
-        $url = new moodle_url($PAGE->url, array('delete' => 1));
+        $url = new url($PAGE->url, array('delete' => 1));
         echo $output->box($output->single_button($url, get_string('deletesubmission', 'workshop'), 'get'), 'me-1 inline');
     }
 
     // Display assess button.
     if ($submission->id and !$edit and !$isreviewer and $canallocate and $workshop->assessing_allowed($USER->id)) {
-        $url = new moodle_url($PAGE->url, array('assess' => 1));
+        $url = new url($PAGE->url, array('assess' => 1));
         echo $output->box($output->single_button($url, get_string('assess', 'workshop'), 'post'), 'me-1 inline');
     }
 }

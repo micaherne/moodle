@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -89,7 +92,7 @@ class mod_forum_observer {
         $forums = $DB->get_records_sql($sql, $params);
         foreach ($forums as $forum) {
             // If user doesn't have allowforcesubscribe capability then don't subscribe.
-            $modcontext = context_module::instance($forum->cmid);
+            $modcontext = module::instance($forum->cmid);
             if (has_capability('mod/forum:allowforcesubscribe', $modcontext, $userid)) {
                 \mod_forum\subscriptions::subscribe_user($userid, $forum, $modcontext);
             }

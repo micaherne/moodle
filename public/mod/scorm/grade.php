@@ -23,25 +23,28 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+
 require_once("../../config.php");
 
 $id = required_param('id', PARAM_INT); // Course module ID.
 
 if (! $cm = get_coursemodule_from_id('scorm', $id)) {
-    throw new \moodle_exception('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 
 if (! $scorm = $DB->get_record('scorm', array('id' => $cm->instance))) {
-    throw new \moodle_exception('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 
 if (! $course = $DB->get_record('course', array('id' => $scorm->course))) {
-    throw new \moodle_exception('coursemisconf');
+    throw new moodle_exception('coursemisconf');
 }
 
 require_login($course, false, $cm);
 
-if (has_capability('mod/scorm:viewreport', context_module::instance($cm->id))) {
+if (has_capability('mod/scorm:viewreport', module::instance($cm->id))) {
     redirect('report.php?id='.$cm->id);
 } else {
     redirect('view.php?id='.$cm->id);

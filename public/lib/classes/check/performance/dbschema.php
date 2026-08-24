@@ -29,6 +29,9 @@ defined('MOODLE_INTERNAL') || die();
 
 use core\check\check;
 use core\check\result;
+use core\output\action_link;
+use core\output\html_writer;
+use core\url;
 
 /**
  * DB schema performance check
@@ -52,9 +55,9 @@ class dbschema extends check {
      *
      * @return \action_link|null
      */
-    public function get_action_link(): ?\action_link {
-        return new \action_link(
-            new \moodle_url(\get_docs_url('Verify_Database_Schema')),
+    public function get_action_link(): ?action_link {
+        return new action_link(
+            new url(\get_docs_url('Verify_Database_Schema')),
             get_string('moodledocs'));
     }
 
@@ -74,9 +77,9 @@ class dbschema extends check {
 
         $details = '';
         foreach ($errors as $tablename => $items) {
-            $details .= \html_writer::tag('h4', $tablename);
+            $details .= html_writer::tag('h4', $tablename);
             foreach ($items as $item) {
-                $details .= \html_writer::tag('pre', $item);
+                $details .= html_writer::tag('pre', $item);
             }
         }
         return new result(result::ERROR, get_string('check_dbschema_errors', 'report_performance'), $details);

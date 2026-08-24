@@ -23,6 +23,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
 use core_group\customfield\grouping_handler;
 use core_customfield\output\management;
 

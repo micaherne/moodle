@@ -23,6 +23,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\output\html_writer;
+use core\url;
+use core\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once $CFG->libdir.'/formslib.php';
@@ -40,7 +45,7 @@ class admin_uploaduser_form1 extends moodleform {
 
         $mform->addElement('header', 'settingsheader', get_string('upload'));
 
-        $url = new moodle_url('example.csv');
+        $url = new url('example.csv');
         $link = html_writer::link($url, 'example.csv');
         $mform->addElement('static', 'examplecsv', get_string('examplecsv', 'tool_uploaduser'), $link);
         $mform->addHelpButton('examplecsv', 'examplecsv', 'tool_uploaduser');
@@ -149,7 +154,7 @@ class admin_uploaduser_form2 extends moodleform {
         $mform->addElement('selectyesno', 'uuallowdeletes', get_string('allowdeletes', 'tool_uploaduser'));
         $mform->setDefault('uuallowdeletes', 0);
         // Ensure user is able to perform user deletion.
-        if (!has_capability('moodle/user:delete', context_system::instance())) {
+        if (!has_capability('moodle/user:delete', system::instance())) {
             $mform->hardFreeze('uuallowdeletes');
             $mform->setConstant('uuallowdeletes', 0);
         }
@@ -250,42 +255,42 @@ class admin_uploaduser_form2 extends moodleform {
 
         $choices = array(0 => get_string('emaildisplayno'), 1 => get_string('emaildisplayyes'), 2 => get_string('emaildisplaycourse'));
         $mform->addElement('select', 'maildisplay', get_string('emaildisplay'), $choices);
-        $mform->setDefault('maildisplay', core_user::get_property_default('maildisplay'));
+        $mform->setDefault('maildisplay', user::get_property_default('maildisplay'));
         $mform->addHelpButton('maildisplay', 'emaildisplay');
 
         $choices = array(0 => get_string('emailenable'), 1 => get_string('emaildisable'));
         $mform->addElement('select', 'emailstop', get_string('emailstop'), $choices);
-        $mform->setDefault('emailstop', core_user::get_property_default('emailstop'));
+        $mform->setDefault('emailstop', user::get_property_default('emailstop'));
         $mform->setAdvanced('emailstop');
 
         $choices = array(0 => get_string('textformat'), 1 => get_string('htmlformat'));
         $mform->addElement('select', 'mailformat', get_string('emailformat'), $choices);
-        $mform->setDefault('mailformat', core_user::get_property_default('mailformat'));
+        $mform->setDefault('mailformat', user::get_property_default('mailformat'));
         $mform->setAdvanced('mailformat');
 
         $choices = array(0 => get_string('emaildigestoff'), 1 => get_string('emaildigestcomplete'), 2 => get_string('emaildigestsubjects'));
         $mform->addElement('select', 'maildigest', get_string('emaildigest'), $choices);
-        $mform->setDefault('maildigest', core_user::get_property_default('maildigest'));
+        $mform->setDefault('maildigest', user::get_property_default('maildigest'));
         $mform->setAdvanced('maildigest');
 
         $choices = array(1 => get_string('autosubscribeyes'), 0 => get_string('autosubscribeno'));
         $mform->addElement('select', 'autosubscribe', get_string('autosubscribe'), $choices);
-        $mform->setDefault('autosubscribe', core_user::get_property_default('autosubscribe'));
+        $mform->setDefault('autosubscribe', user::get_property_default('autosubscribe'));
 
         $mform->addElement('text', 'city', get_string('city'), 'maxlength="120" size="25"');
-        $mform->setType('city', core_user::get_property_type('city'));
-        $mform->setDefault('city', core_user::get_property_default('city'));
+        $mform->setType('city', user::get_property_type('city'));
+        $mform->setDefault('city', user::get_property_default('city'));
 
-        $mform->addElement('select', 'country', get_string('selectacountry'), core_user::get_property_choices('country'));
-        $mform->setDefault('country', core_user::get_property_default('country') ?: '');
+        $mform->addElement('select', 'country', get_string('selectacountry'), user::get_property_choices('country'));
+        $mform->setDefault('country', user::get_property_default('country') ?: '');
         $mform->setAdvanced('country');
 
         $mform->addElement('select', 'timezone', get_string('timezone'), core_date::get_list_of_timezones(null, true));
-        $mform->setDefault('timezone', core_user::get_property_default('timezone'));
+        $mform->setDefault('timezone', user::get_property_default('timezone'));
         $mform->setAdvanced('timezone');
 
-        $mform->addElement('select', 'lang', get_string('preferredlanguage'), core_user::get_property_choices('lang'));
-        $mform->setDefault('lang', core_user::get_property_default('lang'));
+        $mform->addElement('select', 'lang', get_string('preferredlanguage'), user::get_property_choices('lang'));
+        $mform->setDefault('lang', user::get_property_default('lang'));
         $mform->setAdvanced('lang');
 
         $editoroptions = array('maxfiles'=>0, 'maxbytes'=>0, 'trusttext'=>false, 'forcehttps'=>false);
@@ -295,27 +300,27 @@ class admin_uploaduser_form2 extends moodleform {
         $mform->setAdvanced('description');
 
         $mform->addElement('text', 'idnumber', get_string('idnumber'), 'maxlength="255" size="25"');
-        $mform->setType('idnumber', core_user::get_property_type('idnumber'));
+        $mform->setType('idnumber', user::get_property_type('idnumber'));
         $mform->setForceLtr('idnumber');
 
         $mform->addElement('text', 'institution', get_string('institution'), 'maxlength="255" size="25"');
-        $mform->setType('institution', core_user::get_property_type('institution'));
+        $mform->setType('institution', user::get_property_type('institution'));
 
         $mform->addElement('text', 'department', get_string('department'), 'maxlength="255" size="25"');
-        $mform->setType('department', core_user::get_property_type('department'));
+        $mform->setType('department', user::get_property_type('department'));
 
         $mform->addElement('text', 'phone1', get_string('phone1'), 'maxlength="20" size="25"');
-        $mform->setType('phone1', core_user::get_property_type('phone1'));
+        $mform->setType('phone1', user::get_property_type('phone1'));
         $mform->setAdvanced('phone1');
         $mform->setForceLtr('phone1');
 
         $mform->addElement('text', 'phone2', get_string('phone2'), 'maxlength="20" size="25"');
-        $mform->setType('phone2', core_user::get_property_type('phone2'));
+        $mform->setType('phone2', user::get_property_type('phone2'));
         $mform->setAdvanced('phone2');
         $mform->setForceLtr('phone2');
 
         $mform->addElement('text', 'address', get_string('address'), 'maxlength="255" size="25"');
-        $mform->setType('address', core_user::get_property_type('address'));
+        $mform->setType('address', user::get_property_type('address'));
         $mform->setAdvanced('address');
 
         // Next the profile defaults

@@ -28,9 +28,11 @@ namespace core_h5p;
 defined('MOODLE_INTERNAL') || die();
 
 use advanced_testcase;
+use core\context\system;
+use core\url;
 use core_h5p\local\library\autoloader;
 use MoodleQuickForm;
-use page_requirements_manager;
+use core\output\requirements\page_requirements_manager;
 use Moodle\H5PCore;
 
 /**
@@ -85,7 +87,7 @@ final class editor_test extends advanced_testcase {
         // This is a valid .H5P file.
         $filename = 'find-the-words.h5p';
         $path = self::get_fixture_path(__NAMESPACE__, $filename);
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $filerecord = [
             'contextid' => $syscontext->id,
             'component' => \core_h5p\file_storage::COMPONENT,
@@ -98,7 +100,7 @@ final class editor_test extends advanced_testcase {
         $fs = get_file_storage();
         $file = $fs->create_file_from_pathname($filerecord, $path);
         // Make the URL to pass to the WS.
-        $url = \moodle_url::make_pluginfile_url(
+        $url = url::make_pluginfile_url(
             $syscontext->id,
             \core_h5p\file_storage::COMPONENT,
             'unittest',
@@ -211,7 +213,7 @@ final class editor_test extends advanced_testcase {
             $item = $h5pcorepath . $item . $cachebuster;
         });
 
-        $expectedjs[] = (new \moodle_url('/h5p/js/h5p_overrides.js' . $cachebuster))->out();
+        $expectedjs[] = (new url('/h5p/js/h5p_overrides.js' . $cachebuster))->out();
         $expectedjs[] = autoloader::get_h5p_editor_library_url('scripts/h5peditor-editor.js' . $cachebuster)->out();
         $expectedjs[] = autoloader::get_h5p_editor_library_url('scripts/h5peditor-init.js' . $cachebuster)->out();
 

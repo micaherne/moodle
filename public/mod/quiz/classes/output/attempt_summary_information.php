@@ -16,19 +16,19 @@
 
 namespace mod_quiz\output;
 
-use action_link;
+use core\output\action_link;
 use core\output\named_templatable;
-use html_writer;
+use core\output\html_writer;
 use mod_quiz\grade_calculator;
 use mod_quiz\output\grades\grade_out_of;
 use mod_quiz\quiz_attempt;
-use moodle_url;
+use core\url;
 use mod_quiz\question\display_options;
 use question_display_options;
-use renderable;
-use renderer_base;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use user_picture;
+use core\output\user_picture;
 
 /**
  * A summary of a single quiz attempt for rendering.
@@ -207,7 +207,7 @@ class attempt_summary_information implements renderable, named_templatable {
             $userpicture->courseid = $attemptobj->get_courseid();
             $summary->add_item('user', $userpicture,
                 new action_link(
-                    new moodle_url('/user/view.php', ['id' => $student->id, 'course' => $attemptobj->get_courseid()]),
+                    new url('/user/view.php', ['id' => $student->id, 'course' => $attemptobj->get_courseid()]),
                     fullname($student, true),
                 )
             );

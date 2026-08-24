@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\url;
+use core_table\output\html_table;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -113,7 +118,7 @@ class report_eventlist_renderer extends plugin_renderer_base {
         }
 
         if (isset($eventinformation['parentclass'])) {
-            $url = new moodle_url('eventdetail.php', array('eventname' => $eventinformation['parentclass']));
+            $url = new url('eventdetail.php', array('eventname' => $eventinformation['parentclass']));
             $html .= html_writer::tag('dt', get_string('parentevent', 'report_eventlist'));
             $html .= html_writer::tag('dd', html_writer::link($url, $eventinformation['parentclass']));
         }

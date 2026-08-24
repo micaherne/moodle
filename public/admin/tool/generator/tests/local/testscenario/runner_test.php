@@ -16,6 +16,8 @@
 
 namespace tool_generator\local\testscenario;
 
+use core\context\course;
+
 /**
  * Tests for runner class.
  *
@@ -70,7 +72,7 @@ final class runner_test extends \advanced_testcase {
             5,
             $DB->count_records('user', ['firstname' => 'Student'])
         );
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $this->assertEquals(
             6,
             $DB->count_records('role_assignments', ['contextid' => $context->id])

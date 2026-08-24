@@ -25,6 +25,13 @@
 
 namespace core_course\search;
 
+use core\context\block;
+use core\context\course;
+use core\context\coursecat;
+use core\context\module;
+use core\context\system;
+use core\context\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -137,36 +144,36 @@ final class search_test extends \advanced_testcase {
 
         // Find the first block to use for a block context.
         $blockid = array_values($DB->get_records('block_instances', null, 'id', 'id', 0, 1))[0]->id;
-        $blockcontext = \context_block::instance($blockid);
+        $blockcontext = block::instance($blockid);
 
         // Check with block context - should be null.
         $this->assertNull($searcharea->get_document_recordset(0, $blockcontext));
 
         // Check with user context - should be null.
         $this->setAdminUser();
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $this->assertNull($searcharea->get_document_recordset(0, $usercontext));
 
         // Check with module context - should be null.
-        $modcontext = \context_module::instance($forum->cmid);
+        $modcontext = module::instance($forum->cmid);
         $this->assertNull($searcharea->get_document_recordset(0, $modcontext));
 
         // Check with course context - should return specified course if timestamp allows.
-        $coursecontext = \context_course::instance($course3->id);
+        $coursecontext = course::instance($course3->id);
         $results = self::recordset_to_ids($searcharea->get_document_recordset(3, $coursecontext));
         $this->assertEquals([$course3->id], $results);
         $results = self::recordset_to_ids($searcharea->get_document_recordset(4, $coursecontext));
         $this->assertEquals([], $results);
 
         // Check with category context - should return course in categories and subcategories.
-        $catcontext = \context_coursecat::instance($cat1->id);
+        $catcontext = coursecat::instance($cat1->id);
         $results = self::recordset_to_ids($searcharea->get_document_recordset(0, $catcontext));
         $this->assertEquals([$course1->id, $course2->id], $results);
         $results = self::recordset_to_ids($searcharea->get_document_recordset(2, $catcontext));
         $this->assertEquals([$course2->id], $results);
 
         // Check with system context and null - should return all these courses + site course.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $results = self::recordset_to_ids($searcharea->get_document_recordset(0, $systemcontext));
         $this->assertEquals([$SITE->id, $course1->id, $course2->id, $course3->id], $results);
         $results = self::recordset_to_ids($searcharea->get_document_recordset(0, null));
@@ -315,37 +322,37 @@ final class search_test extends \advanced_testcase {
 
         // Find the first block to use for a block context.
         $blockid = array_values($DB->get_records('block_instances', null, 'id', 'id', 0, 1))[0]->id;
-        $blockcontext = \context_block::instance($blockid);
+        $blockcontext = block::instance($blockid);
 
         // Check with block context - should be null.
         $this->assertNull($searcharea->get_document_recordset(0, $blockcontext));
 
         // Check with user context - should be null.
         $this->setAdminUser();
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $this->assertNull($searcharea->get_document_recordset(0, $usercontext));
 
         // Check with module context - should be null.
-        $modcontext = \context_module::instance($forum->cmid);
+        $modcontext = module::instance($forum->cmid);
         $this->assertNull($searcharea->get_document_recordset(0, $modcontext));
 
         // Check with course context - should return specific course entries.
-        $coursecontext = \context_course::instance($course1->id);
+        $coursecontext = course::instance($course1->id);
         $results = self::recordset_to_ids($searcharea->get_document_recordset(0, $coursecontext));
         $this->assertEquals([$course1section3id, $course1section2id], $results);
         $results = self::recordset_to_ids($searcharea->get_document_recordset(2, $coursecontext));
         $this->assertEquals([$course1section2id], $results);
 
         // Check with category context - should return course in categories and subcategories.
-        $catcontext = \context_coursecat::instance($cat1->id);
+        $catcontext = coursecat::instance($cat1->id);
         $results = self::recordset_to_ids($searcharea->get_document_recordset(0, $catcontext));
         $this->assertEquals([$course1section3id, $course1section2id, $course2section1id], $results);
-        $catcontext = \context_coursecat::instance($cat2->id);
+        $catcontext = coursecat::instance($cat2->id);
         $results = self::recordset_to_ids($searcharea->get_document_recordset(0, $catcontext));
         $this->assertEquals([$course2section1id], $results);
 
         // Check with system context - should return everything (same as null, tested first).
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $results = self::recordset_to_ids($searcharea->get_document_recordset(0, $systemcontext));
         $this->assertEquals([$course1section3id, $course1section2id, $course2section1id], $results);
     }
@@ -575,7 +582,7 @@ final class search_test extends \advanced_testcase {
 
         // Prevent users viewing course lists.
         $userrole = $DB->get_field('role', 'id', ['shortname' => 'user'], MUST_EXIST);
-        assign_capability('moodle/category:viewcourselist', CAP_PREVENT, $userrole, \context_system::instance()->id, true);
+        assign_capability('moodle/category:viewcourselist', CAP_PREVENT, $userrole, system::instance()->id, true);
 
         // The following assertions check whether each user can view the indexed customfield data record.
         $course1data = \core_customfield\data::get_record([

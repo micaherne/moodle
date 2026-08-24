@@ -24,6 +24,8 @@
 
 namespace core_analytics\local\time_splitting;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -92,7 +94,7 @@ abstract class periodic extends base {
             $range = $this->get_next_range($nexttime);
 
             if (!$range) {
-                throw new \coding_exception('The get_next_range implementation is broken. The difference between two consecutive
+                throw new coding_exception('The get_next_range implementation is broken. The difference between two consecutive
                     ranges can not be more than the periodicity.');
             }
         }

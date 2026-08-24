@@ -16,7 +16,7 @@
 
 namespace mod_data\local\exporter;
 
-use coding_exception;
+use core\exception\coding_exception;
 use csv_export_writer;
 
 /**

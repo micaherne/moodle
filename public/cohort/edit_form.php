@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\coursecat;
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/lib/formslib.php');
@@ -110,12 +114,12 @@ class cohort_edit_form extends moodleform {
     protected function get_category_options($currentcontextid) {
         $displaylist = core_course_category::make_categories_list('moodle/cohort:manage');
         $options = array();
-        $syscontext = context_system::instance();
+        $syscontext = system::instance();
         if (has_capability('moodle/cohort:manage', $syscontext)) {
             $options[$syscontext->id] = $syscontext->get_context_name();
         }
         foreach ($displaylist as $cid=>$name) {
-            $context = context_coursecat::instance($cid);
+            $context = coursecat::instance($cid);
             $options[$context->id] = $name;
         }
         // Always add current - this is not likely, but if the logic gets changed it might be a problem.

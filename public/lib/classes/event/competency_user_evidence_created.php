@@ -24,6 +24,7 @@
 namespace core\event;
 
 use core\event\base;
+use core\exception\coding_exception;
 use core_competency\user_evidence;
 
 defined('MOODLE_INTERNAL') || die();
@@ -50,7 +51,7 @@ class competency_user_evidence_created extends base {
      */
     final public static function create_from_user_evidence(user_evidence $userevidence) {
         if (!$userevidence->get('id')) {
-            throw new \coding_exception('The evidence of prior learning ID must be set.');
+            throw new coding_exception('The evidence of prior learning ID must be set.');
         }
         $event = static::create(array(
             'contextid'  => $userevidence->get_context()->id,

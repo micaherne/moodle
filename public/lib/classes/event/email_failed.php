@@ -25,6 +25,8 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -81,16 +83,16 @@ class email_failed extends base {
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
         if (!isset($this->other['subject'])) {
-            throw new \coding_exception('The \'subject\' value must be set in other.');
+            throw new coding_exception('The \'subject\' value must be set in other.');
         }
         if (!isset($this->other['message'])) {
-            throw new \coding_exception('The \'message\' value must be set in other.');
+            throw new coding_exception('The \'message\' value must be set in other.');
         }
         if (!isset($this->other['errorinfo'])) {
-            throw new \coding_exception('The \'errorinfo\' value must be set in other.');
+            throw new coding_exception('The \'errorinfo\' value must be set in other.');
         }
     }
 

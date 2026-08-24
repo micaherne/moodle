@@ -26,9 +26,9 @@ namespace mod_h5pactivity\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use templatable;
-use renderer_base;
+use core\output\renderable;
+use core\output\templatable;
+use core\output\renderer_base;
 use stdClass;
 
 /**

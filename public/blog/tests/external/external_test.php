@@ -24,6 +24,10 @@
 
 namespace core_blog\external;
 
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\context\user;
 use core_external\external_api;
 
 defined('MOODLE_INTERNAL') || die();
@@ -84,7 +88,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $post->module = 'blog';
         $post->id = $DB->insert_record('post', $post);
 
-        \core_tag_tag::set_item_tags('core', 'post', $post->id, \context_user::instance($user->id), array('tag1'));
+        \core_tag_tag::set_item_tags('core', 'post', $post->id, user::instance($user->id), array('tag1'));
         $tagid = $DB->get_field('tag', 'id', array('name' => 'tag1'));
 
         // Grab important ids.
@@ -377,7 +381,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $DB->set_field('post', 'publishstate', 'site', array('id' => $this->postid));
 
         $this->setAdminUser();
-        $coursecontext = \context_course::instance($this->courseid);
+        $coursecontext = course::instance($this->courseid);
         $anothercourse = $this->getDataGenerator()->create_course();
 
         // Add blog associations with a course.
@@ -411,8 +415,8 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $DB->set_field('post', 'publishstate', 'site', array('id' => $this->postid));
 
         $this->setAdminUser();
-        $coursecontext = \context_course::instance($this->courseid);
-        $contextmodule = \context_module::instance($this->cmid);
+        $coursecontext = course::instance($this->courseid);
+        $contextmodule = module::instance($this->cmid);
         $anothermodule = $this->getDataGenerator()->create_module('page', array('course' => $this->courseid));
 
         // Add blog associations with a module.
@@ -524,7 +528,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
     public function test_get_entries_filtering_by_group(): void {
         $this->setAdminUser();
         // Add blog associations with a course.
-        $coursecontext = \context_course::instance($this->courseid);
+        $coursecontext = course::instance($this->courseid);
         $blog = new \blog_entry($this->postid);
         $blog->add_association($coursecontext->id);
 
@@ -544,7 +548,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
     public function test_get_entries_multiple_filter(): void {
         $this->setAdminUser();
         // Add blog associations with a course.
-        $coursecontext = \context_course::instance($this->courseid);
+        $coursecontext = course::instance($this->courseid);
         $blog = new \blog_entry($this->postid);
         $blog->add_association($coursecontext->id);
 
@@ -691,7 +695,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         // Draft files.
         $draftidinlineattach = file_get_unused_draft_itemid();
         $draftidattach = file_get_unused_draft_itemid();
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $inlinefilename = 'inlineimage.png';
         $filerecordinline = [
             'contextid' => $usercontext->id,
@@ -778,7 +782,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $this->resetAfterTest(true);
 
         // Remove capability.
-        $sitecontext = \context_system::instance();
+        $sitecontext = system::instance();
         $this->unassignUserCapability('moodle/blog:create', $sitecontext->id, $CFG->defaultuserroleid);
         $user = $this->getDataGenerator()->create_user();
         $this->setuser($user);
@@ -986,7 +990,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         // Draft files.
         $draftidinlineattach = file_get_unused_draft_itemid();
         $draftidattach = file_get_unused_draft_itemid();
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $inlinefilename = 'inlineimage.png';
         $filerecordinline = [
             'contextid' => $usercontext->id,
@@ -1135,7 +1139,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $this->resetAfterTest(true);
 
         // Remove capability.
-        $sitecontext = \context_system::instance();
+        $sitecontext = system::instance();
         $this->unassignUserCapability('moodle/blog:create', $sitecontext->id, $CFG->defaultuserroleid);
         $user = $this->getDataGenerator()->create_user();
         $this->setuser($user);

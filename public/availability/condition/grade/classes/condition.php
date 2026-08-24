@@ -16,6 +16,10 @@
 
 namespace availability_grade;
 
+use core\context;
+use core\exception\coding_exception;
+use core_cache\cache;
+use core_course\modinfo;
 use grade_helper;
 use core\output\html_writer;
 
@@ -47,7 +51,7 @@ class condition extends \core_availability\condition {
         if (isset($structure->id) && is_int($structure->id)) {
             $this->gradeitemid = $structure->id;
         } else {
-            throw new \coding_exception('Missing or invalid ->id for grade condition');
+            throw new coding_exception('Missing or invalid ->id for grade condition');
         }
 
         // Get min and max.
@@ -56,14 +60,14 @@ class condition extends \core_availability\condition {
         } else if (is_float($structure->min) || is_int($structure->min)) {
             $this->min = $structure->min;
         } else {
-            throw new \coding_exception('Missing or invalid ->min for grade condition');
+            throw new coding_exception('Missing or invalid ->min for grade condition');
         }
         if (!property_exists($structure, 'max')) {
             $this->max = null;
         } else if (is_float($structure->max) || is_int($structure->max)) {
             $this->max = $structure->max;
         } else {
-            throw new \coding_exception('Missing or invalid ->max for grade condition');
+            throw new coding_exception('Missing or invalid ->max for grade condition');
         }
     }
 
@@ -149,7 +153,7 @@ class condition extends \core_availability\condition {
      * @return string Text value
      */
     public static function get_description_callback_value(
-            \course_modinfo $modinfo, \context $context, array $params): string {
+            modinfo $modinfo, context $context, array $params): string {
         if (count($params) !== 1 || !is_number($params[0])) {
             return '<!-- Invalid grade description callback -->';
         }
@@ -188,7 +192,7 @@ class condition extends \core_availability\condition {
         require_once("{$CFG->dirroot}/grade/lib.php");
 
         // Get all grade item names from cache, or using db query.
-        $cache = \cache::make('availability_grade', 'items');
+        $cache = cache::make('availability_grade', 'items');
         if (($cacheditems = $cache->get($courseid)) === false) {
             // We cache the whole items table not the name; the format_string
             // call for the name might depend on current user (e.g. multilang)
@@ -233,7 +237,7 @@ class condition extends \core_availability\condition {
         if (!$userid) {
             $userid = $USER->id;
         }
-        $cache = \cache::make('availability_grade', 'scores');
+        $cache = cache::make('availability_grade', 'scores');
         if (($cachedgrades = $cache->get($userid)) === false) {
             $cachedgrades = array();
         }

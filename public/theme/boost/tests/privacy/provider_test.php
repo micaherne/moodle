@@ -16,7 +16,7 @@
 
 namespace theme_boost\privacy;
 
-use context_user;
+use core\context\user;
 use core_privacy\local\request\writer;
 
 /**
@@ -65,7 +65,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         // Test the user preferences export contains 1 user preference record for the User.
         provider::export_user_preferences($user->id);
-        $writer = writer::with_context(context_user::instance($user->id));
+        $writer = writer::with_context(user::instance($user->id));
         $this->assertTrue($writer->has_any_data());
 
         $exportedpreferences = $writer->get_user_preferences('theme_boost');

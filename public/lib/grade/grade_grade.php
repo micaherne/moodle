@@ -23,6 +23,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once('grade_object.php');
@@ -807,7 +810,7 @@ class grade_grade extends grade_object {
         global $CFG;
 
         if (count($grade_grades) !== count($grade_items)) {
-            throw new \moodle_exception('invalidarraysize', 'debug', '', 'grade_grade::get_hiding_affected()!');
+            throw new moodle_exception('invalidarraysize', 'debug', '', 'grade_grade::get_hiding_affected()!');
         }
 
         $dependson = array();

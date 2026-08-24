@@ -23,6 +23,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\system;
+use core\exception\coding_exception;
+use core\output\html_writer;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -823,7 +828,7 @@ abstract class qbehaviour_walkthrough_test_base extends question_testcase {
 
         $this->displayoptions = new question_display_options();
         $this->quba = question_engine::make_questions_usage_by_activity('unit_test',
-            context_system::instance());
+            system::instance());
     }
 
     protected function tearDown(): void {

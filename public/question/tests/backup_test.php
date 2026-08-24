@@ -16,9 +16,10 @@
 
 namespace core_question;
 
-use context_course;
+use core\context;
+use core\context\course;
 use mod_quiz\quiz_settings;
-use moodle_url;
+use core\url;
 use question_bank;
 
 defined('MOODLE_INTERNAL') || die();
@@ -142,14 +143,14 @@ final class backup_test extends \advanced_testcase {
         // Create 2 questions.
         $qgen = $this->getDataGenerator()->get_plugin_generator('core_question');
         $qbank = $this->getDataGenerator()->create_module('qbank', ['course' => $course->id]);
-        $context = \context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
         $qcat = question_get_default_category($context->id);
         $question1 = $qgen->create_question('shortanswer', null, ['category' => $qcat->id, 'idnumber' => 'q1']);
         $question2 = $qgen->create_question('shortanswer', null, ['category' => $qcat->id, 'idnumber' => 'q2']);
 
         // Tag the questions with 2 question tags.
-        $qcontext = \context::instance_by_id($qcat->contextid);
-        $coursecontext = context_course::instance($course->id);
+        $qcontext = context::instance_by_id($qcat->contextid);
+        $coursecontext = course::instance($course->id);
         \core_tag_tag::set_item_tags('core_question', 'question', $question1->id, $qcontext, ['qtag1', 'qtag2']);
         \core_tag_tag::set_item_tags('core_question', 'question', $question2->id, $qcontext, ['qtag3', 'qtag4']);
 
@@ -175,7 +176,7 @@ final class backup_test extends \advanced_testcase {
         $qbanks = array_filter($qbanks, static fn($qbank) => $qbank->get_name() === 'Question bank 1');
         $this->assertCount(1, $qbanks);
         $qbank = reset($qbanks);
-        $qbankcontext = \context_module::instance($qbank->id);
+        $qbankcontext = module::instance($qbank->id);
         $cats = $DB->get_records_select('question_categories', 'parent <> 0 AND contextid = ?', [$qbankcontext->id]);
         $this->assertCount(1, $cats);
         $cat = reset($cats);
@@ -226,7 +227,7 @@ final class backup_test extends \advanced_testcase {
         $qbanks = array_filter($qbanks, static fn($qbank) => $qbank->get_name() === 'Question bank 1');
         $this->assertCount(1, $qbanks);
         $qbank = reset($qbanks);
-        $context = \context_module::instance($qbank->id);
+        $context = module::instance($qbank->id);
 
         // The questions should have been moved to a question category that belongs to a course context.
         $questions = $DB->get_records_sql("SELECT q.*
@@ -439,11 +440,11 @@ final class backup_test extends \advanced_testcase {
         $category = $this->getDataGenerator()->create_category();
 
         // Create a question with links in all the places that should be recoded.
-        $testlink = new moodle_url('/course/view.php', ['id' => $course->id]);
+        $testlink = new url('/course/view.php', ['id' => $course->id]);
         $testcontent = 'Look at <a href="' . $testlink . '">the course</a>.';
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $questioncategory = $questiongenerator->create_question_category(
-            ['contextid' => \context_module::instance($qbank->cmid)->id]);
+            ['contextid' => module::instance($qbank->cmid)->id]);
         $question = $questiongenerator->create_question('multichoice', null, [
             'name' => 'Test question',
             'category' => $questioncategory->id,
@@ -480,14 +481,14 @@ final class backup_test extends \advanced_testcase {
                   JOIN {question_bank_entries} qbe ON qbe.id = qv.questionbankentryid
                   JOIN {question_categories} qc ON qc.id = qbe.questioncategoryid
                  WHERE qc.contextid = ?
-            ", [\context_module::instance($qbank->id)->id]);
+            ", [module::instance($qbank->id)->id]);
         $this->assertCount(1, $restoredquestions);
         $questionid = array_key_first($restoredquestions);
         $this->assertEquals('Test question', $restoredquestions[$questionid]->name);
 
         // Verify the links have been recoded.
         $restoredquestion = question_bank::load_question_data($questionid);
-        $recodedlink = new moodle_url('/course/view.php', ['id' => $newcourse->id]);
+        $recodedlink = new url('/course/view.php', ['id' => $newcourse->id]);
         $recodedcontent = 'Look at <a href="' . $recodedlink . '">the course</a>.';
         $firstanswerid = array_key_first($restoredquestion->options->answers);
         $firsthintid = array_key_first($restoredquestion->hints);
@@ -516,7 +517,7 @@ final class backup_test extends \advanced_testcase {
             'qbank',
             ['type' => question_bank_helper::TYPE_STANDARD, 'course' => $course->id]
         );
-        $qbankcontext = \context_module::instance($qbank->cmid);
+        $qbankcontext = module::instance($qbank->cmid);
         $bankqcat = question_get_default_category($qbankcontext->id);
         $bankquestion = $qgen->create_question('shortanswer',
             null,
@@ -525,7 +526,7 @@ final class backup_test extends \advanced_testcase {
 
         // Create a quiz module instance, a category for that module, and a question for that category.
         $quiz = self::getDataGenerator()->create_module('quiz', ['course' => $course->id]);
-        $quizcontext = \context_module::instance($quiz->cmid);
+        $quizcontext = module::instance($quiz->cmid);
         $quizqcat = question_get_default_category($quizcontext->id);
         $quizquestion = $qgen->create_question('shortanswer',
             null,
@@ -577,7 +578,7 @@ final class backup_test extends \advanced_testcase {
         $newquizzes = $modinfo->get_instances_of('quiz');
         $this->assertCount(1, $newquizzes);
         $newquiz = reset($newquizzes);
-        $newquizcontext = \context_module::instance($newquiz->id);
+        $newquizcontext = module::instance($newquiz->id);
 
         $quizcats = $DB->get_records_select('question_categories',
             'parent <> 0 AND contextid = :contextid',
@@ -595,7 +596,7 @@ final class backup_test extends \advanced_testcase {
         $defaultbanks = $modinfo->get_instances_of('qbank');
         $this->assertCount(1, $defaultbanks);
         $defaultbank = reset($defaultbanks);
-        $defaultbankcontext = \context_module::instance($defaultbank->id);
+        $defaultbankcontext = module::instance($defaultbank->id);
         $bankcats = $DB->get_records_select('question_categories',
             'parent <> 0 AND contextid = :contextid',
             ['contextid' => $defaultbankcontext->id]
@@ -639,7 +640,7 @@ final class backup_test extends \advanced_testcase {
         $newquizzes = $modinfo->get_instances_of('quiz');
         $this->assertCount(1, $newquizzes);
         $newquiz = reset($newquizzes);
-        $newquizcontext = \context_module::instance($newquiz->id);
+        $newquizcontext = module::instance($newquiz->id);
 
         $quizcats = $DB->get_records_select('question_categories',
             'parent <> 0 AND contextid = :contextid',
@@ -657,7 +658,7 @@ final class backup_test extends \advanced_testcase {
         $defaultbanks = $modinfo->get_instances_of('qbank');
         $this->assertCount(1, $defaultbanks);
         $defaultbank = reset($defaultbanks);
-        $defaultbankcontext = \context_module::instance($defaultbank->id);
+        $defaultbankcontext = module::instance($defaultbank->id);
         $bankcats = $DB->get_records_select('question_categories',
             'parent <> 0 AND contextid = :contextid',
             ['contextid' => $defaultbankcontext->id]
@@ -704,8 +705,8 @@ final class backup_test extends \advanced_testcase {
         $newq1 = $newquizsettings->get_structure()->get_question_in_slot(1);
         $newq2 = $newquizsettings->get_structure()->get_question_in_slot(2);
 
-        $newquizcontext = \context_module::instance($newquiz->id);
-        $qbankcontext = \context_module::instance($data->qbank->cmid);
+        $newquizcontext = module::instance($newquiz->id);
+        $qbankcontext = module::instance($data->qbank->cmid);
 
         // Check we've got a copy of the quiz question in the new context.
         $this->assertEquals($data->quizquestion->name, $newq2->name);
@@ -752,7 +753,7 @@ final class backup_test extends \advanced_testcase {
         $newquizzes = $modinfo->get_instances_of('quiz');
         $this->assertCount(1, $newquizzes);
         $newquiz = reset($newquizzes);
-        $newquizcontext = \context_module::instance($newquiz->id);
+        $newquizcontext = module::instance($newquiz->id);
         $quizcats = $DB->get_records_select('question_categories',
             'parent <> 0 AND contextid = :contextid',
             ['contextid' => $newquizcontext->id]
@@ -774,7 +775,7 @@ final class backup_test extends \advanced_testcase {
         $qbank = reset($qbanks);
         $bankcats = $DB->get_records_select('question_categories',
             'parent <> 0 AND contextid = :contextid',
-            ['contextid' => \context_module::instance($qbank->id)->id]
+            ['contextid' => module::instance($qbank->id)->id]
         );
         $bankcat = reset($bankcats);
         $bankqs = get_questions_category($bankcat, false);
@@ -825,7 +826,7 @@ final class backup_test extends \advanced_testcase {
         });
         $this->assertCount(1, $qbanks);
         $qbank = reset($qbanks);
-        $qbankcontext = \context_module::instance($qbank->id);
+        $qbankcontext = module::instance($qbank->id);
         $bankcats = $DB->get_records_select('question_categories',
             'parent <> 0 AND contextid = :contextid',
             ['contextid' => $qbankcontext->id],
@@ -856,7 +857,7 @@ final class backup_test extends \advanced_testcase {
         $newquizzes = $modinfo->get_instances_of('quiz');
         $this->assertCount(1, $newquizzes);
         $newquiz = reset($newquizzes);
-        $newquizcontext = \context_module::instance($newquiz->id);
+        $newquizcontext = module::instance($newquiz->id);
         $quizcats = $DB->get_records_select('question_categories',
             'parent <> 0 AND contextid = :contextid',
             ['contextid' => $newquizcontext->id]

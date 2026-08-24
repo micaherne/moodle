@@ -18,6 +18,7 @@ namespace core_course\backup;
 
 use backup;
 use backup_controller;
+use core\context\system;
 use restore_controller;
 use restore_dbops;
 
@@ -72,7 +73,7 @@ final class restore_test extends \advanced_testcase {
         $dg = $this->getDataGenerator();
         $roleid = $dg->create_role();
         foreach ($caps as $cap) {
-            assign_capability($cap, $perm, $roleid, \context_system::instance()->id, true);
+            assign_capability($cap, $perm, $roleid, system::instance()->id, true);
         }
         accesslib_clear_all_caches_for_unit_testing();
         return $roleid;

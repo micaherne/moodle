@@ -26,6 +26,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\system;
+use core\exception\coding_exception;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\url;
+
 require(__DIR__.'/../../config.php');
 require_once($CFG->dirroot.'/grade/grading/lib.php');
 
@@ -73,7 +80,7 @@ require_login($course, true, $cm);
 require_capability('moodle/grade:managegradingforms', $context);
 
 if (!empty($returnurl)) {
-    $returnurl = new moodle_url($returnurl);
+    $returnurl = new url($returnurl);
 } else {
     $returnurl = null;
 }
@@ -100,14 +107,14 @@ if (!empty($setmethod)) {
 
 // publish the form as a template
 if (!empty($shareform)) {
-    require_capability('moodle/grade:sharegradingforms', context_system::instance());
+    require_capability('moodle/grade:sharegradingforms', system::instance());
     $controller = $manager->get_controller($method);
     $definition = $controller->get_definition();
     if (!$confirmed) {
         // let the user confirm they understand what they are doing (haha ;-)
         echo $output->header();
         echo $output->confirm(get_string('manageactionshareconfirm', 'core_grading', s($definition->name)),
-            new moodle_url($PAGE->url, array('shareform' => $shareform, 'confirmed' => 1)),
+            new url($PAGE->url, array('shareform' => $shareform, 'confirmed' => 1)),
             $PAGE->url);
         echo $output->footer();
         die();
@@ -118,7 +125,7 @@ if (!empty($shareform)) {
         $targetcontroller = $targetarea->get_controller($method);
         $targetcontroller->update_definition($controller->get_definition_copy($targetcontroller));
         $DB->set_field('grading_definitions', 'timecopied', time(), array('id' => $definition->id));
-        redirect(new moodle_url($PAGE->url, array('message' => get_string('manageactionsharedone', 'core_grading'))));
+        redirect(new url($PAGE->url, array('message' => get_string('manageactionsharedone', 'core_grading'))));
     }
 }
 
@@ -133,13 +140,13 @@ if (!empty($deleteform)) {
             'formname'  => s($definition->name),
             'component' => $manager->get_component_title(),
             'area'      => $manager->get_area_title()))),
-            new moodle_url($PAGE->url, array('deleteform' => $deleteform, 'confirmed' => 1)), $PAGE->url);
+            new url($PAGE->url, array('deleteform' => $deleteform, 'confirmed' => 1)), $PAGE->url);
         echo $output->footer();
         die();
     } else {
         require_sesskey();
         $controller->delete_definition();
-        redirect(new moodle_url($PAGE->url, array('message' => get_string('manageactiondeletedone', 'core_grading'))));
+        redirect(new url($PAGE->url, array('message' => get_string('manageactiondeletedone', 'core_grading'))));
     }
 }
 
@@ -170,10 +177,10 @@ if (!empty($method)) {
         echo $output->management_action_icon($controller->get_editor_url($returnurl),
             get_string('manageactionedit', 'core_grading'), 'b/document-edit');
         // icon to delete the current form definition
-        echo $output->management_action_icon(new moodle_url($PAGE->url, array('deleteform' => $definition->id)),
+        echo $output->management_action_icon(new url($PAGE->url, array('deleteform' => $definition->id)),
             get_string('manageactiondelete', 'core_grading'), 'b/edit-delete');
         // icon to save the form as a new template
-        if (has_capability('moodle/grade:sharegradingforms', context_system::instance())) {
+        if (has_capability('moodle/grade:sharegradingforms', system::instance())) {
             if (empty($definition->copiedfromid)) {
                 $hasoriginal = false;
             } else {
@@ -211,14 +218,14 @@ if (!empty($method)) {
                 }
             }
             if ($allowshare) {
-                echo $output->management_action_icon(new moodle_url($PAGE->url, array('shareform' => $definition->id)),
+                echo $output->management_action_icon(new url($PAGE->url, array('shareform' => $definition->id)),
                     get_string('manageactionshare', 'core_grading'), 'b/bookmark-new');
             }
         }
     } else {
         echo $output->management_action_icon($controller->get_editor_url($returnurl),
             get_string('manageactionnew', 'core_grading'), 'b/document-new');
-        $pickurl = new moodle_url('/grade/grading/pick.php', array('targetid' => $controller->get_areaid()));
+        $pickurl = new url('/grade/grading/pick.php', array('targetid' => $controller->get_areaid()));
         if (!is_null($returnurl)) {
             $pickurl->param('returnurl', $returnurl->out(false));
         }

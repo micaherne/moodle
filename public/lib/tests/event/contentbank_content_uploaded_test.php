@@ -25,6 +25,7 @@
 
 namespace core\event;
 
+use core\context\system;
 use core_contentbank\contentbank;
 
 /**
@@ -59,7 +60,7 @@ final class contentbank_content_uploaded_test extends \advanced_testcase {
 
         $this->resetAfterTest();
         $this->setAdminUser();
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
 
         // Create a dummy H5P file.
         $dummyh5p = array(

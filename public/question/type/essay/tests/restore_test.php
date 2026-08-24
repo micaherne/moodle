@@ -16,6 +16,8 @@
 
 namespace qtype_essay;
 
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -44,7 +46,7 @@ final class restore_test extends \restore_date_testcase {
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
         $qbank = $generator->create_module('qbank', ['course' => $course->id]);
-        $context = \context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
         $category = question_get_default_category($context->id, true);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $essay = $questiongenerator->create_question('essay', null, array('category' => $category->id));
@@ -63,7 +65,7 @@ final class restore_test extends \restore_date_testcase {
         $newqbank = reset($newqbanks);
 
         // Verify that the restored question has options.
-        $newcategory = question_get_default_category(\context_module::instance($newqbank->id)->id, true);
+        $newcategory = question_get_default_category(module::instance($newqbank->id)->id, true);
         $newessay = $DB->get_record_sql('SELECT q.*
                                               FROM {question} q
                                               JOIN {question_versions} qv ON qv.questionid = q.id

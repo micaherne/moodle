@@ -24,6 +24,8 @@
 
 namespace core_calendar\local\event\factories;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 interface action_factory_interface {
@@ -36,5 +38,5 @@ interface action_factory_interface {
      * @param bool        $actionable The action's actionability.
      * @return \core_calendar\local\event\entities\action_interface The action.
      */
-    public function create_instance($name, \moodle_url $url, $itemcount, $actionable);
+    public function create_instance($name, url $url, $itemcount, $actionable);
 }

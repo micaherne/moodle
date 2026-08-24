@@ -17,6 +17,7 @@
 declare(strict_types=1);
 
 use core\{clock, di};
+use core\exception\coding_exception;
 use core_reportbuilder\manager;
 use core_reportbuilder\local\audiences\base as audience_base;
 use core_reportbuilder\local\helpers\report as helper;

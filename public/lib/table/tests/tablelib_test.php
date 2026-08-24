@@ -16,6 +16,7 @@
 
 namespace core_table;
 
+use core\context\system;
 use testable_flexible_table;
 
 defined('MOODLE_INTERNAL') || die();
@@ -411,7 +412,7 @@ final class tablelib_test extends \advanced_testcase {
 
         // Prohibit the viewfullnames from the default user role.
         $userrole = $DB->get_record('role', ['id' => $CFG->defaultuserroleid]);
-        role_change_permission($userrole->id, \context_system::instance(), 'moodle/site:viewfullnames', CAP_PROHIBIT);
+        role_change_permission($userrole->id, system::instance(), 'moodle/site:viewfullnames', CAP_PROHIBIT);
 
         $user = $this->getDataGenerator()->create_user();
 

@@ -28,6 +28,9 @@ defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__ . '/rubric.php');
 require_once(__DIR__ . '/criterion.php');
 
+use core\context;
+use core\exception\coding_exception;
+use core\test\testing_util;
 use tests\gradingform_rubric\generator\rubric;
 use tests\gradingform_rubric\generator\criterion;
 
@@ -63,11 +66,11 @@ class gradingform_rubric_generator extends component_generator_base {
         global $USER;
 
         if ($USER->id === 0) {
-            throw new \coding_exception('Creation of a rubric must currently be run as a user.');
+            throw new coding_exception('Creation of a rubric must currently be run as a user.');
         }
 
         // Fetch the controller for this context/component/area.
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $gradinggenerator = $generator->get_plugin_generator('core_grading');
         $controller = $gradinggenerator->create_instance($context, $component, $area, 'rubric');
 
@@ -224,7 +227,7 @@ class gradingform_rubric_generator extends component_generator_base {
         float $picturescore,
         string $pictureremark
     ): array {
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $rubricgenerator = $generator->get_plugin_generator('gradingform_rubric');
         return $rubricgenerator->get_submitted_form_data($controller, $itemid, [
             'Spelling is important' => [

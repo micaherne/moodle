@@ -17,6 +17,7 @@
 namespace core_course\external;
 
 use core\context\course as context_course;
+use core\exception\moodle_exception;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
@@ -73,7 +74,7 @@ class view_module_instance_list extends external_api {
 
         $course = get_course($courseid);
         if (!$course) {
-            throw new \moodle_exception('invalidcourseid', 'error', '', $courseid);
+            throw new moodle_exception('invalidcourseid', 'error', '', $courseid);
         }
 
         $context = context_course::instance($course->id);
@@ -85,7 +86,7 @@ class view_module_instance_list extends external_api {
         }
 
         if (!class_exists($eventclassname)) {
-            throw new \moodle_exception("Event not found for modname '$modname'");
+            throw new moodle_exception("Event not found for modname '$modname'");
         }
 
         $event = $eventclassname::create(['context' => $context]);

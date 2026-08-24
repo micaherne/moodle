@@ -26,6 +26,9 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\html_writer;
+use core\output\renderer_base;
+
 require_once($CFG->dirroot.'/lib/formslib.php');
 require_once($CFG->dirroot.'/lib/form/textarea.php');
 require_once($CFG->dirroot.'/lib/form/templatable_form_element.php');

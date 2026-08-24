@@ -16,6 +16,7 @@
 
 namespace core_message\external;
 
+use core\context\user;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
@@ -45,7 +46,7 @@ class get_unsent_message extends external_api {
     public static function execute(): array {
         global $SESSION, $USER;
 
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         self::validate_context($usercontext);
 
         $message = isset($SESSION->core_message_set_unsent_message) ? $SESSION->core_message_set_unsent_message : [];

@@ -16,12 +16,12 @@
 
 namespace mod_quiz\external;
 
-use coding_exception;
+use core\exception\coding_exception;
 use core_question_generator;
-use externallib_advanced_testcase;
+use core_external\tests\externallib_testcase;
 use mod_quiz\quiz_attempt;
 use mod_quiz\quiz_settings;
-use required_capability_exception;
+use core\exception\required_capability_exception;
 use stdClass;
 
 /**

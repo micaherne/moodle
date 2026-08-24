@@ -16,6 +16,8 @@
 
 namespace qtype_ordering\output;
 
+use core\output\renderer_base;
+
 /**
  * Create an array for the correct response based on the question and current step state.
  *
@@ -24,7 +26,7 @@ namespace qtype_ordering\output;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class correct_response extends renderable_base {
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
 
         $data = [];
         $question = $this->qa->get_question();

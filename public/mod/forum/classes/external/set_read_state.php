@@ -16,6 +16,7 @@
 
 namespace mod_forum\external;
 
+use core\exception\moodle_exception;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
@@ -73,17 +74,17 @@ class set_read_state extends external_api {
 
         $postentity = $postvault->get_from_id($params['postid']);
         if (empty($postentity)) {
-            throw new \moodle_exception('invalidpostid', 'forum');
+            throw new moodle_exception('invalidpostid', 'forum');
         }
 
         $discussionentity = $discussionvault->get_from_id($postentity->get_discussion_id());
         if (empty($discussionentity)) {
-            throw new \moodle_exception('notpartofdiscussion', 'forum');
+            throw new moodle_exception('notpartofdiscussion', 'forum');
         }
 
         $forumentity = $forumvault->get_from_id($discussionentity->get_forum_id());
         if (empty($forumentity)) {
-            throw new \moodle_exception('invalidforumid', 'forum');
+            throw new moodle_exception('invalidforumid', 'forum');
         }
 
         $context = $forumentity->get_context();
@@ -94,7 +95,7 @@ class set_read_state extends external_api {
 
         // Ensure the user has access to this post.
         if (!$capabilitymanager->can_view_post($USER, $discussionentity, $postentity)) {
-            throw new \moodle_exception('noviewdiscussionspermission', 'forum');
+            throw new moodle_exception('noviewdiscussionspermission', 'forum');
         }
 
         // Only attempt to change the read state when manual marking is enabled and tracking is active.

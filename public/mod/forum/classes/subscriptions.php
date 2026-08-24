@@ -24,6 +24,8 @@
 
 namespace mod_forum;
 
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -106,7 +108,7 @@ class subscriptions {
             if (!$cm) {
                 $cm = get_fast_modinfo($forum->course)->instances['forum'][$forum->id];
             }
-            if (has_capability('mod/forum:allowforcesubscribe', \context_module::instance($cm->id), $userid)) {
+            if (has_capability('mod/forum:allowforcesubscribe', module::instance($cm->id), $userid)) {
                 return true;
             }
         }
@@ -257,7 +259,7 @@ class subscriptions {
         foreach($forums as $forum) {
             if (empty($forum->visible)) {
                 // The forum is hidden - check if the user can view the forum.
-                $context = \context_module::instance($forum->cm);
+                $context = module::instance($forum->cm);
                 if (!has_capability('moodle/course:viewhiddenactivities', $context)) {
                     // The user can't see the hidden forum to cannot unsubscribe.
                     continue;

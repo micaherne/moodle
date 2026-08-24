@@ -26,6 +26,8 @@
  /**
   * Always include formslib
   */
+use core\context\course;
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
@@ -73,7 +75,7 @@ class event_form extends moodleform {
                 $groupoptions = array();
                 foreach ($eventtypes->groups as $group) {
                     $groupoptions[$group->id] = format_string($group->name, true,
-                        array('context' => context_course::instance($group->courseid)));
+                        array('context' => course::instance($group->courseid)));
                 }
                 $mform->addElement('select', 'groupid', get_string('typegroup', 'calendar'), $groupoptions);
                 $mform->disabledIf('groupid', 'eventtype', 'noteq', 'group');

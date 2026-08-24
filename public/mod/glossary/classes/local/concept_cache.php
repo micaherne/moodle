@@ -23,6 +23,8 @@
  */
 
 namespace mod_glossary\local;
+
+use core_cache\cache;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -54,7 +56,7 @@ class concept_cache {
         if ($phpunitreset) {
             return;
         }
-        $cache = \cache::make('mod_glossary', 'concepts');
+        $cache = cache::make('mod_glossary', 'concepts');
         $cache->purge();
     }
 
@@ -66,7 +68,7 @@ class concept_cache {
         if (empty($courseid)) {
             return;
         }
-        $cache = \cache::make('mod_glossary', 'concepts');
+        $cache = cache::make('mod_glossary', 'concepts');
         $cache->delete((int)$courseid);
     }
 
@@ -74,7 +76,7 @@ class concept_cache {
      * Reset the cache for global concepts.
      */
     public static function reset_global_muc() {
-        $cache = \cache::make('mod_glossary', 'concepts');
+        $cache = cache::make('mod_glossary', 'concepts');
         $cache->delete(0);
     }
 
@@ -167,7 +169,7 @@ class concept_cache {
             return array(array(), array());
         }
 
-        $cache = \cache::make('mod_glossary', 'concepts');
+        $cache = cache::make('mod_glossary', 'concepts');
         $data = $cache->get($courseid);
         if (is_array($data)) {
             list($glossaries, $allconcepts) = $data;
@@ -233,7 +235,7 @@ class concept_cache {
     protected static function get_global_concepts() {
         global $DB;
 
-        $cache = \cache::make('mod_glossary', 'concepts');
+        $cache = cache::make('mod_glossary', 'concepts');
         $data = $cache->get(0);
         if (is_array($data)) {
             list($glossaries, $allconcepts) = $data;

@@ -17,7 +17,7 @@
 namespace mod_assign\event;
 
 use assign;
-use coding_exception;
+use core\exception\coding_exception;
 use stdClass;
 
 /**

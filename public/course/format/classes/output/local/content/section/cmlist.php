@@ -25,11 +25,12 @@
 namespace core_courseformat\output\local\content\section;
 
 use core\output\named_templatable;
+use core\output\renderer_base;
 use core_courseformat\base as course_format;
 use core_courseformat\output\local\courseformat_named_templatable;
-use moodle_url;
-use renderable;
-use section_info;
+use core\url;
+use core\output\renderable;
+use core_course\section_info;
 use stdClass;
 
 /**
@@ -81,7 +82,7 @@ class cmlist implements named_templatable, renderable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return stdClass data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output): stdClass {
+    public function export_for_template(renderer_base $output): stdClass {
         global $USER;
 
         $format = $this->format;
@@ -102,9 +103,9 @@ class cmlist implements named_templatable, renderable {
             $data->hascms = true;
             $data->showmovehere = true;
             $data->strmovefull = strip_tags(get_string("movefull", "", "'$user->activitycopyname'"));
-            $data->movetosectionurl = new moodle_url('/course/mod.php', ['movetosection' => $section->id, 'sesskey' => sesskey()]);
+            $data->movetosectionurl = new url('/course/mod.php', ['movetosection' => $section->id, 'sesskey' => sesskey()]);
             $data->movingstr = strip_tags(get_string('activityclipboard', '', $user->activitycopyname));
-            $data->cancelcopyurl = new moodle_url('/course/mod.php', ['cancelcopy' => 'true', 'sesskey' => sesskey()]);
+            $data->cancelcopyurl = new url('/course/mod.php', ['cancelcopy' => 'true', 'sesskey' => sesskey()]);
         }
 
         if (empty($modinfo->sections[$section->section])) {
@@ -122,7 +123,7 @@ class cmlist implements named_templatable, renderable {
                 $item = new $this->itemclass($format, $section, $mod, $this->displayoptions);
                 $data->cms[] = (object)[
                     'cmitem' => $item->export_for_template($output),
-                    'moveurl' => new moodle_url('/course/mod.php', array('moveto' => $modnumber, 'sesskey' => sesskey())),
+                    'moveurl' => new url('/course/mod.php', array('moveto' => $modnumber, 'sesskey' => sesskey())),
                 ];
             }
         }

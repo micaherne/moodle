@@ -16,12 +16,13 @@
 
 namespace core_communication\admin;
 
-use core_plugin_manager;
+use core\lang_string;
+use core\plugin_manager;
 use core_text;
-use html_table;
-use html_table_row;
-use html_writer;
-use moodle_url;
+use core_table\output\html_table;
+use core_table\output\html_table_row;
+use core\output\html_writer;
+use core\url;
 use core_admin\admin_search;
 
 /**
@@ -36,7 +37,7 @@ class manage_communication_providers_page extends \core_admin\setting {
         $this->nosave = true;
         parent::__construct(
             'managecommunications',
-            new \lang_string('managecommunicationproviders', 'core_communication'),
+            new lang_string('managecommunicationproviders', 'core_communication'),
             '',
             ''
         );
@@ -54,7 +55,7 @@ class manage_communication_providers_page extends \core_admin\setting {
     public function output_html($data, $query = ''): string {
         global $OUTPUT;
 
-        $pluginmanager = core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $plugins = $pluginmanager->get_plugins_of_type('communication');
         if (empty($plugins)) {
             return get_string('nocommunicationprovider', 'core_communication');
@@ -73,10 +74,10 @@ class manage_communication_providers_page extends \core_admin\setting {
 
         foreach ($plugins as $plugin) {
             $class = '';
-            $actionurl = new moodle_url('/admin/communication.php', ['sesskey' => sesskey(), 'name' => $plugin->name]);
+            $actionurl = new url('/admin/communication.php', ['sesskey' => sesskey(), 'name' => $plugin->name]);
             if (
                 $pluginmanager->get_plugin_info('communication_' . $plugin->name)->get_status() ===
-                core_plugin_manager::PLUGIN_STATUS_MISSING
+                plugin_manager::PLUGIN_STATUS_MISSING
             ) {
                 $strtypename = $plugin->displayname . ' (' . get_string('missingfromdisk') . ')';
             } else {
@@ -103,7 +104,7 @@ class manage_communication_providers_page extends \core_admin\setting {
 
             $uninstall = '';
             if (
-                $uninstallurl = core_plugin_manager::instance()->get_uninstall_url(
+                $uninstallurl = plugin_manager::instance()->get_uninstall_url(
                     'communication_' . $plugin->name,
                     'manage'
                 )
@@ -125,7 +126,7 @@ class manage_communication_providers_page extends \core_admin\setting {
         if (parent::is_related($query)) {
             return true;
         }
-        $types = core_plugin_manager::instance()->get_plugins_of_type('communication');
+        $types = plugin_manager::instance()->get_plugins_of_type('communication');
         foreach ($types as $type) {
             if (strpos($type->component, $query) !== false) {
                 $this->searchmatchtype = admin_search::SEARCH_MATCH_SETTING_SHORT_NAME;

@@ -24,6 +24,8 @@
 
 namespace logstore_standard\event;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 
@@ -42,7 +44,7 @@ class unittest_executed extends \core\event\base {
     }
 
     public function get_url() {
-        return new \moodle_url('/somepath/somefile.php', array('id' => $this->data['other']['sample']));
+        return new url('/somepath/somefile.php', array('id' => $this->data['other']['sample']));
     }
 
     /**

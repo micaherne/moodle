@@ -26,6 +26,8 @@
 
 namespace core_payment\local\callback;
 
+use core\url;
+
 /**
  * The service_provider interface for plugins to provide callbacks which are needed by the payment subsystem.
  *
@@ -51,7 +53,7 @@ interface service_provider {
      * @param int $itemid An identifier that is known to the plugin
      * @return \moodle_url
      */
-    public static function get_success_url(string $paymentarea, int $itemid): \moodle_url;
+    public static function get_success_url(string $paymentarea, int $itemid): url;
 
     /**
      * Callback function that delivers what the user paid for to them.

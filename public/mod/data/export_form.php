@@ -1,5 +1,8 @@
 <?php
 
+use core\context\module;
+use core\output\html_writer;
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden!');
 }
@@ -92,7 +95,7 @@ class mod_data_export_form extends moodleform {
             $exportoptions[] = $mform->createElement('checkbox', 'exporttags', get_string('includetags', 'data'), '', $optionattrs);
             $mform->setDefault('exporttags', 1);
         }
-        $context = context_module::instance($this->_cm->id);
+        $context = module::instance($this->_cm->id);
         if (has_capability('mod/data:exportuserinfo', $context)) {
             $exportoptions[] = $mform->createElement('checkbox', 'exportuser', get_string('includeuserdetails', 'data'), '',
                 $optionattrs);

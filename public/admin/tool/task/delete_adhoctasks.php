@@ -23,22 +23,26 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 define('NO_OUTPUT_BUFFERING', true);
 
 require('../../../config.php');
 
 // Basic security checks.
 require_admin();
-$context = context_system::instance();
+$context = system::instance();
 
 // Get task and check the parameter is valid.
 $taskid = required_param('taskid', PARAM_INT);
 $task = \core\task\manager::get_adhoc_task($taskid);
 if (!$task) {
-    throw new \moodle_exception('cannotfindinfo', 'error', $taskid);
+    throw new moodle_exception('cannotfindinfo', 'error', $taskid);
 }
 
-$returnurl = new moodle_url('/admin/tool/task/adhoctasks.php',
+$returnurl = new url('/admin/tool/task/adhoctasks.php',
         ['classname' => get_class($task)]);
 
 require_sesskey();

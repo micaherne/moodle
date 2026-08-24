@@ -27,6 +27,10 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
+use core\context\block;
+use core\context\course;
+use core\context\module;
+use core\user;
 use \core_privacy\local\request\helper;
 use \core_privacy\local\request\writer;
 
@@ -48,12 +52,12 @@ final class request_helper_test extends advanced_testcase {
 
         // Setup.
         $course = $this->getDataGenerator()->create_course();
-        $user = \core_user::get_user_by_username('admin');
+        $user = user::get_user_by_username('admin');
 
         $forum = $this->getDataGenerator()->create_module('forum', [
                 'course' => $course->id,
             ]);
-        $context = context_module::instance($forum->cmid);
+        $context = module::instance($forum->cmid);
         $modinfo = get_fast_modinfo($course->id);
         $cm = $modinfo->cms[$context->instanceid];
 
@@ -87,8 +91,8 @@ final class request_helper_test extends advanced_testcase {
 
         // Setup.
         $block = $this->getDataGenerator()->create_block('online_users');
-        $context = context_block::instance($block->id);
-        $user = \core_user::get_user_by_username('admin');
+        $context = block::instance($block->id);
+        $user = user::get_user_by_username('admin');
 
         // Fetch the data.
         $data = helper::get_context_data($context, $user);
@@ -111,7 +115,7 @@ final class request_helper_test extends advanced_testcase {
         $user = $this->getDataGenerator()->create_user();
         $this->getDataGenerator()->enrol_user($user->id, $course->id, 'student');
         $assign = $this->getDataGenerator()->create_module('assign', ['course' => $course->id, 'completion' => 1]);
-        $context = context_module::instance($assign->cmid);
+        $context = module::instance($assign->cmid);
         $cm = get_coursemodule_from_id('assign', $assign->cmid);
 
         // Fetch context data.
@@ -143,12 +147,12 @@ final class request_helper_test extends advanced_testcase {
 
         // Setup.
         $course = $this->getDataGenerator()->create_course();
-        $user = \core_user::get_user_by_username('admin');
+        $user = user::get_user_by_username('admin');
 
         $forum = $this->getDataGenerator()->create_module('forum', [
                 'course' => $course->id,
             ]);
-        $context = context_module::instance($forum->cmid);
+        $context = module::instance($forum->cmid);
         $modinfo = get_fast_modinfo($course->id);
         $cm = $modinfo->cms[$context->instanceid];
 
@@ -169,8 +173,8 @@ final class request_helper_test extends advanced_testcase {
 
         // Setup.
         $course = $this->getDataGenerator()->create_course();
-        $user = \core_user::get_user_by_username('admin');
-        $context = context_course::instance($course->id);
+        $user = user::get_user_by_username('admin');
+        $context = course::instance($course->id);
 
         // Fetch the data.
         helper::export_context_files($context, $user);
@@ -189,9 +193,9 @@ final class request_helper_test extends advanced_testcase {
 
         // Setup.
         $course = $this->getDataGenerator()->create_course();
-        $user = \core_user::get_user_by_username('admin');
+        $user = user::get_user_by_username('admin');
         $assign = $this->getDataGenerator()->create_module('assign', ['course' => $course->id]);
-        $context = context_module::instance($assign->cmid);
+        $context = module::instance($assign->cmid);
 
         // File details.
         $filerecord = array(

@@ -26,6 +26,7 @@
 namespace core;
 
 use component_installer;
+use core\exception\moodle_exception;
 use lang_installer;
 use lang_installer_exception;
 
@@ -121,7 +122,7 @@ final class componentlib_test extends \advanced_testcase {
         try {
             $installer->run();
             $this->fail('lang_installer_exception exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('lang_installer_exception', $e);
         }
     }

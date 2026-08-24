@@ -22,6 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\coding_exception;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\url;
+
 require('../../config.php');
 require_once($CFG->dirroot.'/enrol/manual/locallib.php');
 
@@ -33,7 +39,7 @@ $timeend      = optional_param_array('timeend', [], PARAM_INT);
 
 $instance = $DB->get_record('enrol', array('id'=>$enrolid, 'enrol'=>'manual'), '*', MUST_EXIST);
 $course = $DB->get_record('course', array('id'=>$instance->courseid), '*', MUST_EXIST);
-$context = context_course::instance($course->id, MUST_EXIST);
+$context = course::instance($course->id, MUST_EXIST);
 
 require_login($course);
 $canenrol = has_capability('enrol/manual:enrol', $context);
@@ -63,14 +69,14 @@ if (!$enrol_manual = enrol_get_plugin('manual')) {
     throw new coding_exception('Can not instantiate enrol_manual');
 }
 
-$url = new moodle_url('/enrol/manual/manage.php', ['enrolid' => $instance->id]);
+$url = new url('/enrol/manual/manage.php', ['enrolid' => $instance->id]);
 $title = get_string('managemanualenrolements', 'enrol_manual');
 
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title($title);
 $PAGE->set_heading($course->fullname);
-navigation_node::override_active_url(new moodle_url('/enrol/instances.php', ['id' => $course->id]));
+navigation_node::override_active_url(new url('/enrol/instances.php', ['id' => $course->id]));
 $PAGE->navbar->add($title, $url);
 
 // Create the user selector objects.

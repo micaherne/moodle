@@ -16,6 +16,8 @@
 
 namespace qbank_viewquestionname;
 
+use core\output\html_writer;
+
 /**
  * A question bank column showing the question name with idnumber and tags.
  *
@@ -33,7 +35,7 @@ class question_name_idnumber_tags_column extends viewquestionname_column_helper 
     protected function display_content($question, $rowclasses): void {
         global $OUTPUT;
 
-        echo \html_writer::start_tag('div', ['class' => 'd-inline-flex flex-nowrap overflow-hidden w-100']);
+        echo html_writer::start_tag('div', ['class' => 'd-inline-flex flex-nowrap overflow-hidden w-100']);
         $actions = $this->qbank->get_question_actions();
         $actionlink = null;
         foreach ($actions as $action) {
@@ -51,21 +53,21 @@ class question_name_idnumber_tags_column extends viewquestionname_column_helper 
         );
         $labelfor = $this->label_for($question);
         if ($labelfor) {
-            echo \html_writer::tag('label', $questiondisplay, [
+            echo html_writer::tag('label', $questiondisplay, [
                 'for' => $labelfor,
             ]);
         } else {
-            echo \html_writer::start_span('questionname flex-grow-1 flex-shrink-1 text-truncate');
+            echo html_writer::start_span('questionname flex-grow-1 flex-shrink-1 text-truncate');
             echo $questiondisplay;
-            echo \html_writer::end_span();
+            echo html_writer::end_span();
         }
 
         // Question idnumber.
         // The non-breaking space '&nbsp;' is used in html to fix MDL-75051 (browser issues caused by chrome and Edge).
         if ($question->idnumber !== null && $question->idnumber !== '') {
-            echo ' ' . \html_writer::span(
-                            \html_writer::span(get_string('idnumber', 'question') . '&nbsp;', 'accesshide')
-                            . \html_writer::span(s($question->idnumber), 'badge bg-primary text-white'), 'ms-1');
+            echo ' ' . html_writer::span(
+                            html_writer::span(get_string('idnumber', 'question') . '&nbsp;', 'accesshide')
+                            . html_writer::span(s($question->idnumber), 'badge bg-primary text-white'), 'ms-1');
         }
 
         // Question tags.
@@ -74,11 +76,11 @@ class question_name_idnumber_tags_column extends viewquestionname_column_helper 
             echo $OUTPUT->tag_list($tags, null, 'd-inline flex-shrink-1 text-truncate ms-1', 0, null, true);
         }
 
-        echo \html_writer::end_tag('div');
+        echo html_writer::end_tag('div');
 
         // If the question is invalid, show a warning badge.
         if (!\question_bank::is_qtype_usable($question->qtype)) {
-            echo \html_writer::span(get_string('invalidquestiontype', 'question', $question->qtype),
+            echo html_writer::span(get_string('invalidquestiontype', 'question', $question->qtype),
                 'badge bg-danger text-white');
         }
 

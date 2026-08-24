@@ -23,6 +23,8 @@
  */
 namespace core\task;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -101,10 +103,10 @@ class database_logger implements task_logger {
      * @param   string      $classname The task class to fetch for
      * @return  \moodle_url
      */
-    public static function get_url_for_task_class(string $classname): \moodle_url {
+    public static function get_url_for_task_class(string $classname): url {
         global $CFG;
 
-        return new \moodle_url("/{$CFG->admin}/tasklogs.php", [
+        return new url("/{$CFG->admin}/tasklogs.php", [
                 'filter' => $classname,
             ]);
     }

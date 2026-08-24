@@ -24,6 +24,9 @@
  */
 namespace mod_book;
 
+use core\context\course;
+use core\context\module;
+use core\url;
 use core_external\external_api;
 
 defined('MOODLE_INTERNAL') || die();
@@ -209,7 +212,7 @@ final class lib_test extends \advanced_testcase {
         $bookgenerator = $this->getDataGenerator()->get_plugin_generator('mod_book');
         $chapter = $bookgenerator->create_chapter(array('bookid' => $book->id));
 
-        $context = \context_module::instance($book->cmid);
+        $context = module::instance($book->cmid);
         $cm = get_coursemodule_from_instance('book', $book->id);
 
         // Trigger and capture the event.
@@ -225,7 +228,7 @@ final class lib_test extends \advanced_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_book\event\course_module_viewed', $event);
         $this->assertEquals($context, $event->get_context());
-        $moodleurl = new \moodle_url('/mod/book/view.php', array('id' => $cm->id));
+        $moodleurl = new url('/mod/book/view.php', array('id' => $cm->id));
         $this->assertEquals($moodleurl, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -508,7 +511,7 @@ final class lib_test extends \advanced_testcase {
         $this->assertDoesNotMatchRegularExpression('/'.$chapter31->title.'/', $res->content);
 
         // User can search book chapters inside a course.
-        $coursecontext = \context_course::instance($course1->id);
+        $coursecontext = course::instance($course1->id);
         $res = mod_book_get_tagged_chapters($tag, /*$exclusivemode = */false,
             /*$fromctx = */0, /*$ctx = */$coursecontext->id, /*$rec = */1, /*$chapter = */0);
         $this->assertMatchesRegularExpression('/'.$chapter11->title.'/', $res->content);

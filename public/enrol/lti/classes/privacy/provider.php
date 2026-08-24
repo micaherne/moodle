@@ -24,6 +24,9 @@
 
 namespace enrol_lti\privacy;
 
+use core\context;
+use core\context\course;
+use core\context\module;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -96,7 +99,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!($context instanceof \context_course || $context instanceof \context_module)) {
+        if (!($context instanceof course || $context instanceof module)) {
             return;
         }
 
@@ -142,7 +145,7 @@ class provider implements
             ];
             return $carry;
         }, function($contextid, $data) {
-            $context = \context::instance_by_id($contextid);
+            $context = context::instance_by_id($contextid);
             $finaldata = (object) $data;
             writer::with_context($context)->export_data(['enrol_lti_users'], $finaldata);
         });
@@ -153,10 +156,10 @@ class provider implements
      *
      * @param \context $context A user context.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         global $DB;
 
-        if (!($context instanceof \context_course || $context instanceof \context_module)) {
+        if (!($context instanceof course || $context instanceof module)) {
             return;
         }
 
@@ -179,7 +182,7 @@ class provider implements
         $userid = $contextlist->get_user()->id;
 
         foreach ($contextlist->get_contexts() as $context) {
-            if (!($context instanceof \context_course || $context instanceof \context_module)) {
+            if (!($context instanceof course || $context instanceof module)) {
                 continue;
             }
 
@@ -203,7 +206,7 @@ class provider implements
 
         $context = $userlist->get_context();
 
-        if (!($context instanceof \context_course || $context instanceof \context_module)) {
+        if (!($context instanceof course || $context instanceof module)) {
             return;
         }
 

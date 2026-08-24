@@ -18,6 +18,8 @@ declare(strict_types = 1);
 
 namespace core_h5p;
 
+use core\context\system;
+use core\url;
 use core_h5p\local\library\autoloader;
 
 /**
@@ -408,7 +410,7 @@ final class helper_test extends \advanced_testcase {
          $this->resetAfterTest();
 
         $filename = 'guess-the-answer.h5p';
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         $generator = $this->getDataGenerator()->get_plugin_generator('core_h5p');
         $deployedfile = $generator->create_export_file($filename,
@@ -425,7 +427,7 @@ final class helper_test extends \advanced_testcase {
         $this->assertEquals($deployedfile['fileurl'], $helperfile['fileurl']);
 
         // Test scenario 2: Get export information from correct filename and url.
-        $url = \moodle_url::make_pluginfile_url(
+        $url = url::make_pluginfile_url(
             $syscontext->id,
             file_storage::COMPONENT,
             'unittest',

@@ -26,6 +26,10 @@ namespace core_h5p;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
 use core_h5p\local\library\autoloader;
 use core_xapi\handler;
 use core_xapi\local\state;
@@ -115,9 +119,9 @@ class player {
     public function __construct(string $url, \stdClass $config, bool $preventredirect = true, string $component = '',
             bool $skipcapcheck = false) {
         if (empty($url)) {
-            throw new \moodle_exception('h5pinvalidurl', 'core_h5p');
+            throw new moodle_exception('h5pinvalidurl', 'core_h5p');
         }
-        $this->url = new \moodle_url($url);
+        $this->url = new url($url);
         $this->preventredirect = $preventredirect;
 
         $this->factory = new \core_h5p\factory();
@@ -139,7 +143,7 @@ class player {
             $skipcapcheck
         );
         if ($file) {
-            $this->context = \context::instance_by_id($file->get_contextid());
+            $this->context = context::instance_by_id($file->get_contextid());
             if ($this->h5pid) {
                 // Load the content of the H5P content associated to this $url.
                 $this->content = $this->core->loadContent($this->h5pid);
@@ -184,7 +188,7 @@ class player {
                 $params[$optparam] = $config->$optparam;
             }
         }
-        $fileurl = new \moodle_url('/h5p/embed.php', $params);
+        $fileurl = new url('/h5p/embed.php', $params);
 
         $template = new \stdClass();
         $template->embedurl = $fileurl->out(false);
@@ -194,7 +198,7 @@ class player {
             if ($originalfile) {
                 // Check if the user can edit this content.
                 if (api::can_edit_content($originalfile)) {
-                    $template->editurl = (new \moodle_url('/h5p/edit.php', ['url' => $url]))->out(false);
+                    $template->editurl = (new url('/h5p/edit.php', ['url' => $url]))->out(false);
                 }
             }
         }
@@ -225,12 +229,12 @@ class player {
         global $PAGE, $USER;
 
         $cid = $this->get_cid();
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
 
         $disable = array_key_exists('disable', $this->content) ? $this->content['disable'] : core::DISABLE_NONE;
         $displayoptions = $this->core->getDisplayOptionsForView($disable, $this->h5pid);
 
-        $contenturl = \moodle_url::make_pluginfile_url($systemcontext->id, \core_h5p\file_storage::COMPONENT,
+        $contenturl = url::make_pluginfile_url($systemcontext->id, \core_h5p\file_storage::COMPONENT,
             \core_h5p\file_storage::CONTENT_FILEAREA, $this->h5pid, null, null);
         $exporturl = $this->get_export_settings($displayoptions[ core::DISPLAY_OPTION_DOWNLOAD ]);
         $xapiobject = item_activity::create_from_id($this->context->id);
@@ -238,7 +242,7 @@ class player {
         $contentsettings = [
             'library'         => core::libraryToString($this->content['library']),
             'fullScreen'      => $this->content['library']['fullscreen'],
-            'exportUrl'       => ($exporturl instanceof \moodle_url) ? $exporturl->out(false) : '',
+            'exportUrl'       => ($exporturl instanceof url) ? $exporturl->out(false) : '',
             'embedCode'       => $this->get_embed_code($this->url->out(),
                 $displayoptions[ core::DISPLAY_OPTION_EMBED ]),
             'resizeCode'      => self::get_resize_code(),
@@ -381,7 +385,7 @@ class player {
      *
      * @return context The context.
      */
-    public function get_context(): \context {
+    public function get_context(): context {
         return $this->context;
     }
 
@@ -405,19 +409,19 @@ class player {
      *
      * @return \moodle_url|null The URL of the exported file.
      */
-    private function get_export_settings(bool $downloadenabled): ?\moodle_url {
+    private function get_export_settings(bool $downloadenabled): ?url {
 
         if (!$downloadenabled) {
             return null;
         }
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $slug = $this->content['slug'] ? $this->content['slug'] . '-' : '';
         $filename = "{$slug}{$this->content['id']}.h5p";
         // We have to build the right URL.
         // Depending the request was made through webservice/pluginfile.php or pluginfile.php.
         if (strpos($this->url, '/webservice/pluginfile.php')) {
-            $url  = \moodle_url::make_webservice_pluginfile_url(
+            $url  = url::make_webservice_pluginfile_url(
                 $systemcontext->id,
                 \core_h5p\file_storage::COMPONENT,
                 \core_h5p\file_storage::EXPORT_FILEAREA,
@@ -431,7 +435,7 @@ class player {
             if (strpos($this->url, '/tokenpluginfile.php')) {
                 $includetoken = true;
             }
-            $url  = \moodle_url::make_pluginfile_url(
+            $url  = url::make_pluginfile_url(
                 $systemcontext->id,
                 \core_h5p\file_storage::COMPONENT,
                 \core_h5p\file_storage::EXPORT_FILEAREA,
@@ -483,7 +487,7 @@ class player {
 
         $files = $this->get_dependency_files();
         if ($this->embedtype === 'div') {
-            $systemcontext = \context_system::instance();
+            $systemcontext = system::instance();
             $h5ppath = "/pluginfile.php/{$systemcontext->id}/core_h5p";
 
             // Schedule JavaScripts for loading through Moodle.
@@ -496,7 +500,7 @@ class player {
                     $url = $h5ppath . $url;
                 }
                 $settings['loadedJs'][] = $url;
-                $this->jsrequires[] = new \moodle_url($isexternal ? $url : $CFG->wwwroot . $url);
+                $this->jsrequires[] = new url($isexternal ? $url : $CFG->wwwroot . $url);
             }
 
             // Schedule stylesheets for loading through Moodle.
@@ -509,7 +513,7 @@ class player {
                     $url = $h5ppath . $url;
                 }
                 $settings['loadedCss'][] = $url;
-                $this->cssrequires[] = new \moodle_url($isexternal ? $url : $CFG->wwwroot . $url);
+                $this->cssrequires[] = new url($isexternal ? $url : $CFG->wwwroot . $url);
             }
 
         } else {
@@ -603,14 +607,14 @@ class player {
      *
      * @return \moodle_url The embed URL.
      */
-    public static function get_embed_url(string $url, string $component = ''): \moodle_url {
+    public static function get_embed_url(string $url, string $component = ''): url {
         $params = ['url' => $url];
         if (!empty($component)) {
             // If component is not empty, it will be passed too, in order to allow tracking too.
             $params['component'] = $component;
         }
 
-        return new \moodle_url('/h5p/embed.php', $params);
+        return new url('/h5p/embed.php', $params);
     }
 
     /**

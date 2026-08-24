@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->dirroot.'/mod/lti/locallib.php');
 
@@ -35,7 +38,7 @@ $id = optional_param('id', 0, PARAM_INT);
 require_sesskey();
 require_login(0, false);
 
-$systemcontext = context_system::instance();
+$systemcontext = system::instance();
 require_capability('moodle/site:config', $systemcontext);
 
 if (empty($top)) {
@@ -52,7 +55,7 @@ if (empty($top)) {
     if (!empty($id)) {
         $params['id'] = $id;
     }
-    $redirect = new moodle_url('/mod/lti/registrationreturn.php', $params);
+    $redirect = new url('/mod/lti/registrationreturn.php', $params);
     $redirect = $redirect->out(false);
 
     $clickhere = get_string('click_to_continue', 'lti', (object)array('link' => $redirect));
@@ -89,13 +92,13 @@ EOD;
     if (!empty($id)) {
         $params['id'] = $id;
     }
-    $redirect = new moodle_url('/mod/lti/registrationreturn.php', $params);
+    $redirect = new url('/mod/lti/registrationreturn.php', $params);
     $redirect = $redirect->out(false);
     redirect($redirect, $err);
 
 } else {
 
-    $redirect = new moodle_url('/mod/lti/toolproxies.php');
+    $redirect = new url('/mod/lti/toolproxies.php');
     if (!empty($id)) {
         $toolproxy = $DB->get_record('lti_tool_proxies', array('id' => $id));
         switch($toolproxy->state) {

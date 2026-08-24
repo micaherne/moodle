@@ -25,6 +25,9 @@
 
 namespace mod_wiki\event;
 
+use core\context\course;
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot.'/mod/wiki/locallib.php');
@@ -73,7 +76,7 @@ final class events_test extends \advanced_testcase {
         $this->setUp();
 
         $page = $this->wikigenerator->create_first_page($this->wiki);
-        $context = \context_module::instance($this->wiki->cmid);
+        $context = module::instance($this->wiki->cmid);
 
         // Triggering and capturing the event.
         $sink = $this->redirectEvents();
@@ -96,7 +99,7 @@ final class events_test extends \advanced_testcase {
         $this->setUp();
 
         $page = $this->wikigenerator->create_first_page($this->wiki);
-        $context = \context_module::instance($this->wiki->cmid);
+        $context = module::instance($this->wiki->cmid);
 
         // Add comment so we can delete it later.
         wiki_add_comment($context, $page->id, 'Test comment', 'html');
@@ -127,7 +130,7 @@ final class events_test extends \advanced_testcase {
 
         $this->setUp();
         $page = $this->wikigenerator->create_first_page($this->wiki);
-        $context = \context_module::instance($this->wiki->cmid);
+        $context = module::instance($this->wiki->cmid);
 
         $params = array(
                 'context' => $context,
@@ -155,7 +158,7 @@ final class events_test extends \advanced_testcase {
         // to check if event returns the right information.
 
         $this->setUp();
-        $context = \context_course::instance($this->course->id);
+        $context = course::instance($this->course->id);
 
         $params = array('context' => $context);
         $event = \mod_wiki\event\course_module_instance_list_viewed::create($params);
@@ -180,7 +183,7 @@ final class events_test extends \advanced_testcase {
         // to check if event returns the right information.
 
         $this->setUp();
-        $context = \context_module::instance($this->wiki->cmid);
+        $context = module::instance($this->wiki->cmid);
 
         $params = array(
                 'context' => $context,
@@ -211,7 +214,7 @@ final class events_test extends \advanced_testcase {
         $this->setUp();
 
         $page = $this->wikigenerator->create_first_page($this->wiki);
-        $context = \context_module::instance($this->wiki->cmid);
+        $context = module::instance($this->wiki->cmid);
 
         $params = array(
                 'context' => $context,
@@ -242,7 +245,7 @@ final class events_test extends \advanced_testcase {
         $this->setUp();
 
         $page = $this->wikigenerator->create_first_page($this->wiki);
-        $context = \context_module::instance($this->wiki->cmid);
+        $context = module::instance($this->wiki->cmid);
 
         $params = array(
                 'context' => $context,
@@ -272,7 +275,7 @@ final class events_test extends \advanced_testcase {
 
         $this->setUp();
 
-        $context = \context_module::instance($this->wiki->cmid);
+        $context = module::instance($this->wiki->cmid);
 
         // Triggering and capturing the event.
         $sink = $this->redirectEvents();
@@ -296,7 +299,7 @@ final class events_test extends \advanced_testcase {
         $this->setUp();
 
         $page = $this->wikigenerator->create_first_page($this->wiki);
-        $context = \context_module::instance($this->wiki->cmid);
+        $context = module::instance($this->wiki->cmid);
         $oldversions = $DB->get_records('wiki_versions', array('pageid' => $page->id));
         $oldversion = array_shift($oldversions);
 
@@ -352,7 +355,7 @@ final class events_test extends \advanced_testcase {
         $this->setUp();
 
         $page = $this->wikigenerator->create_first_page($this->wiki);
-        $context = \context_module::instance($this->wiki->cmid);
+        $context = module::instance($this->wiki->cmid);
 
         // Triggering and capturing the event.
         $sink = $this->redirectEvents();
@@ -377,7 +380,7 @@ final class events_test extends \advanced_testcase {
         $this->setUp();
 
         $page = $this->wikigenerator->create_first_page($this->wiki);
-        $context = \context_module::instance($this->wiki->cmid);
+        $context = module::instance($this->wiki->cmid);
 
         $params = array(
                 'context' => $context,
@@ -412,7 +415,7 @@ final class events_test extends \advanced_testcase {
         $this->setUp();
 
         $page = $this->wikigenerator->create_first_page($this->wiki);
-        $context = \context_module::instance($this->wiki->cmid);
+        $context = module::instance($this->wiki->cmid);
 
         $params = array(
                 'context' => $context,
@@ -443,7 +446,7 @@ final class events_test extends \advanced_testcase {
         $this->setUp();
 
         $page = $this->wikigenerator->create_first_page($this->wiki);
-        $context = \context_module::instance($this->wiki->cmid);
+        $context = module::instance($this->wiki->cmid);
 
         $params = array(
                 'context' => $context,
@@ -478,7 +481,7 @@ final class events_test extends \advanced_testcase {
         $this->setUp();
 
         $page = $this->wikigenerator->create_first_page($this->wiki);
-        $context = \context_module::instance($this->wiki->cmid);
+        $context = module::instance($this->wiki->cmid);
 
         $params = array(
                 'context' => $context,
@@ -510,7 +513,7 @@ final class events_test extends \advanced_testcase {
         $this->setUp();
 
         $page = $this->wikigenerator->create_first_page($this->wiki);
-        $context = \context_module::instance($this->wiki->cmid);
+        $context = module::instance($this->wiki->cmid);
         $version = wiki_get_current_version($page->id);
 
         // Triggering and capturing the event.

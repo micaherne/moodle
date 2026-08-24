@@ -24,6 +24,12 @@
 
 namespace gradereport_history\output;
 
+use core\context\course;
+use core\output\html_writer;
+use core\output\renderable;
+use core\url;
+use core_table\sql_table;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/tablelib.php');
@@ -37,7 +43,7 @@ require_once($CFG->dirroot . '/user/lib.php');
  * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class tablelog extends \table_sql implements \renderable {
+class tablelog extends sql_table implements renderable {
 
     /**
      * @var int course id.
@@ -93,7 +99,7 @@ class tablelog extends \table_sql implements \renderable {
      * @param int $page The current page being displayed.
      * @param int $perpage Number of rules to display per page.
      */
-    public function __construct($uniqueid, \context_course $context, $url, $filters = array(), $download = '', $page = 0,
+    public function __construct($uniqueid, course $context, $url, $filters = array(), $download = '', $page = 0,
                                 $perpage = 100) {
         global $CFG;
         parent::__construct($uniqueid);
@@ -128,7 +134,7 @@ class tablelog extends \table_sql implements \renderable {
      *
      * @param \moodle_url $url url of the page where this table would be displayed.
      */
-    protected function define_table_configs(\moodle_url $url) {
+    protected function define_table_configs(url $url) {
 
         // Set table url.
         $urlparams = (array)$this->filters;
@@ -283,8 +289,8 @@ class tablelog extends \table_sql implements \renderable {
             if ($history->itemtype === 'mod' && !$this->is_downloading()) {
                 if (!empty($this->cms->instances[$history->itemmodule][$history->iteminstance])) {
                     $cm = $this->cms->instances[$history->itemmodule][$history->iteminstance];
-                    $url = new \moodle_url('/mod/' . $history->itemmodule . '/view.php', array('id' => $cm->id));
-                    return \html_writer::link($url, $this->gradeitems[$itemid]->get_name());
+                    $url = new url('/mod/' . $history->itemmodule . '/view.php', array('id' => $cm->id));
+                    return html_writer::link($url, $this->gradeitems[$itemid]->get_name());
                 }
             }
             return $this->gradeitems[$itemid]->get_name();
@@ -314,9 +320,9 @@ class tablelog extends \table_sql implements \renderable {
         }
 
         $userid = $history->usermodified;
-        $profileurl = new \moodle_url('/user/view.php', array('id' => $userid, 'course' => $this->courseid));
+        $profileurl = new url('/user/view.php', array('id' => $userid, 'course' => $this->courseid));
 
-        return \html_writer::link($profileurl, $name);
+        return html_writer::link($profileurl, $name);
     }
 
     /**

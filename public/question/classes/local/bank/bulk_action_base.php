@@ -16,6 +16,8 @@
 
 namespace core_question\local\bank;
 
+use core\url;
+
 /**
  * Class bulk_action_base is the base class for bulk actions ui.
  *
@@ -54,7 +56,7 @@ abstract class bulk_action_base extends view_component {
      *
      * @return \moodle_url
      */
-    abstract public function get_bulk_action_url(): \moodle_url;
+    abstract public function get_bulk_action_url(): url;
 
     /**
      * Get the capabilities for the bulk action.

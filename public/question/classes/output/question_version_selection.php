@@ -16,9 +16,9 @@
 
 namespace core_question\output;
 
-use renderer_base;
-use templatable;
-use renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\output\renderable;
 use question_bank;
 
 require_once($CFG->dirroot . '/question/engine/bank.php');

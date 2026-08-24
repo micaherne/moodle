@@ -22,6 +22,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 define('NO_OUTPUT_BUFFERING', true); // The progress bar may be used here.
 
 require_once '../../../config.php';
@@ -34,17 +39,17 @@ $action          = optional_param('action', 0, PARAM_ALPHA);
 $eid             = optional_param('eid', 0, PARAM_ALPHANUM);
 $weightsadjusted = optional_param('weightsadjusted', 0, PARAM_INT);
 
-$url = new moodle_url('/grade/edit/tree/index.php', array('id' => $courseid));
+$url = new url('/grade/edit/tree/index.php', array('id' => $courseid));
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('admin');
 
 /// Make sure they can even access this course
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 
 require_login($course);
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 require_capability('moodle/grade:manage', $context);
 
 $PAGE->requires->js_call_amd('core_grades/edittree_index', 'init', [$courseid, $USER->id]);
@@ -70,7 +75,7 @@ if (empty($eid)) {
 
 } else {
     if (!$element = $gtree->locate_element($eid)) {
-        throw new \moodle_exception('invalidelementid', '', $returnurl);
+        throw new moodle_exception('invalidelementid', '', $returnurl);
     }
     $object = $element['object'];
 }
@@ -96,7 +101,7 @@ switch ($action) {
     case 'duplicate':
         if ($eid and confirm_sesskey()) {
             if (!$el = $gtree->locate_element($eid)) {
-                throw new \moodle_exception('invalidelementid', '', $returnurl);
+                throw new moodle_exception('invalidelementid', '', $returnurl);
             }
 
             $object->duplicate();
@@ -131,7 +136,7 @@ switch ($action) {
             $first = optional_param('first', false,  PARAM_BOOL); // If First is set to 1, it means the target is the first child of the category $moveafter
 
             if(!$after_el = $gtree->locate_element($moveafter)) {
-                throw new \moodle_exception('invalidelementid', '', $returnurl);
+                throw new moodle_exception('invalidelementid', '', $returnurl);
             }
 
             $after = $after_el['object'];
@@ -231,7 +236,7 @@ $grade_edit_tree_index_checkweights = function() use ($courseid, $originalweight
     $alteredweights = grade_helper::fetch_all_natural_weights_for_course($courseid);
     if (array_diff($originalweights, $alteredweights)) {
         $weightsadjusted = 1;
-        return new moodle_url($PAGE->url, array('weightsadjusted' => $weightsadjusted));
+        return new url($PAGE->url, array('weightsadjusted' => $weightsadjusted));
     }
     return $PAGE->url;
 };

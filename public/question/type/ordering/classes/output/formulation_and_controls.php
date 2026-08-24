@@ -16,6 +16,7 @@
 
 namespace qtype_ordering\output;
 
+use core\output\renderer_base;
 use question_attempt;
 use question_display_options;
 
@@ -42,7 +43,7 @@ class formulation_and_controls extends renderable_base {
         parent::__construct($qa);
     }
 
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         global $PAGE;
 
         $data = [];

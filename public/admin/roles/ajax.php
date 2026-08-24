@@ -23,6 +23,8 @@
  * @copyright 2015 Martin Mastny
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\exception\moodle_exception;
+
 define('AJAX_SCRIPT', true);
 
 require(__DIR__ . '/../../config.php');

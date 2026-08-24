@@ -26,6 +26,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_cache\store;
+
 defined('MOODLE_INTERNAL') || die();
 
 $definitions = array(
@@ -34,7 +36,7 @@ $definitions = array(
     // The keys used are the revision, lang and component of the string file.
     // The static acceleration size has been based upon student access of the site.
     'string' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
         'staticacceleration' => true,
@@ -44,7 +46,7 @@ $definitions = array(
 
     // Used to store cache of all available translations.
     'langmenu' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
         'staticacceleration' => true,
@@ -56,7 +58,7 @@ $definitions = array(
     // Its keys are the table names.
     // When creating an instance of this definition you must provide the database family that is being used.
     'databasemeta' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'requireidentifiers' => array(
             'dbfamily'
         ),
@@ -73,7 +75,7 @@ $definitions = array(
     // Persistence has been turned on as normally events are used for frequently used caches and this event invalidation
     // cache will likely be used either lots or never.
     'eventinvalidation' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'staticacceleration' => true,
         'requiredataguarantee' => true,
         'simpledata' => true,
@@ -83,7 +85,7 @@ $definitions = array(
     // Users probably do not need to know about this cache. They will just call
     // question_bank::load_question.
     'questiondata' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true, // The id of the question is used.
         'requiredataguarantee' => false,
         'datasource' => 'question_finder',
@@ -95,7 +97,7 @@ $definitions = array(
     // and context combo. Text caching handles caching for the combination, this cache is responsible for caching the
     // cleaned text which is shareable.
     'htmlpurifier' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'canuselocalstore' => true,
     ),
 
@@ -105,7 +107,7 @@ $definitions = array(
     //   - plugin component for all plugin settings.
     // Persistence is used because normally several settings within a script.
     'config' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'staticacceleration' => true,
         'simpledata' => true
     ),
@@ -114,7 +116,7 @@ $definitions = array(
     // A simple cache designed to replace $GROUPLIB_CACHE->groupings.
     // Items are organised by course id and are essentially course records.
     'groupdata' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true, // The course id the groupings exist for.
         'simpledata' => true, // Array of stdClass objects containing only strings.
         'staticacceleration' => true, // Likely there will be a couple of calls to this.
@@ -123,7 +125,7 @@ $definitions = array(
 
     // Whether a course currently has hidden groups.
     'coursehiddengroups' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true, // The course id the groupings exist for.
         'simpledata' => true, // Booleans.
         'staticacceleration' => true, // Likely there will be a couple of calls to this.
@@ -131,7 +133,7 @@ $definitions = array(
 
     // Used to cache calendar subscriptions.
     'calendar_subscriptions' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
         'staticacceleration' => true,
@@ -139,7 +141,7 @@ $definitions = array(
 
     // Cache the course categories where the user has any enrolment and all categories that this user can manage.
     'calendar_categories' => array(
-        'mode' => cache_store::MODE_SESSION,
+        'mode' => store::MODE_SESSION,
         'simplekeys' => true,
         'simpledata' => true,
         'invalidationevents' => array(
@@ -151,7 +153,7 @@ $definitions = array(
 
     // Cache the capabilities list DB table. See get_all_capabilities and get_deprecated_capability_info in accesslib.
     'capabilities' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
         'staticacceleration' => true,
@@ -162,12 +164,12 @@ $definitions = array(
     // YUI Module cache.
     // This stores the YUI module metadata for Shifted YUI modules in Moodle.
     'yuimodules' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
     ),
 
     // Cache for the list of event observers.
     'observers' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
         'staticacceleration' => true,
@@ -177,14 +179,14 @@ $definitions = array(
     // Cache used by the {@link core_plugin_manager} class.
     // NOTE: this must be a shared cache.
     'plugin_manager' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
     ),
 
     // Used to store the full tree of course categories.
     'coursecattree' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'staticacceleration' => true,
         'invalidationevents' => array(
             'changesincoursecat',
@@ -192,7 +194,7 @@ $definitions = array(
     ),
     // Used to store data for course categories visible to current user. Helps to browse list of categories.
     'coursecat' => array(
-        'mode' => cache_store::MODE_SESSION,
+        'mode' => store::MODE_SESSION,
         'invalidationevents' => array(
             'changesincoursecat',
             'changesincourse',
@@ -201,7 +203,7 @@ $definitions = array(
     ),
     // Used to store data for course categories visible to current user. Helps to browse list of categories.
     'coursecatrecords' => array(
-        'mode' => cache_store::MODE_REQUEST,
+        'mode' => store::MODE_REQUEST,
         'simplekeys' => true,
         'invalidationevents' => array(
             'changesincoursecat',
@@ -209,21 +211,21 @@ $definitions = array(
     ),
     // Used to store state of sections in course (collapsed or not).
     'coursesectionspreferences' => [
-        'mode' => cache_store::MODE_REQUEST,
+        'mode' => store::MODE_REQUEST,
         'simplekeys' => true,
         'simpledata' => false,
         'staticacceleration' => true,
     ],
     // Cache course contacts for the courses.
     'coursecontacts' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'staticacceleration' => true,
         'simplekeys' => true,
         'ttl' => 3600,
     ),
     // Course reactive state cache.
     'courseeditorstate' => [
-        'mode' => cache_store::MODE_SESSION,
+        'mode' => store::MODE_SESSION,
         'simplekeys' => true,
         'simpledata' => true,
         'invalidationevents' => [
@@ -232,7 +234,7 @@ $definitions = array(
     ],
     // Course actions instances cache.
     'courseactionsinstances' => [
-        'mode' => cache_store::MODE_REQUEST,
+        'mode' => store::MODE_REQUEST,
         'simplekeys' => true,
         'simpledata' => false,
         'staticacceleration' => true,
@@ -245,11 +247,11 @@ $definitions = array(
     ],
     // Used to store data for repositories to avoid repetitive DB queries within one request.
     'repositories' => array(
-        'mode' => cache_store::MODE_REQUEST,
+        'mode' => store::MODE_REQUEST,
     ),
     // Used to store external badges.
     'externalbadges' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'ttl' => 3600,
     ),
@@ -264,7 +266,7 @@ $definitions = array(
     // - course_modinfo::purge_section_cache()
     // - remove_course_contents().
     'coursemodinfo' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'canuselocalstore' => true,
         'requirelockingbeforewrite' => true
@@ -274,14 +276,14 @@ $definitions = array(
     // Things such as which categories the user has expanded can be stored here.
     // It uses simple keys and simple data, please ensure all uses conform to those two constraints.
     'userselections' => array(
-        'mode' => cache_store::MODE_SESSION,
+        'mode' => store::MODE_SESSION,
         'simplekeys' => true,
         'simpledata' => true
     ),
 
     // Used to cache activity completion status.
     'completion' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
         'ttl' => 3600,
@@ -291,7 +293,7 @@ $definitions = array(
 
     // Used to cache course completion status.
     'coursecompletion' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
         'ttl' => 3600,
@@ -304,7 +306,7 @@ $definitions = array(
     // The cache isn't always up to date, it should only ever be used to save a costly call to
     // can_access_course on the first page request a user makes.
     'navigation_expandcourse' => array(
-        'mode' => cache_store::MODE_SESSION,
+        'mode' => store::MODE_SESSION,
         'simplekeys' => true,
         'simpledata' => true
     ),
@@ -312,14 +314,14 @@ $definitions = array(
     // Caches suspended userids by course.
     // The key is the courseid, the value is an array of user ids.
     'suspended_userids' => array(
-        'mode' => cache_store::MODE_REQUEST,
+        'mode' => store::MODE_REQUEST,
         'simplekeys' => true,
         'simpledata' => true,
     ),
 
     // Cache system-wide role definitions.
     'roledefs' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
         'staticacceleration' => true,
@@ -329,7 +331,7 @@ $definitions = array(
     // Caches plugins existing functions by function name and file.
     // Set static acceleration size to 5 to load a few functions.
     'plugin_functions' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
         'canuselocalstore' => true,
@@ -339,14 +341,14 @@ $definitions = array(
 
     // Caches data about tag collections and areas.
     'tags' => array(
-        'mode' => cache_store::MODE_REQUEST,
+        'mode' => store::MODE_REQUEST,
         'simplekeys' => true,
         'staticacceleration' => true,
     ),
 
     // Grade categories. Stored at session level as invalidation is very aggressive.
     'grade_categories' => array(
-        'mode' => cache_store::MODE_SESSION,
+        'mode' => store::MODE_SESSION,
         'simplekeys' => true,
         'invalidationevents' => array(
             'changesingradecategories',
@@ -355,14 +357,14 @@ $definitions = array(
 
     // Store temporary tables information.
     'temp_tables' => array(
-        'mode' => cache_store::MODE_REQUEST,
+        'mode' => store::MODE_REQUEST,
         'simplekeys' => true,
         'simpledata' => true
     ),
 
     // Caches tag index builder results.
     'tagindexbuilder' => array(
-        'mode' => cache_store::MODE_SESSION,
+        'mode' => store::MODE_SESSION,
         'simplekeys' => true,
         'simplevalues' => true,
         'staticacceleration' => true,
@@ -375,7 +377,7 @@ $definitions = array(
 
     // Caches contexts with insights.
     'contextwithinsights' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
         'staticacceleration' => true,
@@ -384,7 +386,7 @@ $definitions = array(
 
     // Caches message processors.
     'message_processors_enabled' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
         'staticacceleration' => true,
@@ -393,7 +395,7 @@ $definitions = array(
 
     // Caches the time of the last message in a conversation.
     'message_time_last_message_between_users' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true, // The conversation id is used.
         'simplevalues' => true,
         'datasource' => '\core_message\time_last_message_between_users',
@@ -401,7 +403,7 @@ $definitions = array(
 
     // Caches font awesome icons.
     'fontawesomeiconmapping' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
         'staticacceleration' => true,
@@ -410,7 +412,7 @@ $definitions = array(
 
     // Caches processed CSS.
     'postprocessedcss' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
         'staticacceleration' => false,
@@ -418,7 +420,7 @@ $definitions = array(
 
     // Caches grouping and group ids of a user.
     'user_group_groupings' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
         'staticacceleration' => true,
@@ -428,7 +430,7 @@ $definitions = array(
     // This cache is used to record the user's pre sign-up data such as
     // age of digital consent (minor) status, accepted policies, etc.
     'presignup' => array(
-        'mode' => cache_store::MODE_SESSION,
+        'mode' => store::MODE_SESSION,
         'simplekeys' => true,
         'simpledata' => true,
         'ttl' => 1800
@@ -436,7 +438,7 @@ $definitions = array(
 
     // Caches the first time we analysed models' analysables.
     'modelfirstanalyses' => array(
-        'mode' => cache_store::MODE_REQUEST,
+        'mode' => store::MODE_REQUEST,
         'simplekeys' => true,
         'simpledata' => true,
     ),
@@ -445,14 +447,14 @@ $definitions = array(
     // in the portfolio_add_button constructor to avoid loading the
     // same data multiple times.
     'portfolio_add_button_portfolio_instances' => [
-        'mode' => cache_store::MODE_REQUEST,
+        'mode' => store::MODE_REQUEST,
         'simplekeys' => true,
         'staticacceleration' => true
     ],
 
     // Cache the user dates for courses set to relative dates mode.
     'course_user_dates' => [
-        'mode' => cache_store::MODE_REQUEST,
+        'mode' => store::MODE_REQUEST,
         'simplekeys' => true,
         'simpledata' => true,
         'staticacceleration' => true
@@ -460,37 +462,37 @@ $definitions = array(
 
     // Information generated during the calculation of indicators.
     'calculablesinfo' => [
-        'mode' => cache_store::MODE_REQUEST,
+        'mode' => store::MODE_REQUEST,
         'simplekeys' => false,
         'simpledata' => false,
     ],
 
     // The list of content items (activities, resources and their subtypes) that can be added to a course for a user.
     'user_course_content_items' => [
-        'mode' => cache_store::MODE_REQUEST,
+        'mode' => store::MODE_REQUEST,
         'simplekeys' => true,
     ],
 
     // The list of favourited content items (activities, resources and their subtypes) for a user.
     'user_favourite_course_content_items' => [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
     ],
 
     \core_course\local\service\content_item_service::RECOMMENDATION_CACHE => [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
     ],
 
     // Caches contentbank extensions management.
     'contentbank_enabled_extensions' => [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
         'staticacceleration' => true,
     ],
     'contentbank_context_extensions' => [
-        'mode' => cache_store::MODE_REQUEST,
+        'mode' => store::MODE_REQUEST,
         'simplekeys' => true,
         'simpledata' => true,
         'staticacceleration' => true,
@@ -500,27 +502,27 @@ $definitions = array(
     // Key "{$libraryname}/{$language}"" contains translations for a given library and language.
     // Key "$libraryname" has a list of all of the available languages for the library.
     'h5p_content_type_translations' => [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simpledata' => true,
     ],
 
     // File cache for H5P Library ids.
     'h5p_libraries' => [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'canuselocalstore' => true
     ],
 
     // File cache for H5P Library files.
     'h5p_library_files' => [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'canuselocalstore' => true
     ],
 
     // Cache the grade letters for faster retrival.
     'grade_letters' => [
-        'mode'                   => cache_store::MODE_REQUEST,
+        'mode'                   => store::MODE_REQUEST,
         'simplekeys'             => true,
         'staticacceleration'     => true,
         'staticaccelerationsize' => 100
@@ -528,14 +530,14 @@ $definitions = array(
 
     // Cache for licenses.
     'license' => [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => false,
     ],
 
     // Cache the grade setting for faster retrieval.
     'gradesetting' => [
-        'mode'                   => cache_store::MODE_REQUEST,
+        'mode'                   => store::MODE_REQUEST,
         'simplekeys'             => true,
         'staticacceleration'     => true,
         'staticaccelerationsize' => 100
@@ -543,7 +545,7 @@ $definitions = array(
 
     // Course image cache.
     'course_image' => [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
         'staticacceleration' => true,
@@ -552,7 +554,7 @@ $definitions = array(
 
     // Cache the course categories where the user has access the content bank.
     'contentbank_allowed_categories' => [
-        'mode' => cache_store::MODE_SESSION,
+        'mode' => store::MODE_SESSION,
         'simplekeys' => true,
         'simpledata' => true,
         'invalidationevents' => [
@@ -563,7 +565,7 @@ $definitions = array(
 
     // Cache the courses where the user has access the content bank.
     'contentbank_allowed_courses' => [
-        'mode' => cache_store::MODE_SESSION,
+        'mode' => store::MODE_SESSION,
         'simplekeys' => true,
         'simpledata' => true,
         'invalidationevents' => [
@@ -575,7 +577,7 @@ $definitions = array(
 
     // Users allowed reports according to audience.
     'reportbuilder_allowed_reports' => [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
         'staticacceleration' => true,
@@ -584,7 +586,7 @@ $definitions = array(
 
     // Cache image dimensions.
     'file_imageinfo' => [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
         'staticacceleration' => true,
@@ -595,21 +597,21 @@ $definitions = array(
     // A theme has been used in context to override the default theme.
     // Applies to user, cohort, category and course.
     'theme_usedincontext' => [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
         'staticacceleration' => true,
     ],
 
     'routes' => [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
         'canuselocalstore' => true,
     ],
     // Cache to store user AI policy acceptance status.
     'ai_policy' => [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true, // Cache must use simple keys (a-zA-Z0-9_).
         'simpledata' => true, // Cache stores integer values which are simple data.
         'staticacceleration' => true,
@@ -619,7 +621,7 @@ $definitions = array(
     // Cache to store AI rate limits.
     // Used by AI provider plugins to limit the number of requests to external services.
     'ai_ratelimit' => [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true, // Cache must use simple keys (a-zA-Z0-9_).
         'simpledata' => true, // Cache stores integer values which are simple data.
         'staticacceleration' => true,
@@ -627,7 +629,7 @@ $definitions = array(
 
     // The navigation_cache class used this cache to store the navigation nodes.
     'navigation_cache' => [
-        'mode' => cache_store::MODE_SESSION,
+        'mode' => store::MODE_SESSION,
         'simplekeys' => true,
         'simpledata' => true,
         'ttl' => 1800,
@@ -636,7 +638,7 @@ $definitions = array(
     // Stores the calculated disk (filepool) usage for the site registration page.
     // Cached to avoid running an expensive aggregate query on the files table on every page load.
     'hub_filepoolusage' => [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
         'ttl' => 90000, // 25 hours.

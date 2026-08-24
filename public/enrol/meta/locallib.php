@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+
 defined('MOODLE_INTERNAL') || die();
 
 
@@ -89,7 +91,7 @@ class enrol_meta_handler {
             return;
         }
 
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
 
         // list of enrolments in parent course (we ignore meta enrols in parents completely)
         list($enabled, $params) = $DB->get_in_or_equal(explode(',', $CFG->enrol_plugins_enabled), SQL_PARAMS_NAMED, 'e');
@@ -109,7 +111,7 @@ class enrol_meta_handler {
             return;
         }
 
-        if (!$parentcontext = context_course::instance($instance->customint1, IGNORE_MISSING)) {
+        if (!$parentcontext = course::instance($instance->customint1, IGNORE_MISSING)) {
             // Weird, we should not get here.
             return;
         }
@@ -221,7 +223,7 @@ class enrol_meta_handler {
      * @param enrol_meta $plugin
      * @return void
      */
-    protected static function user_not_supposed_to_be_here($instance, $ue, context_course $context, $plugin) {
+    protected static function user_not_supposed_to_be_here($instance, $ue, course $context, $plugin) {
         if (!$ue) {
             // Not enrolled yet - simple!
             return;
@@ -323,7 +325,7 @@ function enrol_meta_sync($courseid = NULL, $verbose = false) {
 
         if (!$syncall) {
             // this may be slow if very many users are ignored in sync
-            $parentcontext = context_course::instance($instance->customint1);
+            $parentcontext = course::instance($instance->customint1);
             list($ignoreroles, $params) = $DB->get_in_or_equal($skiproles, SQL_PARAMS_NAMED, 'ri', false, -1);
             $params['contextid'] = $parentcontext->id;
             $params['userid'] = $ue->userid;
@@ -391,7 +393,7 @@ function enrol_meta_sync($courseid = NULL, $verbose = false) {
         } else if ($unenrolaction == ENROL_EXT_REMOVED_SUSPENDNOROLES) {
             if ($ue->status != ENROL_USER_SUSPENDED) {
                 $meta->update_user_enrol($instance, $ue->userid, ENROL_USER_SUSPENDED);
-                $context = context_course::instance($instance->courseid);
+                $context = course::instance($instance->courseid);
                 role_unassign_all(array('userid'=>$ue->userid, 'contextid'=>$context->id, 'component'=>'enrol_meta', 'itemid'=>$instance->id));
                 if ($verbose) {
                     mtrace("  suspending and removing all roles: $ue->userid ==> $instance->courseid");
@@ -458,7 +460,7 @@ function enrol_meta_sync($courseid = NULL, $verbose = false) {
         if ($ue->pstatus == ENROL_USER_ACTIVE and (!$ue->ptimeend || $ue->ptimeend > time())
                 and !$syncall and $unenrolaction != ENROL_EXT_REMOVED_UNENROL) {
             // this may be slow if very many users are ignored in sync
-            $parentcontext = context_course::instance($instance->customint1);
+            $parentcontext = course::instance($instance->customint1);
             list($ignoreroles, $params) = $DB->get_in_or_equal($skiproles, SQL_PARAMS_NAMED, 'ri', false, -1);
             $params['contextid'] = $parentcontext->id;
             $params['userid'] = $ue->userid;

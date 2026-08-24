@@ -16,7 +16,12 @@
 
 namespace core_admin\setting\setting;
 
+use core\output\html_writer;
+use core\plugin_manager;
+use core\url;
 use core_admin\admin_search;
+use core_table\output\html_table;
+use core_table\output\html_table_row;
 
 /**
  * Media player plugin administration.
@@ -75,7 +80,7 @@ class managemediaplayers extends \core_admin\setting {
         }
 
         $query = \core_text::strtolower($query);
-        $plugins = \core_plugin_manager::instance()->get_plugins_of_type('media');
+        $plugins = plugin_manager::instance()->get_plugins_of_type('media');
         foreach ($plugins as $name => $plugin) {
             $localised = $plugin->displayname;
             if (strpos(\core_text::strtolower($name), $query) !== false) {
@@ -95,7 +100,7 @@ class managemediaplayers extends \core_admin\setting {
      * @return \core\plugininfo\media[]
      */
     protected function get_sorted_plugins() {
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
 
         $plugins = $pluginmanager->get_plugins_of_type('media');
         $enabledplugins = $pluginmanager->get_enabled_plugins('media');
@@ -135,14 +140,14 @@ class managemediaplayers extends \core_admin\setting {
         $strname      = get_string('name');
         $strsupports  = get_string('supports', 'core_media');
 
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
 
         $plugins = $this->get_sorted_plugins();
         $enabledplugins = $pluginmanager->get_enabled_plugins('media');
 
         $return = $OUTPUT->box_start('generalbox mediaplayersui');
 
-        $table = new \html_table();
+        $table = new html_table();
         $table->head  = [$strname, $strsupports, $strversion,
             $strenable, $strup . '/' . $strdown, $strsettings, $struninstall];
         $table->colclasses = ['leftalign', 'leftalign', 'centeralign',
@@ -153,7 +158,7 @@ class managemediaplayers extends \core_admin\setting {
 
         // Iterate through media plugins and add to the display table.
         $updowncount = 1;
-        $url = new \moodle_url('/admin/media.php', ['sesskey' => sesskey()]);
+        $url = new url('/admin/media.php', ['sesskey' => sesskey()]);
         $printed = [];
         $spacer = $OUTPUT->pix_icon('spacer', '', 'moodle', ['class' => 'iconsmall']);
 
@@ -174,13 +179,13 @@ class managemediaplayers extends \core_admin\setting {
             } else {
                 $enabled = $plugininfo->is_enabled();
                 if ($enabled) {
-                    $hideshow = \html_writer::link(
-                        new \moodle_url($url, ['action' => 'disable']),
+                    $hideshow = html_writer::link(
+                        new url($url, ['action' => 'disable']),
                         $OUTPUT->pix_icon('t/hide', $strdisable, 'moodle', ['class' => 'iconsmall'])
                     );
                 } else {
-                    $hideshow = \html_writer::link(
-                        new \moodle_url($url, ['action' => 'enable']),
+                    $hideshow = html_writer::link(
+                        new url($url, ['action' => 'enable']),
                         $OUTPUT->pix_icon('t/show', $strenable, 'moodle', ['class' => 'iconsmall'])
                     );
                     $class = 'dimmed_text';
@@ -200,16 +205,16 @@ class managemediaplayers extends \core_admin\setting {
             $updown = '';
             if ($enabled) {
                 if ($updowncount > 1) {
-                    $updown = \html_writer::link(
-                        new \moodle_url($url, ['action' => 'up']),
+                    $updown = html_writer::link(
+                        new url($url, ['action' => 'up']),
                         $OUTPUT->pix_icon('t/up', $strup, 'moodle', ['class' => 'iconsmall'])
                     );
                 } else {
                     $updown = $spacer;
                 }
                 if ($updowncount < count($enabledplugins)) {
-                    $updown .= \html_writer::link(
-                        new \moodle_url($url, ['action' => 'down']),
+                    $updown .= html_writer::link(
+                        new url($url, ['action' => 'down']),
                         $OUTPUT->pix_icon('t/down', $strdown, 'moodle', ['class' => 'iconsmall'])
                     );
                 } else {
@@ -220,22 +225,22 @@ class managemediaplayers extends \core_admin\setting {
 
             $uninstall = '';
             $status = $plugininfo->get_status();
-            if ($status === \core_plugin_manager::PLUGIN_STATUS_MISSING) {
+            if ($status === plugin_manager::PLUGIN_STATUS_MISSING) {
                 $uninstall = get_string('status_missing', 'core_plugin') . '<br/>';
             }
-            if ($status === \core_plugin_manager::PLUGIN_STATUS_NEW) {
+            if ($status === plugin_manager::PLUGIN_STATUS_NEW) {
                 $uninstall = get_string('status_new', 'core_plugin');
             } else if ($uninstallurl = $pluginmanager->get_uninstall_url('media_' . $name, 'manage')) {
-                $uninstall .= \html_writer::link($uninstallurl, $struninstall);
+                $uninstall .= html_writer::link($uninstallurl, $struninstall);
             }
 
             $settings = '';
             if ($plugininfo->get_settings_url()) {
-                $settings = \html_writer::link($plugininfo->get_settings_url(), $strsettings);
+                $settings = html_writer::link($plugininfo->get_settings_url(), $strsettings);
             }
 
             // Add a row to the table.
-            $row = new \html_table_row([$icon . $displayname, $supports, $version, $hideshow, $updown, $settings, $uninstall]);
+            $row = new html_table_row([$icon . $displayname, $supports, $version, $hideshow, $updown, $settings, $uninstall]);
             if ($class) {
                 $row->attributes['class'] = $class;
             }
@@ -244,7 +249,7 @@ class managemediaplayers extends \core_admin\setting {
             $printed[$name] = true;
         }
 
-        $return .= \html_writer::table($table);
+        $return .= html_writer::table($table);
         $return .= $OUTPUT->box_end();
         return highlight($query, $return);
     }

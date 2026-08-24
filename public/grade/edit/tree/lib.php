@@ -22,6 +22,14 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\url;
+use core_table\output\html_table;
+use core_table\output\html_table_cell;
+use core_table\output\html_table_row;
+
 class grade_edit_tree {
     public $columns = array();
 
@@ -119,7 +127,7 @@ class grade_edit_tree {
         $actions = $this->gtree->get_cell_action_menu($element, 'setup', $this->gpr);
 
         if ($element['type'] == 'item' or ($element['type'] == 'category' and $element['depth'] > 1)) {
-            $aurl = new moodle_url('index.php', array('id' => $COURSE->id, 'action' => 'moveselect', 'eid' => $eid, 'sesskey' => sesskey()));
+            $aurl = new url('index.php', array('id' => $COURSE->id, 'action' => 'moveselect', 'eid' => $eid, 'sesskey' => sesskey()));
             $moveaction .= $OUTPUT->action_icon($aurl, new pix_icon('t/move', get_string('move')));
         }
 
@@ -194,7 +202,7 @@ class grade_edit_tree {
                     $strmove     = get_string('move');
                     $actions = $moveaction = ''; // no action icons when moving
 
-                    $aurl = new moodle_url('index.php', array('id' => $COURSE->id, 'action' => 'move', 'eid' => $this->moving, 'moveafter' => $child_eid, 'sesskey' => sesskey()));
+                    $aurl = new url('index.php', array('id' => $COURSE->id, 'action' => 'move', 'eid' => $this->moving, 'moveafter' => $child_eid, 'sesskey' => sesskey()));
                     if ($first) {
                         $aurl->params($first);
                     }
@@ -508,7 +516,7 @@ class grade_edit_tree {
         }
 
         if(!$after_el = $this->gtree->locate_element("cg$moveafter")) {
-            throw new \moodle_exception('invalidelementid', '', $returnurl);
+            throw new moodle_exception('invalidelementid', '', $returnurl);
         }
 
         $after = $after_el['object'];
@@ -517,7 +525,7 @@ class grade_edit_tree {
 
         foreach ($eids as $eid) {
             if (!$element = $this->gtree->locate_element($eid)) {
-                throw new \moodle_exception('invalidelementid', '', $returnurl);
+                throw new moodle_exception('invalidelementid', '', $returnurl);
             }
             $object = $element['object'];
 
@@ -873,10 +881,10 @@ class grade_edit_tree_column_name extends grade_edit_tree_column {
             throw new Exception('Array key (name, level or element) missing from 2nd param of grade_edit_tree_column_name::get_item_cell($item, $params)');
         }
 
-        $itemicon = \html_writer::div($params['icon'], 'me-1');
-        $itemtype = \html_writer::span($params['type'], 'd-block text-uppercase small dimmed_text');
+        $itemicon = html_writer::div($params['icon'], 'me-1');
+        $itemtype = html_writer::span($params['type'], 'd-block text-uppercase small dimmed_text');
         $itemtitle = html_writer::div($params['name'], 'rowtitle');
-        $content = \html_writer::div($itemtype . $itemtitle);
+        $content = html_writer::div($itemtype . $itemtitle);
 
         $moveaction = isset($params['moveaction']) ? $params['moveaction'] : '';
 
@@ -890,7 +898,7 @@ class grade_edit_tree_column_name extends grade_edit_tree_column {
             $label = get_string('select', 'grades', $params['name']);
 
             if (empty($params['itemtype']) || empty($params['eid'])) {
-                throw new \moodle_exception('missingitemtypeoreid', 'core_grades');
+                throw new moodle_exception('missingitemtypeoreid', 'core_grades');
             }
 
             // Fetch the grade item's category.
@@ -908,7 +916,7 @@ class grade_edit_tree_column_name extends grade_edit_tree_column {
             $checkbox = $OUTPUT->render($checkbox);
         }
 
-        $itemcell->text = \html_writer::div($checkbox . $moveaction . $itemicon . $content,
+        $itemcell->text = html_writer::div($checkbox . $moveaction . $itemicon . $content,
             "{$params['itemtype']} d-flex align-items-center");
         return $itemcell;
     }

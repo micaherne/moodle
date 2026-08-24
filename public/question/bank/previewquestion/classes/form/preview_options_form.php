@@ -20,6 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/formslib.php');
 
+use core\output\html_writer;
 use moodleform;
 use question_display_options;
 use question_engine;
@@ -46,7 +47,7 @@ class preview_options_form extends moodleform {
         $mform->addElement('header', 'attemptoptionsheader', get_string('previewoptions', 'qbank_previewquestion'));
         $mform->setExpanded('attemptoptionsheader', false);
         // Add html element with class to display long text in single line.
-        $mform->addElement('html', \html_writer::div(get_string('theoptionsyouselectonlyaffectthepreview',
+        $mform->addElement('html', html_writer::div(get_string('theoptionsyouselectonlyaffectthepreview',
             'qbank_previewquestion'), "col-md-12 row d-flex col-form-label mb-3"));
         $versions = $this->_customdata['versions'];
         $currentversion = $this->_customdata['restartversion'];

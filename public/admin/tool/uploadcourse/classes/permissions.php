@@ -16,11 +16,11 @@
 
 namespace tool_uploadcourse;
 
-use context_course;
-use context_coursecat;
+use core\context\course;
+use core\context\coursecat;
 use core_course_category;
 use core_tag_tag;
-use lang_string;
+use core\lang_string;
 use tool_uploadcourse_course;
 
 /**
@@ -67,7 +67,7 @@ class permissions {
             return $error;
         }
 
-        if (!has_capability('moodle/course:delete', context_course::instance($course->id))) {
+        if (!has_capability('moodle/course:delete', course::instance($course->id))) {
             return new lang_string('nopermissions', 'error', get_capability_string('moodle/course:delete'));
         }
         return null;
@@ -83,10 +83,10 @@ class permissions {
      */
     protected static function check_capability(int $do, array $coursedata, string $capability): ?lang_string {
         if ($do == tool_uploadcourse_course::DO_UPDATE) {
-            $context = context_course::instance($coursedata['id']);
+            $context = course::instance($coursedata['id']);
             $hascap = has_capability($capability, $context);
         } else {
-            $catcontext = context_coursecat::instance($coursedata['category']);
+            $catcontext = coursecat::instance($coursedata['category']);
             $hascap = guess_if_creator_will_have_course_capability($capability, $catcontext);
         }
 
@@ -118,7 +118,7 @@ class permissions {
             return $error;
         }
 
-        if (!has_capability('moodle/course:update', context_course::instance($course->id))) {
+        if (!has_capability('moodle/course:update', course::instance($course->id))) {
             return new lang_string('nopermissions', 'error', get_capability_string('moodle/course:update'));
         }
 
@@ -129,16 +129,16 @@ class permissions {
                 return $error;
             }
 
-            if (!has_capability('moodle/course:changecategory', context_coursecat::instance($course->category))) {
+            if (!has_capability('moodle/course:changecategory', coursecat::instance($course->category))) {
                 return new lang_string('nopermissions', 'error', get_capability_string('moodle/course:changecategory'));
             }
 
-            if (!has_capability('moodle/course:changecategory', context_coursecat::instance($coursedata['category']))) {
+            if (!has_capability('moodle/course:changecategory', coursecat::instance($coursedata['category']))) {
                 return new lang_string('nopermissions', 'error', get_capability_string('moodle/course:changecategory'));
             }
         }
 
-        $context = context_course::instance($coursedata['id']);
+        $context = course::instance($coursedata['id']);
 
         // If lang is specified, check the user is allowed to set that field.
         if (!empty($coursedata['lang']) && $coursedata['lang'] !== $course->lang) {
@@ -205,7 +205,7 @@ class permissions {
             return $error;
         }
 
-        $catcontext = context_coursecat::instance($coursedata['category']);
+        $catcontext = coursecat::instance($coursedata['category']);
 
         // Check user is allowed to create courses in this category.
         if (!has_capability('moodle/course:create', $catcontext)) {

@@ -24,6 +24,10 @@
  * @since      Moodle 3.0
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\exception\required_capability_exception;
+use core\output\user_picture;
 use core_course\external\helper_for_get_mods_by_courses;
 use core_external\external_api;
 use core_external\external_function_parameters;
@@ -86,7 +90,7 @@ class mod_choice_external extends external_api {
         }
         list($course, $cm) = get_course_and_cm_from_instance($choice, 'choice');
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         if ($groupmode = groups_get_activity_groupmode($cm)) {
@@ -241,7 +245,7 @@ class mod_choice_external extends external_api {
         }
         list($course, $cm) = get_course_and_cm_from_instance($choice, 'choice');
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         require_capability('mod/choice:choose', $context);
@@ -376,7 +380,7 @@ class mod_choice_external extends external_api {
         }
         list($course, $cm) = get_course_and_cm_from_instance($choice, 'choice');
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         require_capability('mod/choice:choose', $context);
@@ -469,7 +473,7 @@ class mod_choice_external extends external_api {
         }
         list($course, $cm) = get_course_and_cm_from_instance($choice, 'choice');
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         // Trigger course_module_viewed event and completion.
@@ -541,7 +545,7 @@ class mod_choice_external extends external_api {
             // We can avoid then additional validate_context calls.
             $choices = get_all_instances_in_courses("choice", $courses);
             foreach ($choices as $choice) {
-                $context = context_module::instance($choice->coursemodule);
+                $context = module::instance($choice->coursemodule);
 
                 $choicedetails = helper_for_get_mods_by_courses::standard_coursemodule_element_values($choice, 'mod_choice');
 
@@ -653,7 +657,7 @@ class mod_choice_external extends external_api {
         }
         list($course, $cm) = get_course_and_cm_from_instance($choice, 'choice');
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         require_capability('mod/choice:choose', $context);

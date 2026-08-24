@@ -23,6 +23,10 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\plugin_manager;
+use core\url;
+
 require(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
@@ -32,7 +36,7 @@ if (!empty($CFG->disableupdateautodeploy)) {
     notice(get_string('featuredisabled', 'tool_installaddon'));
 }
 
-$pluginman = core_plugin_manager::instance();
+$pluginman = plugin_manager::instance();
 $installer = tool_installaddon_installer::instance();
 
 $output = $PAGE->get_renderer('tool_installaddon');
@@ -58,7 +62,7 @@ if ($installremote and $installremoteversion) {
         $installable = array($pluginman->get_remote_plugin_info($installremote, $installremoteversion, true));
         upgrade_install_plugins($installable, $installremoteconfirm,
             get_string('installfromrepo', 'tool_installaddon'),
-            new moodle_url($PAGE->url, array('installremote' => $installremote,
+            new url($PAGE->url, array('installremote' => $installremote,
                 'installremoteversion' => $installremoteversion, 'installremoteconfirm' => 1)
             )
         );
@@ -84,7 +88,7 @@ if ($installzipcomponent and $installzipstorage) {
         'zipfilepath' => make_temp_directory('tool_installaddon').'/'.$installzipstorage.'/plugin.zip',
     ));
     upgrade_install_plugins($installable, $installzipconfirm, get_string('installfromzip', 'tool_installaddon'),
-        new moodle_url($installer->index_url(), array('installzipcomponent' => $installzipcomponent,
+        new url($installer->index_url(), array('installzipcomponent' => $installzipcomponent,
             'installzipstorage' => $installzipstorage, 'installzipconfirm' => 1)
         )
     );

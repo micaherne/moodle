@@ -16,10 +16,10 @@
 
 namespace core_course\output;
 
-use cm_info;
-use renderable;
-use renderer_base;
-use templatable;
+use core_course\cm_info;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 
 /**
  * The activity completion status renderable class.

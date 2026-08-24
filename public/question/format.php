@@ -24,6 +24,11 @@
  */
 
 
+use core\context;
+use core\context\module;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 
@@ -609,7 +614,7 @@ class qformat_default {
         // mod_qbank instance on the course instead.
         if ($context->contextlevel !== CONTEXT_MODULE) {
             $qbank = \core_question\local\bank\question_bank_helper::get_default_open_instance_system_type($this->course, true);
-            $context = context_module::instance($qbank->id);
+            $context = module::instance($qbank->id);
         }
 
         $this->importcontext = $context;
@@ -1026,7 +1031,7 @@ class qformat_default {
             $contextid = $DB->get_field('question_categories', 'contextid', ['id' => $this->category->id]);
             $context = context::instance_by_id($contextid);
             $continuepath = "{$CFG->wwwroot}/question/bank/exportquestions/export.php?cmid={$context->instanceid}";
-            throw new \moodle_exception('noquestions', 'question', $continuepath);
+            throw new moodle_exception('noquestions', 'question', $continuepath);
         }
 
         // final pre-process on exported data
@@ -1063,7 +1068,7 @@ class qformat_default {
         global $DB;
 
         if (!$category = $DB->get_record('question_categories', array('id' => $id))) {
-            throw new \moodle_exception('cannotfindcategory', 'error', '', $id);
+            throw new moodle_exception('cannotfindcategory', 'error', '', $id);
         }
         $contextstring = $this->translator->context_to_string($category->contextid);
 

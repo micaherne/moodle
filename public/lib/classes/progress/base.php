@@ -16,6 +16,8 @@
 
 namespace core\progress;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -97,11 +99,11 @@ abstract class base {
     public function start_progress($description, $max = self::INDETERMINATE,
             $parentcount = 1) {
         if ($max != self::INDETERMINATE && $max < 0) {
-            throw new \coding_exception(
+            throw new coding_exception(
                     'start_progress() max value cannot be negative');
         }
         if ($parentcount < 1) {
-            throw new \coding_exception(
+            throw new coding_exception(
                     'start_progress() parent progress count must be at least 1');
         }
         if (!empty($this->descriptions)) {
@@ -109,13 +111,13 @@ abstract class base {
             if ($prevmax !== self::INDETERMINATE) {
                 $prevcurrent = end($this->currents);
                 if ($prevcurrent + $parentcount > $prevmax) {
-                    throw new \coding_exception(
+                    throw new coding_exception(
                             'start_progress() parent progress would exceed max');
                 }
             }
         } else {
             if ($parentcount != 1) {
-                throw new \coding_exception(
+                throw new coding_exception(
                         'start_progress() progress count must be 1 when no parent');
             }
         }
@@ -138,7 +140,7 @@ abstract class base {
      */
     public function end_progress() {
         if (!count($this->descriptions)) {
-            throw new \coding_exception('end_progress() without start_progress()');
+            throw new coding_exception('end_progress() without start_progress()');
         }
         array_pop($this->descriptions);
         array_pop($this->maxes);
@@ -174,7 +176,7 @@ abstract class base {
         // Check we are inside a progress section.
         $max = end($this->maxes);
         if ($max === false) {
-            throw new \coding_exception(
+            throw new coding_exception(
                     'progress() without start_progress');
         }
 
@@ -182,20 +184,20 @@ abstract class base {
         if ($progress === self::INDETERMINATE) {
             // Indeterminate progress.
             if ($max !== self::INDETERMINATE) {
-                throw new \coding_exception(
+                throw new coding_exception(
                         'progress() INDETERMINATE, expecting value');
             }
         } else {
             // Determinate progress.
             $current = end($this->currents);
             if ($max === self::INDETERMINATE) {
-                throw new \coding_exception(
+                throw new coding_exception(
                         'progress() with value, expecting INDETERMINATE');
             } else if ($progress < 0 || $progress > $max) {
-                throw new \coding_exception(
+                throw new coding_exception(
                         'progress() value out of range');
             } else if ($progress < $current) {
-                throw new \coding_exception(
+                throw new coding_exception(
                         'progress() value may not go backwards');
             }
             $this->currents[key($this->currents)] = $progress;
@@ -261,7 +263,7 @@ abstract class base {
     public function get_current_max() {
         $max = end($this->maxes);
         if ($max === false) {
-            throw new \coding_exception('Not inside progress section');
+            throw new coding_exception('Not inside progress section');
         }
         return $max;
     }
@@ -273,7 +275,7 @@ abstract class base {
     public function get_current_description() {
         $description = end($this->descriptions);
         if ($description === false) {
-            throw new \coding_exception('Not inside progress section');
+            throw new coding_exception('Not inside progress section');
         }
         return $description;
     }
